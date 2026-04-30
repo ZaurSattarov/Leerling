@@ -1,0 +1,216 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../core/constants/app_colors.dart';
+import '../../core/services/student_service.dart';
+import '../../models/notificatie.dart';
+import '../../shared/providers/auth_provider.dart';
+import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/snackbar.dart';
+import 'notificaties_provider.dart';
+
+class NotificatiesScreen extends ConsumerWidget {
+  const NotificatiesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notificatiesAsync = ref.watch(notificatiesProvider);
+
+    return Scaffold(
+      backgroundColor: AppColors.surface,
+      appBar: AppBar(
+        backgroundColor: AppColors.dark,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+          onPressed: () => context.go('/home'),
+        ),
+        title: const Text('Meldingen',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        actions: [
+          notificatiesAsync.when(
+            data: (list) {
+              final heeftOngelezen = list.any((n) => !n.gelezen);
+              if (!heeftOngelezen) return const SizedBox.shrink();
+              return TextButton(
+                onPressed: () => _markeerAlles(context, ref),
+                child: const Text('Alles gelezen',
+                    style: TextStyle(
+                        color: AppColors.primary, fontWeight: FontWeight.w600)),
+              );
+            },
+            loading: () => const SizedBox.shrink(),
+            error: (_, __) => const SizedBox.shrink(),
+          ),
+        ],
+      ),
+      body: RefreshIndicator(
+        color: AppColors.primary,
+        onRefresh: () async => ref.invalidate(notificatiesProvider),
+        child: notificatiesAsync.when(
+          data: (notificaties) {
+            if (notificaties.isEmpty) {
+              return ListView(
+                children: const [
+                  EmptyState(
+                    icon: Icons.notifications_off_outlined,
+                    title: 'Geen meldingen',
+                    subtitle: 'Je hebt nog geen meldingen ontvangen.',
+                  ),
+                ],
+              );
+            }
+            return ListView.separated(
+              padding: const EdgeInsets.all(20),
+              itemCount: notificaties.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 10),
+              itemBuilder: (context, i) =>
+                  _NotificatieCard(notificatie: notificaties[i], ref: ref),
+            );
+          },
+          loading: () => ListView.separated(
+            padding: const EdgeInsets.all(20),
+            itemCount: 5,
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
+            itemBuilder: (_, __) => const SkeletonCard(),
+          ),
+          error: (e, _) => ListView(
+            children: [
+              EmptyState(
+                icon: Icons.wifi_off_rounded,
+                title: 'Kon meldingen niet laden',
+                subtitle: e.toString(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _markeerAlles(BuildContext context, WidgetRef ref) async {
+    final profiel = await ref.read(mijnProfielProvider.future);
+    if (profiel == null) return;
+    await StudentService.markeerAllesGelezen(profiel.id);
+    ref.invalidate(notificatiesProvider);
+    if (context.mounted) {
+      showAppSnackBar(context, 'Alle meldingen gemarkeerd als gelezen',
+          isSuccess: true);
+    }
+  }
+}
+
+class _NotificatieCard extends ConsumerWidget {
+  final Notificatie notificatie;
+  final WidgetRef ref;
+
+  const _NotificatieCard({required this.notificatie, required this.ref});
+
+  IconData get _icon {
+    switch (notificatie.type) {
+      case 'les':
+        return Icons.directions_car_rounded;
+      case 'factuur':
+        return Icons.receipt_long_rounded;
+      case 'voortgang':
+        return Icons.bar_chart_rounded;
+      default:
+        return Icons.notifications_rounded;
+    }
+  }
+
+  Color get _color {
+    switch (notificatie.type) {
+      case 'les':
+        return AppColors.infoSolid;
+      case 'factuur':
+        return AppColors.warningSolid;
+      case 'voortgang':
+        return AppColors.successSolid;
+      default:
+        return AppColors.dark3;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return AppCard(
+      backgroundColor:
+          notificatie.gelezen ? AppColors.white : AppColors.primaryLight,
+      onTap: notificatie.gelezen
+          ? null
+          : () async {
+              await StudentService.markeerGelezen(notificatie.id);
+              ref.invalidate(notificatiesProvider);
+            },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          IconBadge(icon: _icon, color: _color, size: 40),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        notificatie.titel,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: notificatie.gelezen
+                              ? FontWeight.w500
+                              : FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                    if (!notificatie.gelezen)
+                      Container(
+                        width: 8,
+                        height: 8,
+                        margin: const EdgeInsets.only(left: 8, top: 4),
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                  ],
+                ),
+                if (notificatie.omschrijving?.isNotEmpty == true) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    notificatie.omschrijving!,
+                    style: const TextStyle(
+                        fontSize: 13, color: AppColors.textSecondary, height: 1.4),
+                  ),
+                ],
+                const SizedBox(height: 6),
+                Text(
+                  _tijdGeleden(notificatie.aangemaaktOp),
+                  style: const TextStyle(
+                      fontSize: 11, color: AppColors.textHint),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _tijdGeleden(String ts) {
+    try {
+      final dt = DateTime.parse(ts).toLocal();
+      final diff = DateTime.now().difference(dt);
+      if (diff.inMinutes < 1) return 'Zojuist';
+      if (diff.inMinutes < 60) return '${diff.inMinutes} min geleden';
+      if (diff.inHours < 24) return '${diff.inHours} uur geleden';
+      if (diff.inDays == 1) return 'Gisteren';
+      return '${diff.inDays} dagen geleden';
+    } catch (_) {
+      return '';
+    }
+  }
+}
