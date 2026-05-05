@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../models/leerling_profiel.dart';
+import '../../models/leerling_beschikbaarheid.dart';
 import '../../models/les.dart';
 import '../../models/factuur.dart';
 import '../../models/notificatie.dart';
@@ -203,6 +204,60 @@ class StudentService {
         .update({'gelezen': true})
         .eq('leerling_id', leerlingId)
         .eq('gelezen', false);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // BESCHIKBAARHEID
+  // ─────────────────────────────────────────────────────────────
+
+  static Future<List<LeerlingBeschikbaarheid>> getMijnBeschikbaarheid(
+      String leerlingId) async {
+    final res = await client
+        .from('leerling_beschikbaarheid')
+        .select()
+        .eq('leerling_id', leerlingId)
+        .order('dag_van_week')
+        .order('start_tijd');
+    return (res as List)
+        .map((e) => LeerlingBeschikbaarheid.fromJson(e))
+        .toList();
+  }
+
+  static Future<void> voegBeschikbaarheidToe({
+    required String leerlingId,
+    required String instructeurId,
+    required int dagVanWeek,
+    required String startTijd,
+    required String eindTijd,
+    int voorkeurScore = 3,
+  }) async {
+    await client.from('leerling_beschikbaarheid').insert({
+      'leerling_id': leerlingId,
+      'instructeur_id': instructeurId,
+      'dag_van_week': dagVanWeek,
+      'start_tijd': startTijd,
+      'eind_tijd': eindTijd,
+      'voorkeur_score': voorkeurScore,
+    });
+  }
+
+  static Future<void> updateBeschikbaarheid({
+    required String id,
+    required int dagVanWeek,
+    required String startTijd,
+    required String eindTijd,
+    int voorkeurScore = 3,
+  }) async {
+    await client.from('leerling_beschikbaarheid').update({
+      'dag_van_week': dagVanWeek,
+      'start_tijd': startTijd,
+      'eind_tijd': eindTijd,
+      'voorkeur_score': voorkeurScore,
+    }).eq('id', id);
+  }
+
+  static Future<void> verwijderBeschikbaarheid(String id) async {
+    await client.from('leerling_beschikbaarheid').delete().eq('id', id);
   }
 
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

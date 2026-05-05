@@ -250,6 +250,13 @@ class ProfielScreen extends ConsumerWidget {
                     child: Column(
                       children: [
                         _ActionTile(
+                          icon: Icons.schedule_outlined,
+                          iconColor: AppColors.primary,
+                          label: 'Mijn beschikbaarheid',
+                          onTap: () => context.push('/beschikbaarheid'),
+                        ),
+                        const Divider(height: 20),
+                        _ActionTile(
                           icon: Icons.notifications_outlined,
                           iconColor: AppColors.warningSolid,
                           label: 'Meldingen',

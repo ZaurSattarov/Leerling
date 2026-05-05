@@ -14,6 +14,7 @@ import 'features/planning/les_detail_screen.dart';
 import 'features/voortgang/voortgang_screen.dart';
 import 'features/facturen/facturen_screen.dart';
 import 'features/facturen/factuur_detail_screen.dart';
+import 'features/beschikbaarheid/beschikbaarheid_screen.dart';
 import 'features/notificaties/notificaties_screen.dart';
 import 'features/profiel/profiel_screen.dart';
 import 'shared/widgets/main_scaffold.dart';
@@ -62,6 +63,12 @@ final _routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/notificaties',
         builder: (_, __) => const NotificatiesScreen(),
+      ),
+
+      // Beschikbaarheid — full screen, outside bottom nav
+      GoRoute(
+        path: '/beschikbaarheid',
+        builder: (_, __) => const BeschikbaarheidScreen(),
       ),
 
       // App routes with bottom nav shell
