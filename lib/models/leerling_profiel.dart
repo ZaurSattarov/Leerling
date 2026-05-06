@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 enum LeerlingStatus { actief, geslaagd, gestopt, wachtlijst }
 
 enum PakketType { basis, standaard, intensief, los_rijles }

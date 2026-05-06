@@ -9,7 +9,12 @@ import '../../models/factuur.dart';
 import '../../models/notificatie.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/coach_widgets.dart';
 import '../../shared/widgets/status_pill.dart';
+import '../les_logboek/les_logboek_item.dart';
+import '../les_logboek/les_logboek_provider.dart';
+import '../lesvoorbereiding/lesvoorbereiding_provider.dart';
+import 'home_coach_provider.dart';
 import 'home_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -19,6 +24,9 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profielAsync = ref.watch(mijnProfielProvider);
     final homeAsync = ref.watch(homeProvider);
+    final homeCoach = ref.watch(homeCoachProvider);
+    final laatsteLesLogboekItemAsync = ref.watch(laatsteLesLogboekItemProvider);
+    final lesvoorbereiding = ref.watch(lesvoorbereidingProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -109,6 +117,23 @@ class HomeScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(20),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
+                    _CoachReadinessCard(data: homeCoach),
+
+                    const SizedBox(height: 14),
+
+                    laatsteLesLogboekItemAsync.when(
+                      data: (item) => _LaatsteLesLogboekCard(item: item),
+                      loading: () => const SkeletonCard(),
+                      error: (_, __) =>
+                          _LaatsteLesLogboekCard(item: mockLesLogboek.first),
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    _LesvoorbereidingCard(data: lesvoorbereiding),
+
+                    const SizedBox(height: 24),
+
                     // Next lesson
                     SectionHeader(
                       title: 'Volgende les',
@@ -122,7 +147,8 @@ class HomeScreen extends ConsumerWidget {
                             child: const EmptyState(
                               icon: Icons.calendar_today_outlined,
                               title: 'Geen lessen gepland',
-                              subtitle: 'Je instructeur heeft nog geen nieuwe les ingepland.',
+                              subtitle:
+                                  'Je instructeur heeft nog geen nieuwe les ingepland.',
                             ),
                           ),
 
@@ -160,7 +186,8 @@ class HomeScreen extends ConsumerWidget {
                                                   style: const TextStyle(
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.w600,
-                                                    color: AppColors.textPrimary,
+                                                    color:
+                                                        AppColors.textPrimary,
                                                   ),
                                                 ),
                                                 const SizedBox(height: 2),
@@ -168,7 +195,8 @@ class HomeScreen extends ConsumerWidget {
                                                   'Pakket: ${profiel.pakket.label}',
                                                   style: const TextStyle(
                                                     fontSize: 12,
-                                                    color: AppColors.textSecondary,
+                                                    color:
+                                                        AppColors.textSecondary,
                                                   ),
                                                 ),
                                               ],
@@ -190,7 +218,8 @@ class HomeScreen extends ConsumerWidget {
                                         child: LinearProgressIndicator(
                                           value: profiel.voortgangPercent,
                                           minHeight: 8,
-                                          backgroundColor: AppColors.borderLight,
+                                          backgroundColor:
+                                              AppColors.borderLight,
                                           valueColor:
                                               const AlwaysStoppedAnimation(
                                                   AppColors.primary),
@@ -294,6 +323,285 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _LesvoorbereidingCard extends StatelessWidget {
+  final LesvoorbereidingData data;
+
+  const _LesvoorbereidingCard({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const IconBadge(
+                icon: Icons.center_focus_strong_rounded,
+                color: AppColors.dark3,
+                size: 40,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Voorbereiding volgende les',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      data.focus,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            data.voorbereiding,
+            style: const TextStyle(
+              fontSize: 13,
+              height: 1.4,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          InlineCtaLink(
+            label: 'Bekijk voorbereiding',
+            onPressed: () => context.push('/lesvoorbereiding'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LaatsteLesLogboekCard extends StatelessWidget {
+  final LesLogboekItem item;
+
+  const _LaatsteLesLogboekCard({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const IconBadge(
+                icon: Icons.history_edu_rounded,
+                color: AppColors.dark3,
+                size: 40,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Laatste les',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      '${item.datumLabel}  ·  ${item.tijdLabel}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: item.onderwerpen
+                .map((label) => NeutralChip(label: label))
+                .toList(),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            item.feedback,
+            style: const TextStyle(
+              fontSize: 13,
+              height: 1.4,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          InlineCtaLink(
+            label: 'Bekijk logboek',
+            onPressed: () => context.push('/les-logboek'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CoachReadinessCard extends StatelessWidget {
+  final HomeCoachData data;
+
+  const _CoachReadinessCard({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const IconBadge(
+                icon: Icons.school_rounded,
+                color: AppColors.dark3,
+                size: 42,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Ben ik klaar voor examen?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      data.status,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.successText,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                '${data.readinessScore}%',
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.primary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          AccentProgressBar(value: data.readinessScore / 100),
+          const SizedBox(height: 16),
+          _CoachInfoRow(
+            icon: Icons.flag_rounded,
+            iconColor: AppColors.infoSolid,
+            label: data.advies,
+          ),
+          const SizedBox(height: 10),
+          _CoachInfoRow(
+            icon: Icons.chat_bubble_outline_rounded,
+            iconColor: AppColors.successSolid,
+            label: data.feedback,
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Laatst geoefend',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: data.laatstGeoefend
+                .map((label) => NeutralChip(label: label))
+                .toList(),
+          ),
+          const SizedBox(height: 14),
+          InlineCtaLink(
+            label: 'Bekijk examenadvies',
+            onPressed: () => context.push('/examenadvies'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CoachInfoRow extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String label;
+
+  const _CoachInfoRow({
+    required this.icon,
+    required this.iconColor,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: iconColor,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: Colors.white, size: 15),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 13,
+                height: 1.35,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -424,10 +732,16 @@ class _NotificatieCard extends StatelessWidget {
   IconData get _icon {
     switch (notificatie.type) {
       case 'les':
+      case 'les_reminder':
         return Icons.directions_car_rounded;
+      case 'voorbereiding':
+        return Icons.task_alt_rounded;
+      case 'feedback':
+        return Icons.rate_review_rounded;
       case 'factuur':
         return Icons.receipt_long_rounded;
       case 'voortgang':
+      case 'examenadvies':
         return Icons.bar_chart_rounded;
       default:
         return Icons.notifications_rounded;
@@ -437,10 +751,16 @@ class _NotificatieCard extends StatelessWidget {
   Color get _color {
     switch (notificatie.type) {
       case 'les':
+      case 'les_reminder':
         return AppColors.infoSolid;
+      case 'voorbereiding':
+        return AppColors.dark3;
+      case 'feedback':
+        return AppColors.successSolid;
       case 'factuur':
         return AppColors.warningSolid;
       case 'voortgang':
+      case 'examenadvies':
         return AppColors.successSolid;
       default:
         return AppColors.dark3;
@@ -450,6 +770,7 @@ class _NotificatieCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCard(
+      onTap: () => context.go(notificatie.targetRoute),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -463,16 +784,15 @@ class _NotificatieCard extends StatelessWidget {
                   notificatie.titel,
                   style: TextStyle(
                     fontSize: 13,
-                    fontWeight: notificatie.gelezen
-                        ? FontWeight.w500
-                        : FontWeight.w700,
+                    fontWeight:
+                        notificatie.gelezen ? FontWeight.w500 : FontWeight.w700,
                     color: AppColors.textPrimary,
                   ),
                 ),
-                if (notificatie.omschrijving?.isNotEmpty == true) ...[
+                if (notificatie.tekst?.isNotEmpty == true) ...[
                   const SizedBox(height: 2),
                   Text(
-                    notificatie.omschrijving!,
+                    notificatie.tekst!,
                     style: const TextStyle(
                         fontSize: 12, color: AppColors.textSecondary),
                     maxLines: 2,

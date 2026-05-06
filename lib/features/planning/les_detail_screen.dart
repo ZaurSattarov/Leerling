@@ -53,7 +53,8 @@ class LesDetailScreen extends ConsumerWidget {
           }
           return _LesDetailBody(les: les);
         },
-        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+        loading: () => const Center(
+            child: CircularProgressIndicator(color: AppColors.primary)),
         error: (e, _) => Center(
           child: EmptyState(
             icon: Icons.wifi_off_rounded,
@@ -105,8 +106,8 @@ class _LesDetailBody extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       DatumUtils.relatiefDatum(les.datum),
-                      style: const TextStyle(
-                          color: Colors.white70, fontSize: 13),
+                      style:
+                          const TextStyle(color: Colors.white70, fontSize: 13),
                     ),
                   ],
                 ),
@@ -128,7 +129,9 @@ class _LesDetailBody extends StatelessWidget {
                     Text(
                       '${les.starttijd} – ${les.eindtijd}',
                       style: const TextStyle(
-                          color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(width: 12),
                     Container(
@@ -185,7 +188,8 @@ class _LesDetailBody extends StatelessWidget {
             ),
           ),
 
-          if (les.notities?.isNotEmpty == true) ...[
+          if (les.zichtbaarVoorLeerling &&
+              les.instructeurFeedback?.trim().isNotEmpty == true) ...[
             const SizedBox(height: 14),
             AppCard(
               child: Column(
@@ -198,7 +202,7 @@ class _LesDetailBody extends StatelessWidget {
                           color: AppColors.dark3,
                           size: 32),
                       const SizedBox(width: 10),
-                      const Text('Notities van instructeur',
+                      const Text('Feedback van instructeur',
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -207,7 +211,7 @@ class _LesDetailBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    les.notities!,
+                    les.instructeurFeedback!,
                     style: const TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
@@ -246,8 +250,7 @@ class _LesDetailBody extends StatelessWidget {
                       icon: Icons.message_rounded,
                       label: 'WhatsApp',
                       color: AppColors.whatsapp,
-                      onTap: () =>
-                          _whatsapp(context, les.instructeurTelefoon!),
+                      onTap: () => _whatsapp(context, les.instructeurTelefoon!),
                     ),
                   ),
                 ],

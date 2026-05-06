@@ -91,7 +91,10 @@ class NotificatiesScreen extends ConsumerWidget {
   Future<void> _markeerAlles(BuildContext context, WidgetRef ref) async {
     final profiel = await ref.read(mijnProfielProvider.future);
     if (profiel == null) return;
-    await StudentService.markeerAllesGelezen(profiel.id);
+    final meldingen = ref.read(notificatiesProvider).valueOrNull ?? const [];
+    if (meldingen.any((n) => !n.isMock)) {
+      await StudentService.markeerAllesGelezen(profiel.id);
+    }
     ref.invalidate(notificatiesProvider);
     if (context.mounted) {
       showAppSnackBar(context, 'Alle meldingen gemarkeerd als gelezen',
@@ -109,10 +112,16 @@ class _NotificatieCard extends ConsumerWidget {
   IconData get _icon {
     switch (notificatie.type) {
       case 'les':
+      case 'les_reminder':
         return Icons.directions_car_rounded;
+      case 'voorbereiding':
+        return Icons.task_alt_rounded;
+      case 'feedback':
+        return Icons.rate_review_rounded;
       case 'factuur':
         return Icons.receipt_long_rounded;
       case 'voortgang':
+      case 'examenadvies':
         return Icons.bar_chart_rounded;
       default:
         return Icons.notifications_rounded;
@@ -122,10 +131,16 @@ class _NotificatieCard extends ConsumerWidget {
   Color get _color {
     switch (notificatie.type) {
       case 'les':
+      case 'les_reminder':
         return AppColors.infoSolid;
+      case 'voorbereiding':
+        return AppColors.dark3;
+      case 'feedback':
+        return AppColors.successSolid;
       case 'factuur':
         return AppColors.warningSolid;
       case 'voortgang':
+      case 'examenadvies':
         return AppColors.successSolid;
       default:
         return AppColors.dark3;
@@ -135,14 +150,17 @@ class _NotificatieCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppCard(
-      backgroundColor:
-          notificatie.gelezen ? AppColors.white : AppColors.primaryLight,
-      onTap: notificatie.gelezen
-          ? null
-          : () async {
-              await StudentService.markeerGelezen(notificatie.id);
-              ref.invalidate(notificatiesProvider);
-            },
+      backgroundColor: AppColors.white,
+      onTap: () async {
+        if (!notificatie.gelezen && !notificatie.isMock) {
+          final profiel = await ref.read(mijnProfielProvider.future);
+          if (profiel != null) {
+            await StudentService.markeerGelezen(notificatie.id, profiel.id);
+            ref.invalidate(notificatiesProvider);
+          }
+        }
+        if (context.mounted) context.go(notificatie.targetRoute);
+      },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -178,19 +196,21 @@ class _NotificatieCard extends ConsumerWidget {
                       ),
                   ],
                 ),
-                if (notificatie.omschrijving?.isNotEmpty == true) ...[
+                if (notificatie.tekst?.isNotEmpty == true) ...[
                   const SizedBox(height: 4),
                   Text(
-                    notificatie.omschrijving!,
+                    notificatie.tekst!,
                     style: const TextStyle(
-                        fontSize: 13, color: AppColors.textSecondary, height: 1.4),
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                        height: 1.4),
                   ),
                 ],
                 const SizedBox(height: 6),
                 Text(
                   _tijdGeleden(notificatie.aangemaaktOp),
-                  style: const TextStyle(
-                      fontSize: 11, color: AppColors.textHint),
+                  style:
+                      const TextStyle(fontSize: 11, color: AppColors.textHint),
                 ),
               ],
             ),

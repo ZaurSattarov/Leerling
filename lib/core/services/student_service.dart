@@ -1,4 +1,4 @@
-﻿import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../models/leerling_profiel.dart';
 import '../../models/leerling_beschikbaarheid.dart';
@@ -8,8 +8,7 @@ import '../../models/notificatie.dart';
 import '../../models/instructeur.dart';
 
 class StudentService {
-  static const String supabaseUrl =
-      'https://fbgjksxrehqyphaidgck.supabase.co';
+  static const String supabaseUrl = 'https://fbgjksxrehqyphaidgck.supabase.co';
   static const String supabaseAnonKey =
       'sb_publishable_ePSE3UhFPmTO3j3sYLC99w_n_Zvq9DG';
 
@@ -36,20 +35,22 @@ class StudentService {
     required String wachtwoord,
   }) async {
     final trimmedEmail = email.trim();
-    debugPrint('[student.registreren] email=' + trimmedEmail);
+    debugPrint('[student.registreren] email=$trimmedEmail');
 
     try {
       final response = await client.auth.signUp(
         email: trimmedEmail,
         password: wachtwoord,
       );
-      debugPrint('[student.registreren] user=' + (response.user?.id ?? 'null') + ' session=' + (response.session != null).toString());
+      debugPrint(
+          '[student.registreren] user=${response.user?.id ?? 'null'} session=${response.session != null}');
       return response;
     } on AuthException catch (e) {
-      debugPrint('[student.registreren] AuthException code=' + (e.statusCode ?? 'null') + ' message=' + e.message);
+      debugPrint(
+          '[student.registreren] AuthException code=${e.statusCode ?? 'null'} message=${e.message}');
       rethrow;
     } catch (e) {
-      debugPrint('[student.registreren] onverwachte fout=' + e.toString());
+      debugPrint('[student.registreren] onverwachte fout=$e');
       rethrow;
     }
   }
@@ -94,7 +95,8 @@ class StudentService {
   static Future<Instructeur?> getMijnInstructeur(String instructeurId) async {
     final res = await client
         .from('instructeur_profielen')
-        .select('id, rijschool_naam, naam, telefoon, email, adres, postcode, stad, logo_url, whatsapp_nummer')
+        .select(
+            'id, rijschool_naam, naam, telefoon, email, adres, postcode, stad, logo_url, whatsapp_nummer')
         .eq('id', instructeurId)
         .maybeSingle();
     return res != null ? Instructeur.fromJson(res) : null;
@@ -130,16 +132,24 @@ class StudentService {
     return (res as List).map((e) => Les.fromJson(e)).toList();
   }
 
-  static Future<List<Les>> getMijnVorigeLessen(String leerlingId) async {
+  static Future<List<Les>> getMijnVorigeLessen(
+    String leerlingId, {
+    bool alleenZichtbaarLogboek = false,
+  }) async {
     final vandaag = DateTime.now();
     final vandaagStr =
         '${vandaag.year}-${vandaag.month.toString().padLeft(2, '0')}-${vandaag.day.toString().padLeft(2, '0')}';
-    final res = await client
+    final query = client
         .from('lessen')
         .select('*, instructeur_profielen(naam, telefoon)')
-        .eq('leerling_id', leerlingId)
-        .neq('status', 'gepland')
-        .or('datum.lt.$vandaagStr,status.eq.afgerond,status.eq.geannuleerd,status.eq.geen_toon')
+        .eq('leerling_id', leerlingId);
+
+    final filteredQuery = alleenZichtbaarLogboek
+        ? query.eq('status', 'afgerond').eq('zichtbaar_voor_leerling', true)
+        : query.neq('status', 'gepland').or(
+            'datum.lt.$vandaagStr,status.eq.afgerond,status.eq.geannuleerd,status.eq.geen_toon');
+
+    final res = await filteredQuery
         .order('datum', ascending: false)
         .order('starttijd', ascending: false)
         .limit(100);
@@ -153,6 +163,25 @@ class StudentService {
         .eq('id', lesId)
         .maybeSingle();
     return res != null ? Les.fromJson(res) : null;
+  }
+
+  static Future<void> updateMijnLesNotitie({
+    required String lesId,
+    required String leerlingId,
+    String? notitie,
+  }) async {
+    final schoneNotitie = notitie?.trim();
+    await client
+        .from('lessen')
+        .update({
+          'leerling_notitie': schoneNotitie == null || schoneNotitie.isEmpty
+              ? null
+              : schoneNotitie,
+        })
+        .eq('id', lesId)
+        .eq('leerling_id', leerlingId)
+        .eq('status', 'afgerond')
+        .eq('zichtbaar_voor_leerling', true);
   }
 
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -169,11 +198,8 @@ class StudentService {
   }
 
   static Future<Factuur?> getFactuur(String id) async {
-    final res = await client
-        .from('facturen')
-        .select()
-        .eq('id', id)
-        .maybeSingle();
+    final res =
+        await client.from('facturen').select().eq('id', id).maybeSingle();
     return res != null ? Factuur.fromJson(res) : null;
   }
 
@@ -183,19 +209,64 @@ class StudentService {
 
   static Future<List<Notificatie>> getMijnNotificaties(
       String leerlingId) async {
-    final res = await client
-        .from('leerling_notificaties')
-        .select()
-        .eq('leerling_id', leerlingId)
-        .order('aangemaakt_op', ascending: false)
-        .limit(50);
-    return (res as List).map((e) => Notificatie.fromJson(e)).toList();
+    List<dynamic> res;
+    try {
+      debugPrint(
+          '[student.notificaties] ophalen leerling=$leerlingId sort=created_at');
+      res = await client
+          .from('leerling_notificaties')
+          .select()
+          .eq('leerling_id', leerlingId)
+          .order('created_at', ascending: false)
+          .limit(50);
+    } catch (_) {
+      debugPrint(
+          '[student.notificaties] created_at niet beschikbaar, fallback sort=aangemaakt_op leerling=$leerlingId');
+      res = await client
+          .from('leerling_notificaties')
+          .select()
+          .eq('leerling_id', leerlingId)
+          .order('aangemaakt_op', ascending: false)
+          .limit(50);
+    }
+    final now = DateTime.now();
+    debugPrint('[student.notificaties] raw count=${res.length}');
+    final meldingen = res.map((e) => Notificatie.fromJson(e)).where(
+      (melding) {
+        final scheduledFor = melding.scheduledFor;
+        if (scheduledFor == null || scheduledFor.isEmpty) return true;
+        final scheduledAt = DateTime.tryParse(scheduledFor);
+        return scheduledAt == null || !scheduledAt.toLocal().isAfter(now);
+      },
+    ).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final perType = <String, int>{};
+    for (final melding in meldingen) {
+      perType[melding.type] = (perType[melding.type] ?? 0) + 1;
+    }
+    debugPrint(
+        '[student.notificaties] zichtbaar count=${meldingen.length} types=$perType');
+    return meldingen;
   }
 
-  static Future<void> markeerGelezen(String notificatieId) async {
+  static Future<int> getOngelezenNotificatiesAantal(String leerlingId) async {
+    final res = await client
+        .from('leerling_notificaties')
+        .select('id')
+        .eq('leerling_id', leerlingId)
+        .eq('gelezen', false);
+    return (res as List).length;
+  }
+
+  static Future<void> markeerGelezen(
+    String notificatieId,
+    String leerlingId,
+  ) async {
     await client
         .from('leerling_notificaties')
-        .update({'gelezen': true}).eq('id', notificatieId);
+        .update({'gelezen': true})
+        .eq('id', notificatieId)
+        .eq('leerling_id', leerlingId);
   }
 
   static Future<void> markeerAllesGelezen(String leerlingId) async {
@@ -286,8 +357,9 @@ class StudentService {
           .from('facturen')
           .select()
           .eq('leerling_id', leerlingId)
-          .inFilter('status', ['concept', 'verstuurd', 'verlopen'])
-          .order('aangemaakt_op', ascending: false),
+          .inFilter('status', ['concept', 'verstuurd', 'verlopen']).order(
+              'aangemaakt_op',
+              ascending: false),
       // 2: ongelezen notificaties tellen
       client
           .from('leerling_notificaties')
@@ -304,7 +376,8 @@ class StudentService {
     ]);
 
     final lessenRaw = results[0] as List;
-    final volgendeLes = lessenRaw.isNotEmpty ? Les.fromJson(lessenRaw.first) : null;
+    final volgendeLes =
+        lessenRaw.isNotEmpty ? Les.fromJson(lessenRaw.first) : null;
     final openFacturen =
         (results[1] as List).map((e) => Factuur.fromJson(e)).toList();
     final ongelezen = (results[2] as List).length;
@@ -319,4 +392,3 @@ class StudentService {
     };
   }
 }
-

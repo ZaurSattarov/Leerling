@@ -34,6 +34,9 @@ dependencies:
   # Haptic feedback
   vibration: ^2.0.0
 
+  # Typography
+  google_fonts: ^6.2.0
+
   cupertino_icons: ^1.0.8
 
 dev_dependencies:

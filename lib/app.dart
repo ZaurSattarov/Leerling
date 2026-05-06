@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/constants/app_colors.dart';
 import 'features/splash/splash_screen.dart';
@@ -11,6 +13,9 @@ import 'features/koppelcode/koppelcode_screen.dart';
 import 'features/home/home_screen.dart';
 import 'features/planning/planning_screen.dart';
 import 'features/planning/les_detail_screen.dart';
+import 'features/les_logboek/les_logboek_screen.dart';
+import 'features/examenadvies/examenadvies_screen.dart';
+import 'features/lesvoorbereiding/lesvoorbereiding_screen.dart';
 import 'features/voortgang/voortgang_screen.dart';
 import 'features/facturen/facturen_screen.dart';
 import 'features/facturen/factuur_detail_screen.dart';
@@ -91,6 +96,18 @@ final _routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
           GoRoute(
+            path: '/les-logboek',
+            builder: (_, __) => const LesLogboekScreen(),
+          ),
+          GoRoute(
+            path: '/examenadvies',
+            builder: (_, __) => const ExamenadviesScreen(),
+          ),
+          GoRoute(
+            path: '/lesvoorbereiding',
+            builder: (_, __) => const LesvoorbereidingScreen(),
+          ),
+          GoRoute(
             path: '/voortgang',
             builder: (_, __) => const VoortgangScreen(),
           ),
@@ -131,15 +148,81 @@ class LeerlingApp extends ConsumerWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primary,
           brightness: Brightness.light,
+          surface: AppColors.white,
         ),
         scaffoldBackgroundColor: AppColors.surface,
-        appBarTheme: const AppBarTheme(
+        dialogTheme: DialogThemeData(
           backgroundColor: AppColors.white,
-          foregroundColor: AppColors.textPrimary,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: AppColors.white,
+          surfaceTintColor: Colors.transparent,
+          modalBackgroundColor: AppColors.white,
+          modalBarrierColor: Colors.black54,
+        ),
+        datePickerTheme: DatePickerThemeData(
+          backgroundColor: AppColors.white,
+          surfaceTintColor: Colors.transparent,
+          headerBackgroundColor: AppColors.white,
+          headerForegroundColor: AppColors.textPrimary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
+        ),
+        textTheme: GoogleFonts.poppinsTextTheme(
+          ThemeData.light().textTheme.copyWith(
+                headlineMedium: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700),
+                headlineSmall: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700),
+                titleLarge: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700),
+                titleMedium: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
+                titleSmall: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600),
+                bodyLarge: const TextStyle(
+                    color: AppColors.textPrimary, fontSize: 16),
+                bodyMedium: const TextStyle(
+                    color: AppColors.textSecondary, fontSize: 14),
+                bodySmall: const TextStyle(
+                    color: AppColors.textHint, fontSize: 12),
+                labelLarge: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600),
+                labelMedium: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500),
+                labelSmall: const TextStyle(
+                    color: AppColors.textHint,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500),
+              ),
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: AppColors.dark,
+          foregroundColor: Colors.white,
           elevation: 0,
-          scrolledUnderElevation: 1,
-          titleTextStyle: TextStyle(
-            color: AppColors.textPrimary,
+          scrolledUnderElevation: 0,
+          centerTitle: false,
+          iconTheme: const IconThemeData(color: Colors.white),
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+          titleTextStyle: GoogleFonts.poppins(
             fontSize: 17,
             fontWeight: FontWeight.w600,
           ),
@@ -148,46 +231,91 @@ class LeerlingApp extends ConsumerWidget {
           filled: true,
           fillColor: AppColors.white,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(color: AppColors.border),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(color: AppColors.border),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
           ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: AppColors.dangerText, width: 1),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide:
+                const BorderSide(color: AppColors.dangerText, width: 1.5),
+          ),
           contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          labelStyle: const TextStyle(color: AppColors.textSecondary),
-          hintStyle: const TextStyle(color: AppColors.textHint),
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          labelStyle:
+              GoogleFonts.poppins(color: AppColors.textSecondary, fontSize: 14),
+          hintStyle:
+              GoogleFonts.poppins(color: AppColors.textHint, fontSize: 14),
+          floatingLabelStyle: GoogleFonts.poppins(
+              color: AppColors.primary,
+              fontSize: 13,
+              fontWeight: FontWeight.w500),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             foregroundColor: AppColors.white,
-            minimumSize: const Size.fromHeight(48),
+            minimumSize: const Size.fromHeight(54),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12)),
-            textStyle: const TextStyle(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            elevation: 2,
+            shadowColor: AppColors.shadow,
+            textStyle: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+            ),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.primary,
+            minimumSize: const Size.fromHeight(54),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            side: const BorderSide(color: AppColors.border),
+            textStyle: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
               fontSize: 15,
             ),
           ),
         ),
         textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(foregroundColor: AppColors.primary),
+          style: TextButton.styleFrom(
+            foregroundColor: AppColors.primary,
+            textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          ),
         ),
         cardTheme: CardThemeData(
           color: AppColors.white,
-          elevation: 0,
+          elevation: 2,
+          shadowColor: AppColors.shadow,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
             side: const BorderSide(color: AppColors.border),
           ),
           margin: EdgeInsets.zero,
+        ),
+        chipTheme: ChipThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        dividerTheme: const DividerThemeData(
+          color: AppColors.border,
+          thickness: 0.5,
         ),
       ),
     );
