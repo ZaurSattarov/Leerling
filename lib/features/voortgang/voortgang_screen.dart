@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/coach_widgets.dart';
+import 'lespakket_voortgang_provider.dart';
 import 'voortgang_provider.dart';
 import 'voortgang_trends_provider.dart';
 
@@ -12,13 +14,18 @@ class VoortgangScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profielAsync = ref.watch(mijnProfielProvider);
+    final lespakketAsync = ref.watch(lespakketVoortgangProvider);
     final trendsAsync = ref.watch(voortgangTrendsProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surface,
       body: RefreshIndicator(
         color: AppColors.primary,
-        onRefresh: () async => ref.invalidate(mijnProfielProvider),
+        onRefresh: () async {
+          ref.invalidate(mijnProfielProvider);
+          ref.invalidate(lespakketVoortgangProvider);
+          ref.invalidate(voortgangTrendsProvider);
+        },
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -51,10 +58,6 @@ class VoortgangScreen extends ConsumerWidget {
 
                 final vaardigheden =
                     profiel.vaardigheden ?? <String, dynamic>{};
-                final beoordeeld = vaardigheden.values
-                    .where((v) => (v as num? ?? 0) > 0)
-                    .length;
-                final totaal = vaardighedenLabels.length;
                 final competentieScores = cbrCompetenties
                     .map((competentie) => _CompetentieScore.fromVaardigheden(
                           competentie: competentie,
@@ -68,12 +71,26 @@ class VoortgangScreen extends ConsumerWidget {
                     delegate: SliverChildListDelegate([
                       const _VoortgangSamenvattingCard(),
                       const SizedBox(height: 14),
-                      _TotaleVoortgangCard(
-                        lessenGevolgd: profiel.lessenGevolgd,
-                        lessenTotaal: profiel.lessenTotaal,
-                        voortgangPercent: profiel.voortgangPercent,
-                        beoordeeld: beoordeeld,
-                        totaal: totaal,
+                      lespakketAsync.when(
+                        data: (data) => data != null
+                            ? _TotaleVoortgangCard(data: data)
+                            : _TotaleVoortgangCard(
+                                data:
+                                    LespakketVoortgangData.fromProfielEnLessen(
+                                  profiel: profiel,
+                                  lessen: const [],
+                                ),
+                              ),
+                        loading: () => const SkeletonBox(
+                          height: 190,
+                          radius: 18,
+                        ),
+                        error: (_, __) => _TotaleVoortgangCard(
+                          data: LespakketVoortgangData.fromProfielEnLessen(
+                            profiel: profiel,
+                            lessen: const [],
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 24),
                       const SectionHeader(title: 'CBR-competenties'),
@@ -153,7 +170,7 @@ class _TrendSamenvattingCard extends StatelessWidget {
 
   Color get _trendColor {
     if (data.verschil > 0) return AppColors.successSolid;
-    if (data.verschil < 0) return AppColors.warningSolid;
+    if (data.verschil < 0) return AppColors.dangerSolid;
     return AppColors.infoSolid;
   }
 
@@ -651,83 +668,171 @@ class _VoortgangSamenvattingCard extends StatelessWidget {
 }
 
 class _TotaleVoortgangCard extends StatelessWidget {
-  final int lessenGevolgd;
-  final int lessenTotaal;
-  final double voortgangPercent;
-  final int beoordeeld;
-  final int totaal;
+  final LespakketVoortgangData data;
 
-  const _TotaleVoortgangCard({
-    required this.lessenGevolgd,
-    required this.lessenTotaal,
-    required this.voortgangPercent,
-    required this.beoordeeld,
-    required this.totaal,
+  const _TotaleVoortgangCard({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      onTap: () => context.push('/voortgang/lespakket'),
+      padding: EdgeInsets.zero,
+      child: Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const IconBadge(
+                  icon: Icons.route_rounded,
+                  color: AppColors.primary,
+                  size: 42,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Totale voortgang',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        'Pakket: ${data.pakketLabel}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${data.percentageLabel}%',
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      color: AppColors.textMuted,
+                      size: 22,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(99),
+              child: LinearProgressIndicator(
+                value: data.percentageAfgerond,
+                minHeight: 8,
+                backgroundColor: AppColors.borderLight,
+                valueColor: const AlwaysStoppedAnimation(AppColors.primary),
+              ),
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: _ProgressMetric(
+                    label: 'Afgerond',
+                    value: '${data.afgerondeLessen}',
+                    color: AppColors.successSolid,
+                  ),
+                ),
+                Expanded(
+                  child: _ProgressMetric(
+                    label: 'Gepland',
+                    value: '${data.geplandeLessen}',
+                    color: AppColors.infoSolid,
+                  ),
+                ),
+                Expanded(
+                  child: _ProgressMetric(
+                    label: 'Resterend',
+                    value: '${data.nogInTePlannen}',
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              data.heeftExtraLessen
+                  ? '${data.extraLessen} extra les${data.extraLessen == 1 ? '' : 'sen'} gevolgd'
+                  : 'Alleen afgeronde lessen tellen als verbruikt',
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProgressMetric extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _ProgressMetric({
+    required this.label,
+    required this.value,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.primary, AppColors.primaryDark],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        color: AppColors.neutralBg,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Totale voortgang',
-                  style: TextStyle(color: Colors.white70, fontSize: 13),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  '$lessenGevolgd / $lessenTotaal lessen',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(99),
-                  child: LinearProgressIndicator(
-                    value: voortgangPercent,
-                    minHeight: 8,
-                    backgroundColor: Colors.white.withValues(alpha: 0.25),
-                    valueColor: const AlwaysStoppedAnimation(Colors.white),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  '$beoordeeld van $totaal vaardigheden beoordeeld',
-                  style: const TextStyle(color: Colors.white60, fontSize: 12),
-                ),
-              ],
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w900,
+              color: color,
             ),
           ),
-          const SizedBox(width: 20),
+          const SizedBox(height: 2),
           Text(
-            '${(voortgangPercent * 100).round()}%',
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
-              color: Colors.white,
-              fontSize: 36,
-              fontWeight: FontWeight.w900,
+              fontSize: 10,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -778,7 +883,7 @@ class _CompetentieCard extends StatelessWidget {
   Color get _statusColor {
     if (score.percentage >= 0.8) return AppColors.successSolid;
     if (score.percentage >= 0.5) return AppColors.infoSolid;
-    return AppColors.warningSolid;
+    return AppColors.primary;
   }
 
   @override

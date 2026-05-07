@@ -34,25 +34,29 @@ class Notificatie {
 
   factory Notificatie.fromJson(Map<String, dynamic> json) {
     final type = (json['type'] as String?) ?? 'systeem';
-    final bericht =
-        (json['bericht'] as String?) ?? (json['omschrijving'] as String?);
+    final bericht = (json['body'] as String?) ??
+        (json['bericht'] as String?) ??
+        (json['omschrijving'] as String?);
     final createdAt = (json['created_at'] as String?) ??
         (json['aangemaakt_op'] as String?) ??
         '';
     final metadata = json['metadata'];
+    final targetRoute =
+        (json['target_route'] as String?) ?? routeVoorType(type);
     return Notificatie(
       id: (json['id'] as String?) ?? '',
       leerlingId: (json['leerling_id'] as String?) ?? '',
       instructeurId: (json['instructeur_id'] as String?) ?? '',
-      titel: (json['titel'] as String?) ?? '',
+      titel: (json['title'] as String?) ?? (json['titel'] as String?) ?? '',
       bericht: bericht,
       omschrijving: bericht,
       type: type,
-      gelezen: json['gelezen'] as bool? ?? false,
+      gelezen:
+          (json['is_read'] as bool?) ?? (json['gelezen'] as bool? ?? false),
       aangemaaktOp: createdAt,
       createdAt: createdAt,
       scheduledFor: json['scheduled_for'] as String?,
-      targetRoute: (json['target_route'] as String?) ?? routeVoorType(type),
+      targetRoute: _veiligeRoute(targetRoute, type),
       metadata: metadata is Map<String, dynamic>
           ? metadata
           : const <String, dynamic>{},
@@ -61,12 +65,36 @@ class Notificatie {
 
   static String routeVoorType(String type) {
     return switch (type) {
-      'les' || 'les_reminder' => '/planning',
+      'les' ||
+      'les_reminder' ||
+      'lesson_planned' ||
+      'lesson_changed' =>
+        '/planning',
       'voorbereiding' => '/lesvoorbereiding',
-      'feedback' => '/les-logboek',
-      'factuur' => '/facturen',
+      'feedback' || 'lesson_feedback' => '/les-logboek',
+      'factuur' || 'invoice_created' || 'invoice_paid' => '/facturen',
+      'package_almost_empty' => '/voortgang/lespakket',
       'voortgang' || 'examenadvies' => '/examenadvies',
       _ => '/home',
     };
+  }
+
+  static String _veiligeRoute(String route, String type) {
+    if (route.isEmpty || !route.startsWith('/')) return routeVoorType(type);
+    const toegestanePrefixes = [
+      '/home',
+      '/planning',
+      '/les-logboek',
+      '/lesvoorbereiding',
+      '/examenadvies',
+      '/voortgang',
+      '/facturen',
+      '/profiel',
+      '/notificaties',
+      '/beschikbaarheid',
+    ];
+    return toegestanePrefixes.any(route.startsWith)
+        ? route
+        : routeVoorType(type);
   }
 }

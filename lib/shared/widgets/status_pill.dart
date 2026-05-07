@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/factuur_status.dart';
 import '../../models/les.dart';
 import '../../models/factuur.dart';
 
@@ -19,55 +20,39 @@ class StatusPill extends StatelessWidget {
     return switch (status) {
       LesStatus.gepland => const StatusPill(
           label: 'Gepland',
-          backgroundColor: AppColors.infoBg,
-          textColor: AppColors.infoText,
+          backgroundColor: AppColors.infoSolid,
+          textColor: AppColors.white,
         ),
       LesStatus.afgerond => const StatusPill(
           label: 'Afgerond',
-          backgroundColor: AppColors.successBg,
-          textColor: AppColors.successText,
+          backgroundColor: AppColors.successSolid,
+          textColor: AppColors.white,
         ),
       LesStatus.geannuleerd => const StatusPill(
           label: 'Geannuleerd',
-          backgroundColor: AppColors.neutralBg,
-          textColor: AppColors.neutralText,
+          backgroundColor: AppColors.dark3,
+          textColor: AppColors.white,
         ),
       LesStatus.verzet => const StatusPill(
           label: 'Verzet',
-          backgroundColor: AppColors.neutralBg,
-          textColor: AppColors.neutralText,
+          backgroundColor: AppColors.dark3,
+          textColor: AppColors.white,
         ),
       LesStatus.geen_toon => const StatusPill(
           label: 'Geen toon',
-          backgroundColor: AppColors.dangerBg,
-          textColor: AppColors.dangerText,
+          backgroundColor: AppColors.dark3,
+          textColor: AppColors.white,
         ),
     };
   }
 
   factory StatusPill.factuur(FactuurStatus status) {
-    return switch (status) {
-      FactuurStatus.concept => const StatusPill(
-          label: 'Concept',
-          backgroundColor: Color(0xFFFFE4EA),
-          textColor: AppColors.primary,
-        ),
-      FactuurStatus.verstuurd => const StatusPill(
-          label: 'Verstuurd',
-          backgroundColor: AppColors.infoBg,
-          textColor: AppColors.infoText,
-        ),
-      FactuurStatus.betaald => const StatusPill(
-          label: 'Betaald',
-          backgroundColor: AppColors.successBg,
-          textColor: AppColors.successText,
-        ),
-      FactuurStatus.verlopen => const StatusPill(
-          label: 'Verlopen',
-          backgroundColor: AppColors.dangerBg,
-          textColor: AppColors.dangerText,
-        ),
-    };
+    final ui = status.ui;
+    return StatusPill(
+      label: ui.label,
+      backgroundColor: ui.backgroundColor,
+      textColor: ui.textColor,
+    );
   }
 
   @override

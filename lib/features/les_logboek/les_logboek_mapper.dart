@@ -36,6 +36,11 @@ class LesLogboekMapper {
 
   static String? _beoordelingLabel(String? beoordeling) {
     return switch (_clean(beoordeling)) {
+      '1' => '1 van 5',
+      '2' => '2 van 5',
+      '3' => '3 van 5',
+      '4' => '4 van 5',
+      '5' => '5 van 5',
       'onvoldoende' => 'Onvoldoende',
       'voldoende' => 'Voldoende',
       'goed' => 'Goed',

@@ -15,6 +15,7 @@ class StudentService {
   static SupabaseClient get client => Supabase.instance.client;
   static User? get currentUser => client.auth.currentUser;
   static String get userId => currentUser!.id;
+  static const String _studentLessenView = 'student_lessen_view';
 
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // AUTH
@@ -92,6 +93,43 @@ class StudentService {
   // INSTRUCTEUR (read-only, via leerling.instructeur_id)
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+  static Future<String> uploadMijnProfielfoto({
+    required String leerlingId,
+    required Uint8List bytes,
+    required String bestandExtensie,
+  }) async {
+    final extensie = bestandExtensie.toLowerCase().replaceAll('.', '');
+    final veiligeExtensie = extensie == 'png' ? 'png' : 'jpg';
+    final contentType = veiligeExtensie == 'png' ? 'image/png' : 'image/jpeg';
+    final pad =
+        'leerlingen/$leerlingId/profiel_${DateTime.now().millisecondsSinceEpoch}.$veiligeExtensie';
+
+    try {
+      await client.storage.from('avatars').uploadBinary(
+            pad,
+            bytes,
+            fileOptions: FileOptions(
+              upsert: true,
+              contentType: contentType,
+            ),
+          );
+      final publicUrl = client.storage.from('avatars').getPublicUrl(pad);
+
+      // TODO backend: voeg avatar_url toe aan public.leerlingen en maak de
+      // storage bucket avatars beschikbaar voor leerling uploads.
+      await client
+          .from('leerlingen')
+          .update({'avatar_url': publicUrl})
+          .eq('id', leerlingId)
+          .eq('user_id', userId);
+      return publicUrl;
+    } catch (e) {
+      debugPrint('[student.avatar] upload/update niet beschikbaar: $e');
+      throw Exception(
+          'Profielfoto upload is nog niet beschikbaar. Backend nodig: avatars bucket + avatar_url op leerlingen.');
+    }
+  }
+
   static Future<Instructeur?> getMijnInstructeur(String instructeurId) async {
     final res = await client
         .from('instructeur_profielen')
@@ -108,11 +146,22 @@ class StudentService {
 
   static Future<List<Les>> getMijnLessen(String leerlingId) async {
     final res = await client
-        .from('lessen')
-        .select('*, instructeur_profielen(naam, telefoon)')
+        .from(_studentLessenView)
+        .select()
         .eq('leerling_id', leerlingId)
         .order('datum', ascending: false)
         .order('starttijd', ascending: false);
+    return (res as List).map((e) => Les.fromJson(e)).toList();
+  }
+
+  static Future<List<Les>> getMijnLessenVoorPakket(String leerlingId) async {
+    final res = await client
+        .from(_studentLessenView)
+        .select()
+        .eq('leerling_id', leerlingId)
+        .order('datum', ascending: false)
+        .order('starttijd', ascending: false)
+        .limit(250);
     return (res as List).map((e) => Les.fromJson(e)).toList();
   }
 
@@ -121,8 +170,8 @@ class StudentService {
     final vandaagStr =
         '${vandaag.year}-${vandaag.month.toString().padLeft(2, '0')}-${vandaag.day.toString().padLeft(2, '0')}';
     final res = await client
-        .from('lessen')
-        .select('*, instructeur_profielen(naam, telefoon)')
+        .from(_studentLessenView)
+        .select()
         .eq('leerling_id', leerlingId)
         .eq('status', 'gepland')
         .gte('datum', vandaagStr)
@@ -139,13 +188,11 @@ class StudentService {
     final vandaag = DateTime.now();
     final vandaagStr =
         '${vandaag.year}-${vandaag.month.toString().padLeft(2, '0')}-${vandaag.day.toString().padLeft(2, '0')}';
-    final query = client
-        .from('lessen')
-        .select('*, instructeur_profielen(naam, telefoon)')
-        .eq('leerling_id', leerlingId);
+    final query =
+        client.from(_studentLessenView).select().eq('leerling_id', leerlingId);
 
     final filteredQuery = alleenZichtbaarLogboek
-        ? query.eq('status', 'afgerond').eq('zichtbaar_voor_leerling', true)
+        ? query.eq('status', 'afgerond')
         : query.neq('status', 'gepland').or(
             'datum.lt.$vandaagStr,status.eq.afgerond,status.eq.geannuleerd,status.eq.geen_toon');
 
@@ -158,8 +205,8 @@ class StudentService {
 
   static Future<Les?> getLes(String lesId) async {
     final res = await client
-        .from('lessen')
-        .select('*, instructeur_profielen(naam, telefoon, whatsapp_nummer)')
+        .from(_studentLessenView)
+        .select()
         .eq('id', lesId)
         .maybeSingle();
     return res != null ? Les.fromJson(res) : null;
@@ -171,17 +218,14 @@ class StudentService {
     String? notitie,
   }) async {
     final schoneNotitie = notitie?.trim();
-    await client
-        .from('lessen')
-        .update({
-          'leerling_notitie': schoneNotitie == null || schoneNotitie.isEmpty
-              ? null
-              : schoneNotitie,
-        })
-        .eq('id', lesId)
-        .eq('leerling_id', leerlingId)
-        .eq('status', 'afgerond')
-        .eq('zichtbaar_voor_leerling', true);
+    await client.rpc(
+      'update_student_lesson_note',
+      params: {
+        'p_les_id': lesId,
+        'p_notitie':
+            schoneNotitie == null || schoneNotitie.isEmpty ? '' : schoneNotitie,
+      },
+    );
   }
 
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

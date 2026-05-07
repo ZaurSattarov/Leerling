@@ -9,6 +9,7 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/snackbar.dart';
 import '../../shared/widgets/status_pill.dart';
 import 'facturen_provider.dart';
+import '../home/home_provider.dart';
 
 class FactuurDetailScreen extends ConsumerWidget {
   final String id;
@@ -52,8 +53,9 @@ class FactuurDetailScreen extends ConsumerWidget {
           }
           return _FactuurDetailBody(factuur: factuur);
         },
-        loading: () =>
-            const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
         error: (e, _) => Center(
           child: EmptyState(
             icon: Icons.wifi_off_rounded,
@@ -66,20 +68,50 @@ class FactuurDetailScreen extends ConsumerWidget {
   }
 }
 
-class _FactuurDetailBody extends StatelessWidget {
+class _FactuurDetailBody extends ConsumerStatefulWidget {
   final Factuur factuur;
   const _FactuurDetailBody({required this.factuur});
 
-  String get _bedragEuro => factuur.bedragEuro;
+  @override
+  ConsumerState<_FactuurDetailBody> createState() => _FactuurDetailBodyState();
+}
+
+class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
+    with WidgetsBindingObserver {
+  bool _wachtOpBetaalTerugkeer = false;
+
+  Factuur get factuur => widget.factuur;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _wachtOpBetaalTerugkeer) {
+      _wachtOpBetaalTerugkeer = false;
+      _refreshFacturen();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final betaalUrl = factuur.effectieveBetaalUrl;
+    final downloadUrl = factuur.effectieveDownloadUrl;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Hero
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -101,48 +133,54 @@ class _FactuurDetailBody extends StatelessWidget {
                     const Icon(Icons.receipt_long_rounded,
                         color: Colors.white54, size: 16),
                     const SizedBox(width: 6),
-                    Text(
-                      factuur.factuurnummer,
-                      style: const TextStyle(
-                          color: Colors.white54, fontSize: 13),
+                    Expanded(
+                      child: Text(
+                        factuur.factuurnummer,
+                        style: const TextStyle(
+                            color: Colors.white54, fontSize: 13),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    const Spacer(),
+                    const SizedBox(width: 12),
                     StatusPill.factuur(factuur.status),
                   ],
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  _bedragEuro,
+                  factuur.bedragEuro,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 36,
+                    fontSize: 34,
                     fontWeight: FontWeight.w900,
-                    letterSpacing: -0.5,
                   ),
                 ),
-                if (factuur.beschrijving.isNotEmpty) ...[
-                  const SizedBox(height: 6),
-                  Text(
-                    factuur.beschrijving,
-                    style:
-                        const TextStyle(color: Colors.white70, fontSize: 14),
-                  ),
-                ],
+                const SizedBox(height: 6),
+                Text(
+                  factuur.beschrijving.isNotEmpty
+                      ? factuur.beschrijving
+                      : 'Geen omschrijving toegevoegd',
+                  style: const TextStyle(color: Colors.white70, fontSize: 14),
+                ),
               ],
             ),
           ),
-
           const SizedBox(height: 16),
-
-          // Details
           AppCard(
             child: Column(
               children: [
                 _DetailRow(
-                  label: 'Factuurdatum',
-                  value: DatumUtils.korteDatum(factuur.aangemaaktOp
-                      .substring(0, 10)),
-                ),
+                    label: 'Factuurnummer', value: factuur.factuurnummer),
+                const Divider(height: 20),
+                _DetailRow(label: 'Bedrag', value: factuur.bedragEuro),
+                const Divider(height: 20),
+                _DetailRow(label: 'Status', value: factuur.status.label),
+                if (factuur.aangemaaktOp.isNotEmpty) ...[
+                  const Divider(height: 20),
+                  _DetailRow(
+                    label: 'Factuurdatum',
+                    value: _formatDate(factuur.aangemaaktOp),
+                  ),
+                ],
                 if (factuur.vervaldatum?.isNotEmpty == true) ...[
                   const Divider(height: 20),
                   _DetailRow(
@@ -157,11 +195,27 @@ class _FactuurDetailBody extends StatelessWidget {
                   const Divider(height: 20),
                   _DetailRow(
                     label: 'Betaald op',
-                    value: DatumUtils.korteDatum(
-                        factuur.betaaldOp!.substring(0, 10)),
+                    value: _formatDate(factuur.betaaldOp!),
                     valueColor: AppColors.successText,
                   ),
                 ],
+                const Divider(height: 20),
+                _DetailRow(
+                  label: 'Betaalmethode',
+                  value: factuur.betaalmethodeLabel,
+                ),
+                const Divider(height: 20),
+                _DetailRow(
+                  label: 'Betaalstatus',
+                  value: factuur.status == FactuurStatus.betaald
+                      ? 'Betaald'
+                      : betaalUrl == null
+                          ? 'Betaallink ontbreekt'
+                          : 'Wacht op betaling',
+                  valueColor: factuur.status == FactuurStatus.betaald
+                      ? AppColors.successText
+                      : null,
+                ),
                 if (factuur.betalingskenmerk?.isNotEmpty == true) ...[
                   const Divider(height: 20),
                   _DetailRow(
@@ -171,70 +225,179 @@ class _FactuurDetailBody extends StatelessWidget {
                 ],
                 if (factuur.ibanSnapshot?.isNotEmpty == true) ...[
                   const Divider(height: 20),
-                  _DetailRow(
-                    label: 'IBAN',
-                    value: factuur.ibanSnapshot!,
+                  _DetailRow(label: 'IBAN', value: factuur.ibanSnapshot!),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Omschrijving',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  factuur.beschrijving.isNotEmpty
+                      ? factuur.beschrijving
+                      : 'Geen omschrijving toegevoegd.',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                    height: 1.45,
+                  ),
+                ),
+                if (factuur.notities?.isNotEmpty == true) ...[
+                  const Divider(height: 24),
+                  Text(
+                    factuur.notities!,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                      height: 1.45,
+                    ),
                   ),
                 ],
               ],
             ),
           ),
-
-          if (factuur.notities?.isNotEmpty == true) ...[
-            const SizedBox(height: 14),
-            AppCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Notities',
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    factuur.notities!,
-                    style: const TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textSecondary,
-                        height: 1.5),
-                  ),
-                ],
-              ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: factuur.isBetaalbaar && betaalUrl != null
+                ? () => _openBetaalLink(context, betaalUrl)
+                : null,
+            icon: const Icon(Icons.account_balance_rounded, size: 18),
+            label: const Text('Betaal met iDEAL'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              disabledBackgroundColor: AppColors.neutralBg,
+              disabledForegroundColor: AppColors.textHint,
+              minimumSize: const Size.fromHeight(52),
             ),
-          ],
-
-          // Pay button
-          if (factuur.isOpen && factuur.betaalLinkUrl?.isNotEmpty == true) ...[
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () => _openBetaalLink(context, factuur.betaalLinkUrl!),
-              icon: const Icon(Icons.open_in_new_rounded, size: 18),
-              label: const Text('Betaal nu'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.successSolid,
-                minimumSize: const Size.fromHeight(52),
-              ),
+          ),
+          if (!factuur.isBetaalbaar)
+            const _ActionHint(
+                text: 'Deze factuur staat niet open voor betaling.')
+          else if (betaalUrl == null)
+            const _ActionHint(
+              text:
+                  'Betaallink ontbreekt. Vraag je rijschool om de factuur te versturen of een iDEAL-link toe te voegen.',
             ),
-          ],
-
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            onPressed: downloadUrl != null
+                ? () => _openUrl(
+                      context,
+                      downloadUrl,
+                      'Kan factuurdownload niet openen',
+                    )
+                : null,
+            icon: const Icon(Icons.download_rounded, size: 18),
+            label: const Text('Download factuur'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.dark,
+              disabledForegroundColor: AppColors.textHint,
+              minimumSize: const Size.fromHeight(52),
+            ),
+          ),
+          if (downloadUrl == null)
+            const _ActionHint(text: 'Factuurdownload nog niet beschikbaar.'),
           const SizedBox(height: 32),
         ],
       ),
     );
   }
 
-  Future<void> _openBetaalLink(BuildContext context, String url) async {
+  String _formatDate(String raw) {
+    final date = raw.length >= 10 ? raw.substring(0, 10) : raw;
+    return DatumUtils.korteDatum(date);
+  }
+
+  Future<void> _openUrl(
+    BuildContext context,
+    String url,
+    String errorMessage,
+  ) async {
     final uri = Uri.tryParse(url);
     if (uri != null && await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      if (context.mounted) {
-        showAppSnackBar(context, 'Kan betaallink niet openen', isError: true);
-      }
+      return;
     }
+    if (context.mounted) {
+      showAppSnackBar(context, errorMessage, isError: true);
+    }
+  }
+
+  Future<void> _openBetaalLink(BuildContext context, String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null || !await canLaunchUrl(uri)) {
+      if (context.mounted) {
+        showAppSnackBar(
+          context,
+          'Kan betaallink niet openen',
+          isError: true,
+        );
+      }
+      return;
+    }
+
+    _wachtOpBetaalTerugkeer = true;
+    final geopend = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!geopend) {
+      _wachtOpBetaalTerugkeer = false;
+      if (context.mounted) {
+        showAppSnackBar(
+          context,
+          'Kan betaallink niet openen',
+          isError: true,
+        );
+      }
+      return;
+    }
+
+    if (!mounted) return;
+    await _refreshFacturen();
+    if (context.mounted) {
+      showAppSnackBar(
+        context,
+        'Factuurstatus wordt opnieuw opgehaald.',
+      );
+    }
+  }
+
+  Future<void> _refreshFacturen() async {
+    ref.invalidate(factuurDetailProvider(factuur.id));
+    ref.invalidate(facturenProvider);
+    ref.invalidate(homeProvider);
+    try {
+      await ref.read(factuurDetailProvider(factuur.id).future);
+    } catch (_) {
+      // De provider toont zelf de foutmelding in het scherm.
+    }
+  }
+}
+
+class _ActionHint extends StatelessWidget {
+  final String text;
+  const _ActionHint({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+      ),
+    );
   }
 }
 
@@ -248,18 +411,27 @@ class _DetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: Text(label,
-              style: const TextStyle(
-                  fontSize: 13, color: AppColors.textSecondary)),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+            ),
+          ),
         ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: valueColor ?? AppColors.textPrimary,
+        const SizedBox(width: 16),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: valueColor ?? AppColors.textPrimary,
+            ),
           ),
         ),
       ],

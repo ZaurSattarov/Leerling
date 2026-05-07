@@ -7,11 +7,31 @@ class MainScaffold extends StatelessWidget {
   const MainScaffold({super.key, required this.child});
 
   static const List<_NavItem> _items = [
-    _NavItem(label: 'Home', icon: Icons.home_outlined, activeIcon: Icons.home_rounded, route: '/home'),
-    _NavItem(label: 'Planning', icon: Icons.calendar_today_outlined, activeIcon: Icons.calendar_today_rounded, route: '/planning'),
-    _NavItem(label: 'Voortgang', icon: Icons.bar_chart_outlined, activeIcon: Icons.bar_chart_rounded, route: '/voortgang'),
-    _NavItem(label: 'Facturen', icon: Icons.receipt_long_outlined, activeIcon: Icons.receipt_long_rounded, route: '/facturen'),
-    _NavItem(label: 'Profiel', icon: Icons.person_outline_rounded, activeIcon: Icons.person_rounded, route: '/profiel'),
+    _NavItem(
+        label: 'Home',
+        icon: Icons.home_outlined,
+        activeIcon: Icons.home_rounded,
+        route: '/home'),
+    _NavItem(
+        label: 'Planning',
+        icon: Icons.calendar_today_outlined,
+        activeIcon: Icons.calendar_today_rounded,
+        route: '/planning'),
+    _NavItem(
+        label: 'Voortgang',
+        icon: Icons.bar_chart_outlined,
+        activeIcon: Icons.bar_chart_rounded,
+        route: '/voortgang'),
+    _NavItem(
+        label: 'Facturen',
+        icon: Icons.receipt_long_outlined,
+        activeIcon: Icons.receipt_long_rounded,
+        route: '/facturen'),
+    _NavItem(
+        label: 'Profiel',
+        icon: Icons.person_outline_rounded,
+        activeIcon: Icons.person_rounded,
+        route: '/profiel'),
   ];
 
   int _activeIndex(String location) {
@@ -48,22 +68,34 @@ class MainScaffold extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          isActive ? item.activeIcon : item.icon,
-                          size: 22,
-                          color: isActive
-                              ? AppColors.primary
-                              : Colors.white.withValues(alpha: 0.5),
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 180),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: isActive
+                                ? AppColors.primary
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            isActive ? item.activeIcon : item.icon,
+                            size: 22,
+                            color: isActive
+                                ? AppColors.white
+                                : Colors.white.withValues(alpha: 0.56),
+                          ),
                         ),
                         const SizedBox(height: 3),
                         Text(
                           item.label,
                           style: TextStyle(
                             fontSize: 10,
-                            fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                            fontWeight:
+                                isActive ? FontWeight.w600 : FontWeight.w400,
                             color: isActive
-                                ? AppColors.primary
-                                : Colors.white.withValues(alpha: 0.5),
+                                ? AppColors.white
+                                : Colors.white.withValues(alpha: 0.56),
                           ),
                         ),
                       ],
@@ -84,5 +116,9 @@ class _NavItem {
   final IconData icon;
   final IconData activeIcon;
   final String route;
-  const _NavItem({required this.label, required this.icon, required this.activeIcon, required this.route});
+  const _NavItem(
+      {required this.label,
+      required this.icon,
+      required this.activeIcon,
+      required this.route});
 }

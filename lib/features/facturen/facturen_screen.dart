@@ -52,7 +52,7 @@ class FacturenScreen extends ConsumerWidget {
                 }
 
                 // Summary header
-                final open = facturen.where((f) => f.isOpen).toList();
+                final open = facturen.where((f) => f.isBetaalbaar).toList();
                 final openBedrag =
                     open.fold(0, (sum, f) => sum + f.bedragCents);
 
@@ -111,26 +111,41 @@ class _SummaryCard extends StatelessWidget {
   final int openAantal;
   final int openBedragCents;
 
-  const _SummaryCard(
-      {required this.openAantal, required this.openBedragCents});
+  const _SummaryCard({required this.openAantal, required this.openBedragCents});
 
   String get _bedragEuro =>
-      '€${(openBedragCents / 100).toStringAsFixed(2).replaceAll('.', ',')}';
+      'EUR ${(openBedragCents / 100).toStringAsFixed(2).replaceAll('.', ',')}';
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.warningBg,
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.warningBorder),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.22),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          const IconBadge(
-            icon: Icons.warning_amber_rounded,
-            color: AppColors.warningSolid,
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.16),
+              borderRadius: BorderRadius.circular(11),
+              border: Border.all(color: Colors.white24),
+            ),
+            child: const Icon(
+              Icons.receipt_long_rounded,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -141,15 +156,18 @@ class _SummaryCard extends StatelessWidget {
                   '$openAantal openstaande factuur${openAantal > 1 ? 'en' : ''}',
                   style: const TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.warningText,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   'Totaal openstaand: $_bedragEuro',
                   style: const TextStyle(
-                      fontSize: 13, color: AppColors.warningText),
+                    fontSize: 13,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
@@ -174,9 +192,11 @@ class _FactuurCard extends StatelessWidget {
             icon: Icons.receipt_long_rounded,
             color: factuur.status == FactuurStatus.betaald
                 ? AppColors.successSolid
-                : factuur.status == FactuurStatus.verlopen
+                : factuur.isVerlopen
                     ? AppColors.dangerSolid
-                    : AppColors.warningSolid,
+                    : factuur.status == FactuurStatus.geannuleerd
+                        ? AppColors.dark3
+                        : AppColors.primary,
           ),
           const SizedBox(width: 14),
           Expanded(

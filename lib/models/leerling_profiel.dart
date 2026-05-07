@@ -41,6 +41,7 @@ class LeerlingProfiel {
   final String achternaam;
   final String? email;
   final String? telefoon;
+  final String? avatarUrl;
   final String? geboortedatum;
   final PakketType pakket;
   final LeerlingStatus status;
@@ -60,6 +61,7 @@ class LeerlingProfiel {
     required this.achternaam,
     this.email,
     this.telefoon,
+    this.avatarUrl,
     this.geboortedatum,
     required this.pakket,
     required this.status,
@@ -86,6 +88,10 @@ class LeerlingProfiel {
       achternaam: json['achternaam'] as String,
       email: json['email'] as String?,
       telefoon: json['telefoon'] as String?,
+      avatarUrl: (json['avatar_url'] ??
+          json['profielfoto_url'] ??
+          json['foto_url'] ??
+          json['profile_image_url']) as String?,
       geboortedatum: json['geboortedatum'] as String?,
       pakket: PakketType.values.firstWhere(
         (e) => e.name == (json['pakket'] as String?),

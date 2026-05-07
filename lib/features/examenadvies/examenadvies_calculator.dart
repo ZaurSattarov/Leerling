@@ -143,6 +143,11 @@ class ExamenadviesCalculator {
   static double? _beoordelingScore(List<Les> lessen) {
     final scores = lessen
         .map((les) => switch (les.beoordeling) {
+              '5' => 100.0,
+              '4' => 82.0,
+              '3' => 64.0,
+              '2' => 46.0,
+              '1' => 28.0,
               'goed' => 90.0,
               'voldoende' => 72.0,
               'onvoldoende' => 42.0,

@@ -245,7 +245,7 @@ class VoortgangTrendsCalculator {
   static double? _beoordelingScore(List<Les> lessen) {
     final gemiddelde = _gemiddeldeBeoordeling(lessen);
     if (gemiddelde == null) return null;
-    return (gemiddelde / 3 * 100).clamp(0, 100);
+    return (gemiddelde / 5 * 100).clamp(0, 100);
   }
 
   static double? _competentieScore(List<Les> lessen) {
@@ -255,9 +255,14 @@ class VoortgangTrendsCalculator {
 
   static double? _beoordelingWaarde(Les les) {
     return switch (les.beoordeling) {
-      'goed' => 3,
-      'voldoende' => 2,
-      'onvoldoende' => 1,
+      '5' => 5,
+      '4' => 4,
+      '3' => 3,
+      '2' => 2,
+      '1' => 1,
+      'goed' => 4,
+      'voldoende' => 3,
+      'onvoldoende' => 2,
       _ => null,
     };
   }
@@ -316,6 +321,11 @@ class VoortgangTrendsCalculator {
 
   static String _beoordelingLabel(String? beoordeling) {
     return switch (beoordeling) {
+      '5' => '5 van 5',
+      '4' => '4 van 5',
+      '3' => '3 van 5',
+      '2' => '2 van 5',
+      '1' => '1 van 5',
       'goed' => 'Goed',
       'voldoende' => 'Voldoende',
       'onvoldoende' => 'Onvoldoende',

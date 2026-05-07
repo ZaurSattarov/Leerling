@@ -18,8 +18,7 @@ class BeschikbaarheidScreen extends ConsumerStatefulWidget {
       _BeschikbaarheidScreenState();
 }
 
-class _BeschikbaarheidScreenState
-    extends ConsumerState<BeschikbaarheidScreen> {
+class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
   List<LeerlingBeschikbaarheid>? _items;
   bool _laden = true;
   String? _fout;
@@ -35,14 +34,29 @@ class _BeschikbaarheidScreenState
     try {
       final profiel = await ref.read(mijnProfielProvider.future);
       if (profiel == null) {
-        if (mounted) setState(() { _laden = false; _fout = 'Geen profiel gevonden'; });
+        if (mounted) {
+          setState(() {
+            _laden = false;
+            _fout = 'Geen profiel gevonden';
+          });
+        }
         return;
       }
       _profiel = profiel;
       final items = await StudentService.getMijnBeschikbaarheid(profiel.id);
-      if (mounted) setState(() { _items = items; _laden = false; });
+      if (mounted) {
+        setState(() {
+          _items = items;
+          _laden = false;
+        });
+      }
     } catch (e) {
-      if (mounted) setState(() { _laden = false; _fout = e.toString(); });
+      if (mounted) {
+        setState(() {
+          _laden = false;
+          _fout = e.toString();
+        });
+      }
     }
   }
 
@@ -100,9 +114,13 @@ class _BeschikbaarheidScreenState
     try {
       await StudentService.verwijderBeschikbaarheid(item.id);
       await _refresh();
-      if (mounted) showAppSnackBar(context, 'Tijdblok verwijderd', isSuccess: true);
+      if (mounted) {
+        showAppSnackBar(context, 'Tijdblok verwijderd', isSuccess: true);
+      }
     } catch (_) {
-      if (mounted) showAppSnackBar(context, 'Verwijderen mislukt', isError: true);
+      if (mounted) {
+        showAppSnackBar(context, 'Verwijderen mislukt', isError: true);
+      }
     }
   }
 
@@ -140,8 +158,7 @@ class _BeschikbaarheidScreenState
                       // Info banner
                       SliverToBoxAdapter(
                         child: Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(20, 20, 20, 12),
+                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
                           child: AppCard(
                             backgroundColor:
                                 AppColors.infoSolid.withValues(alpha: 0.08),
@@ -172,15 +189,15 @@ class _BeschikbaarheidScreenState
                           hasScrollBody: false,
                           child: EmptyState(
                             icon: Icons.schedule_outlined,
-                            title: 'Je hebt nog geen beschikbaarheid toegevoegd.',
+                            title:
+                                'Je hebt nog geen beschikbaarheid toegevoegd.',
                             subtitle:
                                 'Tik op "Tijd toevoegen" om tijdblokken in te vullen.',
                           ),
                         )
                       else
                         SliverPadding(
-                          padding:
-                              const EdgeInsets.fromLTRB(20, 8, 20, 100),
+                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
                           sliver: SliverList(
                             delegate: SliverChildBuilderDelegate(
                               (ctx, i) => Padding(
@@ -334,10 +351,8 @@ class _BeschikbaarheidFormulierState
       _dag = b.dagVanWeek;
       final s = b.startTijdKort.split(':');
       final e = b.eindTijdKort.split(':');
-      _startTijd =
-          TimeOfDay(hour: int.parse(s[0]), minute: int.parse(s[1]));
-      _eindTijd =
-          TimeOfDay(hour: int.parse(e[0]), minute: int.parse(e[1]));
+      _startTijd = TimeOfDay(hour: int.parse(s[0]), minute: int.parse(s[1]));
+      _eindTijd = TimeOfDay(hour: int.parse(e[0]), minute: int.parse(e[1]));
       _score = b.voorkeurScore;
     }
   }
@@ -373,7 +388,10 @@ class _BeschikbaarheidFormulierState
       setState(() => _fout = 'Starttijd moet vóór eindtijd zijn.');
       return;
     }
-    setState(() { _opslaan = true; _fout = null; });
+    setState(() {
+      _opslaan = true;
+      _fout = null;
+    });
     try {
       final startStr = '${_formatTijd(_startTijd)}:00';
       final eindStr = '${_formatTijd(_eindTijd)}:00';
@@ -450,7 +468,7 @@ class _BeschikbaarheidFormulierState
                       color: AppColors.textSecondary)),
               const SizedBox(height: 8),
               DropdownButtonFormField<int>(
-                value: _dag,
+                initialValue: _dag,
                 decoration: const InputDecoration(),
                 items: List.generate(
                   7,
@@ -481,8 +499,7 @@ class _BeschikbaarheidFormulierState
                       child: Center(
                         child: const Text('–',
                             style: TextStyle(
-                                fontSize: 18,
-                                color: AppColors.textSecondary)),
+                                fontSize: 18, color: AppColors.textSecondary)),
                       ),
                     ),
                   ),
@@ -514,7 +531,8 @@ class _BeschikbaarheidFormulierState
                 children: List.generate(
                   5,
                   (i) => GestureDetector(
-                    onTap: _opslaan ? null : () => setState(() => _score = i + 1),
+                    onTap:
+                        _opslaan ? null : () => setState(() => _score = i + 1),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Icon(
@@ -535,8 +553,8 @@ class _BeschikbaarheidFormulierState
               if (_fout != null) ...[
                 const SizedBox(height: 14),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   decoration: BoxDecoration(
                     color: AppColors.dangerBg,
                     borderRadius: BorderRadius.circular(10),

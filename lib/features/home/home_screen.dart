@@ -676,9 +676,13 @@ class _FactuurCard extends StatelessWidget {
         children: [
           IconBadge(
             icon: Icons.receipt_long_rounded,
-            color: factuur.isVerlopen
-                ? AppColors.dangerSolid
-                : AppColors.warningSolid,
+            color: factuur.status == FactuurStatus.betaald
+                ? AppColors.successSolid
+                : factuur.isVerlopen
+                    ? AppColors.dangerSolid
+                    : factuur.status == FactuurStatus.geannuleerd
+                        ? AppColors.dark3
+                        : AppColors.primary,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -733,13 +737,20 @@ class _NotificatieCard extends StatelessWidget {
     switch (notificatie.type) {
       case 'les':
       case 'les_reminder':
+      case 'lesson_planned':
+      case 'lesson_changed':
         return Icons.directions_car_rounded;
       case 'voorbereiding':
         return Icons.task_alt_rounded;
       case 'feedback':
+      case 'lesson_feedback':
         return Icons.rate_review_rounded;
       case 'factuur':
+      case 'invoice_created':
+      case 'invoice_paid':
         return Icons.receipt_long_rounded;
+      case 'package_almost_empty':
+        return Icons.inventory_2_rounded;
       case 'voortgang':
       case 'examenadvies':
         return Icons.bar_chart_rounded;
@@ -752,13 +763,19 @@ class _NotificatieCard extends StatelessWidget {
     switch (notificatie.type) {
       case 'les':
       case 'les_reminder':
+      case 'lesson_planned':
+      case 'lesson_changed':
         return AppColors.infoSolid;
       case 'voorbereiding':
         return AppColors.dark3;
       case 'feedback':
+      case 'lesson_feedback':
+      case 'invoice_paid':
         return AppColors.successSolid;
       case 'factuur':
-        return AppColors.warningSolid;
+      case 'invoice_created':
+      case 'package_almost_empty':
+        return AppColors.primary;
       case 'voortgang':
       case 'examenadvies':
         return AppColors.successSolid;

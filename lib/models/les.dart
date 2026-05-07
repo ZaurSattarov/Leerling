@@ -86,6 +86,10 @@ class Les {
 
   factory Les.fromJson(Map<String, dynamic> json) {
     final instrData = json['instructeur_profielen'] as Map<String, dynamic>?;
+    final instructeurNaam =
+        (instrData?['naam'] as String?) ?? json['instructeur_naam'] as String?;
+    final instructeurTelefoon = (instrData?['telefoon'] as String?) ??
+        json['instructeur_telefoon'] as String?;
     return Les(
       id: (json['id'] as String?) ?? '',
       instructeurId: (json['instructeur_id'] as String?) ?? '',
@@ -108,8 +112,8 @@ class Les {
       zichtbaarVoorLeerling: json['zichtbaar_voor_leerling'] as bool? ?? false,
       aangemaaktOp: (json['aangemaakt_op'] as String?) ?? '',
       bijgewerktOp: (json['bijgewerkt_op'] as String?) ?? '',
-      instructeurNaam: instrData?['naam'] as String?,
-      instructeurTelefoon: instrData?['telefoon'] as String?,
+      instructeurNaam: instructeurNaam,
+      instructeurTelefoon: instructeurTelefoon,
     );
   }
 }

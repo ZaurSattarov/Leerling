@@ -1,16 +1,27 @@
-enum FactuurStatus { concept, verstuurd, betaald, verlopen }
+enum FactuurStatus {
+  concept,
+  verstuurd,
+  open,
+  betaald,
+  verlopen,
+  teLaat,
+  geannuleerd
+}
 
 extension FactuurStatusLabel on FactuurStatus {
   String get label {
     switch (this) {
       case FactuurStatus.concept:
-        return 'Concept';
       case FactuurStatus.verstuurd:
-        return 'Verstuurd';
+      case FactuurStatus.open:
+        return 'Nog niet betaald';
       case FactuurStatus.betaald:
         return 'Betaald';
       case FactuurStatus.verlopen:
-        return 'Verlopen';
+      case FactuurStatus.teLaat:
+        return 'Te laat';
+      case FactuurStatus.geannuleerd:
+        return 'Geannuleerd';
     }
   }
 }
@@ -23,7 +34,12 @@ class Factuur {
   final String beschrijving;
   final int bedragCents;
   final FactuurStatus status;
+  final String? betaalmethode;
   final String? betaalLinkUrl;
+  final String? stripeCheckoutUrl;
+  final String? paymentUrl;
+  final String? invoicePdfUrl;
+  final String? downloadUrl;
   final String? ibanSnapshot;
   final String? betalingskenmerk;
   final String? notities;
@@ -40,7 +56,12 @@ class Factuur {
     required this.beschrijving,
     required this.bedragCents,
     required this.status,
+    this.betaalmethode,
     this.betaalLinkUrl,
+    this.stripeCheckoutUrl,
+    this.paymentUrl,
+    this.invoicePdfUrl,
+    this.downloadUrl,
     this.ibanSnapshot,
     this.betalingskenmerk,
     this.notities,
@@ -51,12 +72,46 @@ class Factuur {
   });
 
   String get bedragEuro =>
-      '€${(bedragCents / 100).toStringAsFixed(2).replaceAll('.', ',')}';
+      'EUR ${(bedragCents / 100).toStringAsFixed(2).replaceAll('.', ',')}';
 
   bool get isOpen =>
-      status == FactuurStatus.concept || status == FactuurStatus.verstuurd;
+      status == FactuurStatus.concept ||
+      status == FactuurStatus.verstuurd ||
+      status == FactuurStatus.open;
 
-  bool get isVerlopen => status == FactuurStatus.verlopen;
+  bool get isVerlopen =>
+      status == FactuurStatus.verlopen || status == FactuurStatus.teLaat;
+
+  bool get isBetaalbaar => isOpen || isVerlopen;
+
+  String? get effectieveBetaalUrl {
+    for (final url in [stripeCheckoutUrl, betaalLinkUrl, paymentUrl]) {
+      if (url?.trim().isNotEmpty == true) return url!.trim();
+    }
+    return null;
+  }
+
+  String? get effectieveDownloadUrl {
+    for (final url in [invoicePdfUrl, downloadUrl]) {
+      if (url?.trim().isNotEmpty == true) return url!.trim();
+    }
+    return null;
+  }
+
+  String get betaalmethodeLabel {
+    switch (betaalmethode) {
+      case 'ideal_tikkie':
+        return 'iDEAL / Tikkie';
+      case 'bankoverschrijving':
+        return 'Bankoverschrijving';
+      case 'contant':
+        return 'Contant';
+      default:
+        return effectieveBetaalUrl == null
+            ? 'Nog niet beschikbaar'
+            : 'Betaallink';
+    }
+  }
 
   factory Factuur.fromJson(Map<String, dynamic> json) {
     return Factuur(
@@ -66,11 +121,15 @@ class Factuur {
       factuurnummer: (json['factuurnummer'] as String?) ?? '',
       beschrijving: (json['beschrijving'] as String?) ?? '',
       bedragCents: (json['bedrag_cents'] as num?)?.toInt() ?? 0,
-      status: FactuurStatus.values.firstWhere(
-        (e) => e.name == (json['status'] as String? ?? 'concept'),
-        orElse: () => FactuurStatus.concept,
-      ),
+      status: _statusFromJson(json['status'] as String?),
+      betaalmethode: json['betaalmethode'] as String?,
       betaalLinkUrl: json['betaal_link_url'] as String?,
+      stripeCheckoutUrl: json['stripe_checkout_url'] as String?,
+      paymentUrl: json['payment_url'] as String?,
+      invoicePdfUrl: (json['invoice_pdf_url'] ??
+          json['factuur_pdf_url'] ??
+          json['pdf_url']) as String?,
+      downloadUrl: json['download_url'] as String?,
       ibanSnapshot: json['iban_snapshot'] as String?,
       betalingskenmerk: json['betalingskenmerk'] as String?,
       notities: json['notities'] as String?,
@@ -79,5 +138,33 @@ class Factuur {
       aangemaaktOp: (json['aangemaakt_op'] as String?) ?? '',
       bijgewerktOp: (json['bijgewerkt_op'] as String?) ?? '',
     );
+  }
+
+  static FactuurStatus _statusFromJson(String? value) {
+    switch ((value ?? 'concept').trim().toLowerCase()) {
+      case 'verstuurd':
+      case 'sent':
+        return FactuurStatus.verstuurd;
+      case 'open':
+      case 'openstaand':
+        return FactuurStatus.open;
+      case 'betaald':
+      case 'paid':
+        return FactuurStatus.betaald;
+      case 'verlopen':
+      case 'te_laat':
+      case 'te-laat':
+      case 'late':
+      case 'overdue':
+        return FactuurStatus.verlopen;
+      case 'geannuleerd':
+      case 'geannuleerd_door_instructeur':
+      case 'canceled':
+      case 'cancelled':
+        return FactuurStatus.geannuleerd;
+      case 'concept':
+      default:
+        return FactuurStatus.concept;
+    }
   }
 }

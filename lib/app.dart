@@ -16,6 +16,7 @@ import 'features/planning/les_detail_screen.dart';
 import 'features/les_logboek/les_logboek_screen.dart';
 import 'features/examenadvies/examenadvies_screen.dart';
 import 'features/lesvoorbereiding/lesvoorbereiding_screen.dart';
+import 'features/voortgang/lespakket_detail_screen.dart';
 import 'features/voortgang/voortgang_screen.dart';
 import 'features/facturen/facturen_screen.dart';
 import 'features/facturen/factuur_detail_screen.dart';
@@ -28,8 +29,7 @@ final _routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/splash',
     redirect: (context, state) {
-      final isLoggedIn =
-          Supabase.instance.client.auth.currentUser != null;
+      final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
       final loc = state.matchedLocation;
 
       if (loc == '/splash') return null;
@@ -110,6 +110,12 @@ final _routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/voortgang',
             builder: (_, __) => const VoortgangScreen(),
+            routes: [
+              GoRoute(
+                path: 'lespakket',
+                builder: (_, __) => const LespakketDetailScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: '/facturen',
@@ -148,24 +154,24 @@ class LeerlingApp extends ConsumerWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primary,
           brightness: Brightness.light,
-          surface: AppColors.white,
+          surface: AppColors.dark2,
         ),
         scaffoldBackgroundColor: AppColors.surface,
         dialogTheme: DialogThemeData(
-          backgroundColor: AppColors.white,
+          backgroundColor: AppColors.dark2,
           surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           ),
         ),
         bottomSheetTheme: const BottomSheetThemeData(
-          backgroundColor: AppColors.white,
+          backgroundColor: AppColors.dark2,
           surfaceTintColor: Colors.transparent,
-          modalBackgroundColor: AppColors.white,
+          modalBackgroundColor: AppColors.dark2,
           modalBarrierColor: Colors.black54,
         ),
         datePickerTheme: DatePickerThemeData(
-          backgroundColor: AppColors.white,
+          backgroundColor: AppColors.dark2,
           surfaceTintColor: Colors.transparent,
           headerBackgroundColor: AppColors.white,
           headerForegroundColor: AppColors.textPrimary,
@@ -195,15 +201,14 @@ class LeerlingApp extends ConsumerWidget {
                     color: AppColors.textPrimary,
                     fontSize: 14,
                     fontWeight: FontWeight.w600),
-                bodyLarge: const TextStyle(
-                    color: AppColors.textPrimary, fontSize: 16),
+                bodyLarge:
+                    const TextStyle(color: AppColors.textPrimary, fontSize: 16),
                 bodyMedium: const TextStyle(
                     color: AppColors.textSecondary, fontSize: 14),
-                bodySmall: const TextStyle(
-                    color: AppColors.textHint, fontSize: 12),
-                labelLarge: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600),
+                bodySmall:
+                    const TextStyle(color: AppColors.textHint, fontSize: 12),
+                labelLarge:
+                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 labelMedium: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 12,
@@ -229,7 +234,7 @@ class LeerlingApp extends ConsumerWidget {
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: AppColors.white,
+          fillColor: AppColors.dark3,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(color: AppColors.border),
@@ -299,7 +304,7 @@ class LeerlingApp extends ConsumerWidget {
           ),
         ),
         cardTheme: CardThemeData(
-          color: AppColors.white,
+          color: AppColors.dark2,
           elevation: 2,
           shadowColor: AppColors.shadow,
           shape: RoundedRectangleBorder(

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
@@ -30,7 +30,10 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
 
   Future<void> _registreer() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
 
     try {
       final res = await StudentService.registreren(
@@ -42,7 +45,9 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
 
       if (res.session == null) {
         // E-mailbevestiging vereist
-        setState(() { _loading = false; });
+        setState(() {
+          _loading = false;
+        });
         _toonBevestigingDialog(gaNaarKoppelcode: true);
         return;
       }
@@ -50,7 +55,7 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
       // Direct ingelogd â€” ga naar koppelcode scherm
       context.go('/koppelcode');
     } catch (e) {
-      debugPrint('[student.registreer_screen] fout=' + e.toString());
+      debugPrint('[student.registreer_screen] fout=$e');
       if (!mounted) return;
       setState(() {
         _error = _vertaalFout(e.toString());
@@ -98,10 +103,12 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
         normalized.contains('instructeur_profielen_pkey')) {
       return 'Registratie is nu geblokkeerd door een database-configuratie. Voer de nieuwe Supabase migratie uit en probeer opnieuw.';
     }
-    if (normalized.contains('email address') && normalized.contains('invalid')) {
+    if (normalized.contains('email address') &&
+        normalized.contains('invalid')) {
       return 'Het e-mailadres is ongeldig.';
     }
-    if (normalized.contains('network') || normalized.contains('socketexception')) {
+    if (normalized.contains('network') ||
+        normalized.contains('socketexception')) {
       return 'Geen internetverbinding. Controleer je verbinding.';
     }
     return 'Registreren mislukt. Probeer het opnieuw.';
@@ -163,7 +170,6 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
                 style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
               ),
               const SizedBox(height: 32),
-
               if (_error != null) ...[
                 Container(
                   padding: const EdgeInsets.all(14),
@@ -187,7 +193,6 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
                 ),
                 const SizedBox(height: 20),
               ],
-
               Form(
                 key: _formKey,
                 child: Column(
@@ -201,8 +206,12 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
                         prefixIcon: Icon(Icons.email_outlined),
                       ),
                       validator: (v) {
-                        if (v == null || v.trim().isEmpty) return 'Vul je e-mailadres in';
-                        if (!v.contains('@')) return 'Ongeldig e-mailadres';
+                        if (v == null || v.trim().isEmpty) {
+                          return 'Vul je e-mailadres in';
+                        }
+                        if (!v.contains('@')) {
+                          return 'Ongeldig e-mailadres';
+                        }
                         return null;
                       },
                     ),
@@ -223,8 +232,12 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
                         ),
                       ),
                       validator: (v) {
-                        if (v == null || v.isEmpty) return 'Vul een wachtwoord in';
-                        if (v.length < 6) return 'Minimaal 6 tekens';
+                        if (v == null || v.isEmpty) {
+                          return 'Vul een wachtwoord in';
+                        }
+                        if (v.length < 6) {
+                          return 'Minimaal 6 tekens';
+                        }
                         return null;
                       },
                     ),
@@ -241,13 +254,17 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
                           icon: Icon(_passBevestigVisible
                               ? Icons.visibility_off_outlined
                               : Icons.visibility_outlined),
-                          onPressed: () => setState(
-                              () => _passBevestigVisible = !_passBevestigVisible),
+                          onPressed: () => setState(() =>
+                              _passBevestigVisible = !_passBevestigVisible),
                         ),
                       ),
                       validator: (v) {
-                        if (v == null || v.isEmpty) return 'Bevestig je wachtwoord';
-                        if (v != _passCtrl.text) return 'Wachtwoorden komen niet overeen';
+                        if (v == null || v.isEmpty) {
+                          return 'Bevestig je wachtwoord';
+                        }
+                        if (v != _passCtrl.text) {
+                          return 'Wachtwoorden komen niet overeen';
+                        }
                         return null;
                       },
                     ),
@@ -286,5 +303,3 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
     );
   }
 }
-
-
