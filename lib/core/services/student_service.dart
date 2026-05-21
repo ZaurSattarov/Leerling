@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../config/app_config.dart';
 import '../../models/leerling_profiel.dart';
 import '../../models/leerling_beschikbaarheid.dart';
 import '../../models/les.dart';
@@ -16,6 +19,7 @@ class StudentService {
   static User? get currentUser => client.auth.currentUser;
   static String get userId => currentUser!.id;
   static const String _studentLessenView = 'student_lessen_view';
+  static const Duration _profileCheckTimeout = Duration(seconds: 8);
 
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // AUTH
@@ -34,6 +38,7 @@ class StudentService {
   static Future<AuthResponse> registreren({
     required String email,
     required String wachtwoord,
+    Map<String, dynamic>? metadata,
   }) async {
     final trimmedEmail = email.trim();
     debugPrint('[student.registreren] email=$trimmedEmail');
@@ -42,6 +47,8 @@ class StudentService {
       final response = await client.auth.signUp(
         email: trimmedEmail,
         password: wachtwoord,
+        data: metadata,
+        emailRedirectTo: AppConfig.authConfirmRedirectUrl,
       );
       debugPrint(
           '[student.registreren] user=${response.user?.id ?? 'null'} session=${response.session != null}');
@@ -59,7 +66,10 @@ class StudentService {
   static Future<void> uitloggen() => client.auth.signOut();
 
   static Future<void> stuurWachtwoordReset(String email) {
-    return client.auth.resetPasswordForEmail(email);
+    return client.auth.resetPasswordForEmail(
+      email,
+      redirectTo: AppConfig.authRedirectUrl,
+    );
   }
 
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -67,10 +77,11 @@ class StudentService {
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   static Future<void> koppelLeerlingMetCode(String koppelCode) async {
-    final res = await client.rpc(
+    final raw = await client.rpc(
       'koppel_leerling_met_code',
       params: {'p_koppel_code': koppelCode.trim().toUpperCase()},
-    ) as Map<String, dynamic>;
+    );
+    final res = Map<String, dynamic>.from(raw as Map);
     if (res['succes'] != true) {
       throw Exception(res['fout'] ?? 'Koppelen mislukt');
     }
@@ -81,12 +92,21 @@ class StudentService {
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   static Future<LeerlingProfiel?> getMijnProfiel() async {
-    final res = await client
-        .from('leerlingen')
-        .select()
-        .eq('user_id', userId)
-        .maybeSingle();
-    return res != null ? LeerlingProfiel.fromJson(res) : null;
+    final user = currentUser;
+    if (user == null) return null;
+
+    try {
+      final res = await client
+          .from('leerlingen')
+          .select()
+          .eq('user_id', user.id)
+          .maybeSingle()
+          .timeout(_profileCheckTimeout);
+      return res != null ? LeerlingProfiel.fromJson(res) : null;
+    } on TimeoutException {
+      debugPrint('[student.profiel] profielcheck timeout, toon koppelcode');
+      return null;
+    }
   }
 
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

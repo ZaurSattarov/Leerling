@@ -30,17 +30,17 @@ class StatusPill extends StatelessWidget {
         ),
       LesStatus.geannuleerd => const StatusPill(
           label: 'Geannuleerd',
-          backgroundColor: AppColors.dark3,
-          textColor: AppColors.white,
+          backgroundColor: AppColors.neutralBg,
+          textColor: AppColors.neutralText,
         ),
       LesStatus.verzet => const StatusPill(
           label: 'Verzet',
-          backgroundColor: AppColors.dark3,
-          textColor: AppColors.white,
+          backgroundColor: AppColors.neutralBg,
+          textColor: AppColors.neutralText,
         ),
       LesStatus.geen_toon => const StatusPill(
           label: 'Geen toon',
-          backgroundColor: AppColors.dark3,
+          backgroundColor: AppColors.dangerSolid,
           textColor: AppColors.white,
         ),
     };

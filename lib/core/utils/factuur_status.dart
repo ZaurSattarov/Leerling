@@ -43,8 +43,8 @@ extension FactuurStatusUiMapper on FactuurStatus {
         ),
       FactuurStatus.geannuleerd => const FactuurStatusUi(
           label: 'Geannuleerd',
-          backgroundColor: AppColors.dark3,
-          textColor: Colors.white,
+          backgroundColor: AppColors.neutralBg,
+          textColor: AppColors.neutralText,
           icon: Icons.cancel_outlined,
         ),
     };

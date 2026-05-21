@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 
@@ -13,35 +15,39 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
-  bool _loading = false;
-  bool _passVisible = false;
-  String? _error;
+  final _wachtwoordCtrl = TextEditingController();
+  bool _laden = false;
+  bool _wachtwoordZichtbaar = false;
+  bool _onthoudenMij = false;
+  String? _fout;
 
   @override
   void dispose() {
     _emailCtrl.dispose();
-    _passCtrl.dispose();
+    _wachtwoordCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _login() async {
+  Future<void> _inloggen() async {
+    if (_laden) return;
     if (!_formKey.currentState!.validate()) return;
-    setState(() { _loading = true; _error = null; });
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _laden = true;
+      _fout = null;
+    });
 
     try {
       await StudentService.inloggen(
         email: _emailCtrl.text.trim(),
-        wachtwoord: _passCtrl.text,
+        wachtwoord: _wachtwoordCtrl.text,
       );
       if (!mounted) return;
 
-      // Controleer of er al een gekoppeld leerlingprofiel is
       final profiel = await StudentService.getMijnProfiel();
       if (!mounted) return;
 
       if (profiel == null) {
-        // Ingelogd maar nog niet gekoppeld — stuur naar koppelcode scherm
         context.go('/koppelcode');
       } else {
         context.go('/home');
@@ -49,20 +55,26 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = _vertaalFout(e.toString());
-        _loading = false;
+        _fout = _vriendelijkeFout(e.toString());
+        _laden = false;
       });
+    } finally {
+      if (mounted && _laden) setState(() => _laden = false);
     }
   }
 
-  String _vertaalFout(String raw) {
-    if (raw.contains('Invalid login credentials')) {
-      return 'E-mailadres of wachtwoord klopt niet.';
+  String _vriendelijkeFout(String msg) {
+    final m = msg.toLowerCase();
+    if (m.contains('invalid login credentials')) {
+      return 'E-mailadres of wachtwoord is onjuist.';
     }
-    if (raw.contains('Email not confirmed')) {
-      return 'Bevestig eerst je e-mailadres via de link in je inbox.';
+    if (m.contains('email not confirmed') || m.contains('not verified')) {
+      return 'Je e-mailadres is nog niet bevestigd.';
     }
-    if (raw.contains('network') || raw.contains('SocketException')) {
+    if (m.contains('too many requests')) {
+      return 'Te veel pogingen. Wacht even en probeer opnieuw.';
+    }
+    if (m.contains('network') || m.contains('socketexception')) {
       return 'Geen internetverbinding. Controleer je verbinding.';
     }
     return 'Inloggen mislukt. Probeer het opnieuw.';
@@ -70,166 +82,332 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 48),
-              // Logo
-              Center(
-                child: Container(
-                  width: 72,
-                  height: 72,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.3),
-                        blurRadius: 24,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 16),
+                Center(
+                  child: Image.asset(
+                    'assets/Inlogassets/Login-bro.png',
+                    height: 220,
+                    fit: BoxFit.contain,
                   ),
-                  child: const Icon(Icons.directions_car_rounded,
-                      color: Colors.white, size: 36),
                 ),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Welkom terug',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'Log in met je leerling account',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
-              ),
-              const SizedBox(height: 40),
-
-              // Error banner
-              if (_error != null) ...[
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: AppColors.dangerBg,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.dangerBorder),
+                const SizedBox(height: 12),
+                Text(
+                  'Welkom terug',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.dark,
                   ),
-                  child: Row(
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Log in met je leerling account',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 28),
+                Form(
+                  key: _formKey,
+                  child: Column(
                     children: [
-                      const Icon(Icons.error_outline_rounded,
-                          color: AppColors.dangerText, size: 18),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(_error!,
-                            style: const TextStyle(
-                                color: AppColors.dangerText, fontSize: 13)),
+                      _Veld(
+                        controller: _emailCtrl,
+                        hint: 'E-mailadres',
+                        suffixIcon: Icons.email_outlined,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (v) {
+                          if (v == null || v.isEmpty) {
+                            return 'Vul je e-mailadres in';
+                          }
+                          if (!v.contains('@')) return 'Ongeldig e-mailadres';
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 14),
+                      _WachtwoordVeld(
+                        controller: _wachtwoordCtrl,
+                        hint: 'Wachtwoord',
+                        zichtbaar: _wachtwoordZichtbaar,
+                        onToggle: () => setState(
+                            () => _wachtwoordZichtbaar = !_wachtwoordZichtbaar),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) {
+                            return 'Vul je wachtwoord in';
+                          }
+                          return null;
+                        },
+                        onSubmit: _inloggen,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
-              ],
-
-              // Form
-              Form(
-                key: _formKey,
-                child: Column(
+                const SizedBox(height: 8),
+                Row(
                   children: [
-                    TextFormField(
-                      controller: _emailCtrl,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        labelText: 'E-mailadres',
-                        prefixIcon: Icon(Icons.email_outlined),
-                      ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) return 'Vul je e-mailadres in';
-                        if (!v.contains('@')) return 'Ongeldig e-mailadres';
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _passCtrl,
-                      obscureText: !_passVisible,
-                      textInputAction: TextInputAction.done,
-                      onFieldSubmitted: (_) => _login(),
-                      decoration: InputDecoration(
-                        labelText: 'Wachtwoord',
-                        prefixIcon: const Icon(Icons.lock_outline_rounded),
-                        suffixIcon: IconButton(
-                          icon: Icon(_passVisible
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined),
-                          onPressed: () =>
-                              setState(() => _passVisible = !_passVisible),
-                        ),
-                      ),
-                      validator: (v) {
-                        if (v == null || v.isEmpty) return 'Vul je wachtwoord in';
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () => context.push('/wachtwoord-vergeten'),
-                        child: const Text('Wachtwoord vergeten?'),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _loading ? null : _login,
-                      child: _loading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text('Inloggen'),
-                    ),
-                    const SizedBox(height: 12),
-                    OutlinedButton(
-                      onPressed: _loading ? null : () => context.push('/registreer'),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.primary,
-                        minimumSize: const Size.fromHeight(48),
-                        side: const BorderSide(color: AppColors.primary),
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: Checkbox(
+                        value: _onthoudenMij,
+                        activeColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        textStyle: const TextStyle(
+                            borderRadius: BorderRadius.circular(4)),
+                        onChanged: (v) =>
+                            setState(() => _onthoudenMij = v ?? false),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Onthoud mij',
+                      style: GoogleFonts.poppins(
+                          fontSize: 13, color: AppColors.textSecondary),
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () => context.go('/wachtwoord-vergeten'),
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        'Wachtwoord vergeten?',
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          fontSize: 15,
+                          color: AppColors.primary,
                         ),
                       ),
-                      child: const Text('Account aanmaken'),
                     ),
                   ],
                 ),
-              ),
-            ],
+                if (_fout != null) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.24),
+                          blurRadius: 18,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.error_outline_rounded,
+                            color: Colors.white, size: 18),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            _fout!,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => setState(() => _fout = null),
+                          child: const Icon(Icons.close_rounded,
+                              color: Colors.white, size: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 24),
+                SizedBox(
+                  height: 52,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14)),
+                    ),
+                    onPressed: _laden ? null : _inloggen,
+                    child: _laden
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: Colors.white),
+                          )
+                        : Text(
+                            'Inloggen ›',
+                            style: GoogleFonts.poppins(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Nieuw hier? ',
+                      style: GoogleFonts.poppins(
+                          fontSize: 13, color: AppColors.textSecondary),
+                    ),
+                    GestureDetector(
+                      onTap: () => context.go('/registreer'),
+                      child: Text(
+                        'Registreer nu',
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _Veld extends StatelessWidget {
+  final TextEditingController controller;
+  final String hint;
+  final IconData suffixIcon;
+  final TextInputType keyboardType;
+  final String? Function(String?) validator;
+
+  const _Veld({
+    required this.controller,
+    required this.hint,
+    required this.suffixIcon,
+    required this.keyboardType,
+    required this.validator,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      autocorrect: false,
+      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.dark),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle:
+            GoogleFonts.poppins(fontSize: 14, color: AppColors.textHint),
+        suffixIcon: Icon(suffixIcon, color: AppColors.textHint, size: 20),
+        filled: true,
+        fillColor: AppColors.surface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.border),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.dangerText),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      ),
+      validator: validator,
+    );
+  }
+}
+
+class _WachtwoordVeld extends StatelessWidget {
+  final TextEditingController controller;
+  final String hint;
+  final bool zichtbaar;
+  final VoidCallback onToggle;
+  final String? Function(String?) validator;
+  final VoidCallback onSubmit;
+
+  const _WachtwoordVeld({
+    required this.controller,
+    required this.hint,
+    required this.zichtbaar,
+    required this.onToggle,
+    required this.validator,
+    required this.onSubmit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      obscureText: !zichtbaar,
+      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.dark),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle:
+            GoogleFonts.poppins(fontSize: 14, color: AppColors.textHint),
+        suffixIcon: IconButton(
+          icon: Icon(
+            zichtbaar
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
+            color: AppColors.textHint,
+            size: 20,
+          ),
+          onPressed: onToggle,
+        ),
+        filled: true,
+        fillColor: AppColors.surface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.border),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.dangerText),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      ),
+      validator: validator,
+      onFieldSubmitted: (_) => onSubmit(),
     );
   }
 }

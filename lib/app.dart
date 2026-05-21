@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +10,10 @@ import 'core/constants/app_colors.dart';
 import 'features/splash/splash_screen.dart';
 import 'features/auth/login_screen.dart';
 import 'features/auth/registreer_screen.dart';
+import 'features/auth/verificatie_screen.dart';
+import 'features/auth/reset_password_screen.dart';
 import 'features/auth/wachtwoord_vergeten_screen.dart';
+import 'features/auth/wachtwoord_reset_code_screen.dart';
 import 'features/koppelcode/koppelcode_screen.dart';
 import 'features/home/home_screen.dart';
 import 'features/planning/planning_screen.dart';
@@ -24,22 +29,55 @@ import 'features/beschikbaarheid/beschikbaarheid_screen.dart';
 import 'features/notificaties/notificaties_screen.dart';
 import 'features/profiel/profiel_screen.dart';
 import 'shared/widgets/main_scaffold.dart';
+import 'shared/widgets/student_profile_gate.dart';
+
+class _AuthNotifier extends ChangeNotifier {
+  _AuthNotifier() {
+    _sub = Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+      _event = data.event;
+      notifyListeners();
+    });
+  }
+
+  late final StreamSubscription<AuthState> _sub;
+  AuthChangeEvent? _event;
+  AuthChangeEvent? get event => _event;
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+}
 
 final _routerProvider = Provider<GoRouter>((ref) {
+  final authNotifier = _AuthNotifier();
+  ref.onDispose(authNotifier.dispose);
+
   return GoRouter(
     initialLocation: '/splash',
+    refreshListenable: authNotifier,
     redirect: (context, state) {
       final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
-      final loc = state.matchedLocation;
+      final loc = state.uri.path;
 
       if (loc == '/splash') return null;
+
+      // Password recovery deep link — redirect to reset screen
+      if (authNotifier.event == AuthChangeEvent.passwordRecovery) {
+        return loc == '/reset-password' ? null : '/reset-password';
+      }
 
       final isAuthRoute = loc.startsWith('/login') ||
           loc.startsWith('/registreer') ||
           loc.startsWith('/wachtwoord-vergeten');
+      final isPublicRoute = isAuthRoute ||
+          loc == '/verificatie' ||
+          loc == '/wachtwoord-reset-code' ||
+          loc == '/reset-password';
 
-      if (!isLoggedIn && !isAuthRoute && loc != '/koppelcode') return '/login';
-      if (isLoggedIn && isAuthRoute) return '/home';
+      if (!isLoggedIn && !isPublicRoute) return '/login';
+      if (isLoggedIn && isAuthRoute) return '/splash';
       return null;
     },
     routes: [
@@ -56,8 +94,22 @@ final _routerProvider = Provider<GoRouter>((ref) {
         builder: (_, __) => const RegistreerScreen(),
       ),
       GoRoute(
+        path: '/verificatie',
+        builder: (_, state) => VerificatieScreen(email: state.extra as String),
+      ),
+      GoRoute(
+        path: '/reset-password',
+        builder: (_, __) => const ResetPasswordScreen(),
+      ),
+      GoRoute(
         path: '/wachtwoord-vergeten',
         builder: (_, __) => const WachtwoordVergetenScreen(),
+      ),
+      GoRoute(
+        path: '/wachtwoord-reset-code',
+        builder: (_, state) => WachtwoordResetCodeScreen(
+          email: state.extra as String,
+        ),
       ),
       GoRoute(
         path: '/koppelcode',
@@ -67,18 +119,24 @@ final _routerProvider = Provider<GoRouter>((ref) {
       // Notificaties — full screen, outside bottom nav
       GoRoute(
         path: '/notificaties',
-        builder: (_, __) => const NotificatiesScreen(),
+        builder: (_, __) => const StudentProfileGate(
+          child: NotificatiesScreen(),
+        ),
       ),
 
       // Beschikbaarheid — full screen, outside bottom nav
       GoRoute(
         path: '/beschikbaarheid',
-        builder: (_, __) => const BeschikbaarheidScreen(),
+        builder: (_, __) => const StudentProfileGate(
+          child: BeschikbaarheidScreen(),
+        ),
       ),
 
       // App routes with bottom nav shell
       ShellRoute(
-        builder: (_, __, child) => MainScaffold(child: child),
+        builder: (_, __, child) => StudentProfileGate(
+          child: MainScaffold(child: child),
+        ),
         routes: [
           GoRoute(
             path: '/home',
@@ -154,24 +212,24 @@ class LeerlingApp extends ConsumerWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primary,
           brightness: Brightness.light,
-          surface: AppColors.dark2,
+          surface: AppColors.white,
         ),
         scaffoldBackgroundColor: AppColors.surface,
         dialogTheme: DialogThemeData(
-          backgroundColor: AppColors.dark2,
+          backgroundColor: AppColors.white,
           surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           ),
         ),
         bottomSheetTheme: const BottomSheetThemeData(
-          backgroundColor: AppColors.dark2,
+          backgroundColor: AppColors.white,
           surfaceTintColor: Colors.transparent,
-          modalBackgroundColor: AppColors.dark2,
+          modalBackgroundColor: AppColors.white,
           modalBarrierColor: Colors.black54,
         ),
         datePickerTheme: DatePickerThemeData(
-          backgroundColor: AppColors.dark2,
+          backgroundColor: AppColors.white,
           surfaceTintColor: Colors.transparent,
           headerBackgroundColor: AppColors.white,
           headerForegroundColor: AppColors.textPrimary,
@@ -219,6 +277,38 @@ class LeerlingApp extends ConsumerWidget {
                     fontWeight: FontWeight.w500),
               ),
         ),
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: AppColors.primary,
+          selectionColor: AppColors.primary.withValues(alpha: 0.18),
+          selectionHandleColor: AppColors.primaryDark,
+        ),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.selected)) {
+              return AppColors.primary;
+            }
+            return AppColors.white;
+          }),
+          checkColor: MaterialStateProperty.all(AppColors.white),
+          side: const BorderSide(color: AppColors.border),
+        ),
+        radioTheme: RadioThemeData(
+          fillColor: MaterialStateProperty.all(AppColors.primary),
+        ),
+        switchTheme: SwitchThemeData(
+          thumbColor: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.selected)) {
+              return AppColors.white;
+            }
+            return AppColors.textHint;
+          }),
+          trackColor: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.selected)) {
+              return AppColors.primary;
+            }
+            return AppColors.border;
+          }),
+        ),
         appBarTheme: AppBarTheme(
           backgroundColor: AppColors.dark,
           foregroundColor: Colors.white,
@@ -234,7 +324,7 @@ class LeerlingApp extends ConsumerWidget {
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: AppColors.dark3,
+          fillColor: AppColors.white,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(color: AppColors.border),
@@ -304,7 +394,7 @@ class LeerlingApp extends ConsumerWidget {
           ),
         ),
         cardTheme: CardThemeData(
-          color: AppColors.dark2,
+          color: AppColors.white,
           elevation: 2,
           shadowColor: AppColors.shadow,
           shape: RoundedRectangleBorder(

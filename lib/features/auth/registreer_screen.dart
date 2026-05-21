@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../core/config/app_config.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 
@@ -12,294 +16,395 @@ class RegistreerScreen extends StatefulWidget {
 
 class _RegistreerScreenState extends State<RegistreerScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _naamCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
-  final _passBevestigCtrl = TextEditingController();
-  bool _loading = false;
-  bool _passVisible = false;
-  bool _passBevestigVisible = false;
-  String? _error;
+  final _wachtwoordCtrl = TextEditingController();
+  bool _laden = false;
+  bool _wachtwoordZichtbaar = false;
 
   @override
   void dispose() {
+    _naamCtrl.dispose();
     _emailCtrl.dispose();
-    _passCtrl.dispose();
-    _passBevestigCtrl.dispose();
+    _wachtwoordCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _registreer() async {
+  Future<void> _registreren() async {
+    if (_laden) return;
     if (!_formKey.currentState!.validate()) return;
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
+    FocusScope.of(context).unfocus();
+    setState(() => _laden = true);
+
+    final naam = _naamCtrl.text.trim();
+    final email = _emailCtrl.text.trim().toLowerCase();
 
     try {
-      final res = await StudentService.registreren(
-        email: _emailCtrl.text.trim(),
-        wachtwoord: _passCtrl.text,
+      final response = await StudentService.registreren(
+        email: email,
+        wachtwoord: _wachtwoordCtrl.text,
+        metadata: {
+          'naam': naam,
+          'full_name': naam,
+          'role': 'leerling',
+          'type': 'leerling',
+        },
       );
 
-      if (!mounted) return;
-
-      if (res.session == null) {
-        // E-mailbevestiging vereist
-        setState(() {
-          _loading = false;
-        });
-        _toonBevestigingDialog(gaNaarKoppelcode: true);
+      final user = response.user;
+      final isBevestigd = user?.emailConfirmedAt != null;
+      if (isBevestigd) {
+        _toonFout(
+            'Dit e-mailadres is al bevestigd. Log in om verder te gaan.');
         return;
       }
 
-      // Direct ingelogd â€” ga naar koppelcode scherm
-      context.go('/koppelcode');
-    } catch (e) {
-      debugPrint('[student.registreer_screen] fout=$e');
+      if (mounted) context.go('/verificatie', extra: email);
+    } on AuthException catch (e) {
       if (!mounted) return;
-      setState(() {
-        _error = _vertaalFout(e.toString());
-        _loading = false;
-      });
+      if (_isBestaandOnbevestigdAccount(e.message)) {
+        try {
+          await _stuurCodeOpnieuw(email);
+          if (mounted) context.go('/verificatie', extra: email);
+          return;
+        } on AuthException catch (resendError) {
+          _toonFout(_vriendelijkeFout(resendError.message));
+          return;
+        }
+      }
+      _toonFout(_vriendelijkeFout(e.message));
+    } catch (e) {
+      if (mounted) _toonFout('Registratie mislukt. Probeer het opnieuw.');
+    } finally {
+      if (mounted) setState(() => _laden = false);
     }
   }
 
-  void _toonBevestigingDialog({bool gaNaarKoppelcode = false}) {
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Bevestig je e-mail'),
+  bool _isBestaandOnbevestigdAccount(String msg) {
+    final m = msg.toLowerCase();
+    return m.contains('already registered') ||
+        m.contains('already exists') ||
+        m.contains('user already');
+  }
+
+  Future<void> _stuurCodeOpnieuw(String email) {
+    return Supabase.instance.client.auth.resend(
+      type: OtpType.signup,
+      email: email,
+      emailRedirectTo: AppConfig.authConfirmRedirectUrl,
+    );
+  }
+
+  String _vriendelijkeFout(String msg) {
+    final m = msg.toLowerCase();
+    if (m.contains('only request this after') ||
+        m.contains('security purposes') ||
+        m.contains('rate limit') ||
+        m.contains('too many requests')) {
+      return 'Wacht even voordat je opnieuw een code aanvraagt.';
+    }
+    if (m.contains('already registered') ||
+        m.contains('already exists') ||
+        m.contains('user already')) {
+      return 'Dit e-mailadres is al geregistreerd. Log in of gebruik een ander adres.';
+    }
+    if (m.contains('password') && m.contains('characters')) {
+      return 'Wachtwoord moet minimaal 6 tekens bevatten.';
+    }
+    if (m.contains('email') && m.contains('invalid')) {
+      return 'Ongeldig e-mailadres. Controleer het adres en probeer opnieuw.';
+    }
+    return 'Registratie mislukt. Probeer het opnieuw.';
+  }
+
+  void _toonFout(String bericht) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
         content: Text(
-          'We hebben een bevestigingslink gestuurd naar ${_emailCtrl.text.trim()}. '
-          'Klik op de link en log daarna in.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              context.go(gaNaarKoppelcode ? '/koppelcode' : '/login');
-            },
-            child: Text(gaNaarKoppelcode ? 'Naar koppelcode' : 'Naar inloggen'),
+          bericht,
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
           ),
-        ],
+        ),
+        backgroundColor: AppColors.primary,
+        behavior: SnackBarBehavior.floating,
+        elevation: 10,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
 
-  String _vertaalFout(String raw) {
-    final normalized = raw.toLowerCase();
-
-    if (normalized.contains('user already registered')) {
-      return 'Er bestaat al een account met dit e-mailadres.';
-    }
-    if (normalized.contains('password should be at least') ||
-        normalized.contains('password should be stronger')) {
-      return 'Wachtwoord moet sterker zijn of minimaal 6 tekens bevatten.';
-    }
-    if (normalized.contains('database error saving new user') ||
-        normalized.contains('duplicate key value') ||
-        normalized.contains('instructeur_profielen_pkey')) {
-      return 'Registratie is nu geblokkeerd door een database-configuratie. Voer de nieuwe Supabase migratie uit en probeer opnieuw.';
-    }
-    if (normalized.contains('email address') &&
-        normalized.contains('invalid')) {
-      return 'Het e-mailadres is ongeldig.';
-    }
-    if (normalized.contains('network') ||
-        normalized.contains('socketexception')) {
-      return 'Geen internetverbinding. Controleer je verbinding.';
-    }
-    return 'Registreren mislukt. Probeer het opnieuw.';
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        backgroundColor: AppColors.surface,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.go('/login'),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 12),
-              Center(
-                child: Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(18),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.3),
-                        blurRadius: 20,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 16),
+                Center(
+                  child: Image.asset(
+                    'assets/Inlogassets/Signup.png',
+                    height: 200,
+                    fit: BoxFit.contain,
                   ),
-                  child: const Icon(Icons.directions_car_rounded,
-                      color: Colors.white, size: 32),
                 ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Account aanmaken',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'Maak een leerling account aan',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-              ),
-              const SizedBox(height: 32),
-              if (_error != null) ...[
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: AppColors.dangerBg,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.dangerBorder),
+                const SizedBox(height: 12),
+                Text(
+                  'Account aanmaken',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.dark,
                   ),
-                  child: Row(
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Maak een leerling account aan en volg je rijlessen',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 28),
+                Form(
+                  key: _formKey,
+                  child: Column(
                     children: [
-                      const Icon(Icons.error_outline_rounded,
-                          color: AppColors.dangerText, size: 18),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(_error!,
-                            style: const TextStyle(
-                                color: AppColors.dangerText, fontSize: 13)),
+                      _Veld(
+                        controller: _naamCtrl,
+                        hint: 'Volledige naam',
+                        suffixIcon: Icons.person_outline,
+                        keyboardType: TextInputType.name,
+                        validator: (v) {
+                          if (v == null || v.trim().isEmpty) {
+                            return 'Vul je naam in';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _Veld(
+                        controller: _emailCtrl,
+                        hint: 'E-mailadres',
+                        suffixIcon: Icons.email_outlined,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (v) {
+                          final email = v?.trim() ?? '';
+                          if (email.isEmpty) return 'Vul je e-mailadres in';
+                          final valid = RegExp(
+                            r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
+                          ).hasMatch(email);
+                          if (!valid) return 'Ongeldig e-mailadres';
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _WachtwoordVeld(
+                        controller: _wachtwoordCtrl,
+                        hint: 'Wachtwoord (min. 6 tekens)',
+                        zichtbaar: _wachtwoordZichtbaar,
+                        onToggle: () => setState(
+                          () => _wachtwoordZichtbaar = !_wachtwoordZichtbaar,
+                        ),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) {
+                            return 'Vul een wachtwoord in';
+                          }
+                          if (v.length < 6) return 'Minimaal 6 tekens';
+                          return null;
+                        },
+                        onSubmit: _registreren,
                       ),
                     ],
+                  ),
+                ),
+                const SizedBox(height: 28),
+                SizedBox(
+                  height: 52,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    onPressed: _laden ? null : _registreren,
+                    child: _laden
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(
+                            'Account aanmaken ›',
+                            style: GoogleFonts.poppins(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 20),
-              ],
-              Form(
-                key: _formKey,
-                child: Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TextFormField(
-                      controller: _emailCtrl,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        labelText: 'E-mailadres',
-                        prefixIcon: Icon(Icons.email_outlined),
+                    Text(
+                      'Al een account? ',
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
                       ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) {
-                          return 'Vul je e-mailadres in';
-                        }
-                        if (!v.contains('@')) {
-                          return 'Ongeldig e-mailadres';
-                        }
-                        return null;
-                      },
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _passCtrl,
-                      obscureText: !_passVisible,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                        labelText: 'Wachtwoord',
-                        prefixIcon: const Icon(Icons.lock_outline_rounded),
-                        suffixIcon: IconButton(
-                          icon: Icon(_passVisible
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined),
-                          onPressed: () =>
-                              setState(() => _passVisible = !_passVisible),
+                    GestureDetector(
+                      onTap: () => context.go('/login'),
+                      child: Text(
+                        'Inloggen',
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
                         ),
                       ),
-                      validator: (v) {
-                        if (v == null || v.isEmpty) {
-                          return 'Vul een wachtwoord in';
-                        }
-                        if (v.length < 6) {
-                          return 'Minimaal 6 tekens';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _passBevestigCtrl,
-                      obscureText: !_passBevestigVisible,
-                      textInputAction: TextInputAction.done,
-                      onFieldSubmitted: (_) => _registreer(),
-                      decoration: InputDecoration(
-                        labelText: 'Wachtwoord bevestigen',
-                        prefixIcon: const Icon(Icons.lock_outline_rounded),
-                        suffixIcon: IconButton(
-                          icon: Icon(_passBevestigVisible
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined),
-                          onPressed: () => setState(() =>
-                              _passBevestigVisible = !_passBevestigVisible),
-                        ),
-                      ),
-                      validator: (v) {
-                        if (v == null || v.isEmpty) {
-                          return 'Bevestig je wachtwoord';
-                        }
-                        if (v != _passCtrl.text) {
-                          return 'Wachtwoorden komen niet overeen';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: _loading ? null : _registreer,
-                      child: _loading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                  strokeWidth: 2, color: Colors.white),
-                            )
-                          : const Text('Account aanmaken'),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Al een account?',
-                      style: TextStyle(
-                          fontSize: 13, color: AppColors.textSecondary)),
-                  TextButton(
-                    onPressed: () => context.go('/login'),
-                    child: const Text('Inloggen'),
-                  ),
-                ],
-              ),
-            ],
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _Veld extends StatelessWidget {
+  final TextEditingController controller;
+  final String hint;
+  final IconData suffixIcon;
+  final TextInputType keyboardType;
+  final String? Function(String?) validator;
+
+  const _Veld({
+    required this.controller,
+    required this.hint,
+    required this.suffixIcon,
+    required this.keyboardType,
+    required this.validator,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      autocorrect: false,
+      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.dark),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle:
+            GoogleFonts.poppins(fontSize: 14, color: AppColors.textHint),
+        suffixIcon: Icon(suffixIcon, color: AppColors.textHint, size: 20),
+        filled: true,
+        fillColor: AppColors.surface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.border),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.dangerText),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      ),
+      validator: validator,
+    );
+  }
+}
+
+class _WachtwoordVeld extends StatelessWidget {
+  final TextEditingController controller;
+  final String hint;
+  final bool zichtbaar;
+  final VoidCallback onToggle;
+  final String? Function(String?) validator;
+  final VoidCallback onSubmit;
+
+  const _WachtwoordVeld({
+    required this.controller,
+    required this.hint,
+    required this.zichtbaar,
+    required this.onToggle,
+    required this.validator,
+    required this.onSubmit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      obscureText: !zichtbaar,
+      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.dark),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle:
+            GoogleFonts.poppins(fontSize: 14, color: AppColors.textHint),
+        suffixIcon: IconButton(
+          icon: Icon(
+            zichtbaar
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
+            color: AppColors.textHint,
+            size: 20,
+          ),
+          onPressed: onToggle,
+        ),
+        filled: true,
+        fillColor: AppColors.surface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.border),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.dangerText),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      ),
+      validator: validator,
+      onFieldSubmitted: (_) => onSubmit(),
     );
   }
 }

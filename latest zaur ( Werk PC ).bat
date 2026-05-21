@@ -1,0 +1,128 @@
+@echo off
+set "PROJECT_DIR=%~dp0"
+set "FLUTTER=C:\flutter\bin\flutter.bat"
+set "ADB=%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe"
+set "EMULATOR=%LOCALAPPDATA%\Android\Sdk\emulator\emulator.exe"
+set "APP_ID=nl.rijschool.leerling_app"
+set "MAIN_ACTIVITY=nl.rijschool.leerling_app.MainActivity"
+
+if not exist "%PROJECT_DIR%pubspec.yaml" (
+    echo PROJECTMAP NIET GEVONDEN: %PROJECT_DIR%
+    pause
+    exit /b 1
+)
+
+if not exist "%FLUTTER%" (
+    set "FLUTTER=flutter"
+)
+
+if not exist "%ADB%" (
+    echo ADB NIET GEVONDEN: %ADB%
+    pause
+    exit /b 1
+)
+
+if not exist "%EMULATOR%" (
+    echo EMULATOR.EXE NIET GEVONDEN: %EMULATOR%
+    pause
+    exit /b 1
+)
+
+"%ADB%" -s emulator-5554 get-state >nul 2>&1
+if errorlevel 1 (
+    echo EMULATOR NIET GEVONDEN: emulator-5554
+    pause
+    exit /b 1
+)
+
+set "AVD_NAME="
+for /f "tokens=* usebackq" %%A in (`"%ADB%" -s emulator-5554 emu avd name 2^>nul ^| findstr /v /r "^OK$"`) do (
+    if not defined AVD_NAME set "AVD_NAME=%%A"
+)
+if not defined AVD_NAME set "AVD_NAME=Pixel_10_Pro"
+
+cd /d "%PROJECT_DIR%"
+
+echo [1/3] Bouwen...
+call "%FLUTTER%" build apk --debug --target-platform android-x64
+if errorlevel 1 (
+    echo BUILD MISLUKT
+    pause
+    exit /b 1
+)
+
+echo [2/3] Installeren...
+echo Opslag emulator voor opruimen:
+"%ADB%" -s emulator-5554 shell df -h /data
+
+echo Oude app/cache opruimen...
+"%ADB%" -s emulator-5554 uninstall "%APP_ID%" >nul 2>&1
+"%ADB%" -s emulator-5554 shell pm trim-caches 999G >nul 2>&1
+"%ADB%" -s emulator-5554 shell rm -f /data/local/tmp/*.apk >nul 2>&1
+"%ADB%" -s emulator-5554 shell rm -f /data/local/tmp/*.tmp >nul 2>&1
+
+echo Opslag emulator na opruimen:
+"%ADB%" -s emulator-5554 shell df -h /data
+
+echo APK installeren zonder streamed install...
+"%ADB%" -s emulator-5554 install -r -d -g --no-streaming "build\app\outputs\flutter-apk\app-debug.apk"
+if errorlevel 1 (
+    echo Eerste installatiepoging mislukt. Extra opruimen en opnieuw proberen...
+    "%ADB%" -s emulator-5554 uninstall "%APP_ID%" >nul 2>&1
+    "%ADB%" -s emulator-5554 shell pm trim-caches 999G >nul 2>&1
+    "%ADB%" -s emulator-5554 shell rm -rf /data/local/tmp/* >nul 2>&1
+    "%ADB%" -s emulator-5554 shell df -h /data
+    "%ADB%" -s emulator-5554 install -r -d -g --no-streaming "build\app\outputs\flutter-apk\app-debug.apk"
+    if errorlevel 1 (
+        echo INSTALLATIE MISLUKT
+        echo.
+        echo Emulator heeft te weinig interne opslag voor deze APK.
+        echo Huidige AVD: %AVD_NAME%
+        choice /C JN /M "Emulator-data wissen en opnieuw installeren? LET OP: dit verwijdert data op deze emulator"
+        if errorlevel 2 (
+            echo Afgebroken. Oplossing: Android Studio Device Manager ^> emulator ^> Wipe Data
+            echo of maak een nieuwe emulator met grotere Internal Storage.
+            pause
+            exit /b 1
+        )
+
+        echo Emulator stoppen...
+        "%ADB%" -s emulator-5554 emu kill >nul 2>&1
+        timeout /t 5 >nul
+
+        echo Emulator opnieuw starten met wipe-data...
+        start "" "%EMULATOR%" -avd "%AVD_NAME%" -wipe-data -no-snapshot-load
+
+        echo Wachten tot emulator klaar is...
+        "%ADB%" -s emulator-5554 wait-for-device
+        call :WaitForBoot
+        timeout /t 5 >nul
+
+        echo Opnieuw installeren na wipe...
+        "%ADB%" -s emulator-5554 shell df -h /data
+        "%ADB%" -s emulator-5554 install -r -d -g --no-streaming "build\app\outputs\flutter-apk\app-debug.apk"
+        if errorlevel 1 (
+            echo INSTALLATIE MISLUKT NA WIPE
+            echo Maak een nieuwe emulator met grotere Internal Storage.
+            pause
+            exit /b 1
+        )
+    )
+)
+
+echo [3/3] Openen...
+"%ADB%" -s emulator-5554 shell am start -n "%APP_ID%/%MAIN_ACTIVITY%"
+
+echo.
+echo Klaar!
+timeout /t 2 >nul
+exit /b 0
+
+:WaitForBoot
+set "BOOT_DONE="
+for /f "tokens=* usebackq" %%B in (`"%ADB%" -s emulator-5554 shell getprop sys.boot_completed 2^>nul`) do set "BOOT_DONE=%%B"
+if not "%BOOT_DONE%"=="1" (
+    timeout /t 3 >nul
+    goto WaitForBoot
+)
+exit /b 0

@@ -28,7 +28,7 @@ class HomeData {
 
 final homeProvider = FutureProvider.autoDispose<HomeData>((ref) async {
   final profiel = await ref.watch(mijnProfielProvider.future);
-  if (profiel == null) throw Exception('Geen leerling profiel gevonden');
+  if (profiel == null) throw StateError('Leerlingprofiel ontbreekt');
 
   final data =
       await StudentService.getHomeDashboard(profiel.id, profiel.instructeurId);

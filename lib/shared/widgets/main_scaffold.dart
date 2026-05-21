@@ -68,23 +68,12 @@ class MainScaffold extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 180),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: isActive
-                                ? AppColors.primary
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            isActive ? item.activeIcon : item.icon,
-                            size: 22,
-                            color: isActive
-                                ? AppColors.white
-                                : Colors.white.withValues(alpha: 0.56),
-                          ),
+                        Icon(
+                          isActive ? item.activeIcon : item.icon,
+                          size: 22,
+                          color: isActive
+                              ? AppColors.primary
+                              : Colors.white.withValues(alpha: 0.5),
                         ),
                         const SizedBox(height: 3),
                         Text(
@@ -94,8 +83,8 @@ class MainScaffold extends StatelessWidget {
                             fontWeight:
                                 isActive ? FontWeight.w600 : FontWeight.w400,
                             color: isActive
-                                ? AppColors.white
-                                : Colors.white.withValues(alpha: 0.56),
+                                ? AppColors.primary
+                                : Colors.white.withValues(alpha: 0.5),
                           ),
                         ),
                       ],

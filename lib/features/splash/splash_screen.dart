@@ -1,8 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
-import '../../shared/providers/auth_provider.dart';
+import '../../core/services/student_service.dart';
+import '../../models/leerling_profiel.dart';
+import '../../shared/widgets/app_logo.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -16,6 +21,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   late AnimationController _controller;
   late Animation<double> _fadeIn;
   late Animation<double> _scale;
+  Timer? _bootstrapTimer;
 
   @override
   void initState() {
@@ -30,22 +36,39 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     );
     _controller.forward();
 
-    Future.delayed(const Duration(milliseconds: 1800), () async {
-      if (!mounted) return;
-      final isLoggedIn = ref.read(isLoggedInProvider);
-      if (!isLoggedIn) {
-        context.go('/login');
-        return;
-      }
-      // Controleer of leerling al gekoppeld is
-      final profiel = await ref.read(mijnProfielProvider.future);
-      if (!mounted) return;
-      context.go(profiel != null ? '/home' : '/koppelcode');
-    });
+    _bootstrapTimer = Timer(const Duration(milliseconds: 1200), _bootstrap);
+  }
+
+  Future<void> _bootstrap() async {
+    if (!mounted) return;
+
+    final user = Supabase.instance.client.auth.currentUser;
+    debugPrint('[splash] bootstrap user=${user?.id ?? 'null'}');
+    if (user == null) {
+      context.go('/login');
+      return;
+    }
+
+    final profiel = await _laadProfiel();
+    if (!mounted) return;
+
+    final route = profiel != null ? '/home' : '/koppelcode';
+    debugPrint('[splash] profiel=${profiel?.id ?? 'null'} route=$route');
+    context.go(route);
+  }
+
+  Future<LeerlingProfiel?> _laadProfiel() async {
+    try {
+      return await StudentService.getMijnProfiel();
+    } catch (e) {
+      debugPrint('[splash] profielcheck fout: $e');
+      return null;
+    }
   }
 
   @override
   void dispose() {
+    _bootstrapTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -63,21 +86,21 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 88,
-                  height: 88,
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.4),
+                        color: Colors.black.withValues(alpha: 0.22),
                         blurRadius: 32,
                         offset: const Offset(0, 8),
                       ),
                     ],
                   ),
-                  child: const Icon(Icons.directions_car_rounded,
-                      color: Colors.white, size: 44),
+                  child: const AppLogo(
+                    size: 88,
+                    padding: 14,
+                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                  ),
                 ),
                 const SizedBox(height: 24),
                 const Text(

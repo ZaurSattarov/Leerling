@@ -26,15 +26,27 @@ class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
 
   Future<void> _koppel() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
 
     try {
       await StudentService.koppelLeerlingMetCode(_codeCtrl.text.trim());
 
-      // Profiel opnieuw laden
       ref.invalidate(mijnProfielProvider);
+      final profiel = await ref.read(mijnProfielProvider.future);
 
       if (!mounted) return;
+      if (profiel == null) {
+        setState(() {
+          _error =
+              'Koppeling is nog niet zichtbaar. Controleer de code en probeer opnieuw.';
+          _loading = false;
+        });
+        return;
+      }
+
       context.go('/home');
     } catch (e) {
       if (!mounted) return;
@@ -47,6 +59,7 @@ class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
 
   Future<void> _uitloggen() async {
     await StudentService.uitloggen();
+    ref.invalidate(mijnProfielProvider);
     if (mounted) context.go('/login');
   }
 
@@ -105,7 +118,8 @@ class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
               const Text(
                 'Voer de 8-tekens koppelcode in die je van je rijinstructeur hebt ontvangen.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: AppColors.textSecondary, height: 1.5),
+                style: TextStyle(
+                    fontSize: 14, color: AppColors.textSecondary, height: 1.5),
               ),
               const SizedBox(height: 40),
 
