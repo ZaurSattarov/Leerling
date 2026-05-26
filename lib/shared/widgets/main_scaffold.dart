@@ -56,7 +56,7 @@ class MainScaffold extends StatelessWidget {
         ),
         child: SafeArea(
           child: SizedBox(
-            height: 64,
+            height: 68,
             child: Row(
               children: List.generate(_items.length, (i) {
                 final item = _items[i];
@@ -68,23 +68,32 @@ class MainScaffold extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          isActive ? item.activeIcon : item.icon,
-                          size: 22,
-                          color: isActive
-                              ? AppColors.primary
-                              : Colors.white.withValues(alpha: 0.5),
-                        ),
+                        if (isActive)
+                          Container(
+                            width: 40,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(item.activeIcon,
+                                size: 20, color: Colors.white),
+                          )
+                        else
+                          Icon(item.icon,
+                              size: 22,
+                              color: Colors.white.withValues(alpha: 0.4)),
                         const SizedBox(height: 3),
                         Text(
                           item.label,
                           style: TextStyle(
                             fontSize: 10,
-                            fontWeight:
-                                isActive ? FontWeight.w600 : FontWeight.w400,
+                            fontWeight: isActive
+                                ? FontWeight.w600
+                                : FontWeight.w400,
                             color: isActive
                                 ? AppColors.primary
-                                : Colors.white.withValues(alpha: 0.5),
+                                : Colors.white.withValues(alpha: 0.4),
                           ),
                         ),
                       ],

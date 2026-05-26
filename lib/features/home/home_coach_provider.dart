@@ -30,7 +30,7 @@ final homeCoachProvider = Provider<HomeCoachData>((ref) {
 
   final aandachtspunt = examenadvies.nogOefenen.isNotEmpty
       ? examenadvies.nogOefenen.first
-      : mockExamenadvies.nogOefenen.first;
+      : 'Volg meer lessen voor gepersonaliseerd advies.';
 
   return HomeCoachData(
     readinessScore: examenadvies.score,

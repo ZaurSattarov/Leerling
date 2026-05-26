@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/services/student_service.dart';
+import '../../shared/providers/auth_provider.dart';
 
 class LesvoorbereidingData {
   final String focus;
@@ -6,6 +8,7 @@ class LesvoorbereidingData {
   final List<String> tips;
   final List<String> oefenen;
   final String motivatie;
+  final bool isEchteData;
 
   const LesvoorbereidingData({
     required this.focus,
@@ -13,27 +16,53 @@ class LesvoorbereidingData {
     required this.tips,
     required this.oefenen,
     required this.motivatie,
+    this.isEchteData = false,
   });
 }
 
-const _mockLesvoorbereiding = LesvoorbereidingData(
-  focus: 'Kijkgedrag en rotondes',
+const _leegState = LesvoorbereidingData(
+  focus: 'Nog geen advies beschikbaar',
   voorbereiding:
-      'Morgen oefen je rotondes. Let extra op spiegelen, richting aangeven en rustig invoegen.',
-  tips: [
-    'Kijk vroeg naar borden en rijstroken voordat je de rotonde nadert.',
-    'Controleer spiegels en dode hoek voordat je uitvoegt.',
-    'Geef richting duidelijk en op tijd aan.',
-  ],
-  oefenen: [
-    'Rotondes met meerdere rijstroken',
-    'Spiegelgebruik voor en na de rotonde',
-    'Rustig invoegen en uitvoegen',
-  ],
-  motivatie:
-      'Je hoeft het niet perfect te doen. Focus op rustig blijven en steeds dezelfde kijkroutine gebruiken.',
+      'Na je eerste les met evaluatie toont je instructeur hier de voorbereiding voor de volgende les.',
+  tips: [],
+  oefenen: [],
+  motivatie: 'Je instructeur vult dit in na elke les.',
+  isEchteData: false,
 );
 
-final lesvoorbereidingProvider = Provider<LesvoorbereidingData>((ref) {
-  return _mockLesvoorbereiding;
+final lesvoorbereidingProvider =
+    FutureProvider.autoDispose<LesvoorbereidingData>((ref) async {
+  final profiel = await ref.watch(mijnProfielProvider.future);
+  if (profiel == null) return _leegState;
+
+  try {
+    final eval = await StudentService.getLaatsteEvaluatie(profiel.id);
+    if (eval == null) return _leegState;
+
+    final advies = (eval['next_lesson_advice'] as String?)?.trim() ?? '';
+    final focusPoints =
+        List<String>.from((eval['focus_points'] as List?) ?? []);
+    final feedback = (eval['feedback'] as String?)?.trim() ?? '';
+
+    if (advies.isEmpty && focusPoints.isEmpty) return _leegState;
+
+    final focusLabel = focusPoints.isNotEmpty
+        ? focusPoints.take(2).join(', ')
+        : 'Vorige les aandachtspunten';
+
+    return LesvoorbereidingData(
+      focus: focusLabel,
+      voorbereiding: advies.isNotEmpty
+          ? advies
+          : 'Je instructeur heeft aandachtspunten ingevuld voor de volgende les.',
+      tips: focusPoints,
+      oefenen: focusPoints,
+      motivatie: feedback.isNotEmpty
+          ? feedback
+          : 'Oefen de aandachtspunten van je laatste les.',
+      isEchteData: true,
+    );
+  } catch (_) {
+    return _leegState;
+  }
 });

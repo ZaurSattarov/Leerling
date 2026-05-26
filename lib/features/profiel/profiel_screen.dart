@@ -71,23 +71,69 @@ class ProfielScreen extends ConsumerWidget {
                         ),
                       ],
                       const SizedBox(height: 12),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.10),
-                          borderRadius: BorderRadius.circular(99),
-                          border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.18)),
+                      if (profiel != null)
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 7),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(99),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.school_rounded,
+                                      color: Colors.white, size: 13),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    profiel.pakket.label,
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 7),
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(99),
+                                border: Border.all(
+                                    color:
+                                        Colors.white.withValues(alpha: 0.3)),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 6,
+                                    height: 6,
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFFEF4444),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    profiel.status.label,
+                                    style: TextStyle(
+                                        color: Colors.white
+                                            .withValues(alpha: 0.85),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          profiel != null ? _pakketBadgeLabel(profiel) : '',
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
                     ],
                   ),
                   loading: () => const Center(
@@ -283,13 +329,6 @@ class ProfielScreen extends ConsumerWidget {
     );
   }
 
-  String _pakketBadgeLabel(LeerlingProfiel profiel) {
-    if (profiel.lessenTotaal > 0) {
-      return '${profiel.pakket.label} pakket - ${profiel.lessenTotaal} lessen';
-    }
-    return 'Pakket: ${profiel.pakket.label}';
-  }
-
   Future<void> _kiesProfielfoto(
     BuildContext context,
     WidgetRef ref,
@@ -423,19 +462,21 @@ class ProfileAvatar extends StatelessWidget {
       label: 'Profielfoto wijzigen',
       child: InkWell(
         onTap: onTap,
-        customBorder: const CircleBorder(),
+        borderRadius: BorderRadius.circular(22),
         child: Stack(
           clipBehavior: Clip.none,
           children: [
             Container(
-              width: 86,
-              height: 86,
+              width: 88,
+              height: 88,
               decoration: BoxDecoration(
-                color: AppColors.dark3,
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white24, width: 2),
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.15), width: 2),
               ),
-              child: ClipOval(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
                 child: avatarUrl?.isNotEmpty == true
                     ? CachedNetworkImage(
                         imageUrl: avatarUrl!,
@@ -453,20 +494,21 @@ class ProfileAvatar extends StatelessWidget {
               ),
             ),
             Positioned(
-              right: 0,
-              bottom: 2,
+              right: -4,
+              bottom: -4,
               child: Container(
-                width: 28,
-                height: 28,
+                width: 30,
+                height: 30,
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.dark, width: 2),
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(9),
+                  border: Border.all(
+                      color: AppColors.dark.withValues(alpha: 0.08), width: 1),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.photo_camera_rounded,
-                  color: Colors.white,
-                  size: 15,
+                  color: AppColors.dark,
+                  size: 16,
                 ),
               ),
             ),

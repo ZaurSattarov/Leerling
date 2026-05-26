@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -33,16 +35,26 @@ class VoortgangScreen extends ConsumerWidget {
               pinned: true,
               automaticallyImplyLeading: false,
               expandedHeight: 110,
-              flexibleSpace: const FlexibleSpaceBar(
-                titlePadding: EdgeInsets.fromLTRB(20, 0, 20, 16),
-                title: Text(
-                  'Mijn Voortgang',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
+              actions: [
+                GestureDetector(
+                  onTap: () => context.go('/notificaties'),
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 16, top: 10),
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppColors.dark2,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.notifications_outlined,
+                        color: Colors.white, size: 20),
                   ),
                 ),
+              ],
+              flexibleSpace: const FlexibleSpaceBar(
+                titlePadding: EdgeInsets.fromLTRB(20, 0, 64, 16),
+                title: _ScreenHeader(
+                    label: 'VOORTGANG', title: 'Mijn voortgang'),
               ),
             ),
             profielAsync.when(
@@ -69,8 +81,6 @@ class VoortgangScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(20),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
-                      const _VoortgangSamenvattingCard(),
-                      const SizedBox(height: 14),
                       lespakketAsync.when(
                         data: (data) => data != null
                             ? _TotaleVoortgangCard(data: data)
@@ -82,7 +92,7 @@ class VoortgangScreen extends ConsumerWidget {
                                 ),
                               ),
                         loading: () => const SkeletonBox(
-                          height: 190,
+                          height: 200,
                           radius: 18,
                         ),
                         error: (_, __) => _TotaleVoortgangCard(
@@ -92,6 +102,8 @@ class VoortgangScreen extends ConsumerWidget {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 16),
+                      const _DezeWeekCard(),
                       const SizedBox(height: 24),
                       const SectionHeader(title: 'CBR-competenties'),
                       const SizedBox(height: 12),
@@ -105,7 +117,8 @@ class VoortgangScreen extends ConsumerWidget {
                       const SectionHeader(title: 'Voortgang in de tijd'),
                       const SizedBox(height: 12),
                       trendsAsync.when(
-                        data: (trends) => _VoortgangTrendsSection(data: trends),
+                        data: (trends) =>
+                            _VoortgangTrendsSection(data: trends),
                         loading: () => const SkeletonCard(),
                         error: (_, __) => const _VoortgangTrendsSection(
                             data: mockVoortgangTrends),
@@ -119,7 +132,7 @@ class VoortgangScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(20),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
-                    const SkeletonBox(height: 130, radius: 18),
+                    const SkeletonBox(height: 200, radius: 18),
                     const SizedBox(height: 14),
                     const SkeletonCard(),
                     const SizedBox(height: 10),
@@ -139,6 +152,312 @@ class VoortgangScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ScreenHeader extends StatelessWidget {
+  final String label;
+  final String title;
+
+  const _ScreenHeader({required this.label, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.primary,
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.5,
+          ),
+        ),
+        Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TotaleVoortgangCard extends StatelessWidget {
+  final LespakketVoortgangData data;
+
+  const _TotaleVoortgangCard({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    final total =
+        data.afgerondeLessen + data.geplandeLessen + data.nogInTePlannen;
+
+    return GestureDetector(
+      onTap: () => context.push('/voortgang/lespakket'),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.dark,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _CircularProgressWidget(value: data.percentageAfgerond),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.pakketLabel.toUpperCase(),
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '$total' == '0'
+                            ? '${data.afgerondeLessen}'
+                            : '${data.afgerondeLessen}/$total',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w900,
+                          height: 1.0,
+                        ),
+                      ),
+                      Text(
+                        'lessen gevolgd',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.5),
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+              decoration: BoxDecoration(
+                color: AppColors.dark2,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _DarkStat(
+                      label: 'AFGEROND',
+                      value: '${data.afgerondeLessen}',
+                      valueColor: AppColors.primary,
+                    ),
+                  ),
+                  Expanded(
+                    child: _DarkStat(
+                      label: 'GEPLAND',
+                      value: '${data.geplandeLessen}',
+                      valueColor: Colors.white,
+                    ),
+                  ),
+                  Expanded(
+                    child: _DarkStat(
+                      label: 'RESTEREND',
+                      value: '${data.nogInTePlannen}',
+                      valueColor: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DarkStat extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color valueColor;
+
+  const _DarkStat({
+    required this.label,
+    required this.value,
+    required this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w900,
+            color: valueColor,
+          ),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w600,
+            color: Colors.white.withValues(alpha: 0.4),
+            letterSpacing: 0.8,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CircularProgressWidget extends StatelessWidget {
+  final double value;
+
+  const _CircularProgressWidget({required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 90,
+      height: 90,
+      child: Stack(
+        children: [
+          CustomPaint(
+            size: const Size(90, 90),
+            painter: _CircularProgressPainter(value: value),
+          ),
+          Center(
+            child: Text(
+              '${(value * 100).round()}%',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 19,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CircularProgressPainter extends CustomPainter {
+  final double value;
+
+  const _CircularProgressPainter({required this.value});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const strokeWidth = 9.0;
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (size.width - strokeWidth) / 2;
+
+    final bgPaint = Paint()
+      ..color = AppColors.dark3
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    final fgPaint = Paint()
+      ..color = AppColors.primary
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawCircle(center, radius, bgPaint);
+
+    final sweepAngle = 2 * pi * value.clamp(0.0, 1.0);
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -pi / 2,
+      sweepAngle,
+      false,
+      fgPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _CircularProgressPainter oldDelegate) =>
+      oldDelegate.value != value;
+}
+
+class _DezeWeekCard extends StatelessWidget {
+  const _DezeWeekCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.auto_awesome_rounded,
+                color: Colors.white, size: 20),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'DEZE WEEK',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primary,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                SizedBox(height: 3),
+                Text(
+                  'Je bent goed op weg',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: 5),
+                Text(
+                  'Focus deze week op zelfstandig rijden en kijkgedrag.',
+                  style: TextStyle(
+                    fontSize: 13,
+                    height: 1.4,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -564,16 +883,21 @@ class _LineChartPainter extends CustomPainter {
         Offset(size.width, size.height - 18), axisPaint);
     if (points.isEmpty) return;
 
-    final minScore = points.map((p) => p.score).reduce((a, b) => a < b ? a : b);
-    final maxScore = points.map((p) => p.score).reduce((a, b) => a > b ? a : b);
-    final range = (maxScore - minScore).abs() < 8 ? 8 : maxScore - minScore;
+    final minScore =
+        points.map((p) => p.score).reduce((a, b) => a < b ? a : b);
+    final maxScore =
+        points.map((p) => p.score).reduce((a, b) => a > b ? a : b);
+    final range =
+        (maxScore - minScore).abs() < 8 ? 8 : maxScore - minScore;
     final usableHeight = size.height - 32;
-    final stepX = points.length == 1 ? 0.0 : size.width / (points.length - 1);
+    final stepX =
+        points.length == 1 ? 0.0 : size.width / (points.length - 1);
 
     Offset offsetFor(int index) {
       final score = points[index].score;
       final normalized = (score - minScore) / range;
-      return Offset(index * stepX, usableHeight - normalized * usableHeight);
+      return Offset(
+          index * stepX, usableHeight - normalized * usableHeight);
     }
 
     final path = Path()..moveTo(offsetFor(0).dx, offsetFor(0).dy);
@@ -581,7 +905,8 @@ class _LineChartPainter extends CustomPainter {
       final previous = offsetFor(i - 1);
       final current = offsetFor(i);
       final midX = (previous.dx + current.dx) / 2;
-      path.cubicTo(midX, previous.dy, midX, current.dy, current.dx, current.dy);
+      path.cubicTo(
+          midX, previous.dy, midX, current.dy, current.dx, current.dy);
     }
 
     final fillPath = Path.from(path)
@@ -619,225 +944,6 @@ class _LineChartPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _LineChartPainter oldDelegate) {
     return oldDelegate.points != points;
-  }
-}
-
-class _VoortgangSamenvattingCard extends StatelessWidget {
-  const _VoortgangSamenvattingCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return AppCard(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const IconBadge(
-            icon: Icons.trending_up_rounded,
-            color: AppColors.dark3,
-            size: 42,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  'Je bent goed op weg',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  'Focus deze week op zelfstandig rijden en kijkgedrag.',
-                  style: TextStyle(
-                    fontSize: 13,
-                    height: 1.4,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TotaleVoortgangCard extends StatelessWidget {
-  final LespakketVoortgangData data;
-
-  const _TotaleVoortgangCard({required this.data});
-
-  @override
-  Widget build(BuildContext context) {
-    return AppCard(
-      onTap: () => context.push('/voortgang/lespakket'),
-      padding: EdgeInsets.zero,
-      child: Container(
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const IconBadge(
-                  icon: Icons.route_rounded,
-                  color: AppColors.primary,
-                  size: 42,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Totale voortgang',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        'Pakket: ${data.pakketLabel}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '${data.percentageLabel}%',
-                      style: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const Icon(
-                      Icons.chevron_right_rounded,
-                      color: AppColors.textMuted,
-                      size: 22,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(99),
-              child: LinearProgressIndicator(
-                value: data.percentageAfgerond,
-                minHeight: 8,
-                backgroundColor: AppColors.borderLight,
-                valueColor: const AlwaysStoppedAnimation(AppColors.primary),
-              ),
-            ),
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                Expanded(
-                  child: _ProgressMetric(
-                    label: 'Afgerond',
-                    value: '${data.afgerondeLessen}',
-                    color: AppColors.successSolid,
-                  ),
-                ),
-                Expanded(
-                  child: _ProgressMetric(
-                    label: 'Gepland',
-                    value: '${data.geplandeLessen}',
-                    color: AppColors.infoSolid,
-                  ),
-                ),
-                Expanded(
-                  child: _ProgressMetric(
-                    label: 'Resterend',
-                    value: '${data.nogInTePlannen}',
-                    color: AppColors.primary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              data.heeftExtraLessen
-                  ? '${data.extraLessen} extra les${data.extraLessen == 1 ? '' : 'sen'} gevolgd'
-                  : 'Alleen afgeronde lessen tellen als verbruikt',
-              style: const TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ProgressMetric extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-
-  const _ProgressMetric({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
-      decoration: BoxDecoration(
-        color: AppColors.neutralBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-              color: color,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 10,
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 
@@ -880,12 +986,6 @@ class _CompetentieCard extends StatelessWidget {
 
   const _CompetentieCard({required this.score});
 
-  Color get _statusColor {
-    if (score.percentage >= 0.8) return AppColors.successSolid;
-    if (score.percentage >= 0.5) return AppColors.infoSolid;
-    return AppColors.primary;
-  }
-
   @override
   Widget build(BuildContext context) {
     return AppCard(
@@ -895,9 +995,9 @@ class _CompetentieCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              IconBadge(
-                icon: Icons.checklist_rounded,
-                color: _statusColor,
+              const IconBadge(
+                icon: Icons.adjust_rounded,
+                color: AppColors.dark2,
                 size: 38,
               ),
               const SizedBox(width: 12),
@@ -926,59 +1026,19 @@ class _CompetentieCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '${(score.percentage * 100).round()}%',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  _CompetentieStatusPill(
-                    label: score.status,
-                    color: _statusColor,
-                  ),
-                ],
+              Text(
+                '${(score.percentage * 100).round()}%',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.textPrimary,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 14),
           AccentProgressBar(value: score.percentage),
         ],
-      ),
-    );
-  }
-}
-
-class _CompetentieStatusPill extends StatelessWidget {
-  final String label;
-  final Color color;
-
-  const _CompetentieStatusPill({
-    required this.label,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.neutralBg,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          color: color,
-        ),
       ),
     );
   }

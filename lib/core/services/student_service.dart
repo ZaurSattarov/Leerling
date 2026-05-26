@@ -455,4 +455,40 @@ class StudentService {
       'recenteNotificaties': recenteNotificaties,
     };
   }
+
+  // ─────────────────────────────────────────────────────────────
+  // EXAMENADVIES & EVALUATIES
+  // ─────────────────────────────────────────────────────────────
+
+  static Future<Map<String, dynamic>?> getExamReadiness(
+      String leerlingId) async {
+    try {
+      final row = await client
+          .from('student_exam_readiness')
+          .select()
+          .eq('student_id', leerlingId)
+          .maybeSingle();
+      return row != null ? Map<String, dynamic>.from(row) : null;
+    } catch (e) {
+      debugPrint('[student.examReadiness] ophalen mislukt: $e');
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getLaatsteEvaluatie(
+      String leerlingId) async {
+    try {
+      final row = await client
+          .from('lesson_evaluations')
+          .select()
+          .eq('student_id', leerlingId)
+          .order('created_at', ascending: false)
+          .limit(1)
+          .maybeSingle();
+      return row != null ? Map<String, dynamic>.from(row) : null;
+    } catch (e) {
+      debugPrint('[student.evaluatie] ophalen mislukt: $e');
+      return null;
+    }
+  }
 }

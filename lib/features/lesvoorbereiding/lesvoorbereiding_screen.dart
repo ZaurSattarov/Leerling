@@ -10,7 +10,7 @@ class LesvoorbereidingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final voorbereiding = ref.watch(lesvoorbereidingProvider);
+    final voorbereidingAsync = ref.watch(lesvoorbereidingProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -36,65 +36,77 @@ class LesvoorbereidingScreen extends ConsumerWidget {
               ),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.all(20),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _FocusCard(data: voorbereiding),
-                const SizedBox(height: 14),
-                _ListCard(
-                  title: '3 tips voor je volgende les',
-                  icon: Icons.lightbulb_outline_rounded,
-                  iconColor: AppColors.warningSolid,
-                  items: voorbereiding.tips,
-                ),
-                const SizedBox(height: 14),
-                _ListCard(
-                  title: 'Dit ga je oefenen',
-                  icon: Icons.route_rounded,
-                  iconColor: AppColors.infoSolid,
-                  items: voorbereiding.oefenen,
-                ),
-                const SizedBox(height: 14),
-                AppCard(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const IconBadge(
-                        icon: Icons.favorite_border_rounded,
-                        color: AppColors.successSolid,
-                        size: 38,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Motivatie',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.textPrimary,
-                              ),
+          voorbereidingAsync.when(
+            loading: () => const SliverFillRemaining(
+              child: Center(child: CircularProgressIndicator()),
+            ),
+            error: (_, __) => const SliverFillRemaining(child: SizedBox()),
+            data: (voorbereiding) => SliverPadding(
+              padding: const EdgeInsets.all(20),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  _FocusCard(data: voorbereiding),
+                  if (voorbereiding.tips.isNotEmpty) ...[
+                    const SizedBox(height: 14),
+                    _ListCard(
+                      title: 'Aandachtspunten volgende les',
+                      icon: Icons.lightbulb_outline_rounded,
+                      iconColor: AppColors.warningSolid,
+                      items: voorbereiding.tips,
+                    ),
+                  ],
+                  if (voorbereiding.oefenen.isNotEmpty) ...[
+                    const SizedBox(height: 14),
+                    _ListCard(
+                      title: 'Dit ga je oefenen',
+                      icon: Icons.route_rounded,
+                      iconColor: AppColors.infoSolid,
+                      items: voorbereiding.oefenen,
+                    ),
+                  ],
+                  if (voorbereiding.motivatie.isNotEmpty) ...[
+                    const SizedBox(height: 14),
+                    AppCard(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const IconBadge(
+                            icon: Icons.favorite_border_rounded,
+                            color: AppColors.successSolid,
+                            size: 38,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Feedback instructeur',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  voorbereiding.motivatie,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    height: 1.45,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 6),
-                            Text(
-                              voorbereiding.motivatie,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                height: 1.45,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 28),
-              ]),
+                    ),
+                  ],
+                  const SizedBox(height: 28),
+                ]),
+              ),
             ),
           ),
         ],

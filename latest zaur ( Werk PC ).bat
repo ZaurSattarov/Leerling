@@ -1,6 +1,7 @@
 @echo off
 set "PROJECT_DIR=%~dp0"
 set "FLUTTER=C:\flutter\bin\flutter.bat"
+set "FLUTTER_LOCAL=%USERPROFILE%\Documents\flutter\bin\flutter.bat"
 set "ADB=%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe"
 set "EMULATOR=%LOCALAPPDATA%\Android\Sdk\emulator\emulator.exe"
 set "APP_ID=nl.rijschool.leerling_app"
@@ -13,7 +14,11 @@ if not exist "%PROJECT_DIR%pubspec.yaml" (
 )
 
 if not exist "%FLUTTER%" (
-    set "FLUTTER=flutter"
+    if exist "%FLUTTER_LOCAL%" (
+        set "FLUTTER=%FLUTTER_LOCAL%"
+    ) else (
+        set "FLUTTER=flutter"
+    )
 )
 
 if not exist "%ADB%" (
@@ -43,7 +48,10 @@ if not defined AVD_NAME set "AVD_NAME=Pixel_10_Pro"
 
 cd /d "%PROJECT_DIR%"
 
-echo [1/3] Bouwen...
+echo [1/4] Emulator ruimte vrijmaken...
+call :CleanEmulator
+
+echo [2/4] Bouwen...
 call "%FLUTTER%" build apk --debug --target-platform android-x64
 if errorlevel 1 (
     echo BUILD MISLUKT
@@ -51,27 +59,12 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo [2/3] Installeren...
-echo Opslag emulator voor opruimen:
-"%ADB%" -s emulator-5554 shell df -h /data
-
-echo Oude app/cache opruimen...
-"%ADB%" -s emulator-5554 uninstall "%APP_ID%" >nul 2>&1
-"%ADB%" -s emulator-5554 shell pm trim-caches 999G >nul 2>&1
-"%ADB%" -s emulator-5554 shell rm -f /data/local/tmp/*.apk >nul 2>&1
-"%ADB%" -s emulator-5554 shell rm -f /data/local/tmp/*.tmp >nul 2>&1
-
-echo Opslag emulator na opruimen:
-"%ADB%" -s emulator-5554 shell df -h /data
-
+echo [3/4] Installeren...
 echo APK installeren zonder streamed install...
 "%ADB%" -s emulator-5554 install -r -d -g --no-streaming "build\app\outputs\flutter-apk\app-debug.apk"
 if errorlevel 1 (
     echo Eerste installatiepoging mislukt. Extra opruimen en opnieuw proberen...
-    "%ADB%" -s emulator-5554 uninstall "%APP_ID%" >nul 2>&1
-    "%ADB%" -s emulator-5554 shell pm trim-caches 999G >nul 2>&1
-    "%ADB%" -s emulator-5554 shell rm -rf /data/local/tmp/* >nul 2>&1
-    "%ADB%" -s emulator-5554 shell df -h /data
+    call :CleanEmulatorDeep
     "%ADB%" -s emulator-5554 install -r -d -g --no-streaming "build\app\outputs\flutter-apk\app-debug.apk"
     if errorlevel 1 (
         echo INSTALLATIE MISLUKT
@@ -99,7 +92,7 @@ if errorlevel 1 (
         timeout /t 5 >nul
 
         echo Opnieuw installeren na wipe...
-        "%ADB%" -s emulator-5554 shell df -h /data
+        call :CleanEmulator
         "%ADB%" -s emulator-5554 install -r -d -g --no-streaming "build\app\outputs\flutter-apk\app-debug.apk"
         if errorlevel 1 (
             echo INSTALLATIE MISLUKT NA WIPE
@@ -110,12 +103,36 @@ if errorlevel 1 (
     )
 )
 
-echo [3/3] Openen...
+echo [4/4] Openen...
 "%ADB%" -s emulator-5554 shell am start -n "%APP_ID%/%MAIN_ACTIVITY%"
 
 echo.
 echo Klaar!
 timeout /t 2 >nul
+exit /b 0
+
+:CleanEmulator
+echo Opslag emulator voor opruimen:
+"%ADB%" -s emulator-5554 shell df -h /data
+echo Oude app en tijdelijke bestanden opruimen...
+"%ADB%" -s emulator-5554 uninstall "%APP_ID%" >nul 2>&1
+"%ADB%" -s emulator-5554 shell pm trim-caches 999G >nul 2>&1
+"%ADB%" -s emulator-5554 shell rm -f /data/local/tmp/*.apk >nul 2>&1
+"%ADB%" -s emulator-5554 shell rm -f /data/local/tmp/*.tmp >nul 2>&1
+"%ADB%" -s emulator-5554 shell rm -f /data/local/tmp/flutter_* >nul 2>&1
+echo Opslag emulator na opruimen:
+"%ADB%" -s emulator-5554 shell df -h /data
+exit /b 0
+
+:CleanEmulatorDeep
+echo Extra emulator-opruiming...
+"%ADB%" -s emulator-5554 shell df -h /data
+"%ADB%" -s emulator-5554 uninstall "%APP_ID%" >nul 2>&1
+"%ADB%" -s emulator-5554 shell pm trim-caches 999G >nul 2>&1
+"%ADB%" -s emulator-5554 shell rm -rf /data/local/tmp/* >nul 2>&1
+"%ADB%" -s emulator-5554 shell rm -rf /data/data/%APP_ID%/cache >nul 2>&1
+"%ADB%" -s emulator-5554 shell rm -rf /sdcard/Android/data/%APP_ID%/cache >nul 2>&1
+"%ADB%" -s emulator-5554 shell df -h /data
 exit /b 0
 
 :WaitForBoot

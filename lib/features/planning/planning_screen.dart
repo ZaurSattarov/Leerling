@@ -41,29 +41,41 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
             backgroundColor: AppColors.dark,
             pinned: true,
             floating: false,
-            expandedHeight: 110,
+            expandedHeight: 120,
             automaticallyImplyLeading: false,
-            flexibleSpace: const FlexibleSpaceBar(
-              titlePadding: EdgeInsets.fromLTRB(20, 0, 20, 56),
-              title: Text(
-                'Mijn Planning',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
+            actions: [
+              GestureDetector(
+                onTap: () => context.go('/notificaties'),
+                child: Container(
+                  margin: const EdgeInsets.only(right: 16, top: 10),
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppColors.dark2,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.notifications_outlined,
+                      color: Colors.white, size: 20),
                 ),
               ),
+            ],
+            flexibleSpace: const FlexibleSpaceBar(
+              titlePadding: EdgeInsets.fromLTRB(20, 0, 64, 56),
+              title: _ScreenHeader(label: 'PLANNING', title: 'Mijn lessen'),
             ),
-            bottom: TabBar(
-              controller: _tabs,
-              indicatorColor: AppColors.primary,
-              labelColor: AppColors.primary,
-              unselectedLabelColor: Colors.white54,
-              labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
-              tabs: const [
-                Tab(text: 'Komende lessen'),
-                Tab(text: 'Vorige lessen'),
-              ],
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(52),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                child: AnimatedBuilder(
+                  animation: _tabs,
+                  builder: (_, __) => _PillTabBar(
+                    activeIndex: _tabs.index,
+                    labels: const ['Komende lessen', 'Afgerond'],
+                    onTap: (i) => _tabs.animateTo(i),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -74,6 +86,93 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
             _LessenTab(provider: vorigeLessenProvider, isKomend: false),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ScreenHeader extends StatelessWidget {
+  final String label;
+  final String title;
+
+  const _ScreenHeader({required this.label, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.primary,
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.5,
+          ),
+        ),
+        Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PillTabBar extends StatelessWidget {
+  final int activeIndex;
+  final List<String> labels;
+  final void Function(int) onTap;
+
+  const _PillTabBar({
+    required this.activeIndex,
+    required this.labels,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: AppColors.dark2,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Row(
+        children: List.generate(labels.length, (i) {
+          final isActive = i == activeIndex;
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => onTap(i),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: isActive ? AppColors.primary : Colors.transparent,
+                  borderRadius: BorderRadius.circular(26),
+                ),
+                child: Text(
+                  labels[i],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: isActive
+                        ? Colors.white
+                        : Colors.white.withValues(alpha: 0.5),
+                    fontSize: 13,
+                    fontWeight:
+                        isActive ? FontWeight.w600 : FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -97,7 +196,7 @@ class _LessenTab extends ConsumerWidget {
       },
       child: lessenAsync.when(
         data: (lessen) {
-          if (lessen.isEmpty) {
+          if (lessen.isEmpty && !isKomend) {
             return ListView(
               children: [
                 EmptyState(
@@ -112,11 +211,20 @@ class _LessenTab extends ConsumerWidget {
               ],
             );
           }
+          final total = lessen.length + (isKomend ? 1 : 0);
           return ListView.separated(
             padding: const EdgeInsets.all(20),
-            itemCount: lessen.length,
+            itemCount: total,
             separatorBuilder: (_, __) => const SizedBox(height: 10),
-            itemBuilder: (context, i) => _LesCard(les: lessen[i]),
+            itemBuilder: (context, i) {
+              if (i == lessen.length) {
+                return _NieuweLesButton();
+              }
+              return _LesCard(
+                les: lessen[i],
+                isNext: isKomend && i == 0,
+              );
+            },
           );
         },
         loading: () => ListView.separated(
@@ -139,9 +247,49 @@ class _LessenTab extends ConsumerWidget {
   }
 }
 
+class _NieuweLesButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.border, width: 1.5),
+        color: AppColors.white,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {},
+          borderRadius: BorderRadius.circular(14),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 18),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add_rounded, size: 18, color: AppColors.textSecondary),
+                SizedBox(width: 8),
+                Text(
+                  'Nieuwe les aanvragen',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _LesCard extends StatelessWidget {
   final Les les;
-  const _LesCard({required this.les});
+  final bool isNext;
+
+  const _LesCard({required this.les, this.isNext = false});
 
   @override
   Widget build(BuildContext context) {
@@ -152,33 +300,37 @@ class _LesCard extends StatelessWidget {
         children: [
           // Date block
           Container(
-            width: 52,
-            height: 60,
+            width: 62,
+            height: 80,
             decoration: BoxDecoration(
-              color: les.status == LesStatus.gepland
-                  ? AppColors.primary
-                  : AppColors.borderLight,
+              color: isNext ? AppColors.primary : AppColors.dark2,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  _dagNummer(les.datum),
+                  _dagAfk(les.datum),
                   style: TextStyle(
-                    color: les.status == LesStatus.gepland
-                        ? Colors.white
-                        : AppColors.textPrimary,
-                    fontSize: 20,
+                    color: Colors.white.withValues(alpha: 0.7),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                Text(
+                  _dagNummer(les.datum),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
                     fontWeight: FontWeight.w800,
+                    height: 1.1,
                   ),
                 ),
                 Text(
                   _maandAfk(les.datum),
                   style: TextStyle(
-                    color: les.status == LesStatus.gepland
-                        ? Colors.white.withValues(alpha: 0.8)
-                        : AppColors.textSecondary,
+                    color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
@@ -192,67 +344,80 @@ class _LesCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Text(
-                        '${les.starttijd} – ${les.eindtijd}',
+                        '${les.starttijd} — ${les.eindtijd}',
                         style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ),
-                    StatusPill.les(les.status),
+                    if (isNext) const _VolgendeBadge(),
+                    if (!isNext) StatusPill.les(les.status),
                   ],
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  DatumUtils.duurLabel(les.duurMinuten),
+                  les.geoefendeOnderwerpen.isNotEmpty
+                      ? les.geoefendeOnderwerpen.join(' · ')
+                      : DatumUtils.duurLabel(les.duurMinuten),
                   style: const TextStyle(
-                      fontSize: 12, color: AppColors.textSecondary),
-                ),
-                if (les.locatie?.isNotEmpty == true) ...[
-                  const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on_outlined,
-                          size: 13, color: AppColors.textHint),
-                      const SizedBox(width: 3),
-                      Expanded(
-                        child: Text(
-                          les.locatie!,
-                          style: const TextStyle(
-                              fontSize: 12, color: AppColors.textHint),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
                   ),
-                ],
-                if (les.instructeurNaam?.isNotEmpty == true) ...[
-                  const SizedBox(height: 2),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (les.instructeurNaam?.isNotEmpty == true ||
+                    les.locatie?.isNotEmpty == true) ...[
+                  const SizedBox(height: 6),
                   Row(
                     children: [
-                      const Icon(Icons.person_outline_rounded,
-                          size: 13, color: AppColors.textHint),
-                      const SizedBox(width: 3),
-                      Text(
-                        les.instructeurNaam!,
-                        style: const TextStyle(
-                            fontSize: 12, color: AppColors.textHint),
-                      ),
+                      if (les.instructeurNaam?.isNotEmpty == true) ...[
+                        const Icon(Icons.person_outline_rounded,
+                            size: 13, color: AppColors.textHint),
+                        const SizedBox(width: 3),
+                        Text(les.instructeurNaam!,
+                            style: const TextStyle(
+                                fontSize: 12, color: AppColors.textHint)),
+                        const SizedBox(width: 10),
+                      ],
+                      if (les.locatie?.isNotEmpty == true) ...[
+                        const Icon(Icons.location_on_outlined,
+                            size: 13, color: AppColors.textHint),
+                        const SizedBox(width: 3),
+                        Expanded(
+                          child: Text(
+                            les.locatie!,
+                            style: const TextStyle(
+                                fontSize: 12, color: AppColors.textHint),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ],
               ],
             ),
           ),
-          const Icon(Icons.chevron_right_rounded,
-              color: AppColors.textMuted, size: 20),
         ],
       ),
     );
+  }
+
+  String _dagAfk(String datum) {
+    try {
+      const days = ['MAA', 'DIN', 'WOE', 'DON', 'VRI', 'ZAT', 'ZON'];
+      return days[DateTime.parse(datum).weekday - 1];
+    } catch (_) {
+      return '';
+    }
   }
 
   String _dagNummer(String datum) {
@@ -265,10 +430,36 @@ class _LesCard extends StatelessWidget {
 
   String _maandAfk(String datum) {
     try {
-      final months = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+      const months = [
+        'jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
+        'jul', 'aug', 'sep', 'okt', 'nov', 'dec'
+      ];
       return months[DateTime.parse(datum).month - 1];
     } catch (_) {
       return '';
     }
+  }
+}
+
+class _VolgendeBadge extends StatelessWidget {
+  const _VolgendeBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: const Text(
+        'Volgende',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
   }
 }

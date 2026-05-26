@@ -94,22 +94,18 @@ class SectionHeader extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            title,
+            title.toUpperCase(),
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: AppColors.textSecondary,
+              letterSpacing: 1.2,
             ),
           ),
         ),
         if (action != null && onAction != null)
-          TextButton(
-            onPressed: onAction,
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
+          GestureDetector(
+            onTap: onAction,
             child: Text(
               action!,
               style: const TextStyle(

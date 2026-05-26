@@ -26,7 +26,7 @@ class HomeScreen extends ConsumerWidget {
     final homeAsync = ref.watch(homeProvider);
     final homeCoach = ref.watch(homeCoachProvider);
     final laatsteLesLogboekItemAsync = ref.watch(laatsteLesLogboekItemProvider);
-    final lesvoorbereiding = ref.watch(lesvoorbereidingProvider);
+    final lesvoorbereidingAsync = ref.watch(lesvoorbereidingProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -35,6 +35,8 @@ class HomeScreen extends ConsumerWidget {
         onRefresh: () async {
           ref.invalidate(mijnProfielProvider);
           ref.invalidate(homeProvider);
+          ref.invalidate(lesvoorbereidingProvider);
+          ref.invalidate(laatsteLesLogboekItemProvider);
         },
         child: CustomScrollView(
           slivers: [
@@ -51,18 +53,29 @@ class HomeScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Hoi, ${profiel?.voornaam ?? ''}! 👋',
+                              DatumUtils.langeDatum(DatumUtils.vandaagString())
+                                  .toUpperCase(),
                               style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
+                                color: AppColors.primary,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 1.2,
                               ),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              DatumUtils.langeDatum(DatumUtils.vandaagString()),
+                              'Hoi, ${profiel?.voornaam ?? ''}.',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 26,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              'Klaar voor de volgende rit?',
                               style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.55),
+                                color: Colors.white.withValues(alpha: 0.5),
                                 fontSize: 13,
                               ),
                             ),
@@ -78,22 +91,22 @@ class HomeScreen extends ConsumerWidget {
                         data: (home) => Stack(
                           children: [
                             Container(
-                              width: 44,
-                              height: 44,
+                              width: 40,
+                              height: 40,
                               decoration: BoxDecoration(
                                 color: AppColors.dark2,
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Icon(Icons.notifications_outlined,
-                                  color: Colors.white, size: 22),
+                                  color: Colors.white, size: 20),
                             ),
                             if (home.ongelezenNotificaties > 0)
                               Positioned(
-                                top: 6,
-                                right: 6,
+                                top: 5,
+                                right: 5,
                                 child: Container(
-                                  width: 10,
-                                  height: 10,
+                                  width: 9,
+                                  height: 9,
                                   decoration: const BoxDecoration(
                                     color: AppColors.primary,
                                     shape: BoxShape.circle,
@@ -130,7 +143,11 @@ class HomeScreen extends ConsumerWidget {
 
                     const SizedBox(height: 14),
 
-                    _LesvoorbereidingCard(data: lesvoorbereiding),
+                    lesvoorbereidingAsync.when(
+                      data: (data) => _LesvoorbereidingCard(data: data),
+                      loading: () => const SkeletonCard(),
+                      error: (_, __) => const SizedBox.shrink(),
+                    ),
 
                     const SizedBox(height: 24),
 
@@ -472,75 +489,113 @@ class _CoachReadinessCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.dark,
+        borderRadius: BorderRadius.circular(18),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const IconBadge(
-                icon: Icons.school_rounded,
-                color: AppColors.dark3,
-                size: 42,
-              ),
-              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Ben ik klaar voor examen?',
+                      'EXAMENADVIES',
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
+                        color: AppColors.primary,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.4,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      data.status,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.successText,
+                    const SizedBox(height: 6),
+                    const Text(
+                      'Ben je klaar voor het examen?',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        height: 1.2,
                       ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(width: 12),
-              Text(
-                '${data.readinessScore}%',
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.primary,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${data.readinessScore}%',
+                    style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      height: 1.0,
+                    ),
+                  ),
+                  Text(
+                    data.status.toUpperCase(),
+                    style: const TextStyle(
+                      color: AppColors.primary,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          AccentProgressBar(value: data.readinessScore / 100),
-          const SizedBox(height: 16),
-          _CoachInfoRow(
+          const SizedBox(height: 14),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(99),
+            child: LinearProgressIndicator(
+              value: data.readinessScore / 100,
+              minHeight: 7,
+              backgroundColor: AppColors.dark3,
+              valueColor: const AlwaysStoppedAnimation(AppColors.primary),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('0%',
+                  style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.white.withValues(alpha: 0.35))),
+              Text('EXAMEN — 80%',
+                  style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.white.withValues(alpha: 0.35))),
+            ],
+          ),
+          const SizedBox(height: 14),
+          _DarkCoachRow(
             icon: Icons.flag_rounded,
-            iconColor: AppColors.infoSolid,
-            label: data.advies,
+            label: 'FOCUSPUNT',
+            text: data.advies,
           ),
           const SizedBox(height: 10),
-          _CoachInfoRow(
+          _DarkCoachRow(
             icon: Icons.chat_bubble_outline_rounded,
-            iconColor: AppColors.successSolid,
-            label: data.feedback,
+            label: 'VORIGE FEEDBACK',
+            text: data.feedback,
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Laatst geoefend',
+          Text(
+            'LAATST GEOEFEND',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 10,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: Colors.white.withValues(alpha: 0.4),
+              letterSpacing: 1.0,
             ),
           ),
           const SizedBox(height: 8),
@@ -548,13 +603,33 @@ class _CoachReadinessCard extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: data.laatstGeoefend
-                .map((label) => NeutralChip(label: label))
+                .map((label) => _DarkChip(label: label))
                 .toList(),
           ),
-          const SizedBox(height: 14),
-          InlineCtaLink(
-            label: 'Bekijk examenadvies',
-            onPressed: () => context.push('/examenadvies'),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => context.push('/examenadvies'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                minimumSize: const Size.fromHeight(46),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                elevation: 0,
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Bekijk examenadvies',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700, fontSize: 14)),
+                  SizedBox(width: 6),
+                  Icon(Icons.arrow_forward_rounded, size: 16),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -562,16 +637,13 @@ class _CoachReadinessCard extends StatelessWidget {
   }
 }
 
-class _CoachInfoRow extends StatelessWidget {
+class _DarkCoachRow extends StatelessWidget {
   final IconData icon;
-  final Color iconColor;
   final String label;
+  final String text;
 
-  const _CoachInfoRow({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-  });
+  const _DarkCoachRow(
+      {required this.icon, required this.label, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -579,32 +651,71 @@ class _CoachInfoRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 30,
-          height: 30,
+          width: 32,
+          height: 32,
           decoration: BoxDecoration(
-            color: iconColor,
-            borderRadius: BorderRadius.circular(8),
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(9),
           ),
           child: Icon(icon, color: Colors.white, size: 15),
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontSize: 13,
-                height: 1.35,
-                color: AppColors.textSecondary,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white.withValues(alpha: 0.4),
+                  letterSpacing: 1.0,
+                ),
               ),
-            ),
+              const SizedBox(height: 2),
+              Text(
+                text,
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.35,
+                  color: Colors.white.withValues(alpha: 0.8),
+                ),
+              ),
+            ],
           ),
         ),
       ],
     );
   }
 }
+
+class _DarkChip extends StatelessWidget {
+  final String label;
+
+  const _DarkChip({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.dark2,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: AppColors.dark3),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: Colors.white.withValues(alpha: 0.75),
+        ),
+      ),
+    );
+  }
+}
+
 
 class _VolgendeLesCard extends StatelessWidget {
   final Les les;
