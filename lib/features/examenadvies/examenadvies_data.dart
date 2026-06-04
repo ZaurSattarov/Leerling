@@ -38,7 +38,7 @@ class ScoreOnderdeel {
   });
 }
 
-const mockExamenadvies = ExamenadviesData(
+const emptyExamenadvies = ExamenadviesData(
   score: 0,
   status: 'Nog onvoldoende data',
   uitleg:

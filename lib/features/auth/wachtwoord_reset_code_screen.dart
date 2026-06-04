@@ -8,19 +8,19 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
+import 'auth_design.dart';
 
 class WachtwoordResetCodeScreen extends StatefulWidget {
-  final String email;
-
   const WachtwoordResetCodeScreen({super.key, required this.email});
+
+  final String email;
 
   @override
   State<WachtwoordResetCodeScreen> createState() =>
       _WachtwoordResetCodeScreenState();
 }
 
-class _WachtwoordResetCodeScreenState
-    extends State<WachtwoordResetCodeScreen> {
+class _WachtwoordResetCodeScreenState extends State<WachtwoordResetCodeScreen> {
   static const _codeLength = 8;
 
   final _controllers =
@@ -32,6 +32,31 @@ class _WachtwoordResetCodeScreenState
   int _countdown = 59;
   Timer? _timer;
 
+  String get _otpCode => _controllers.map((c) => c.text).join();
+
+  void _handleCodeChanged(int index, String value) {
+    final digits = value.replaceAll(RegExp(r'\D'), '');
+    if (digits.length > 1) {
+      for (var offset = 0; offset < digits.length; offset++) {
+        final target = index + offset;
+        if (target >= _codeLength) break;
+        _controllers[target].text = digits[offset];
+      }
+      final nextIndex = (index + digits.length).clamp(0, _codeLength - 1);
+      if (index + digits.length >= _codeLength) {
+        _focusNodes[_codeLength - 1].unfocus();
+      } else {
+        _focusNodes[nextIndex].requestFocus();
+      }
+      return;
+    }
+    if (digits.isNotEmpty && index < _codeLength - 1) {
+      _focusNodes[index + 1].requestFocus();
+    } else if (digits.isEmpty && index > 0) {
+      _focusNodes[index - 1].requestFocus();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -40,11 +65,11 @@ class _WachtwoordResetCodeScreenState
 
   @override
   void dispose() {
-    for (final c in _controllers) {
-      c.dispose();
+    for (final controller in _controllers) {
+      controller.dispose();
     }
-    for (final f in _focusNodes) {
-      f.dispose();
+    for (final focusNode in _focusNodes) {
+      focusNode.dispose();
     }
     _timer?.cancel();
     super.dispose();
@@ -56,17 +81,15 @@ class _WachtwoordResetCodeScreenState
       _countdown = 59;
       _kanHerversturen = false;
     });
-    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_countdown <= 1) {
-        t.cancel();
+        timer.cancel();
         setState(() => _kanHerversturen = true);
       } else {
         setState(() => _countdown--);
       }
     });
   }
-
-  String get _otpCode => _controllers.map((c) => c.text).join();
 
   Future<void> _verifieer() async {
     if (_laden) return;
@@ -75,22 +98,21 @@ class _WachtwoordResetCodeScreenState
       _toonFout('Vul alle $_codeLength cijfers in');
       return;
     }
+
     setState(() => _laden = true);
     try {
-      await Supabase.instance.client.auth.verifyOTP(
+      await StudentService.client.auth.verifyOTP(
         email: widget.email,
         token: code,
         type: OtpType.recovery,
       );
       if (mounted) context.go('/reset-password');
     } on AuthException catch (e) {
-      if (mounted) {
-        final m = e.message.toLowerCase();
-        final bericht = (m.contains('invalid') || m.contains('expired'))
-            ? 'Ongeldige of verlopen code. Vraag een nieuwe aan.'
-            : e.message;
-        _toonFout(bericht);
-      }
+      if (!mounted) return;
+      final message = e.message.toLowerCase();
+      _toonFout(message.contains('invalid') || message.contains('expired')
+          ? 'Ongeldige of verlopen code. Vraag een nieuwe aan.'
+          : e.message);
     } catch (e) {
       debugPrint('[reset-code] onverwachte fout: $e');
       if (mounted) _toonFout('Verificatie mislukt. Probeer opnieuw.');
@@ -104,23 +126,21 @@ class _WachtwoordResetCodeScreenState
     try {
       await StudentService.stuurWachtwoordReset(widget.email);
       _startCountdown();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Nieuwe code verstuurd naar ${widget.email}',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Nieuwe code verstuurd naar ${widget.email}',
+            style: GoogleFonts.inter(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
             ),
-            backgroundColor: AppColors.dark,
-            behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
-        );
-      }
+          backgroundColor: AppColors.dark,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
     } on AuthException catch (e) {
       if (mounted) _toonFout(_vriendelijkeFout(e.message));
     } catch (e) {
@@ -129,14 +149,14 @@ class _WachtwoordResetCodeScreenState
     }
   }
 
-  String _vriendelijkeFout(String msg) {
-    final m = msg.toLowerCase();
-    if (m.contains('rate limit') ||
-        m.contains('too many') ||
-        m.contains('security purposes')) {
+  String _vriendelijkeFout(String message) {
+    final lower = message.toLowerCase();
+    if (lower.contains('rate limit') ||
+        lower.contains('too many') ||
+        lower.contains('security purposes')) {
       return 'Wacht even voordat je een nieuwe code aanvraagt.';
     }
-    return msg;
+    return message;
   }
 
   void _toonFout(String bericht) {
@@ -144,15 +164,15 @@ class _WachtwoordResetCodeScreenState
       SnackBar(
         content: Text(
           bericht,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.white,
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AuthDesign.error,
         behavior: SnackBarBehavior.floating,
         elevation: 10,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -162,42 +182,50 @@ class _WachtwoordResetCodeScreenState
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_rounded),
+            onPressed: () => context.go('/wachtwoord-vergeten'),
+          ),
+          title: const Text('Verificatiecode'),
+        ),
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(28, 18, 28, 24),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 60),
                 Container(
                   width: 64,
                   height: 64,
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(bottom: 24),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.08),
+                  decoration: const BoxDecoration(
+                    color: AppColors.dark,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.lock_reset_rounded,
-                    color: AppColors.primary,
+                    color: Colors.white,
                     size: 32,
                   ),
                 ),
                 Text(
                   'Herstelcode invoeren',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 26,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.dark,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -0.5,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   'Voer de 8-cijferige code in die naar\n${widget.email} is gestuurd',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 13,
                     color: AppColors.textSecondary,
                     height: 1.6,
@@ -213,22 +241,17 @@ class _WachtwoordResetCodeScreenState
                             .clamp(30.0, 46.0);
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(_codeLength, (i) {
+                      children: List.generate(_codeLength, (index) {
                         return Padding(
                           padding: EdgeInsets.only(
-                            right: i == _codeLength - 1 ? 0 : gap,
+                            right: index == _codeLength - 1 ? 0 : gap,
                           ),
                           child: _OtpVeld(
                             width: boxWidth,
-                            controller: _controllers[i],
-                            focusNode: _focusNodes[i],
-                            onChanged: (val) {
-                              if (val.length == 1 && i < _codeLength - 1) {
-                                _focusNodes[i + 1].requestFocus();
-                              } else if (val.isEmpty && i > 0) {
-                                _focusNodes[i - 1].requestFocus();
-                              }
-                            },
+                            controller: _controllers[index],
+                            focusNode: _focusNodes[index],
+                            onChanged: (value) =>
+                                _handleCodeChanged(index, value),
                           ),
                         );
                       }),
@@ -240,12 +263,7 @@ class _WachtwoordResetCodeScreenState
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
+                    style: AuthDesign.primaryButtonStyle(),
                     onPressed: _laden ? null : _verifieer,
                     child: _laden
                         ? const SizedBox(
@@ -257,8 +275,8 @@ class _WachtwoordResetCodeScreenState
                             ),
                           )
                         : Text(
-                            'Code bevestigen ›',
-                            style: GoogleFonts.poppins(
+                            'Code bevestigen',
+                            style: GoogleFonts.inter(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -272,7 +290,7 @@ class _WachtwoordResetCodeScreenState
                   children: [
                     Text(
                       'Geen code ontvangen? ',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 13,
                         color: AppColors.textSecondary,
                       ),
@@ -281,7 +299,7 @@ class _WachtwoordResetCodeScreenState
                       onTap: _kanHerversturen ? _herverstuur : null,
                       child: Text(
                         'Opnieuw sturen',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: _kanHerversturen
@@ -296,31 +314,11 @@ class _WachtwoordResetCodeScreenState
                 if (!_kanHerversturen)
                   Text(
                     'Nieuwe code aanvragen over 00:${_countdown.toString().padLeft(2, '0')}',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 12,
                       color: AppColors.textHint,
                     ),
                   ),
-                const Spacer(),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: GestureDetector(
-                    onTap: () => context.go('/wachtwoord-vergeten'),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: const BoxDecoration(
-                        color: AppColors.dark,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.arrow_back_rounded,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 24),
               ],
             ),
@@ -332,17 +330,17 @@ class _WachtwoordResetCodeScreenState
 }
 
 class _OtpVeld extends StatefulWidget {
-  final double width;
-  final TextEditingController controller;
-  final FocusNode focusNode;
-  final ValueChanged<String> onChanged;
-
   const _OtpVeld({
     required this.width,
     required this.controller,
     required this.focusNode,
     required this.onChanged,
   });
+
+  final double width;
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final ValueChanged<String> onChanged;
 
   @override
   State<_OtpVeld> createState() => _OtpVeldState();
@@ -386,18 +384,11 @@ class _OtpVeldState extends State<_OtpVeld> {
         curve: Curves.easeOut,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: heeftFocus ? AppColors.primary : AppColors.border,
-            width: heeftFocus ? 2 : 1,
+            color: heeftFocus ? AuthDesign.focusBorder : AuthDesign.border,
+            width: heeftFocus ? 1.5 : 1,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         child: Center(
           child: TextField(
@@ -405,18 +396,19 @@ class _OtpVeldState extends State<_OtpVeld> {
             focusNode: widget.focusNode,
             autocorrect: false,
             enableSuggestions: false,
-            maxLength: 1,
+            maxLength: _WachtwoordResetCodeScreenState._codeLength,
             textAlign: TextAlign.center,
             textAlignVertical: TextAlignVertical.center,
             keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(1),
+              LengthLimitingTextInputFormatter(
+                  _WachtwoordResetCodeScreenState._codeLength),
             ],
             cursorColor: AppColors.primary,
             cursorHeight: 22,
             cursorWidth: 2,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w700,
               height: 1.0,

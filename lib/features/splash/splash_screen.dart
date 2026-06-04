@@ -49,6 +49,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       return;
     }
 
+    if (user.emailConfirmedAt == null) {
+      await StudentService.uitloggen();
+      if (mounted) context.go('/verificatie', extra: user.email ?? '');
+      return;
+    }
+
     final profiel = await _laadProfiel();
     if (!mounted) return;
 

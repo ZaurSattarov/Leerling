@@ -24,7 +24,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profielAsync = ref.watch(mijnProfielProvider);
     final homeAsync = ref.watch(homeProvider);
-    final homeCoach = ref.watch(homeCoachProvider);
+    final homeCoachAsync = ref.watch(homeCoachProvider);
     final laatsteLesLogboekItemAsync = ref.watch(laatsteLesLogboekItemProvider);
     final lesvoorbereidingAsync = ref.watch(lesvoorbereidingProvider);
 
@@ -130,15 +130,21 @@ class HomeScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(20),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
-                    _CoachReadinessCard(data: homeCoach),
+                    homeCoachAsync.when(
+                      data: (coachData) =>
+                          _CoachReadinessCard(data: coachData),
+                      loading: () => const SkeletonCard(),
+                      error: (_, __) => const SizedBox.shrink(),
+                    ),
 
                     const SizedBox(height: 14),
 
                     laatsteLesLogboekItemAsync.when(
-                      data: (item) => _LaatsteLesLogboekCard(item: item),
+                      data: (item) => item != null
+                          ? _LaatsteLesLogboekCard(item: item)
+                          : const SizedBox.shrink(),
                       loading: () => const SkeletonCard(),
-                      error: (_, __) =>
-                          _LaatsteLesLogboekCard(item: mockLesLogboek.first),
+                      error: (_, __) => const SizedBox.shrink(),
                     ),
 
                     const SizedBox(height: 14),

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
+import 'auth_design.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +16,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  static const _rememberEmailKey = 'auth_remembered_email';
+
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _wachtwoordCtrl = TextEditingController();
@@ -20,6 +25,12 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _wachtwoordZichtbaar = false;
   bool _onthoudenMij = false;
   String? _fout;
+
+  @override
+  void initState() {
+    super.initState();
+    _laadOnthoudenEmail();
+  }
 
   @override
   void dispose() {
@@ -38,28 +49,56 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await StudentService.inloggen(
+      final response = await StudentService.inloggen(
         email: _emailCtrl.text.trim(),
         wachtwoord: _wachtwoordCtrl.text,
       );
-      if (!mounted) return;
-
-      final profiel = await StudentService.getMijnProfiel();
-      if (!mounted) return;
-
-      if (profiel == null) {
-        context.go('/koppelcode');
-      } else {
-        context.go('/home');
+      if (response.session == null || response.user == null) {
+        setState(() => _fout = 'Inloggen lukte niet. Probeer opnieuw.');
+        return;
       }
-    } catch (e) {
+      await _bewaarOnthoudenEmail();
+      if (response.user!.emailConfirmedAt == null) {
+        await StudentService.uitloggen();
+        if (mounted) {
+          context.go('/verificatie',
+              extra: _emailCtrl.text.trim().toLowerCase());
+        }
+        return;
+      }
       if (!mounted) return;
-      setState(() {
-        _fout = _vriendelijkeFout(e.toString());
-        _laden = false;
-      });
+      final profiel = await StudentService.getMijnProfiel();
+      if (mounted) context.go(profiel != null ? '/home' : '/koppelcode');
+    } on AuthException catch (e) {
+      if (mounted) setState(() => _fout = _vriendelijkeFout(e.message));
+    } catch (_) {
+      if (mounted) {
+        setState(() => _fout = 'Inloggen mislukt. Controleer je verbinding.');
+      }
     } finally {
-      if (mounted && _laden) setState(() => _laden = false);
+      if (mounted) setState(() => _laden = false);
+    }
+  }
+
+  Future<void> _laadOnthoudenEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString(_rememberEmailKey);
+    if (!mounted || email == null || email.isEmpty) return;
+    setState(() {
+      _emailCtrl.text = email;
+      _onthoudenMij = true;
+    });
+  }
+
+  Future<void> _bewaarOnthoudenEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_onthoudenMij) {
+      await prefs.setString(
+        _rememberEmailKey,
+        _emailCtrl.text.trim().toLowerCase(),
+      );
+    } else {
+      await prefs.remove(_rememberEmailKey);
     }
   }
 
@@ -74,10 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (m.contains('too many requests')) {
       return 'Te veel pogingen. Wacht even en probeer opnieuw.';
     }
-    if (m.contains('network') || m.contains('socketexception')) {
-      return 'Geen internetverbinding. Controleer je verbinding.';
-    }
-    return 'Inloggen mislukt. Probeer het opnieuw.';
+    return 'Inloggen mislukt: $msg';
   }
 
   @override
@@ -85,42 +121,43 @@ class _LoginScreenState extends State<LoginScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface,
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 Center(
                   child: Image.asset(
                     'assets/Inlogassets/Login-bro.png',
-                    height: 220,
+                    height: MediaQuery.sizeOf(context).height < 700 ? 150 : 180,
                     fit: BoxFit.contain,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 Text(
                   'Welkom terug',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 26,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.dark,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -0.5,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   'Log in met je leerling account',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 13,
                     color: AppColors.textSecondary,
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 22),
                 Form(
                   key: _formKey,
                   child: Column(
@@ -130,13 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         hint: 'E-mailadres',
                         suffixIcon: Icons.email_outlined,
                         keyboardType: TextInputType.emailAddress,
-                        validator: (v) {
-                          if (v == null || v.isEmpty) {
-                            return 'Vul je e-mailadres in';
-                          }
-                          if (!v.contains('@')) return 'Ongeldig e-mailadres';
-                          return null;
-                        },
+                        validator: AuthDesign.validateEmail,
                       ),
                       const SizedBox(height: 14),
                       _WachtwoordVeld(
@@ -156,25 +187,37 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: Checkbox(
-                        value: _onthoudenMij,
-                        activeColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4)),
-                        onChanged: (v) =>
-                            setState(() => _onthoudenMij = v ?? false),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(10),
+                      onTap: () =>
+                          setState(() => _onthoudenMij = !_onthoudenMij),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: Checkbox(
+                            value: _onthoudenMij,
+                            activeColor: AppColors.primary,
+                            checkColor: Colors.white,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            visualDensity: VisualDensity.compact,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            onChanged: (v) =>
+                                setState(() => _onthoudenMij = v ?? false),
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 2),
                     Text(
                       'Onthoud mij',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                           fontSize: 13, color: AppColors.textSecondary),
                     ),
                     const Spacer(),
@@ -187,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: Text(
                         'Wachtwoord vergeten?',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: AppColors.primary,
@@ -203,26 +246,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.24),
-                          blurRadius: 18,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
+                      color: const Color(0xFFFEF2F2),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFFECACA)),
                     ),
                     child: Row(
                       children: [
                         const Icon(Icons.error_outline_rounded,
-                            color: Colors.white, size: 18),
+                            color: AuthDesign.error, size: 18),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
                             _fout!,
-                            style: const TextStyle(
-                                color: Colors.white,
+                            style: GoogleFonts.inter(
+                                color: AuthDesign.error,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500),
                           ),
@@ -230,7 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         GestureDetector(
                           onTap: () => setState(() => _fout = null),
                           child: const Icon(Icons.close_rounded,
-                              color: Colors.white, size: 16),
+                              color: AuthDesign.error, size: 16),
                         ),
                       ],
                     ),
@@ -240,11 +277,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 52,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14)),
-                    ),
+                    style: AuthDesign.primaryButtonStyle(),
                     onPressed: _laden ? null : _inloggen,
                     child: _laden
                         ? const SizedBox(
@@ -255,7 +288,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           )
                         : Text(
                             'Inloggen ›',
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.inter(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -269,16 +302,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Text(
                       'Nieuw hier? ',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                           fontSize: 13, color: AppColors.textSecondary),
                     ),
                     GestureDetector(
                       onTap: () => context.go('/registreer'),
                       child: Text(
                         'Registreer nu',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 13,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                           color: AppColors.primary,
                         ),
                       ),
@@ -316,33 +349,9 @@ class _Veld extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       autocorrect: false,
-      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.dark),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle:
-            GoogleFonts.poppins(fontSize: 14, color: AppColors.textHint),
-        suffixIcon: Icon(suffixIcon, color: AppColors.textHint, size: 20),
-        filled: true,
-        fillColor: AppColors.surface,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.dangerText),
-        ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      ),
+      enableSuggestions: keyboardType != TextInputType.emailAddress,
+      style: GoogleFonts.inter(fontSize: 14, color: AppColors.dark),
+      decoration: AuthDesign.inputDecoration(hint: hint, iconData: suffixIcon),
       validator: validator,
     );
   }
@@ -370,41 +379,22 @@ class _WachtwoordVeld extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: !zichtbaar,
-      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.dark),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle:
-            GoogleFonts.poppins(fontSize: 14, color: AppColors.textHint),
+      autocorrect: false,
+      enableSuggestions: false,
+      style: GoogleFonts.inter(fontSize: 14, color: AppColors.dark),
+      decoration: AuthDesign.inputDecoration(
+        hint: hint,
+        iconData: Icons.lock_outline_rounded,
         suffixIcon: IconButton(
           icon: Icon(
             zichtbaar
                 ? Icons.visibility_off_outlined
                 : Icons.visibility_outlined,
-            color: AppColors.textHint,
+            color: AuthDesign.icon,
             size: 20,
           ),
           onPressed: onToggle,
         ),
-        filled: true,
-        fillColor: AppColors.surface,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.dangerText),
-        ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
       validator: validator,
       onFieldSubmitted: (_) => onSubmit(),

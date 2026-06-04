@@ -69,12 +69,33 @@ class LesLogboekScreen extends ConsumerWidget {
             ),
             error: (_, __) => SliverPadding(
               padding: const EdgeInsets.all(20),
-              sliver: SliverList.separated(
-                itemCount: mockLesLogboek.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  return _LogboekLesCard(item: mockLesLogboek[index]);
-                },
+              sliver: SliverToBoxAdapter(
+                child: Center(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 40),
+                      Icon(Icons.history_rounded,
+                          size: 48, color: AppColors.textHint),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Kon logboek niet laden',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Controleer je verbinding en probeer opnieuw.',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

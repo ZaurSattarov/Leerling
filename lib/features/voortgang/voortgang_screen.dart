@@ -103,7 +103,11 @@ class VoortgangScreen extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const _DezeWeekCard(),
+                      trendsAsync.when(
+                        data: (trends) => _DezeWeekCard(data: trends),
+                        loading: () => const SkeletonCard(),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
                       const SizedBox(height: 24),
                       const SectionHeader(title: 'CBR-competenties'),
                       const SizedBox(height: 12),
@@ -121,7 +125,7 @@ class VoortgangScreen extends ConsumerWidget {
                             _VoortgangTrendsSection(data: trends),
                         loading: () => const SkeletonCard(),
                         error: (_, __) => const _VoortgangTrendsSection(
-                            data: mockVoortgangTrends),
+                            data: emptyVoortgangTrends),
                       ),
                       const SizedBox(height: 16),
                     ]),
@@ -404,7 +408,32 @@ class _CircularProgressPainter extends CustomPainter {
 }
 
 class _DezeWeekCard extends StatelessWidget {
-  const _DezeWeekCard();
+  final VoortgangTrendsData data;
+
+  const _DezeWeekCard({required this.data});
+
+  String get _titel {
+    if (!data.heeftHistorie) return 'Start met je eerste lessen';
+    if (data.verschil > 0) return 'Je bent goed op weg';
+    if (data.verschil < 0) return 'Extra oefenen loont';
+    return 'Stabiele voortgang';
+  }
+
+  String get _advies {
+    if (!data.heeftHistorie) {
+      return 'Volg meer lessen zodat we je voortgang kunnen bijhouden.';
+    }
+    if (data.competenties.isNotEmpty) {
+      final zwakste = data.competenties
+          .where((c) => c.verschil <= 0)
+          .toList();
+      if (zwakste.isNotEmpty) {
+        return 'Focus op ${zwakste.first.naam.toLowerCase()} voor meer verbetering.';
+      }
+      return '${data.competenties.first.naam} gaat goed, blijf oefenen.';
+    }
+    return data.beoordelingTrend;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -423,11 +452,11 @@ class _DezeWeekCard extends StatelessWidget {
                 color: Colors.white, size: 20),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'DEZE WEEK',
                   style: TextStyle(
                     fontSize: 10,
@@ -436,19 +465,19 @@ class _DezeWeekCard extends StatelessWidget {
                     letterSpacing: 1.2,
                   ),
                 ),
-                SizedBox(height: 3),
+                const SizedBox(height: 3),
                 Text(
-                  'Je bent goed op weg',
-                  style: TextStyle(
+                  _titel,
+                  style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
                     color: AppColors.textPrimary,
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
-                  'Focus deze week op zelfstandig rijden en kijkgedrag.',
-                  style: TextStyle(
+                  _advies,
+                  style: const TextStyle(
                     fontSize: 13,
                     height: 1.4,
                     color: AppColors.textSecondary,

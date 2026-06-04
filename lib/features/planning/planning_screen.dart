@@ -259,7 +259,7 @@ class _NieuweLesButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {},
+          onTap: () => context.go('/beschikbaarheid'),
           borderRadius: BorderRadius.circular(14),
           child: const Padding(
             padding: EdgeInsets.symmetric(vertical: 18),

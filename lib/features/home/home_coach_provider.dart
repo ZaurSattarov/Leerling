@@ -8,6 +8,7 @@ class HomeCoachData {
   final String advies;
   final String feedback;
   final List<String> laatstGeoefend;
+  final bool heeftData;
 
   const HomeCoachData({
     required this.readinessScore,
@@ -15,28 +16,41 @@ class HomeCoachData {
     required this.advies,
     required this.feedback,
     required this.laatstGeoefend,
+    this.heeftData = true,
   });
 }
 
-final homeCoachProvider = Provider<HomeCoachData>((ref) {
-  final examenadvies = ref.watch(examenadviesProvider).maybeWhen(
-        data: (advies) => advies,
-        orElse: () => mockExamenadvies,
-      );
-  final laatsteLes = ref.watch(laatsteLesLogboekItemProvider).maybeWhen(
-        data: (item) => item,
-        orElse: () => mockLesLogboek.first,
-      );
+const _emptyCoach = HomeCoachData(
+  readinessScore: 0,
+  status: 'Nog onvoldoende data',
+  advies: 'Volg meer lessen voor gepersonaliseerd advies.',
+  feedback: '',
+  laatstGeoefend: [],
+  heeftData: false,
+);
 
-  final aandachtspunt = examenadvies.nogOefenen.isNotEmpty
-      ? examenadvies.nogOefenen.first
-      : 'Volg meer lessen voor gepersonaliseerd advies.';
+final homeCoachProvider =
+    FutureProvider.autoDispose<HomeCoachData>((ref) async {
+  final examenadviesAsync = ref.watch(examenadviesProvider);
+  final laatsteLesAsync = ref.watch(laatsteLesLogboekItemProvider);
+
+  final examenadvies = examenadviesAsync.valueOrNull;
+  final laatsteLes = laatsteLesAsync.valueOrNull;
+
+  if (examenadvies == null && laatsteLes == null) return _emptyCoach;
+
+  final aandachtspunt =
+      (examenadvies != null && examenadvies.nogOefenen.isNotEmpty)
+          ? examenadvies.nogOefenen.first
+          : 'Volg meer lessen voor gepersonaliseerd advies.';
 
   return HomeCoachData(
-    readinessScore: examenadvies.score,
-    status: examenadvies.status,
+    readinessScore: examenadvies?.score ?? 0,
+    status: examenadvies?.status ?? 'Nog onvoldoende data',
     advies: aandachtspunt,
-    feedback: laatsteLes.feedback,
-    laatstGeoefend: laatsteLes.onderwerpen,
+    feedback: laatsteLes?.feedback ?? '',
+    laatstGeoefend: laatsteLes?.onderwerpen ?? const [],
+    heeftData: (examenadvies?.score ?? 0) > 0 ||
+        (laatsteLes?.feedback.isNotEmpty ?? false),
   );
 });

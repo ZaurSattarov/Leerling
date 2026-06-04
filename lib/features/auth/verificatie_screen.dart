@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/config/app_config.dart';
 import '../../core/constants/app_colors.dart';
+import 'auth_design.dart';
 
 class VerificatieScreen extends StatefulWidget {
   final String email;
@@ -66,6 +67,29 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
 
   String get _otpCode => _controllers.map((c) => c.text).join();
 
+  void _handleCodeChanged(int index, String value) {
+    final digits = value.replaceAll(RegExp(r'\D'), '');
+    if (digits.length > 1) {
+      for (var offset = 0; offset < digits.length; offset++) {
+        final target = index + offset;
+        if (target >= _codeLength) break;
+        _controllers[target].text = digits[offset];
+      }
+      final nextIndex = (index + digits.length).clamp(0, _codeLength - 1);
+      if (index + digits.length >= _codeLength) {
+        _focusNodes[_codeLength - 1].unfocus();
+      } else {
+        _focusNodes[nextIndex].requestFocus();
+      }
+      return;
+    }
+    if (digits.isNotEmpty && index < _codeLength - 1) {
+      _focusNodes[index + 1].requestFocus();
+    } else if (digits.isEmpty && index > 0) {
+      _focusNodes[index - 1].requestFocus();
+    }
+  }
+
   Future<void> _verifieer() async {
     if (_laden) return;
     final code = _otpCode;
@@ -82,13 +106,11 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
       );
       if (mounted) context.go('/koppelcode');
     } on AuthException catch (e) {
-      if (mounted) {
-        _toonFout(e.message.toLowerCase().contains('invalid')
-            ? 'Ongeldige code. Controleer je e-mail.'
-            : 'Verificatie mislukt. Probeer opnieuw.');
-      }
+      _toonFout(e.message.contains('invalid')
+          ? 'Ongeldige code. Controleer je e-mail.'
+          : 'Verificatie mislukt. Probeer opnieuw.');
     } catch (_) {
-      if (mounted) _toonFout('Verificatie mislukt. Probeer opnieuw.');
+      _toonFout('Verificatie mislukt. Probeer opnieuw.');
     } finally {
       if (mounted) setState(() => _laden = false);
     }
@@ -105,19 +127,7 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
       _startCountdown();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Nieuwe code verstuurd',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            backgroundColor: AppColors.dark,
-            behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
+          const SnackBar(content: Text('Nieuwe code verstuurd')),
         );
       }
     } on AuthException catch (e) {
@@ -143,15 +153,15 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
       SnackBar(
         content: Text(
           bericht,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.white,
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AuthDesign.error,
         behavior: SnackBarBehavior.floating,
         elevation: 10,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -161,27 +171,35 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_rounded),
+            onPressed: () => context.go('/registreer'),
+          ),
+          title: const Text('E-mail bevestigen'),
+        ),
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(28, 18, 28, 24),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 60),
                 Text(
                   'Bijna klaar',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.dark,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -0.5,
                   ),
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Voer de verificatiecode in die naar\n${widget.email} is verzonden',
+                  'Voer de 8-cijferige verificatiecode in die naar\n${widget.email} is verzonden',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 13,
                     color: AppColors.textSecondary,
                     height: 1.6,
@@ -206,13 +224,7 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
                             width: boxWidth,
                             controller: _controllers[i],
                             focusNode: _focusNodes[i],
-                            onChanged: (val) {
-                              if (val.length == 1 && i < _codeLength - 1) {
-                                _focusNodes[i + 1].requestFocus();
-                              } else if (val.isEmpty && i > 0) {
-                                _focusNodes[i - 1].requestFocus();
-                              }
-                            },
+                            onChanged: (val) => _handleCodeChanged(i, val),
                           ),
                         );
                       }),
@@ -224,12 +236,7 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
                   width: 200,
                   height: 52,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
+                    style: AuthDesign.primaryButtonStyle(),
                     onPressed: _laden ? null : _verifieer,
                     child: _laden
                         ? const SizedBox(
@@ -242,7 +249,7 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
                           )
                         : Text(
                             'Verifieer',
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.inter(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -256,7 +263,7 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
                   children: [
                     Text(
                       'Geen code ontvangen? ',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 13,
                         color: AppColors.textSecondary,
                       ),
@@ -265,7 +272,7 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
                       onTap: _kanHerversturen ? _herverstuur : null,
                       child: Text(
                         'Opnieuw sturen',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: _kanHerversturen
@@ -280,31 +287,11 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
                 if (!_kanHerversturen)
                   Text(
                     'Nieuwe code aanvragen over 00:${_countdown.toString().padLeft(2, '0')}',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 12,
                       color: AppColors.textHint,
                     ),
                   ),
-                const Spacer(),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: GestureDetector(
-                    onTap: () => context.go('/registreer'),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: const BoxDecoration(
-                        color: AppColors.dark,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.arrow_back_rounded,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 24),
               ],
             ),
@@ -370,18 +357,11 @@ class _OtpVeldState extends State<_OtpVeld> {
         curve: Curves.easeOut,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: heeftFocus ? AppColors.primary : AppColors.border,
-            width: heeftFocus ? 2 : 1,
+            color: heeftFocus ? AuthDesign.focusBorder : AuthDesign.border,
+            width: heeftFocus ? 1.5 : 1,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         child: Center(
           child: TextField(
@@ -389,22 +369,24 @@ class _OtpVeldState extends State<_OtpVeld> {
             focusNode: widget.focusNode,
             autocorrect: false,
             enableSuggestions: false,
-            maxLength: 1,
+            maxLength: _VerificatieScreenState._codeLength,
             textAlign: TextAlign.center,
             textAlignVertical: TextAlignVertical.center,
             keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(1),
+              LengthLimitingTextInputFormatter(
+                  _VerificatieScreenState._codeLength),
             ],
             cursorColor: AppColors.primary,
             cursorHeight: 22,
             cursorWidth: 2,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 20,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
               height: 1.0,
-              color: AppColors.dark,
+              color: AppColors.textPrimary,
+              letterSpacing: -0.5,
             ),
             strutStyle: const StrutStyle(
               fontSize: 20,

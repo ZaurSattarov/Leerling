@@ -77,7 +77,15 @@ final _routerProvider = Provider<GoRouter>((ref) {
           loc == '/reset-password';
 
       if (!isLoggedIn && !isPublicRoute) return '/login';
-      if (isLoggedIn && isAuthRoute) return '/splash';
+
+      if (isLoggedIn) {
+        final user = Supabase.instance.client.auth.currentUser;
+        if (user?.emailConfirmedAt == null &&
+            loc != '/verificatie') {
+          return '/verificatie';
+        }
+        if (isAuthRoute) return '/splash';
+      }
       return null;
     },
     routes: [

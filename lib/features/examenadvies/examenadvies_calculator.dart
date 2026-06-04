@@ -29,7 +29,7 @@ class ExamenadviesCalculator {
         vaardigheidScore != null ||
         lesCompetentieScore != null;
 
-    if (!heeftEchteInput) return mockExamenadvies;
+    if (!heeftEchteInput) return emptyExamenadvies;
 
     final gewogen = <_WeightedScore>[
       _WeightedScore(lesProgressScore, 0.40),
@@ -55,10 +55,10 @@ class ExamenadviesCalculator {
         beoordelingScore: beoordelingScore,
       ),
       sterkePunten: sterkePunten.isEmpty
-          ? mockExamenadvies.sterkePunten
+          ? emptyExamenadvies.sterkePunten
           : sterkePunten.take(4).toList(),
       nogOefenen: nogOefenen.isEmpty
-          ? mockExamenadvies.nogOefenen
+          ? emptyExamenadvies.nogOefenen
           : nogOefenen.take(4).toList(),
       resterendeLessen: _resterendeLessen(score, profiel),
       gebaseerdOp: [
@@ -242,7 +242,7 @@ class ExamenadviesCalculator {
     if (resterendPakket > 0) {
       return 'Nog ongeveer $resterendPakket lessen in je huidige pakket';
     }
-    return mockExamenadvies.resterendeLessen;
+    return emptyExamenadvies.resterendeLessen;
   }
 
   static String _statusVoor(int score) {
@@ -253,7 +253,7 @@ class ExamenadviesCalculator {
 
   static double _weightedAverage(List<_WeightedScore> scores) {
     final totaalGewicht = scores.fold<double>(0, (sum, s) => sum + s.weight);
-    if (totaalGewicht == 0) return mockExamenadvies.score.toDouble();
+    if (totaalGewicht == 0) return emptyExamenadvies.score.toDouble();
     return scores.fold<double>(0, (sum, s) => sum + s.score * s.weight) /
         totaalGewicht;
   }

@@ -9,7 +9,7 @@ export 'examenadvies_data.dart';
 final examenadviesProvider =
     FutureProvider.autoDispose<ExamenadviesData>((ref) async {
   final profiel = await ref.watch(mijnProfielProvider.future);
-  if (profiel == null) return mockExamenadvies;
+  if (profiel == null) return emptyExamenadvies;
 
   try {
     // Probeer eerst de gecachte examenreadiness (bijgewerkt door instructeur)
@@ -63,7 +63,7 @@ final examenadviesProvider =
       zichtbareAfgerondeLessen: lessen,
     );
   } catch (_) {
-    return mockExamenadvies;
+    return emptyExamenadvies;
   }
 });
 

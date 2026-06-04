@@ -13,7 +13,7 @@ class ExamenadviesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final advies = ref.watch(examenadviesProvider).maybeWhen(
           data: (data) => data,
-          orElse: () => mockExamenadvies,
+          orElse: () => emptyExamenadvies,
         );
 
     return Scaffold(

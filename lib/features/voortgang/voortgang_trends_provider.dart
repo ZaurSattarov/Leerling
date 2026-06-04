@@ -8,20 +8,19 @@ import 'voortgang_provider.dart';
 final voortgangTrendsProvider =
     FutureProvider.autoDispose<VoortgangTrendsData>((ref) async {
   final profiel = await ref.watch(mijnProfielProvider.future);
-  if (profiel == null) return mockVoortgangTrends;
+  if (profiel == null) return emptyVoortgangTrends;
 
   try {
     final lessen = await StudentService.getMijnVorigeLessen(
       profiel.id,
       alleenZichtbaarLogboek: true,
     );
-    final data = VoortgangTrendsCalculator.bereken(
+    return VoortgangTrendsCalculator.bereken(
       profiel: profiel,
       lessen: lessen,
     );
-    return data.heeftHistorie ? data : mockVoortgangTrends;
   } catch (_) {
-    return mockVoortgangTrends;
+    return emptyVoortgangTrends;
   }
 });
 
@@ -105,7 +104,7 @@ class VoortgangTrendsCalculator {
   }) {
     final chronologisch = [...lessen]..sort((a, b) =>
         '${a.datum} ${a.starttijd}'.compareTo('${b.datum} ${b.starttijd}'));
-    if (chronologisch.isEmpty) return mockVoortgangTrends;
+    if (chronologisch.isEmpty) return emptyVoortgangTrends;
 
     final scoreHistorie = <TrendPoint>[];
     for (var i = 0; i < chronologisch.length; i++) {
@@ -380,52 +379,18 @@ extension _TakeLast<T> on List<T> {
   }
 }
 
-const mockVoortgangTrends = VoortgangTrendsData(
+const emptyVoortgangTrends = VoortgangTrendsData(
   isMock: true,
-  huidigeScore: 67,
-  vorigeScore: 58,
-  verschil: 9,
-  trendLabel: 'Stijgend',
-  uitleg: 'Je examenadvies steeg van 58% naar 67%.',
-  gemiddeldeBeoordeling: 2.3,
-  beoordelingTrend: 'Je beoordelingen verbeteren',
-  competentieTrend: 'Kijkgedrag is 3 lessen stabiel gebleven',
-  lessenPerWeekLabel: '1.5 afgeronde lessen per week',
-  scoreHistorie: [
-    TrendPoint(label: '08-04', score: 48),
-    TrendPoint(label: '15-04', score: 53),
-    TrendPoint(label: '22-04', score: 58),
-    TrendPoint(label: '29-04', score: 62),
-    TrendPoint(label: '06-05', score: 67),
-  ],
-  competenties: [
-    CompetentieTrend(
-      naam: 'Kijkgedrag',
-      huidigeScore: 68,
-      vorigeScore: 65,
-      verschil: 3,
-      label: 'Stabiel',
-    ),
-    CompetentieTrend(
-      naam: 'Zelfstandig rijden',
-      huidigeScore: 55,
-      vorigeScore: 48,
-      verschil: 7,
-      label: 'Stijgend',
-    ),
-  ],
-  tijdlijn: [
-    LesTijdlijnItem(
-      datumLabel: '06-05 · 10:15',
-      beoordelingLabel: 'Voldoende',
-      feedback: 'Je keek beter vooruit, blijf rust houden bij kruispunten.',
-      competentieLabel: 'Kijkgedrag scoorde 3/5',
-    ),
-    LesTijdlijnItem(
-      datumLabel: '29-04 · 11:00',
-      beoordelingLabel: 'Voldoende',
-      feedback: 'Rotondes gingen rustiger, spiegelen blijft aandachtspunt.',
-      competentieLabel: 'Zelfstandig rijden scoorde 3/5',
-    ),
-  ],
+  huidigeScore: 0,
+  vorigeScore: 0,
+  verschil: 0,
+  trendLabel: 'Nog onvoldoende data',
+  uitleg: 'Volg meer lessen om je voortgang te zien.',
+  gemiddeldeBeoordeling: null,
+  beoordelingTrend: 'Nog onvoldoende beoordelingsdata',
+  competentieTrend: 'Nog onvoldoende competentiedata',
+  lessenPerWeekLabel: 'Nog geen afgeronde lessen',
+  scoreHistorie: [],
+  competenties: [],
+  tijdlijn: [],
 );

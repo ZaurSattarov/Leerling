@@ -4,6 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/services/communication_service.dart';
+import '../../core/services/student_service.dart';
+import 'auth_design.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -14,50 +17,53 @@ class ResetPasswordScreen extends StatefulWidget {
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _wachtwoordCtrl = TextEditingController();
-  final _bevestigCtrl = TextEditingController();
-  bool _laden = false;
-  bool _wachtwoordZichtbaar = false;
-  bool _bevestigZichtbaar = false;
+  final _passwordCtrl = TextEditingController();
+  final _confirmCtrl = TextEditingController();
+  bool _loading = false;
+  bool _showPassword = false;
+  bool _showConfirm = false;
 
   @override
   void dispose() {
-    _wachtwoordCtrl.dispose();
-    _bevestigCtrl.dispose();
+    _passwordCtrl.dispose();
+    _confirmCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _slaOpEnUitloggen() async {
-    if (_laden) return;
+  Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
-    FocusScope.of(context).unfocus();
-    setState(() => _laden = true);
+    final password = _passwordCtrl.text.trim();
+    if (password != _confirmCtrl.text.trim()) {
+      _toonFout('Wachtwoorden komen niet overeen');
+      return;
+    }
 
+    setState(() => _loading = true);
     try {
-      await Supabase.instance.client.auth.updateUser(
-        UserAttributes(password: _wachtwoordCtrl.text),
+      await StudentService.client.auth.updateUser(
+        UserAttributes(password: password),
       );
-      await Supabase.instance.client.auth.signOut();
-      if (mounted) context.go('/login');
+      final email = StudentService.client.auth.currentUser?.email;
+      debugPrint(
+          '[password-recovery] updateUser gelukt, securitymail naar: $email');
+      if (email != null && email.trim().isNotEmpty) {
+        await CommunicationService.sendPasswordChangedSecurityEmail(
+          to: email,
+        );
+      }
+      await StudentService.client.auth.signOut();
+      if (mounted) {
+        _toonSucces('Wachtwoord gewijzigd');
+        context.go('/login');
+      }
     } on AuthException catch (e) {
-      if (mounted) _toonFout(_vriendelijkeFout(e.message));
+      if (mounted) _toonFout(e.message);
     } catch (e) {
       debugPrint('[password-recovery] onverwachte fout: $e');
-      if (mounted) _toonFout('Wachtwoord opslaan mislukt. Probeer opnieuw.');
+      if (mounted) _toonFout('Wachtwoord wijzigen mislukt. Probeer opnieuw.');
     } finally {
-      if (mounted) setState(() => _laden = false);
+      if (mounted) setState(() => _loading = false);
     }
-  }
-
-  String _vriendelijkeFout(String msg) {
-    final m = msg.toLowerCase();
-    if (m.contains('password') && m.contains('characters')) {
-      return 'Wachtwoord moet minimaal 6 tekens bevatten.';
-    }
-    if (m.contains('same password')) {
-      return 'Kies een ander wachtwoord dan je huidige.';
-    }
-    return 'Wachtwoord opslaan mislukt. Probeer opnieuw.';
   }
 
   void _toonFout(String bericht) {
@@ -65,208 +71,164 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       SnackBar(
         content: Text(
           bericht,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.white,
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AuthDesign.error,
         behavior: SnackBarBehavior.floating,
         elevation: 10,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+  }
+
+  void _toonSucces(String bericht) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          bericht,
+          style: GoogleFonts.inter(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        backgroundColor: AppColors.successSolid,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
+    return Scaffold(
+      backgroundColor: AppColors.surface,
+      appBar: AppBar(
+        title: const Text('Nieuw wachtwoord'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.go('/login'),
+        ),
+      ),
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.topCenter,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 60),
-                Container(
-                  width: 64,
-                  height: 64,
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.only(bottom: 24),
+            padding: const EdgeInsets.fromLTRB(24, 18, 24, 24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 420),
+              child: Form(
+                key: _formKey,
+                child: Container(
+                  padding: const EdgeInsets.all(22),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.08),
-                    shape: BoxShape.circle,
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.border),
                   ),
-                  child: const Icon(
-                    Icons.lock_reset_rounded,
-                    color: AppColors.primary,
-                    size: 32,
-                  ),
-                ),
-                Text(
-                  'Nieuw wachtwoord',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    fontSize: 26,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.dark,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Kies een nieuw wachtwoord voor je account',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: 36),
-                Form(
-                  key: _formKey,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      _WachtwoordVeld(
-                        controller: _wachtwoordCtrl,
-                        hint: 'Nieuw wachtwoord (min. 6 tekens)',
-                        zichtbaar: _wachtwoordZichtbaar,
-                        onToggle: () => setState(
-                          () => _wachtwoordZichtbaar = !_wachtwoordZichtbaar,
+                      const Text(
+                        'Kies een nieuw wachtwoord',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
                         ),
-                        validator: (v) {
-                          if (v == null || v.isEmpty) {
-                            return 'Vul een wachtwoord in';
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Gebruik minimaal 8 tekens en kies een wachtwoord dat je niet op andere plekken gebruikt.',
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          height: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 22),
+                      TextFormField(
+                        controller: _passwordCtrl,
+                        obscureText: !_showPassword,
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        decoration: AuthDesign.inputDecoration(
+                          hint: 'Nieuw wachtwoord',
+                          iconData: Icons.lock_outline_rounded,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _showPassword
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                              color: AuthDesign.icon,
+                            ),
+                            onPressed: () =>
+                                setState(() => _showPassword = !_showPassword),
+                          ),
+                        ),
+                        validator: (value) {
+                          if ((value ?? '').trim().length < 8) {
+                            return 'Minimaal 8 tekens';
                           }
-                          if (v.length < 6) return 'Minimaal 6 tekens';
                           return null;
                         },
                       ),
                       const SizedBox(height: 14),
-                      _WachtwoordVeld(
-                        controller: _bevestigCtrl,
-                        hint: 'Wachtwoord bevestigen',
-                        zichtbaar: _bevestigZichtbaar,
-                        onToggle: () => setState(
-                          () => _bevestigZichtbaar = !_bevestigZichtbaar,
+                      TextFormField(
+                        controller: _confirmCtrl,
+                        obscureText: !_showConfirm,
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        decoration: AuthDesign.inputDecoration(
+                          hint: 'Bevestig wachtwoord',
+                          iconData: Icons.lock_reset_rounded,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _showConfirm
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                              color: AuthDesign.icon,
+                            ),
+                            onPressed: () =>
+                                setState(() => _showConfirm = !_showConfirm),
+                          ),
                         ),
-                        validator: (v) {
-                          if (v == null || v.isEmpty) {
+                        validator: (value) {
+                          if ((value ?? '').trim().isEmpty) {
                             return 'Bevestig je wachtwoord';
-                          }
-                          if (v != _wachtwoordCtrl.text) {
-                            return 'Wachtwoorden komen niet overeen';
                           }
                           return null;
                         },
-                        onSubmit: _slaOpEnUitloggen,
+                        onFieldSubmitted: (_) => _save(),
+                      ),
+                      const SizedBox(height: 22),
+                      SizedBox(
+                        height: 52,
+                        child: ElevatedButton(
+                          style: AuthDesign.primaryButtonStyle(),
+                          onPressed: _loading ? null : _save,
+                          child: _loading
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.white,
+                                  ),
+                                )
+                              : const Text('Wachtwoord opslaan'),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 28),
-                SizedBox(
-                  height: 52,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    onPressed: _laden ? null : _slaOpEnUitloggen,
-                    child: _laden
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Text(
-                            'Wachtwoord opslaan ›',
-                            style: GoogleFonts.poppins(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-              ],
+              ),
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-class _WachtwoordVeld extends StatelessWidget {
-  final TextEditingController controller;
-  final String hint;
-  final bool zichtbaar;
-  final VoidCallback onToggle;
-  final String? Function(String?) validator;
-  final VoidCallback? onSubmit;
-
-  const _WachtwoordVeld({
-    required this.controller,
-    required this.hint,
-    required this.zichtbaar,
-    required this.onToggle,
-    required this.validator,
-    this.onSubmit,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      obscureText: !zichtbaar,
-      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.dark),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle:
-            GoogleFonts.poppins(fontSize: 14, color: AppColors.textHint),
-        suffixIcon: IconButton(
-          icon: Icon(
-            zichtbaar
-                ? Icons.visibility_off_outlined
-                : Icons.visibility_outlined,
-            color: AppColors.textHint,
-            size: 20,
-          ),
-          onPressed: onToggle,
-        ),
-        filled: true,
-        fillColor: AppColors.surface,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.dangerText),
-        ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      ),
-      validator: validator,
-      onFieldSubmitted: onSubmit != null ? (_) => onSubmit!() : null,
     );
   }
 }

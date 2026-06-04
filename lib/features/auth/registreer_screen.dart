@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/config/app_config.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
+import 'auth_design.dart';
 
 class RegistreerScreen extends StatefulWidget {
   const RegistreerScreen({super.key});
@@ -36,10 +37,10 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
     FocusScope.of(context).unfocus();
     setState(() => _laden = true);
 
-    final naam = _naamCtrl.text.trim();
-    final email = _emailCtrl.text.trim().toLowerCase();
-
     try {
+      final naam = _naamCtrl.text.trim();
+      final email = _emailCtrl.text.trim().toLowerCase();
+
       final response = await StudentService.registreren(
         email: email,
         wachtwoord: _wachtwoordCtrl.text,
@@ -48,6 +49,7 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
           'full_name': naam,
           'role': 'leerling',
           'type': 'leerling',
+          'account_type': 'leerling',
         },
       );
 
@@ -61,10 +63,11 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
 
       if (mounted) context.go('/verificatie', extra: email);
     } on AuthException catch (e) {
-      if (!mounted) return;
+      debugPrint('[registratie] Supabase AuthException: ${e.message}');
       if (_isBestaandOnbevestigdAccount(e.message)) {
+        final email = _emailCtrl.text.trim().toLowerCase();
         try {
-          await _stuurCodeOpnieuw(email);
+          await _stuurSignupCodeOpnieuw(email);
           if (mounted) context.go('/verificatie', extra: email);
           return;
         } on AuthException catch (resendError) {
@@ -74,7 +77,8 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
       }
       _toonFout(_vriendelijkeFout(e.message));
     } catch (e) {
-      if (mounted) _toonFout('Registratie mislukt. Probeer het opnieuw.');
+      debugPrint('[registratie] onbekende fout: $e');
+      _toonFout('Registratie mislukt: $e');
     } finally {
       if (mounted) setState(() => _laden = false);
     }
@@ -87,7 +91,7 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
         m.contains('user already');
   }
 
-  Future<void> _stuurCodeOpnieuw(String email) {
+  Future<void> _stuurSignupCodeOpnieuw(String email) {
     return Supabase.instance.client.auth.resend(
       type: OtpType.signup,
       email: email,
@@ -98,23 +102,33 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
   String _vriendelijkeFout(String msg) {
     final m = msg.toLowerCase();
     if (m.contains('only request this after') ||
-        m.contains('security purposes') ||
-        m.contains('rate limit') ||
-        m.contains('too many requests')) {
+        m.contains('security purposes')) {
       return 'Wacht even voordat je opnieuw een code aanvraagt.';
+    }
+    if (m.contains('rate limit') || m.contains('too many requests')) {
+      return 'Wacht even voordat je opnieuw een code aanvraagt.';
+    }
+    if (m.contains('confirmation email') ||
+        m.contains('error sending') ||
+        m.contains('unexpected_failure')) {
+      return 'De verificatiemail kon niet worden verzonden. Controleer de SMTP/Resend instellingen en probeer het daarna opnieuw.';
     }
     if (m.contains('already registered') ||
         m.contains('already exists') ||
-        m.contains('user already')) {
+        m.contains('user already') ||
+        m.contains('duplicate')) {
       return 'Dit e-mailadres is al geregistreerd. Log in of gebruik een ander adres.';
     }
     if (m.contains('password') && m.contains('characters')) {
-      return 'Wachtwoord moet minimaal 6 tekens bevatten.';
+      return 'Wachtwoord moet minimaal 8 tekens bevatten.';
+    }
+    if (m.contains('database error') || m.contains('saving new user')) {
+      return 'Registratie mislukt door een databasefout: $msg';
     }
     if (m.contains('email') && m.contains('invalid')) {
       return 'Ongeldig e-mailadres. Controleer het adres en probeer opnieuw.';
     }
-    return 'Registratie mislukt. Probeer het opnieuw.';
+    return 'Registratie mislukt: $msg';
   }
 
   void _toonFout(String bericht) {
@@ -122,15 +136,15 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
       SnackBar(
         content: Text(
           bericht,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.white,
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AuthDesign.error,
         behavior: SnackBarBehavior.floating,
         elevation: 10,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -140,42 +154,43 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface,
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 Center(
                   child: Image.asset(
                     'assets/Inlogassets/Signup.png',
-                    height: 200,
+                    height: MediaQuery.sizeOf(context).height < 760 ? 140 : 165,
                     fit: BoxFit.contain,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 Text(
-                  'Account aanmaken',
+                  'Aan de slag',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 26,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.dark,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -0.5,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   'Maak een leerling account aan en volg je rijlessen',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 13,
                     color: AppColors.textSecondary,
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 22),
                 Form(
                   key: _formKey,
                   child: Column(
@@ -198,59 +213,42 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
                         hint: 'E-mailadres',
                         suffixIcon: Icons.email_outlined,
                         keyboardType: TextInputType.emailAddress,
-                        validator: (v) {
-                          final email = v?.trim() ?? '';
-                          if (email.isEmpty) return 'Vul je e-mailadres in';
-                          final valid = RegExp(
-                            r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
-                          ).hasMatch(email);
-                          if (!valid) return 'Ongeldig e-mailadres';
-                          return null;
-                        },
+                        validator: AuthDesign.validateEmail,
                       ),
                       const SizedBox(height: 12),
                       _WachtwoordVeld(
                         controller: _wachtwoordCtrl,
-                        hint: 'Wachtwoord (min. 6 tekens)',
+                        hint: 'Wachtwoord (min. 8 tekens)',
                         zichtbaar: _wachtwoordZichtbaar,
                         onToggle: () => setState(
-                          () => _wachtwoordZichtbaar = !_wachtwoordZichtbaar,
-                        ),
+                            () => _wachtwoordZichtbaar = !_wachtwoordZichtbaar),
                         validator: (v) {
                           if (v == null || v.isEmpty) {
                             return 'Vul een wachtwoord in';
                           }
-                          if (v.length < 6) return 'Minimaal 6 tekens';
+                          if (v.length < 8) return 'Minimaal 8 tekens';
                           return null;
                         },
-                        onSubmit: _registreren,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 20),
                 SizedBox(
                   height: 52,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
+                    style: AuthDesign.primaryButtonStyle(),
                     onPressed: _laden ? null : _registreren,
                     child: _laden
                         ? const SizedBox(
                             height: 20,
                             width: 20,
                             child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
+                                strokeWidth: 2, color: Colors.white),
                           )
                         : Text(
                             'Account aanmaken ›',
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.inter(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -258,24 +256,22 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
                           ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       'Al een account? ',
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        color: AppColors.textSecondary,
-                      ),
+                      style: GoogleFonts.inter(
+                          fontSize: 13, color: AppColors.textSecondary),
                     ),
                     GestureDetector(
                       onTap: () => context.go('/login'),
                       child: Text(
                         'Inloggen',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 13,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                           color: AppColors.primary,
                         ),
                       ),
@@ -313,33 +309,9 @@ class _Veld extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       autocorrect: false,
-      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.dark),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle:
-            GoogleFonts.poppins(fontSize: 14, color: AppColors.textHint),
-        suffixIcon: Icon(suffixIcon, color: AppColors.textHint, size: 20),
-        filled: true,
-        fillColor: AppColors.surface,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.dangerText),
-        ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      ),
+      enableSuggestions: keyboardType != TextInputType.emailAddress,
+      style: GoogleFonts.inter(fontSize: 14, color: AppColors.dark),
+      decoration: AuthDesign.inputDecoration(hint: hint, iconData: suffixIcon),
       validator: validator,
     );
   }
@@ -351,7 +323,6 @@ class _WachtwoordVeld extends StatelessWidget {
   final bool zichtbaar;
   final VoidCallback onToggle;
   final String? Function(String?) validator;
-  final VoidCallback onSubmit;
 
   const _WachtwoordVeld({
     required this.controller,
@@ -359,7 +330,6 @@ class _WachtwoordVeld extends StatelessWidget {
     required this.zichtbaar,
     required this.onToggle,
     required this.validator,
-    required this.onSubmit,
   });
 
   @override
@@ -367,44 +337,24 @@ class _WachtwoordVeld extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: !zichtbaar,
-      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.dark),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle:
-            GoogleFonts.poppins(fontSize: 14, color: AppColors.textHint),
+      autocorrect: false,
+      enableSuggestions: false,
+      style: GoogleFonts.inter(fontSize: 14, color: AppColors.dark),
+      decoration: AuthDesign.inputDecoration(
+        hint: hint,
+        iconData: Icons.lock_outline_rounded,
         suffixIcon: IconButton(
           icon: Icon(
             zichtbaar
                 ? Icons.visibility_off_outlined
                 : Icons.visibility_outlined,
-            color: AppColors.textHint,
+            color: AuthDesign.icon,
             size: 20,
           ),
           onPressed: onToggle,
         ),
-        filled: true,
-        fillColor: AppColors.surface,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.dangerText),
-        ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
       validator: validator,
-      onFieldSubmitted: (_) => onSubmit(),
     );
   }
 }
