@@ -68,10 +68,10 @@ class IconBadge extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: color,
+        color: AppColors.iconNeutralBg,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Icon(icon, color: Colors.white, size: size * 0.5),
+      child: Icon(icon, color: color, size: size * 0.5),
     );
   }
 }

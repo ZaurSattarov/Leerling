@@ -6,6 +6,12 @@ import '../../shared/providers/auth_provider.dart';
 final komendeLessenProvider = FutureProvider.autoDispose<List<Les>>((ref) async {
   final profiel = await ref.watch(mijnProfielProvider.future);
   if (profiel == null) return [];
+
+  final channel = StudentService.subscribeLessen(profiel.id, () {
+    ref.invalidateSelf();
+  });
+  ref.onDispose(() => StudentService.removeChannel(channel));
+
   return StudentService.getMijnKomendeLessen(profiel.id);
 });
 

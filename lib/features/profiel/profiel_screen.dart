@@ -294,11 +294,17 @@ class ProfielScreen extends ConsumerWidget {
                         ),
                         const Divider(height: 20),
                         _ActionTile(
+                          icon: Icons.quiz_outlined,
+                          iconColor: AppColors.dark3,
+                          label: 'Mijn examens',
+                          onTap: () => context.push('/examens'),
+                        ),
+                        const Divider(height: 20),
+                        _ActionTile(
                           icon: Icons.help_outline_rounded,
                           iconColor: AppColors.infoSolid,
                           label: 'Help & ondersteuning',
-                          onTap: () => showAppSnackBar(context,
-                              'Neem contact op met je rijschool voor hulp.'),
+                          onTap: () => context.push('/help'),
                         ),
                         const Divider(height: 20),
                         _ActionTile(

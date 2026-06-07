@@ -6,6 +6,12 @@ import '../../shared/providers/auth_provider.dart';
 final facturenProvider = FutureProvider.autoDispose<List<Factuur>>((ref) async {
   final profiel = await ref.watch(mijnProfielProvider.future);
   if (profiel == null) return [];
+
+  final channel = StudentService.subscribeFacturen(profiel.id, () {
+    ref.invalidateSelf();
+  });
+  ref.onDispose(() => StudentService.removeChannel(channel));
+
   return StudentService.getMijnFacturen(profiel.id);
 });
 

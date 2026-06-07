@@ -20,6 +20,8 @@ import 'features/planning/planning_screen.dart';
 import 'features/planning/les_detail_screen.dart';
 import 'features/les_logboek/les_logboek_screen.dart';
 import 'features/examenadvies/examenadvies_screen.dart';
+import 'features/help/help_screen.dart';
+import 'features/examens/examens_screen.dart';
 import 'features/lesvoorbereiding/lesvoorbereiding_screen.dart';
 import 'features/voortgang/lespakket_detail_screen.dart';
 import 'features/voortgang/voortgang_screen.dart';
@@ -124,6 +126,14 @@ final _routerProvider = Provider<GoRouter>((ref) {
         builder: (_, __) => const KoppelcodeScreen(),
       ),
 
+      // Help — full screen, outside bottom nav
+      GoRoute(
+        path: '/help',
+        builder: (_, __) => const StudentProfileGate(
+          child: HelpScreen(),
+        ),
+      ),
+
       // Notificaties — full screen, outside bottom nav
       GoRoute(
         path: '/notificaties',
@@ -168,6 +178,10 @@ final _routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/examenadvies',
             builder: (_, __) => const ExamenadviesScreen(),
+          ),
+          GoRoute(
+            path: '/examens',
+            builder: (_, __) => const ExamensScreen(),
           ),
           GoRoute(
             path: '/lesvoorbereiding',
@@ -245,7 +259,7 @@ class LeerlingApp extends ConsumerWidget {
             borderRadius: BorderRadius.circular(28),
           ),
         ),
-        textTheme: GoogleFonts.poppinsTextTheme(
+        textTheme: GoogleFonts.interTextTheme(
           ThemeData.light().textTheme.copyWith(
                 headlineMedium: const TextStyle(
                     color: AppColors.textPrimary,
@@ -291,27 +305,27 @@ class LeerlingApp extends ConsumerWidget {
           selectionHandleColor: AppColors.primaryDark,
         ),
         checkboxTheme: CheckboxThemeData(
-          fillColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
               return AppColors.primary;
             }
             return AppColors.white;
           }),
-          checkColor: MaterialStateProperty.all(AppColors.white),
+          checkColor: WidgetStateProperty.all(AppColors.white),
           side: const BorderSide(color: AppColors.border),
         ),
         radioTheme: RadioThemeData(
-          fillColor: MaterialStateProperty.all(AppColors.primary),
+          fillColor: WidgetStateProperty.all(AppColors.primary),
         ),
         switchTheme: SwitchThemeData(
-          thumbColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
+          thumbColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
               return AppColors.white;
             }
             return AppColors.textHint;
           }),
-          trackColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
+          trackColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
               return AppColors.primary;
             }
             return AppColors.border;
@@ -325,7 +339,7 @@ class LeerlingApp extends ConsumerWidget {
           centerTitle: false,
           iconTheme: const IconThemeData(color: Colors.white),
           systemOverlayStyle: SystemUiOverlayStyle.light,
-          titleTextStyle: GoogleFonts.poppins(
+          titleTextStyle: GoogleFonts.inter(
             fontSize: 17,
             fontWeight: FontWeight.w600,
           ),
@@ -357,10 +371,10 @@ class LeerlingApp extends ConsumerWidget {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           labelStyle:
-              GoogleFonts.poppins(color: AppColors.textSecondary, fontSize: 14),
+              GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 14),
           hintStyle:
-              GoogleFonts.poppins(color: AppColors.textHint, fontSize: 14),
-          floatingLabelStyle: GoogleFonts.poppins(
+              GoogleFonts.inter(color: AppColors.textHint, fontSize: 14),
+          floatingLabelStyle: GoogleFonts.inter(
               color: AppColors.primary,
               fontSize: 13,
               fontWeight: FontWeight.w500),
@@ -375,7 +389,7 @@ class LeerlingApp extends ConsumerWidget {
             ),
             elevation: 2,
             shadowColor: AppColors.shadow,
-            textStyle: GoogleFonts.poppins(
+            textStyle: GoogleFonts.inter(
               fontWeight: FontWeight.w600,
               fontSize: 15,
             ),
@@ -389,7 +403,7 @@ class LeerlingApp extends ConsumerWidget {
               borderRadius: BorderRadius.circular(16),
             ),
             side: const BorderSide(color: AppColors.border),
-            textStyle: GoogleFonts.poppins(
+            textStyle: GoogleFonts.inter(
               fontWeight: FontWeight.w600,
               fontSize: 15,
             ),
@@ -398,7 +412,7 @@ class LeerlingApp extends ConsumerWidget {
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
             foregroundColor: AppColors.primary,
-            textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+            textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600),
           ),
         ),
         cardTheme: CardThemeData(

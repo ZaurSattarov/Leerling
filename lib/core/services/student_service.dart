@@ -8,12 +8,12 @@ import '../../models/leerling_beschikbaarheid.dart';
 import '../../models/les.dart';
 import '../../models/factuur.dart';
 import '../../models/notificatie.dart';
+import '../../models/examen.dart';
 import '../../models/instructeur.dart';
 
 class StudentService {
-  static const String supabaseUrl = 'https://fbgjksxrehqyphaidgck.supabase.co';
-  static const String supabaseAnonKey =
-      'sb_publishable_ePSE3UhFPmTO3j3sYLC99w_n_Zvq9DG';
+  static String get supabaseUrl => AppConfig.supabaseUrl;
+  static String get supabaseAnonKey => AppConfig.supabaseAnonKey;
 
   static SupabaseClient get client => Supabase.instance.client;
   static User? get currentUser => client.auth.currentUser;
@@ -490,5 +490,91 @@ class StudentService {
       debugPrint('[student.evaluatie] ophalen mislukt: $e');
       return null;
     }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // EXAMENS (read-only voor leerling)
+  // ─────────────────────────────────────────────────────────────
+
+  static Future<List<Examen>> getMijnExamens(String leerlingId) async {
+    try {
+      final res = await client
+          .from('examens')
+          .select()
+          .eq('leerling_id', leerlingId)
+          .order('datum', ascending: false);
+      return (res as List).map((e) => Examen.fromJson(e)).toList();
+    } catch (e) {
+      debugPrint('[student.examens] ophalen mislukt: $e');
+      return [];
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // REALTIME SUBSCRIPTIONS
+  // ─────────────────────────────────────────────────────────────
+
+  static RealtimeChannel subscribeLessen(
+    String leerlingId,
+    void Function() onChange,
+  ) {
+    return client
+        .channel('leerling_lessen_$leerlingId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'lessen',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'leerling_id',
+            value: leerlingId,
+          ),
+          callback: (_) => onChange(),
+        )
+        .subscribe();
+  }
+
+  static RealtimeChannel subscribeNotificaties(
+    String leerlingId,
+    void Function() onChange,
+  ) {
+    return client
+        .channel('leerling_notificaties_$leerlingId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'leerling_notificaties',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'leerling_id',
+            value: leerlingId,
+          ),
+          callback: (_) => onChange(),
+        )
+        .subscribe();
+  }
+
+  static RealtimeChannel subscribeFacturen(
+    String leerlingId,
+    void Function() onChange,
+  ) {
+    return client
+        .channel('leerling_facturen_$leerlingId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'facturen',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'leerling_id',
+            value: leerlingId,
+          ),
+          callback: (_) => onChange(),
+        )
+        .subscribe();
+  }
+
+  static Future<void> removeChannel(RealtimeChannel channel) async {
+    await client.removeChannel(channel);
   }
 }

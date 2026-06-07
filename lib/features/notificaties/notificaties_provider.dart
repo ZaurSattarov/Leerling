@@ -8,6 +8,12 @@ final notificatiesProvider =
     FutureProvider.autoDispose<List<Notificatie>>((ref) async {
   final profiel = await ref.watch(mijnProfielProvider.future);
   if (profiel == null) return const [];
+
+  final channel = StudentService.subscribeNotificaties(profiel.id, () {
+    ref.invalidateSelf();
+  });
+  ref.onDispose(() => StudentService.removeChannel(channel));
+
   try {
     final meldingen = await StudentService.getMijnNotificaties(profiel.id);
     debugPrint(
