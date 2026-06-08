@@ -46,6 +46,11 @@ for /f "tokens=* usebackq" %%A in (`"%ADB%" -s emulator-5554 emu avd name 2^>nul
 )
 if not defined AVD_NAME set "AVD_NAME=Pixel_10_Pro"
 
+if not exist "C:\tmp" mkdir "C:\tmp"
+set "TEMP=C:\tmp"
+set "TMP=C:\tmp"
+set "JAVA_TOOL_OPTIONS=-Djava.io.tmpdir=C:\tmp"
+
 cd /d "%PROJECT_DIR%"
 
 echo [1/4] Emulator ruimte vrijmaken...
