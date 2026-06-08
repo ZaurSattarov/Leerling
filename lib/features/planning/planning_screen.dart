@@ -250,34 +250,22 @@ class _LessenTab extends ConsumerWidget {
 class _NieuweLesButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border, width: 1.5),
-        color: AppColors.white,
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => context.go('/beschikbaarheid'),
-          borderRadius: BorderRadius.circular(14),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 18),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.add_rounded, size: 18, color: AppColors.textSecondary),
-                SizedBox(width: 8),
-                Text(
-                  'Nieuwe les aanvragen',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        onPressed: () => context.go('/beschikbaarheid'),
+        icon: const Icon(Icons.add_rounded, size: 18),
+        label: const Text('Nieuwe les aanvragen'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          minimumSize: const Size.fromHeight(52),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14)),
+          elevation: 0,
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
@@ -298,13 +286,21 @@ class _LesCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Date block
           Container(
-            width: 62,
-            height: 80,
+            width: 60,
+            height: 76,
             decoration: BoxDecoration(
-              color: isNext ? AppColors.primary : AppColors.dark2,
-              borderRadius: BorderRadius.circular(12),
+              color: isNext ? AppColors.primary : AppColors.dark,
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: isNext
+                  ? [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.28),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      )
+                    ]
+                  : null,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

@@ -9,10 +9,7 @@ import '../../models/factuur.dart';
 import '../../models/notificatie.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/coach_widgets.dart';
 import '../../shared/widgets/status_pill.dart';
-import '../les_logboek/les_logboek_item.dart';
-import '../les_logboek/les_logboek_provider.dart';
 import '../lesvoorbereiding/lesvoorbereiding_provider.dart';
 import 'home_coach_provider.dart';
 import 'home_provider.dart';
@@ -25,233 +22,76 @@ class HomeScreen extends ConsumerWidget {
     final profielAsync = ref.watch(mijnProfielProvider);
     final homeAsync = ref.watch(homeProvider);
     final homeCoachAsync = ref.watch(homeCoachProvider);
-    final laatsteLesLogboekItemAsync = ref.watch(laatsteLesLogboekItemProvider);
     final lesvoorbereidingAsync = ref.watch(lesvoorbereidingProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surface,
       body: RefreshIndicator(
         color: AppColors.primary,
+        displacement: 80,
         onRefresh: () async {
           ref.invalidate(mijnProfielProvider);
           ref.invalidate(homeProvider);
           ref.invalidate(lesvoorbereidingProvider);
-          ref.invalidate(laatsteLesLogboekItemProvider);
+          ref.invalidate(homeCoachProvider);
         },
         child: CustomScrollView(
           slivers: [
-            // Header
+            // ── Gradient header (Instrecteur style) ──────────────────────────
             SliverToBoxAdapter(
-              child: Container(
-                color: AppColors.dark,
-                padding: const EdgeInsets.fromLTRB(20, 60, 20, 24),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: profielAsync.when(
-                        data: (profiel) => Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              DatumUtils.langeDatum(DatumUtils.vandaagString())
-                                  .toUpperCase(),
-                              style: const TextStyle(
-                                color: AppColors.primary,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Hoi, ${profiel?.voornaam ?? ''}.',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 26,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              'Klaar voor de volgende rit?',
-                              style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.5),
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
-                        ),
-                        loading: () => const SkeletonBox(height: 40, radius: 6),
-                        error: (_, __) => const SizedBox.shrink(),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => context.go('/notificaties'),
-                      child: homeAsync.when(
-                        data: (home) => Stack(
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: AppColors.dark2,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(Icons.notifications_outlined,
-                                  color: Colors.white, size: 20),
-                            ),
-                            if (home.ongelezenNotificaties > 0)
-                              Positioned(
-                                top: 5,
-                                right: 5,
-                                child: Container(
-                                  width: 9,
-                                  height: 9,
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.primary,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                        loading: () => const SizedBox(width: 44, height: 44),
-                        error: (_, __) => const SizedBox(width: 44, height: 44),
-                      ),
-                    ),
-                  ],
-                ),
+              child: _GradientHeader(
+                profielAsync: profielAsync,
+                homeAsync: homeAsync,
               ),
             ),
 
-            // Body content
+            // ── Body content ─────────────────────────────────────────────────
             homeAsync.when(
               data: (home) => SliverPadding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
-                    homeCoachAsync.when(
-                      data: (coachData) =>
-                          _CoachReadinessCard(data: coachData),
-                      loading: () => const SkeletonCard(),
-                      error: (_, __) => const SizedBox.shrink(),
+                    // Stats bento
+                    _StatsRow(
+                      profielAsync: profielAsync,
+                      homeAsync: homeAsync,
                     ),
-
-                    const SizedBox(height: 14),
-
-                    laatsteLesLogboekItemAsync.when(
-                      data: (item) => item != null
-                          ? _LaatsteLesLogboekCard(item: item)
-                          : const SizedBox.shrink(),
-                      loading: () => const SkeletonCard(),
-                      error: (_, __) => const SizedBox.shrink(),
-                    ),
-
-                    const SizedBox(height: 14),
-
-                    lesvoorbereidingAsync.when(
-                      data: (data) => _LesvoorbereidingCard(data: data),
-                      loading: () => const SkeletonCard(),
-                      error: (_, __) => const SizedBox.shrink(),
-                    ),
-
                     const SizedBox(height: 24),
 
-                    // Next lesson
-                    SectionHeader(
+                    // Volgende les
+                    _SectionLabel(
                       title: 'Volgende les',
                       action: 'Alle lessen',
                       onAction: () => context.go('/planning'),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 10),
                     home.heeftVolgendeLes
-                        ? _VolgendeLesCard(les: home.volgendeLes!)
-                        : AppCard(
-                            child: const EmptyState(
-                              icon: Icons.calendar_today_outlined,
-                              title: 'Geen lessen gepland',
-                              subtitle:
-                                  'Je instructeur heeft nog geen nieuwe les ingepland.',
-                            ),
-                          ),
+                        ? _VolgendeLesHero(
+                            les: home.volgendeLes!,
+                            onTap: () => context.go('/planning'),
+                          )
+                        : _GeenLesCard(),
 
                     const SizedBox(height: 24),
 
-                    // Progress summary
+                    // Examenadvies
+                    homeCoachAsync.when(
+                      data: (coach) => _ExamenadviesHero(
+                        data: coach,
+                        onTap: () => context.go('/examenadvies'),
+                      ),
+                      loading: () => const _SkeletonHero(),
+                      error: (_, __) => const SizedBox.shrink(),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Mijn voortgang
                     profielAsync.when(
                       data: (profiel) => profiel != null
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SectionHeader(
-                                  title: 'Mijn voortgang',
-                                  action: 'Details',
-                                  onAction: () => context.go('/voortgang'),
-                                ),
-                                const SizedBox(height: 12),
-                                AppCard(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const IconBadge(
-                                            icon: Icons.bar_chart_rounded,
-                                            color: Color(0xFF3B82F6),
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '${profiel.lessenGevolgd} van ${profiel.lessenTotaal} lessen gevolgd',
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                    color:
-                                                        AppColors.textPrimary,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 2),
-                                                Text(
-                                                  'Pakket: ${profiel.pakket.label}',
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color:
-                                                        AppColors.textSecondary,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Text(
-                                            '${(profiel.voortgangPercent * 100).round()}%',
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w800,
-                                              color: AppColors.primary,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 14),
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(99),
-                                        child: LinearProgressIndicator(
-                                          value: profiel.voortgangPercent,
-                                          minHeight: 8,
-                                          backgroundColor:
-                                              AppColors.borderLight,
-                                          valueColor:
-                                              const AlwaysStoppedAnimation(
-                                                  AppColors.primary),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                          ? _VoortgangCard(
+                              profiel: profiel,
+                              onTap: () => context.go('/voortgang'),
                             )
                           : const SizedBox.shrink(),
                       loading: () => const SkeletonCard(),
@@ -260,40 +100,49 @@ class HomeScreen extends ConsumerWidget {
 
                     const SizedBox(height: 24),
 
-                    // Open invoices
+                    // Lesvoorbereiding
+                    lesvoorbereidingAsync.when(
+                      data: (data) => _LesvoorbereidingCard(
+                        data: data,
+                        onTap: () => context.go('/lesvoorbereiding'),
+                      ),
+                      loading: () => const SkeletonCard(),
+                      error: (_, __) => const SizedBox.shrink(),
+                    ),
+
+                    // Open facturen
                     if (home.heeftOpenFacturen) ...[
-                      SectionHeader(
+                      const SizedBox(height: 24),
+                      _SectionLabel(
                         title: 'Openstaande facturen',
                         action: 'Alle facturen',
                         onAction: () => context.go('/facturen'),
                       ),
-                      const SizedBox(height: 12),
-                      ...home.openFacturen.take(3).map(
+                      const SizedBox(height: 10),
+                      ...home.openFacturen.take(2).map(
                             (f) => Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: _FactuurCard(factuur: f),
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: _FactuurRij(factuur: f),
                             ),
                           ),
                     ],
 
-                    // Recent notifications
+                    // Recente meldingen
                     if (home.recenteNotificaties.isNotEmpty) ...[
                       const SizedBox(height: 24),
-                      SectionHeader(
+                      _SectionLabel(
                         title: 'Recente meldingen',
                         action: 'Alle meldingen',
                         onAction: () => context.go('/notificaties'),
                       ),
-                      const SizedBox(height: 12),
-                      ...home.recenteNotificaties.map(
-                        (n) => Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: _NotificatieCard(notificatie: n),
-                        ),
-                      ),
+                      const SizedBox(height: 10),
+                      ...home.recenteNotificaties.take(3).map(
+                            (n) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: _NotificatieRij(notificatie: n),
+                            ),
+                          ),
                     ],
-
-                    const SizedBox(height: 32),
                   ]),
                 ),
               ),
@@ -301,45 +150,19 @@ class HomeScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(20),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
-                    const SkeletonCard(),
-                    const SizedBox(height: 12),
-                    const SkeletonCard(),
-                    const SizedBox(height: 12),
+                    const _SkeletonHero(),
+                    const SizedBox(height: 16),
+                    const _SkeletonHero(),
+                    const SizedBox(height: 16),
                     const SkeletonCard(),
                   ]),
                 ),
               ),
               error: (e, _) => SliverFillRemaining(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const IconBadge(
-                          icon: Icons.wifi_off_rounded,
-                          color: AppColors.dangerSolid,
-                          size: 56,
-                        ),
-                        const SizedBox(height: 16),
-                        const Text('Kon gegevens niet laden',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary)),
-                        const SizedBox(height: 6),
-                        Text(e.toString(),
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                fontSize: 13, color: AppColors.textSecondary)),
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: () => ref.invalidate(homeProvider),
-                          child: const Text('Opnieuw proberen'),
-                        ),
-                      ],
-                    ),
-                  ),
+                child: EmptyState(
+                  icon: Icons.wifi_off_rounded,
+                  title: 'Kon dashboard niet laden',
+                  subtitle: e.toString(),
                 ),
               ),
             ),
@@ -350,565 +173,1056 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-class _LesvoorbereidingCard extends StatelessWidget {
-  final LesvoorbereidingData data;
+// ── Gradient header ───────────────────────────────────────────────────────────
 
-  const _LesvoorbereidingCard({required this.data});
+class _GradientHeader extends StatelessWidget {
+  final AsyncValue<LeerlingProfiel?> profielAsync;
+  final AsyncValue<HomeData> homeAsync;
 
-  @override
-  Widget build(BuildContext context) {
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const IconBadge(
-                icon: Icons.center_focus_strong_rounded,
-                color: AppColors.dark3,
-                size: 40,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Voorbereiding volgende les',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      data.focus,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            data.voorbereiding,
-            style: const TextStyle(
-              fontSize: 13,
-              height: 1.4,
-              color: AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 12),
-          InlineCtaLink(
-            label: 'Bekijk voorbereiding',
-            onPressed: () => context.push('/lesvoorbereiding'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _LaatsteLesLogboekCard extends StatelessWidget {
-  final LesLogboekItem item;
-
-  const _LaatsteLesLogboekCard({required this.item});
+  const _GradientHeader({
+    required this.profielAsync,
+    required this.homeAsync,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const IconBadge(
-                icon: Icons.history_edu_rounded,
-                color: AppColors.dark3,
-                size: 40,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Laatste les',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      '${item.datumLabel}  ·  ${item.tijdLabel}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: item.onderwerpen
-                .map((label) => NeutralChip(label: label))
-                .toList(),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            item.feedback,
-            style: const TextStyle(
-              fontSize: 13,
-              height: 1.4,
-              color: AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 12),
-          InlineCtaLink(
-            label: 'Bekijk logboek',
-            onPressed: () => context.push('/les-logboek'),
-          ),
-        ],
-      ),
-    );
-  }
-}
+    final profiel = profielAsync.valueOrNull;
+    final home = homeAsync.valueOrNull;
+    final naam = profiel?.voornaam ?? '';
+    final initials = naam.isNotEmpty ? naam[0].toUpperCase() : '?';
 
-class _CoachReadinessCard extends StatelessWidget {
-  final HomeCoachData data;
-
-  const _CoachReadinessCard({required this.data});
-
-  @override
-  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.dark,
-        borderRadius: BorderRadius.circular(18),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF141C2B), Color(0xFF1A2D42)],
+        ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Avatar circle
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.25),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.5),
+                    width: 1.5,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    initials,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      'EXAMENADVIES',
+                    Text(
+                      DatumUtils.langeDatum(DatumUtils.vandaagString())
+                          .toUpperCase(),
                       style: TextStyle(
-                        color: AppColors.primary,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.4,
+                        color: Colors.white.withValues(alpha: 0.5),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.8,
                       ),
                     ),
-                    const SizedBox(height: 6),
-                    const Text(
-                      'Ben je klaar voor het examen?',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                        height: 1.2,
+                    const SizedBox(height: 2),
+                    profielAsync.when(
+                      data: (p) => Text(
+                        naam.isNotEmpty ? 'Hoi, $naam.' : 'Welkom terug.',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
+                          height: 1.1,
+                          letterSpacing: -0.3,
+                        ),
                       ),
+                      loading: () => const SkeletonBox(
+                          height: 28, width: 160, radius: 6),
+                      error: (_, __) => const SizedBox.shrink(),
                     ),
                   ],
                 ),
               ),
               const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '${data.readinessScore}%',
-                    style: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                      height: 1.0,
+              // Notification bell
+              GestureDetector(
+                onTap: () => context.go('/notificaties'),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.35),
+                            blurRadius: 14,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.notifications_none_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
-                  ),
-                  Text(
-                    data.status.toUpperCase(),
-                    style: const TextStyle(
-                      color: AppColors.primary,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                ],
+                    if ((home?.ongelezenNotificaties ?? 0) > 0)
+                      Positioned(
+                        right: -3,
+                        top: -3,
+                        child: Container(
+                          width: 16,
+                          height: 16,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                color: AppColors.primary.withValues(alpha: 0.3)),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '${home!.ongelezenNotificaties}',
+                              style: const TextStyle(
+                                color: AppColors.dark,
+                                fontSize: 9,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(99),
-            child: LinearProgressIndicator(
-              value: data.readinessScore / 100,
-              minHeight: 7,
-              backgroundColor: AppColors.dark3,
-              valueColor: const AlwaysStoppedAnimation(AppColors.primary),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('0%',
-                  style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.white.withValues(alpha: 0.35))),
-              Text('EXAMEN — 80%',
-                  style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.white.withValues(alpha: 0.35))),
-            ],
-          ),
-          const SizedBox(height: 14),
-          _DarkCoachRow(
-            icon: Icons.flag_rounded,
-            label: 'FOCUSPUNT',
-            text: data.advies,
-          ),
-          const SizedBox(height: 10),
-          _DarkCoachRow(
-            icon: Icons.chat_bubble_outline_rounded,
-            label: 'VORIGE FEEDBACK',
-            text: data.feedback,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'LAATST GEOEFEND',
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-              color: Colors.white.withValues(alpha: 0.4),
-              letterSpacing: 1.0,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: data.laatstGeoefend
-                .map((label) => _DarkChip(label: label))
-                .toList(),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => context.push('/examenadvies'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                minimumSize: const Size.fromHeight(46),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
-                elevation: 0,
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Bekijk examenadvies',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700, fontSize: 14)),
-                  SizedBox(width: 6),
-                  Icon(Icons.arrow_forward_rounded, size: 16),
-                ],
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class _DarkCoachRow extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String text;
+// ── Stats bento row ───────────────────────────────────────────────────────────
 
-  const _DarkCoachRow(
-      {required this.icon, required this.label, required this.text});
+class _StatsRow extends StatelessWidget {
+  final AsyncValue<LeerlingProfiel?> profielAsync;
+  final AsyncValue<HomeData> homeAsync;
+
+  const _StatsRow({required this.profielAsync, required this.homeAsync});
 
   @override
   Widget build(BuildContext context) {
+    final profiel = profielAsync.valueOrNull;
+    final home = homeAsync.valueOrNull;
+    final isLoading = profielAsync.isLoading || homeAsync.isLoading;
+
+    if (isLoading) {
+      return Row(
+        children: [
+          Expanded(child: SkeletonBox(height: 80, radius: 16)),
+          const SizedBox(width: 10),
+          Expanded(child: SkeletonBox(height: 80, radius: 16)),
+          const SizedBox(width: 10),
+          Expanded(child: SkeletonBox(height: 80, radius: 16)),
+        ],
+      );
+    }
+
+    final lessenGevolgd = profiel?.lessenGevolgd ?? 0;
+    final lessenTotaal = profiel?.lessenTotaal ?? 0;
+    final voortgangPct = profiel != null
+        ? (profiel.voortgangPercent * 100).round()
+        : 0;
+    final openFacturen = home?.openFacturen.length ?? 0;
+    final heeftFacturen = (home?.heeftOpenFacturen ?? false);
+
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(9),
-          ),
-          child: Icon(icon, color: Colors.white, size: 15),
+        _StatCard(
+          label: 'Lessen',
+          value: '$lessenGevolgd/$lessenTotaal',
+          icon: Icons.school_rounded,
+          iconColor: AppColors.iconBlue,
+          onTap: () => context.go('/planning'),
         ),
         const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white.withValues(alpha: 0.4),
-                  letterSpacing: 1.0,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                text,
-                style: TextStyle(
-                  fontSize: 13,
-                  height: 1.35,
-                  color: Colors.white.withValues(alpha: 0.8),
-                ),
-              ),
-            ],
-          ),
+        _StatCard(
+          label: 'Voortgang',
+          value: '$voortgangPct%',
+          icon: Icons.trending_up_rounded,
+          iconColor: AppColors.iconGreen,
+          onTap: () => context.go('/voortgang'),
+        ),
+        const SizedBox(width: 10),
+        _StatCard(
+          label: 'Facturen',
+          value: '$openFacturen',
+          icon: Icons.receipt_long_rounded,
+          iconColor: heeftFacturen ? AppColors.iconAmber : AppColors.iconSlate,
+          isAlert: heeftFacturen,
+          onTap: () => context.go('/facturen'),
         ),
       ],
     );
   }
 }
 
-class _DarkChip extends StatelessWidget {
+class _StatCard extends StatelessWidget {
   final String label;
+  final String value;
+  final IconData icon;
+  final Color iconColor;
+  final bool isAlert;
+  final VoidCallback? onTap;
 
-  const _DarkChip({required this.label});
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.iconColor,
+    this.isAlert = false,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.dark2,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.dark3),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: Colors.white.withValues(alpha: 0.75),
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isAlert
+                  ? AppColors.iconAmber.withValues(alpha: 0.35)
+                  : AppColors.border,
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, size: 15, color: iconColor),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                value,
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  height: 1,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: AppColors.textHint,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+// ── Section label ─────────────────────────────────────────────────────────────
 
-class _VolgendeLesCard extends StatelessWidget {
-  final Les les;
-  const _VolgendeLesCard({required this.les});
+class _SectionLabel extends StatelessWidget {
+  final String title;
+  final String? action;
+  final VoidCallback? onAction;
+
+  const _SectionLabel({required this.title, this.action, this.onAction});
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      onTap: () => context.push('/planning/${les.id}'),
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            title.toUpperCase(),
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textSecondary,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ),
+        if (action != null && onAction != null)
+          GestureDetector(
+            onTap: onAction,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  action!,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: 2),
+                const Icon(Icons.arrow_forward_rounded,
+                    size: 14, color: AppColors.textPrimary),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+// ── Volgende les hero card ────────────────────────────────────────────────────
+
+class _VolgendeLesHero extends StatelessWidget {
+  final Les les;
+  final VoidCallback onTap;
+
+  const _VolgendeLesHero({required this.les, required this.onTap});
+
+  String _dagAfk(String datum) {
+    try {
+      const days = ['MAA', 'DIN', 'WOE', 'DON', 'VRI', 'ZAT', 'ZON'];
+      return days[DateTime.parse(datum).weekday - 1];
+    } catch (_) {
+      return '';
+    }
+  }
+
+  String _dagNr(String datum) {
+    try {
+      return DateTime.parse(datum).day.toString();
+    } catch (_) {
+      return '?';
+    }
+  }
+
+  String _maandAfk(String datum) {
+    try {
+      const m = [
+        'jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
+        'jul', 'aug', 'sep', 'okt', 'nov', 'dec',
+      ];
+      return m[DateTime.parse(datum).month - 1];
+    } catch (_) {
+      return '';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: AppColors.dark,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0F172A).withValues(alpha: 0.18),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Date block
+            Container(
+              width: 72,
+              height: 88,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.35),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    _dagAfk(les.datum),
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.75),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  Text(
+                    _dagNr(les.datum),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w900,
+                      height: 1.0,
+                    ),
+                  ),
+                  Text(
+                    _maandAfk(les.datum),
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.75),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            // Info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      'Volgende les',
+                      style: TextStyle(
+                        color: AppColors.primary.withValues(alpha: 0.9),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${les.starttijd} — ${les.eindtijd}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      height: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  if (les.instructeurNaam?.isNotEmpty == true) ...[
+                    Row(
+                      children: [
+                        Icon(Icons.person_outline_rounded,
+                            size: 13,
+                            color: Colors.white.withValues(alpha: 0.45)),
+                        const SizedBox(width: 4),
+                        Text(
+                          les.instructeurNaam!,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.6),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                  ],
+                  if (les.locatie?.isNotEmpty == true)
+                    Row(
+                      children: [
+                        Icon(Icons.location_on_outlined,
+                            size: 13,
+                            color: Colors.white.withValues(alpha: 0.45)),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            les.locatie!,
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.6),
+                              fontSize: 12,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: Colors.white.withValues(alpha: 0.3),
+              size: 22,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _GeenLesCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.border, width: 0.75),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF0F172A).withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
       child: Row(
         children: [
           Container(
-            width: 52,
-            height: 52,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(14),
+              color: const Color(0xFFF0F2F5),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.directions_car_rounded,
-                color: Colors.white, size: 26),
+            child: const Icon(Icons.calendar_today_outlined,
+                size: 22, color: AppColors.textHint),
           ),
           const SizedBox(width: 14),
-          Expanded(
+          const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  DatumUtils.relatiefDatum(les.datum),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
+                  'Geen lessen gepland',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 3),
+                SizedBox(height: 2),
                 Text(
-                  '${les.starttijd} – ${les.eindtijd}  ·  ${DatumUtils.duurLabel(les.duurMinuten)}',
-                  style: const TextStyle(
-                      fontSize: 13, color: AppColors.textSecondary),
+                  'Je instructeur plant binnenkort een les in.',
+                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
                 ),
-                if (les.locatie?.isNotEmpty == true) ...[
-                  const SizedBox(height: 2),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Examenadvies hero ─────────────────────────────────────────────────────────
+
+class _ExamenadviesHero extends StatelessWidget {
+  final HomeCoachData data;
+  final VoidCallback onTap;
+
+  const _ExamenadviesHero({required this.data, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final score = data.readinessScore;
+    final label = score >= 85
+        ? 'Examenklaar!'
+        : score >= 60
+            ? 'Bijna examenklaar'
+            : 'In ontwikkeling';
+    final labelColor = score >= 85
+        ? AppColors.iconGreen
+        : score >= 60
+            ? AppColors.iconAmber
+            : AppColors.iconBlue;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.border, width: 0.75),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Circular progress
+            SizedBox(
+              width: 72,
+              height: 72,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    width: 72,
+                    height: 72,
+                    child: CircularProgressIndicator(
+                      value: score / 100,
+                      strokeWidth: 6,
+                      backgroundColor: const Color(0xFFF0F2F5),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        score >= 85
+                            ? AppColors.iconGreen
+                            : score >= 60
+                                ? AppColors.iconAmber
+                                : AppColors.iconBlue,
+                      ),
+                      strokeCap: StrokeCap.round,
+                    ),
+                  ),
                   Text(
-                    les.locatie!,
+                    '$score%',
                     style: const TextStyle(
-                        fontSize: 12, color: AppColors.textHint),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.textPrimary,
+                      height: 1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 18),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: labelColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        color: labelColor,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Examenadvies',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    data.advies.isNotEmpty
+                        ? data.advies
+                        : 'Bekijk je examengereedheid',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
-              ],
+              ),
             ),
-          ),
-          StatusPill.les(les.status),
-        ],
+            const SizedBox(width: 8),
+            const Icon(Icons.chevron_right_rounded,
+                color: AppColors.textHint, size: 20),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _FactuurCard extends StatelessWidget {
-  final Factuur factuur;
-  const _FactuurCard({required this.factuur});
+// ── Voortgang card ────────────────────────────────────────────────────────────
+
+class _VoortgangCard extends StatelessWidget {
+  final LeerlingProfiel profiel;
+  final VoidCallback onTap;
+
+  const _VoortgangCard({required this.profiel, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      onTap: () => context.push('/facturen/${factuur.id}'),
-      child: Row(
-        children: [
-          IconBadge(
-            icon: Icons.receipt_long_rounded,
-            color: factuur.status == FactuurStatus.betaald
-                ? AppColors.successSolid
-                : factuur.isVerlopen
-                    ? AppColors.dangerSolid
-                    : factuur.status == FactuurStatus.geannuleerd
-                        ? AppColors.dark3
-                        : AppColors.primary,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    final pct = profiel.voortgangPercent;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.border, width: 0.75),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Text(
-                  factuur.beschrijving.isNotEmpty
-                      ? factuur.beschrijving
-                      : factuur.factuurnummer,
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary),
-                  overflow: TextOverflow.ellipsis,
+                const IconBadge(
+                  icon: Icons.bar_chart_rounded,
+                  color: AppColors.iconGreen,
+                  size: 40,
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Mijn voortgang',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${profiel.lessenGevolgd} van ${profiel.lessenTotaal} lessen · ${profiel.pakket.label}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Text(
-                  factuur.factuurnummer,
+                  '${(pct * 100).round()}%',
                   style: const TextStyle(
-                      fontSize: 12, color: AppColors.textSecondary),
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.primary,
+                  ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                factuur.bedragEuro,
-                style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary),
+            const SizedBox(height: 16),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(99),
+              child: LinearProgressIndicator(
+                value: pct,
+                minHeight: 8,
+                backgroundColor: const Color(0xFFF0F2F5),
+                valueColor: const AlwaysStoppedAnimation(AppColors.primary),
               ),
-              const SizedBox(height: 4),
-              StatusPill.factuur(factuur.status),
-            ],
-          ),
-        ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Start',
+                  style: const TextStyle(
+                      fontSize: 10, color: AppColors.textHint),
+                ),
+                Text(
+                  'Examen',
+                  style: const TextStyle(
+                      fontSize: 10, color: AppColors.textHint),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _NotificatieCard extends StatelessWidget {
-  final Notificatie notificatie;
-  const _NotificatieCard({required this.notificatie});
+// ── Lesvoorbereiding card ─────────────────────────────────────────────────────
 
-  IconData get _icon {
-    switch (notificatie.type) {
-      case 'les':
-      case 'les_reminder':
-      case 'lesson_planned':
-      case 'lesson_changed':
-        return Icons.directions_car_rounded;
-      case 'voorbereiding':
-        return Icons.task_alt_rounded;
-      case 'feedback':
-      case 'lesson_feedback':
-        return Icons.rate_review_rounded;
-      case 'factuur':
-      case 'invoice_created':
-      case 'invoice_paid':
-        return Icons.receipt_long_rounded;
-      case 'package_almost_empty':
-        return Icons.inventory_2_rounded;
-      case 'voortgang':
-      case 'examenadvies':
-        return Icons.bar_chart_rounded;
-      default:
-        return Icons.notifications_rounded;
-    }
+class _LesvoorbereidingCard extends StatelessWidget {
+  final LesvoorbereidingData? data;
+  final VoidCallback onTap;
+
+  const _LesvoorbereidingCard({required this.data, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    if (data == null) return const SizedBox.shrink();
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.border, width: 0.75),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            const IconBadge(
+              icon: Icons.checklist_rounded,
+              color: AppColors.iconPurple,
+              size: 44,
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Voorbereiding volgende les',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    data!.focus.isNotEmpty
+                        ? data!.focus
+                        : 'Bekijk wat er wordt geoefend',
+                    style: const TextStyle(
+                        fontSize: 12, color: AppColors.textSecondary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Bekijk',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(width: 2),
+                const Icon(Icons.arrow_forward_rounded,
+                    size: 14, color: AppColors.textPrimary),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
+}
+
+// ── Factuur rij ───────────────────────────────────────────────────────────────
+
+class _FactuurRij extends StatelessWidget {
+  final Factuur factuur;
+  const _FactuurRij({required this.factuur});
+
+  @override
+  Widget build(BuildContext context) {
+    final isVerlopen = factuur.isVerlopen;
+    final borderColor = isVerlopen ? AppColors.iconRed : AppColors.iconAmber;
+
+    return GestureDetector(
+      onTap: () => context.push('/facturen/${factuur.id}'),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border, width: 0.75),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 4,
+              height: 40,
+              decoration: BoxDecoration(
+                color: borderColor,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    factuur.beschrijving.isNotEmpty
+                        ? factuur.beschrijving
+                        : factuur.factuurnummer,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    factuur.factuurnummer,
+                    style: const TextStyle(
+                        fontSize: 11, color: AppColors.textHint),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  factuur.bedragEuro,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                StatusPill.factuur(factuur.status),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Notificatie rij ───────────────────────────────────────────────────────────
+
+class _NotificatieRij extends StatelessWidget {
+  final Notificatie notificatie;
+  const _NotificatieRij({required this.notificatie});
 
   Color get _color {
     switch (notificatie.type) {
-      case 'les':
-      case 'les_reminder':
-      case 'lesson_planned':
-      case 'lesson_changed':
-        return AppColors.infoSolid;
-      case 'voorbereiding':
-        return AppColors.dark3;
-      case 'feedback':
-      case 'lesson_feedback':
-      case 'invoice_paid':
-        return AppColors.successSolid;
+      case 'les_ingepland':
+      case 'les_gewijzigd':
+        return AppColors.iconBlue;
+      case 'les_geannuleerd':
+        return AppColors.iconRed;
       case 'factuur':
-      case 'invoice_created':
-      case 'package_almost_empty':
-        return AppColors.primary;
-      case 'voortgang':
-      case 'examenadvies':
-        return AppColors.successSolid;
+        return AppColors.iconAmber;
+      case 'reminder':
+        return AppColors.iconPurple;
       default:
-        return AppColors.dark3;
+        return AppColors.iconSlate;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      onTap: () => context.go(notificatie.targetRoute),
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 0.75),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF0F172A).withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          IconBadge(icon: _icon, color: _color, size: 36),
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF0F2F5),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(Icons.notifications_none_rounded,
+                size: 18, color: _color),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -916,36 +1230,65 @@ class _NotificatieCard extends StatelessWidget {
               children: [
                 Text(
                   notificatie.titel,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
-                    fontWeight:
-                        notificatie.gelezen ? FontWeight.w500 : FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                if (notificatie.tekst?.isNotEmpty == true) ...[
+                if (notificatie.bericht?.isNotEmpty == true) ...[
                   const SizedBox(height: 2),
                   Text(
-                    notificatie.tekst!,
+                    notificatie.bericht!,
                     style: const TextStyle(
-                        fontSize: 12, color: AppColors.textSecondary),
-                    maxLines: 2,
+                        fontSize: 11, color: AppColors.textSecondary),
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ],
             ),
           ),
-          if (!notificatie.gelezen)
-            Container(
-              width: 8,
-              height: 8,
-              margin: const EdgeInsets.only(top: 4, left: 8),
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-              ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Skeleton hero ─────────────────────────────────────────────────────────────
+
+class _SkeletonHero extends StatelessWidget {
+  const _SkeletonHero();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 110,
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.border, width: 0.75),
+      ),
+      padding: const EdgeInsets.all(18),
+      child: Row(
+        children: [
+          const SkeletonBox(height: 74, width: 74, radius: 16),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SkeletonBox(height: 12, width: 80, radius: 6),
+                const SizedBox(height: 8),
+                const SkeletonBox(height: 20, radius: 6),
+                const SizedBox(height: 6),
+                const SkeletonBox(height: 12, width: 140, radius: 6),
+              ],
             ),
+          ),
         ],
       ),
     );

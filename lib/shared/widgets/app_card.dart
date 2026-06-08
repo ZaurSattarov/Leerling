@@ -20,13 +20,13 @@ class AppCard extends StatelessWidget {
     final card = Container(
       decoration: BoxDecoration(
         color: backgroundColor ?? AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border, width: 0.5),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 0.75),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -41,7 +41,7 @@ class AppCard extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           child: card,
         ),
       );
@@ -68,8 +68,8 @@ class IconBadge extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: AppColors.iconNeutralBg,
-        borderRadius: BorderRadius.circular(10),
+        color: const Color(0xFFF0F2F5),
+        borderRadius: BorderRadius.circular(size * 0.28),
       ),
       child: Icon(icon, color: color, size: size * 0.5),
     );
@@ -106,13 +106,21 @@ class SectionHeader extends StatelessWidget {
         if (action != null && onAction != null)
           GestureDetector(
             onTap: onAction,
-            child: Text(
-              action!,
-              style: const TextStyle(
-                fontSize: 13,
-                color: AppColors.primary,
-                fontWeight: FontWeight.w600,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  action!,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: 2),
+                const Icon(Icons.arrow_forward_rounded,
+                    size: 14, color: AppColors.textPrimary),
+              ],
             ),
           ),
       ],
@@ -174,7 +182,7 @@ class EmptyState extends StatelessWidget {
   }
 }
 
-class SkeletonBox extends StatelessWidget {
+class SkeletonBox extends StatefulWidget {
   final double height;
   final double? width;
   final double radius;
@@ -187,13 +195,50 @@ class SkeletonBox extends StatelessWidget {
   });
 
   @override
+  State<SkeletonBox> createState() => _SkeletonBoxState();
+}
+
+class _SkeletonBoxState extends State<SkeletonBox>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  late Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat();
+    _anim = Tween<double>(begin: -2.5, end: 2.5)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      width: width,
-      decoration: BoxDecoration(
-        color: AppColors.borderLight,
-        borderRadius: BorderRadius.circular(radius),
+    return AnimatedBuilder(
+      animation: _anim,
+      builder: (_, __) => Container(
+        height: widget.height,
+        width: widget.width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(widget.radius),
+          gradient: LinearGradient(
+            begin: Alignment(_anim.value - 1, 0),
+            end: Alignment(_anim.value + 1, 0),
+            colors: const [
+              Color(0xFFE4E8EE),
+              Color(0xFFF5F7FA),
+              Color(0xFFE4E8EE),
+            ],
+          ),
+        ),
       ),
     );
   }

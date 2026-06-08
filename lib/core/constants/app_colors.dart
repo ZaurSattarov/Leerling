@@ -29,15 +29,17 @@ class AppColors {
   static const Color textHint = Color(0xFF9AA1AD);
   static const Color textMuted = Color(0xFFD1D5DB);
 
-  // Icon colors (neutral, aligned with Instrecteur)
-  static const Color iconPrimary = Color(0xFF0F172A);
-  static const Color iconBlue = Color(0xFF0F172A);
-  static const Color iconGreen = Color(0xFF0F172A);
-  static const Color iconOrange = Color(0xFF0F172A);
-  static const Color iconRed = Color(0xFF0F172A);
+  // Semantische icoonkleuren
+  static const Color iconPrimary = Color(0xFFD63060);
+  static const Color iconPurple = Color(0xFF5645D4);
+  static const Color iconBlue = Color(0xFF2563EB);
+  static const Color iconGreen = Color(0xFF16A34A);
+  static const Color iconAmber = Color(0xFFD97706);
+  static const Color iconRed = Color(0xFFE11D48);
+  static const Color iconSlate = Color(0xFF64748B);
+  static const Color iconOrange = Color(0xFFD97706);
   static const Color iconDark = Color(0xFF0F172A);
-  static const Color iconTeal = Color(0xFF0F172A);
-  static const Color iconPurple = Color(0xFF0F172A);
+  static const Color iconTeal = Color(0xFF0891B2);
 
   // Soft icon surfaces (neutral backgrounds for icon badges)
   static const Color iconPrimaryBg = Color(0xFFF4F5F7);

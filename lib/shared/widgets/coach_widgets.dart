@@ -51,7 +51,7 @@ class InlineCtaLink extends StatelessWidget {
         icon: const Icon(Icons.arrow_forward_rounded, size: 16),
         label: Text(label),
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.primary,
+          foregroundColor: AppColors.textPrimary,
           padding: EdgeInsets.zero,
           minimumSize: Size.zero,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,

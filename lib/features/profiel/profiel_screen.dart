@@ -162,7 +162,7 @@ class ProfielScreen extends ConsumerWidget {
                                 if (profiel.telefoon?.isNotEmpty == true)
                                   _InfoTile(
                                     icon: Icons.phone_outlined,
-                                    iconColor: AppColors.dark3,
+                                    iconColor: AppColors.iconBlue,
                                     label: 'Telefoon',
                                     value: profiel.telefoon!,
                                   ),
@@ -171,7 +171,7 @@ class ProfielScreen extends ConsumerWidget {
                                   const Divider(height: 20),
                                   _InfoTile(
                                     icon: Icons.cake_outlined,
-                                    iconColor: AppColors.dark3,
+                                    iconColor: AppColors.iconPurple,
                                     label: 'Geboortedatum',
                                     value: profiel.geboortedatum!,
                                   ),
@@ -179,7 +179,7 @@ class ProfielScreen extends ConsumerWidget {
                                 const Divider(height: 20),
                                 _InfoTile(
                                   icon: Icons.school_outlined,
-                                  iconColor: AppColors.dark3,
+                                  iconColor: AppColors.iconGreen,
                                   label: 'Status',
                                   value: profiel.status.label,
                                 ),
@@ -205,7 +205,7 @@ class ProfielScreen extends ConsumerWidget {
                                   children: [
                                     const IconBadge(
                                       icon: Icons.directions_car_rounded,
-                                      color: AppColors.dark3,
+                                      color: AppColors.primary,
                                     ),
                                     const SizedBox(width: 14),
                                     Expanded(
@@ -239,7 +239,7 @@ class ProfielScreen extends ConsumerWidget {
                                   const Divider(height: 20),
                                   _InfoTile(
                                     icon: Icons.location_on_outlined,
-                                    iconColor: AppColors.dark3,
+                                    iconColor: AppColors.iconSlate,
                                     label: 'Adres',
                                     value: instructeur.volledigAdres!,
                                   ),
@@ -249,7 +249,7 @@ class ProfielScreen extends ConsumerWidget {
                                   const Divider(height: 20),
                                   _InfoTile(
                                     icon: Icons.phone_outlined,
-                                    iconColor: AppColors.dark3,
+                                    iconColor: AppColors.iconBlue,
                                     label: 'Telefoon',
                                     value: instructeur.telefoon!,
                                   ),
@@ -258,7 +258,7 @@ class ProfielScreen extends ConsumerWidget {
                                   const Divider(height: 20),
                                   _InfoTile(
                                     icon: Icons.email_outlined,
-                                    iconColor: AppColors.infoSolid,
+                                    iconColor: AppColors.iconBlue,
                                     label: 'E-mail',
                                     value: instructeur.email!,
                                   ),
@@ -281,7 +281,7 @@ class ProfielScreen extends ConsumerWidget {
                       children: [
                         _ActionTile(
                           icon: Icons.schedule_outlined,
-                          iconColor: AppColors.dark3,
+                          iconColor: AppColors.iconPurple,
                           label: 'Mijn beschikbaarheid',
                           onTap: () => context.push('/beschikbaarheid'),
                         ),
@@ -295,14 +295,14 @@ class ProfielScreen extends ConsumerWidget {
                         const Divider(height: 20),
                         _ActionTile(
                           icon: Icons.quiz_outlined,
-                          iconColor: AppColors.dark3,
+                          iconColor: AppColors.iconAmber,
                           label: 'Mijn examens',
                           onTap: () => context.push('/examens'),
                         ),
                         const Divider(height: 20),
                         _ActionTile(
                           icon: Icons.help_outline_rounded,
-                          iconColor: AppColors.infoSolid,
+                          iconColor: AppColors.iconBlue,
                           label: 'Help & ondersteuning',
                           onTap: () => context.push('/help'),
                         ),
@@ -321,8 +321,8 @@ class ProfielScreen extends ConsumerWidget {
                   const SizedBox(height: 32),
                   const Center(
                     child: Text(
-                      'Mijn Rijschool Leerling App',
-                      style: TextStyle(fontSize: 12, color: AppColors.textHint),
+                      'Instrecteur Leerling · v1.0',
+                      style: TextStyle(fontSize: 11, color: AppColors.textHint),
                     ),
                   ),
                   const SizedBox(height: 32),

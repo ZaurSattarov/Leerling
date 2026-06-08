@@ -28,15 +28,9 @@ class FacturenScreen extends ConsumerWidget {
               automaticallyImplyLeading: false,
               expandedHeight: 110,
               flexibleSpace: const FlexibleSpaceBar(
-                titlePadding: EdgeInsets.fromLTRB(20, 0, 20, 16),
-                title: Text(
-                  'Mijn Facturen',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
+                titlePadding: EdgeInsets.fromLTRB(20, 0, 64, 16),
+                title: _ScreenHeader(
+                    label: 'FACTUREN', title: 'Mijn facturen'),
               ),
             ),
             facturenAsync.when(
@@ -119,54 +113,56 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(14),
+        color: AppColors.dark,
+        borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.22),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
+            color: const Color(0xFF0F172A).withValues(alpha: 0.15),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Row(
         children: [
           Container(
-            width: 42,
-            height: 42,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.16),
-              borderRadius: BorderRadius.circular(11),
-              border: Border.all(color: Colors.white24),
+              color: AppColors.primary.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(13),
+              border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.3)),
             ),
             child: const Icon(
               Icons.receipt_long_rounded,
-              color: Colors.white,
+              color: AppColors.primary,
               size: 22,
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   '$openAantal openstaande factuur${openAantal > 1 ? 'en' : ''}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white.withValues(alpha: 0.6),
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Totaal openstaand: $_bedragEuro',
+                  _bedragEuro,
                   style: const TextStyle(
-                    fontSize: 13,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
                     color: Colors.white,
-                    fontWeight: FontWeight.w600,
+                    height: 1.1,
                   ),
                 ),
               ],
@@ -191,12 +187,12 @@ class _FactuurCard extends StatelessWidget {
           IconBadge(
             icon: Icons.receipt_long_rounded,
             color: factuur.status == FactuurStatus.betaald
-                ? AppColors.successSolid
+                ? AppColors.iconGreen
                 : factuur.isVerlopen
-                    ? AppColors.dangerSolid
+                    ? AppColors.iconRed
                     : factuur.status == FactuurStatus.geannuleerd
-                        ? AppColors.dark3
-                        : AppColors.primary,
+                        ? AppColors.iconSlate
+                        : AppColors.iconAmber,
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -253,6 +249,39 @@ class _FactuurCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ScreenHeader extends StatelessWidget {
+  final String label;
+  final String title;
+  const _ScreenHeader({required this.label, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.primary,
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.5,
+          ),
+        ),
+        Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ],
     );
   }
 }

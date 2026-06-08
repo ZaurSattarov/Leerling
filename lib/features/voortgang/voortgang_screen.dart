@@ -10,6 +10,15 @@ import 'lespakket_voortgang_provider.dart';
 import 'voortgang_provider.dart';
 import 'voortgang_trends_provider.dart';
 
+const List<Color> _competentieKleuren = [
+  Color(0xFF2563EB), // Voertuig — blauw
+  Color(0xFF5645D4), // Kijkgedrag — paurs
+  Color(0xFF16A34A), // Verkeer — groen
+  Color(0xFFD97706), // Bijzonder — amber
+  Color(0xFFE11D48), // Zelfstandig — rood
+  Color(0xFF0891B2), // Examen — cyaan
+];
+
 class VoortgangScreen extends ConsumerWidget {
   const VoortgangScreen({super.key});
 
@@ -111,10 +120,11 @@ class VoortgangScreen extends ConsumerWidget {
                       const SizedBox(height: 24),
                       const SectionHeader(title: 'CBR-competenties'),
                       const SizedBox(height: 12),
-                      ...competentieScores.map(
-                        (score) => Padding(
+                      ...competentieScores.asMap().entries.map(
+                        (entry) => Padding(
                           padding: const EdgeInsets.only(bottom: 14),
-                          child: _CompetentieCard(score: score),
+                          child: _CompetentieCard(
+                              score: entry.value, index: entry.key),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -445,11 +455,11 @@ class _DezeWeekCard extends StatelessWidget {
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: AppColors.primary,
+              color: const Color(0xFFF0F2F5),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.auto_awesome_rounded,
-                color: Colors.white, size: 20),
+                color: Color(0xFF5645D4), size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -833,7 +843,7 @@ class _MiniStat extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
       margin: const EdgeInsets.only(right: 8),
       decoration: BoxDecoration(
-        color: AppColors.neutralBg,
+        color: const Color(0xFFF0F2F5),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -1012,8 +1022,9 @@ class _CompetentieScore {
 
 class _CompetentieCard extends StatelessWidget {
   final _CompetentieScore score;
+  final int index;
 
-  const _CompetentieCard({required this.score});
+  const _CompetentieCard({required this.score, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -1024,9 +1035,9 @@ class _CompetentieCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const IconBadge(
+              IconBadge(
                 icon: Icons.adjust_rounded,
-                color: AppColors.dark2,
+                color: _competentieKleuren[index % _competentieKleuren.length],
                 size: 38,
               ),
               const SizedBox(width: 12),
