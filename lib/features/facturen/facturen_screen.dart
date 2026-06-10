@@ -5,6 +5,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/factuur.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/status_pill.dart';
 import 'facturen_provider.dart';
 
@@ -29,7 +30,7 @@ class FacturenScreen extends ConsumerWidget {
               expandedHeight: 110,
               flexibleSpace: const FlexibleSpaceBar(
                 titlePadding: EdgeInsets.fromLTRB(20, 0, 64, 16),
-                title: _ScreenHeader(
+                title: ScreenHeader(
                     label: 'FACTUREN', title: 'Mijn facturen'),
               ),
             ),
@@ -187,12 +188,12 @@ class _FactuurCard extends StatelessWidget {
           IconBadge(
             icon: Icons.receipt_long_rounded,
             color: factuur.status == FactuurStatus.betaald
-                ? AppColors.iconGreen
+                ? AppColors.successSolid
                 : factuur.isVerlopen
-                    ? AppColors.iconRed
+                    ? AppColors.dangerSolid
                     : factuur.status == FactuurStatus.geannuleerd
-                        ? AppColors.iconSlate
-                        : AppColors.iconAmber,
+                        ? AppColors.iconDark
+                        : AppColors.warningSolid,
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -253,35 +254,3 @@ class _FactuurCard extends StatelessWidget {
   }
 }
 
-class _ScreenHeader extends StatelessWidget {
-  final String label;
-  final String title;
-  const _ScreenHeader({required this.label, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: AppColors.primary,
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
-          ),
-        ),
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ],
-    );
-  }
-}

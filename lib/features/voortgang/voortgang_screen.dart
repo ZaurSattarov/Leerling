@@ -6,17 +6,18 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/coach_widgets.dart';
+import '../../shared/widgets/screen_header.dart';
 import 'lespakket_voortgang_provider.dart';
 import 'voortgang_provider.dart';
 import 'voortgang_trends_provider.dart';
 
 const List<Color> _competentieKleuren = [
-  Color(0xFF2563EB), // Voertuig — blauw
-  Color(0xFF5645D4), // Kijkgedrag — paurs
-  Color(0xFF16A34A), // Verkeer — groen
-  Color(0xFFD97706), // Bijzonder — amber
-  Color(0xFFE11D48), // Zelfstandig — rood
-  Color(0xFF0891B2), // Examen — cyaan
+  Color(0xFF0F172A),
+  Color(0xFF0F172A),
+  Color(0xFF0F172A),
+  Color(0xFF0F172A),
+  Color(0xFF0F172A),
+  Color(0xFF0F172A),
 ];
 
 class VoortgangScreen extends ConsumerWidget {
@@ -62,7 +63,7 @@ class VoortgangScreen extends ConsumerWidget {
               ],
               flexibleSpace: const FlexibleSpaceBar(
                 titlePadding: EdgeInsets.fromLTRB(20, 0, 64, 16),
-                title: _ScreenHeader(
+                title: ScreenHeader(
                     label: 'VOORTGANG', title: 'Mijn voortgang'),
               ),
             ),
@@ -167,40 +168,6 @@ class VoortgangScreen extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ScreenHeader extends StatelessWidget {
-  final String label;
-  final String title;
-
-  const _ScreenHeader({required this.label, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: AppColors.primary,
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
-          ),
-        ),
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -459,7 +426,7 @@ class _DezeWeekCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.auto_awesome_rounded,
-                color: Color(0xFF5645D4), size: 20),
+                color: AppColors.iconDark, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(

@@ -5,6 +5,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/les.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/status_pill.dart';
 import 'planning_provider.dart';
 
@@ -61,7 +62,7 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
             ],
             flexibleSpace: const FlexibleSpaceBar(
               titlePadding: EdgeInsets.fromLTRB(20, 0, 64, 56),
-              title: _ScreenHeader(label: 'PLANNING', title: 'Mijn lessen'),
+              title: ScreenHeader(label: 'PLANNING', title: 'Mijn lessen'),
             ),
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(52),
@@ -87,40 +88,6 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ScreenHeader extends StatelessWidget {
-  final String label;
-  final String title;
-
-  const _ScreenHeader({required this.label, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: AppColors.primary,
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
-          ),
-        ),
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ],
     );
   }
 }

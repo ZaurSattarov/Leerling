@@ -29,23 +29,28 @@ class AppColors {
   static const Color textHint = Color(0xFF9AA1AD);
   static const Color textMuted = Color(0xFFD1D5DB);
 
-  // Semantische icoonkleuren
-  static const Color iconPrimary = Color(0xFFD63060);
-  static const Color iconPurple = Color(0xFF5645D4);
-  static const Color iconBlue = Color(0xFF2563EB);
-  static const Color iconGreen = Color(0xFF16A34A);
-  static const Color iconAmber = Color(0xFFD97706);
-  static const Color iconRed = Color(0xFFE11D48);
-  static const Color iconSlate = Color(0xFF64748B);
-  static const Color iconOrange = Color(0xFFD97706);
+  // Icon colors (monochrome — aligned with Instrecteur)
+  static const Color iconPrimary = Color(0xFF0F172A);
+  static const Color iconBlue = Color(0xFF0F172A);
+  static const Color iconGreen = Color(0xFF0F172A);
+  static const Color iconOrange = Color(0xFF0F172A);
+  static const Color iconRed = Color(0xFF0F172A);
   static const Color iconDark = Color(0xFF0F172A);
-  static const Color iconTeal = Color(0xFF0891B2);
+  static const Color iconTeal = Color(0xFF0F172A);
+  static const Color iconPurple = Color(0xFF0F172A);
+  static const Color iconAmber = Color(0xFF0F172A);
+  static const Color iconSlate = Color(0xFF0F172A);
 
-  // Soft icon surfaces (neutral backgrounds for icon badges)
+  // Soft icon surfaces for the global SaaS visual language
   static const Color iconPrimaryBg = Color(0xFFF4F5F7);
+  static const Color iconBlueBg = Color(0xFFF4F5F7);
+  static const Color iconGreenBg = Color(0xFFF4F5F7);
+  static const Color iconOrangeBg = Color(0xFFF4F5F7);
+  static const Color iconRedBg = Color(0xFFF4F5F7);
   static const Color iconNeutralBg = Color(0xFFF4F5F7);
 
   // Status: success
+  static const Color success = Color(0xFF16A34A);
   static const Color successBg = Color(0xFFECFDF5);
   static const Color successText = Color(0xFF065F46);
   static const Color successBorder = Color(0xFFD1FAE5);
@@ -55,7 +60,7 @@ class AppColors {
   static const Color dangerBg = Color(0xFFF3F4F6);
   static const Color dangerText = Color(0xFFB91C1C);
   static const Color dangerBorder = Color(0xFFCBD5E1);
-  static const Color dangerSolid = Color(0xFFEF4444);
+  static const Color dangerSolid = Color(0xFFDC2626);
 
   // Status: warning
   static const Color warningBg = Color(0xFFFFF9EC);
@@ -75,4 +80,16 @@ class AppColors {
 
   // WhatsApp
   static const Color whatsapp = Color(0xFF25D366);
+
+  // Stripe/payment
+  static const Color stripe = Color(0xFF635BFF);
+
+  // Chart
+  static const Color graphPurple = Color(0xFF7B61FF);
+  static const Color graphYellow = Color(0xFFFFB800);
+
+  // Loading / progress
+  static const Color loadingPrimary = Color(0x29222936);
+  static const Color loadingSecondary = Color(0x14222936);
+  static const Color loadingAccent = primary;
 }

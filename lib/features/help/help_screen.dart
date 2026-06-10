@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/screen_header.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
@@ -23,14 +24,8 @@ class HelpScreen extends StatelessWidget {
             ),
             flexibleSpace: const FlexibleSpaceBar(
               titlePadding: EdgeInsets.fromLTRB(56, 0, 20, 16),
-              title: Text(
-                'Help & ondersteuning',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
+              title: ScreenHeader(
+                  label: 'SUPPORT', title: 'Help & ondersteuning'),
             ),
           ),
           SliverPadding(

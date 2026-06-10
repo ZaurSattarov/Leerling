@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/screen_header.dart';
 import 'lesvoorbereiding_provider.dart';
 
 class LesvoorbereidingScreen extends ConsumerWidget {
@@ -26,14 +27,8 @@ class LesvoorbereidingScreen extends ConsumerWidget {
             ),
             flexibleSpace: const FlexibleSpaceBar(
               titlePadding: EdgeInsets.fromLTRB(56, 0, 20, 16),
-              title: Text(
-                'Lesvoorbereiding',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
+              title: ScreenHeader(
+                  label: 'VOORBEREIDING', title: 'Lesvoorbereiding'),
             ),
           ),
           voorbereidingAsync.when(

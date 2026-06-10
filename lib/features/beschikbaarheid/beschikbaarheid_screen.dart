@@ -6,6 +6,7 @@ import '../../models/leerling_beschikbaarheid.dart';
 import '../../models/leerling_profiel.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/snackbar.dart';
 
 // ─── Screen ───────────────────────────────────────────────────────
@@ -128,22 +129,16 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        title: const Text('Mijn beschikbaarheid'),
-        backgroundColor: AppColors.white,
-        foregroundColor: AppColors.textPrimary,
-        elevation: 0,
-        scrolledUnderElevation: 1,
-      ),
       floatingActionButton: _laden
           ? null
           : FloatingActionButton.extended(
               onPressed: () => _toonFormulier(),
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
-              icon: const Icon(Icons.add),
+              elevation: 0,
+              icon: const Icon(Icons.add_rounded, size: 20),
               label: const Text('Tijd toevoegen',
-                  style: TextStyle(fontWeight: FontWeight.w600)),
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
             ),
       body: _laden
           ? const Center(
@@ -155,26 +150,47 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
                   onRefresh: _refresh,
                   child: CustomScrollView(
                     slivers: [
+                      SliverAppBar(
+                        backgroundColor: AppColors.dark,
+                        pinned: true,
+                        expandedHeight: 110,
+                        flexibleSpace: const FlexibleSpaceBar(
+                          titlePadding:
+                              EdgeInsets.fromLTRB(56, 0, 20, 16),
+                          title: ScreenHeader(
+                              label: 'BESCHIKBAARHEID',
+                              title: 'Mijn tijden'),
+                        ),
+                      ),
                       // Info banner
                       SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
                           child: AppCard(
-                            backgroundColor:
-                                AppColors.infoSolid.withValues(alpha: 0.08),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(Icons.info_outline_rounded,
-                                    color: AppColors.infoSolid, size: 18),
-                                const SizedBox(width: 10),
+                                Container(
+                                  width: 34,
+                                  height: 34,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF0F2F5),
+                                    borderRadius: BorderRadius.circular(9),
+                                  ),
+                                  child: const Icon(
+                                      Icons.info_outline_rounded,
+                                      color: AppColors.iconDark,
+                                      size: 17),
+                                ),
+                                const SizedBox(width: 12),
                                 const Expanded(
                                   child: Text(
                                     'Geef aan wanneer je meestal rijles kunt volgen. '
                                     'Je instructeur gebruikt deze tijden voor de weekplanning.',
                                     style: TextStyle(
                                         fontSize: 13,
-                                        color: AppColors.infoText),
+                                        height: 1.4,
+                                        color: AppColors.textSecondary),
                                   ),
                                 ),
                               ],
@@ -243,7 +259,7 @@ class _BeschikbaarheidTegel extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.primaryLight,
+              color: const Color(0xFFF0F2F5),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
@@ -252,7 +268,7 @@ class _BeschikbaarheidTegel extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.primaryDark,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ),
@@ -367,9 +383,38 @@ class _BeschikbaarheidFormulierState
     final picked = await showTimePicker(
       context: context,
       initialTime: isStart ? _startTijd : _eindTijd,
-      builder: (ctx, child) => MediaQuery(
-        data: MediaQuery.of(ctx).copyWith(alwaysUse24HourFormat: true),
-        child: child!,
+      builder: (ctx, child) => Theme(
+        data: Theme.of(ctx).copyWith(
+          timePickerTheme: TimePickerThemeData(
+            backgroundColor: AppColors.white,
+            hourMinuteColor: const Color(0xFFF0F2F5),
+            hourMinuteTextColor: AppColors.textPrimary,
+            dialHandColor: AppColors.primary,
+            dialBackgroundColor: const Color(0xFFF0F2F5),
+            dialTextColor: AppColors.textPrimary,
+            entryModeIconColor: AppColors.textSecondary,
+            dayPeriodColor: const Color(0xFFF0F2F5),
+            dayPeriodTextColor: AppColors.textPrimary,
+            helpTextStyle: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textSecondary,
+              letterSpacing: 1.0,
+            ),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20)),
+          ),
+          colorScheme: ColorScheme.light(
+            primary: AppColors.primary,
+            onPrimary: Colors.white,
+            surface: AppColors.white,
+            onSurface: AppColors.textPrimary,
+          ),
+        ),
+        child: MediaQuery(
+          data: MediaQuery.of(ctx).copyWith(alwaysUse24HourFormat: true),
+          child: child!,
+        ),
       ),
     );
     if (picked == null || !mounted) return;

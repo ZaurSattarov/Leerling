@@ -6,6 +6,7 @@ import '../../core/services/student_service.dart';
 import '../../models/notificatie.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/snackbar.dart';
 import 'notificaties_provider.dart';
 
@@ -18,71 +19,89 @@ class NotificatiesScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        backgroundColor: AppColors.dark,
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-          onPressed: () => context.go('/home'),
-        ),
-        title: const Text('Meldingen',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
-        actions: [
-          notificatiesAsync.when(
-            data: (list) {
-              final heeftOngelezen = list.any((n) => !n.gelezen);
-              if (!heeftOngelezen) return const SizedBox.shrink();
-              return TextButton(
-                onPressed: () => _markeerAlles(context, ref),
-                child: const Text('Alles gelezen',
-                    style: TextStyle(
-                        color: AppColors.primary, fontWeight: FontWeight.w600)),
-              );
-            },
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
-        ],
-      ),
       body: RefreshIndicator(
         color: AppColors.primary,
         onRefresh: () async => ref.invalidate(notificatiesProvider),
-        child: notificatiesAsync.when(
-          data: (notificaties) {
-            if (notificaties.isEmpty) {
-              return ListView(
-                children: const [
-                  EmptyState(
-                    icon: Icons.notifications_off_outlined,
-                    title: 'Geen meldingen',
-                    subtitle: 'Je hebt nog geen meldingen ontvangen.',
-                  ),
-                ],
-              );
-            }
-            return ListView.separated(
-              padding: const EdgeInsets.all(20),
-              itemCount: notificaties.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
-              itemBuilder: (context, i) =>
-                  _NotificatieCard(notificatie: notificaties[i], ref: ref),
-            );
-          },
-          loading: () => ListView.separated(
-            padding: const EdgeInsets.all(20),
-            itemCount: 5,
-            separatorBuilder: (_, __) => const SizedBox(height: 10),
-            itemBuilder: (_, __) => const SkeletonCard(),
-          ),
-          error: (e, _) => ListView(
-            children: [
-              EmptyState(
-                icon: Icons.wifi_off_rounded,
-                title: 'Kon meldingen niet laden',
-                subtitle: e.toString(),
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              backgroundColor: AppColors.dark,
+              pinned: true,
+              expandedHeight: 110,
+              leading: IconButton(
+                icon: const Icon(
+                    Icons.arrow_back_rounded, color: Colors.white),
+                onPressed: () => context.go('/home'),
               ),
-            ],
-          ),
+              actions: [
+                notificatiesAsync.when(
+                  data: (list) {
+                    final heeftOngelezen = list.any((n) => !n.gelezen);
+                    if (!heeftOngelezen) return const SizedBox.shrink();
+                    return TextButton(
+                      onPressed: () => _markeerAlles(context, ref),
+                      child: const Text('Alles gelezen',
+                          style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600)),
+                    );
+                  },
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
+                ),
+              ],
+              flexibleSpace: const FlexibleSpaceBar(
+                titlePadding: EdgeInsets.fromLTRB(56, 0, 20, 16),
+                title: ScreenHeader(
+                    label: 'MELDINGEN', title: 'Mijn meldingen'),
+              ),
+            ),
+            notificatiesAsync.when(
+              data: (notificaties) {
+                if (notificaties.isEmpty) {
+                  return const SliverFillRemaining(
+                    child: EmptyState(
+                      icon: Icons.notifications_off_outlined,
+                      title: 'Geen meldingen',
+                      subtitle: 'Je hebt nog geen meldingen ontvangen.',
+                    ),
+                  );
+                }
+                return SliverPadding(
+                  padding: const EdgeInsets.all(20),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, i) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _NotificatieCard(
+                            notificatie: notificaties[i], ref: ref),
+                      ),
+                      childCount: notificaties.length,
+                    ),
+                  ),
+                );
+              },
+              loading: () => SliverPadding(
+                padding: const EdgeInsets.all(20),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (_, __) => const Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: SkeletonCard(),
+                    ),
+                    childCount: 5,
+                  ),
+                ),
+              ),
+              error: (e, _) => SliverFillRemaining(
+                child: EmptyState(
+                  icon: Icons.wifi_off_rounded,
+                  title: 'Kon meldingen niet laden',
+                  subtitle: e.toString(),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

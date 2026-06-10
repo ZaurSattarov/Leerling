@@ -127,6 +127,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     fontWeight: FontWeight.w400,
                   ),
                 ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    color: AppColors.primary.withValues(alpha: 0.6),
+                  ),
+                ),
               ],
             ),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/leerling_profiel.dart';
@@ -190,6 +191,7 @@ class _GradientHeader extends StatelessWidget {
     final home = homeAsync.valueOrNull;
     final naam = profiel?.voornaam ?? '';
     final initials = naam.isNotEmpty ? naam[0].toUpperCase() : '?';
+    final avatarUrl = profiel?.avatarUrl;
 
     return Container(
       decoration: const BoxDecoration(
@@ -206,7 +208,7 @@ class _GradientHeader extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Avatar circle
+              // Avatar circle — shows real photo or initials fallback
               Container(
                 width: 40,
                 height: 40,
@@ -218,15 +220,44 @@ class _GradientHeader extends StatelessWidget {
                     width: 1.5,
                   ),
                 ),
-                child: Center(
-                  child: Text(
-                    initials,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                child: ClipOval(
+                  child: avatarUrl?.isNotEmpty == true
+                      ? CachedNetworkImage(
+                          imageUrl: avatarUrl!,
+                          fit: BoxFit.cover,
+                          width: 40,
+                          height: 40,
+                          placeholder: (_, __) => Center(
+                            child: Text(
+                              initials,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          errorWidget: (_, __, ___) => Center(
+                            child: Text(
+                              initials,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                            initials,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -383,7 +414,7 @@ class _StatsRow extends StatelessWidget {
           label: 'Facturen',
           value: '$openFacturen',
           icon: Icons.receipt_long_rounded,
-          iconColor: heeftFacturen ? AppColors.iconAmber : AppColors.iconSlate,
+          iconColor: heeftFacturen ? AppColors.warningSolid : AppColors.iconDark,
           isAlert: heeftFacturen,
           onTap: () => context.go('/facturen'),
         ),
@@ -421,7 +452,7 @@ class _StatCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isAlert
-                  ? AppColors.iconAmber.withValues(alpha: 0.35)
+                  ? AppColors.warningSolid.withValues(alpha: 0.35)
                   : AppColors.border,
               width: 1,
             ),
@@ -785,10 +816,10 @@ class _ExamenadviesHero extends StatelessWidget {
             ? 'Bijna examenklaar'
             : 'In ontwikkeling';
     final labelColor = score >= 85
-        ? AppColors.iconGreen
+        ? AppColors.successSolid
         : score >= 60
-            ? AppColors.iconAmber
-            : AppColors.iconBlue;
+            ? AppColors.warningSolid
+            : AppColors.infoSolid;
 
     return GestureDetector(
       onTap: onTap,
@@ -824,10 +855,10 @@ class _ExamenadviesHero extends StatelessWidget {
                       backgroundColor: const Color(0xFFF0F2F5),
                       valueColor: AlwaysStoppedAnimation<Color>(
                         score >= 85
-                            ? AppColors.iconGreen
+                            ? AppColors.successSolid
                             : score >= 60
-                                ? AppColors.iconAmber
-                                : AppColors.iconBlue,
+                                ? AppColors.warningSolid
+                                : AppColors.infoSolid,
                       ),
                       strokeCap: StrokeCap.round,
                     ),
@@ -1098,7 +1129,7 @@ class _FactuurRij extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isVerlopen = factuur.isVerlopen;
-    final borderColor = isVerlopen ? AppColors.iconRed : AppColors.iconAmber;
+    final borderColor = isVerlopen ? AppColors.dangerSolid : AppColors.warningSolid;
 
     return GestureDetector(
       onTap: () => context.push('/facturen/${factuur.id}'),
@@ -1183,15 +1214,15 @@ class _NotificatieRij extends StatelessWidget {
     switch (notificatie.type) {
       case 'les_ingepland':
       case 'les_gewijzigd':
-        return AppColors.iconBlue;
+        return AppColors.infoSolid;
       case 'les_geannuleerd':
-        return AppColors.iconRed;
+        return AppColors.dangerSolid;
       case 'factuur':
-        return AppColors.iconAmber;
+        return AppColors.warningSolid;
       case 'reminder':
-        return AppColors.iconPurple;
+        return AppColors.iconDark;
       default:
-        return AppColors.iconSlate;
+        return AppColors.iconDark;
     }
   }
 

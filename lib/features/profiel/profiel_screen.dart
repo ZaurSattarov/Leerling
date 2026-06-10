@@ -116,7 +116,7 @@ class ProfielScreen extends ConsumerWidget {
                                     width: 6,
                                     height: 6,
                                     decoration: const BoxDecoration(
-                                      color: Color(0xFFEF4444),
+                                      color: AppColors.dangerSolid,
                                       shape: BoxShape.circle,
                                     ),
                                   ),
@@ -565,15 +565,7 @@ class _PhotoSourceTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
           children: [
-            Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(
-                color: AppColors.dark3,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(icon, color: Colors.white, size: 18),
-            ),
+            IconBadge(icon: icon, color: AppColors.iconDark, size: 38),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
@@ -613,15 +605,7 @@ class _InfoTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          width: 34,
-          height: 34,
-          decoration: BoxDecoration(
-            color: iconColor,
-            borderRadius: BorderRadius.circular(9),
-          ),
-          child: Icon(icon, color: Colors.white, size: 17),
-        ),
+        IconBadge(icon: icon, color: iconColor, size: 34),
         const SizedBox(width: 12),
         Expanded(
           child: Text(label,
@@ -666,15 +650,7 @@ class _ActionTile extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       child: Row(
         children: [
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: iconColor,
-              borderRadius: BorderRadius.circular(9),
-            ),
-            child: Icon(icon, color: Colors.white, size: 17),
-          ),
+          IconBadge(icon: icon, color: iconColor, size: 34),
           const SizedBox(width: 12),
           Expanded(
             child: Text(

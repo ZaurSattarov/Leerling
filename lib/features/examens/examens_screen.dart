@@ -5,6 +5,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/examen.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/screen_header.dart';
 import 'examens_provider.dart';
 
 class ExamensScreen extends ConsumerWidget {
@@ -30,31 +31,10 @@ class ExamensScreen extends ConsumerWidget {
                     const Icon(Icons.arrow_back_rounded, color: Colors.white),
                 onPressed: () => context.pop(),
               ),
-              flexibleSpace: FlexibleSpaceBar(
-                titlePadding: const EdgeInsets.fromLTRB(56, 0, 20, 16),
-                title: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      'EXAMENS',
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.5,
-                      ),
-                    ),
-                    Text(
-                      'Mijn examens',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ],
-                ),
+              flexibleSpace: const FlexibleSpaceBar(
+                titlePadding: EdgeInsets.fromLTRB(56, 0, 20, 16),
+                title: ScreenHeader(
+                    label: 'EXAMENS', title: 'Mijn examens'),
               ),
             ),
             examensAsync.when(
