@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/factuur.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/gradient_header.dart';
+import '../../core/services/student_service.dart';
 import '../../shared/widgets/snackbar.dart';
 import '../../shared/widgets/status_pill.dart';
 import 'facturen_provider.dart';
@@ -19,50 +20,45 @@ class FactuurDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final factuurAsync = ref.watch(factuurDetailProvider(id));
 
+    final factuur = factuurAsync.valueOrNull;
+
     return Scaffold(
       backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        backgroundColor: AppColors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text('Factuur'),
-        actions: [
-          factuurAsync.when(
-            data: (f) => f != null
-                ? Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: StatusPill.factuur(f.status),
-                  )
-                : const SizedBox.shrink(),
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          DetailGradientHeader(
+            title: 'Factuur',
+            trailing: factuur != null
+                ? StatusPill.factuur(factuur.status)
+                : null,
+          ),
+          Expanded(
+            child: factuurAsync.when(
+              data: (f) {
+                if (f == null) {
+                  return const Center(
+                    child: EmptyState(
+                      icon: Icons.search_off_rounded,
+                      title: 'Factuur niet gevonden',
+                    ),
+                  );
+                }
+                return _FactuurDetailBody(factuur: f);
+              },
+              loading: () => const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              ),
+              error: (e, _) => Center(
+                child: EmptyState(
+                  icon: Icons.wifi_off_rounded,
+                  title: 'Kon factuur niet laden',
+                  subtitle: e.toString(),
+                ),
+              ),
+            ),
           ),
         ],
-      ),
-      body: factuurAsync.when(
-        data: (factuur) {
-          if (factuur == null) {
-            return const Center(
-              child: EmptyState(
-                icon: Icons.search_off_rounded,
-                title: 'Factuur niet gevonden',
-              ),
-            );
-          }
-          return _FactuurDetailBody(factuur: factuur);
-        },
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
-        ),
-        error: (e, _) => Center(
-          child: EmptyState(
-            icon: Icons.wifi_off_rounded,
-            title: 'Kon factuur niet laden',
-            subtitle: e.toString(),
-          ),
-        ),
       ),
     );
   }
@@ -79,6 +75,7 @@ class _FactuurDetailBody extends ConsumerStatefulWidget {
 class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
     with WidgetsBindingObserver {
   bool _wachtOpBetaalTerugkeer = false;
+  bool _betalingAanvragen = false;
 
   Factuur get factuur => widget.factuur;
 
@@ -270,11 +267,22 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
           ),
           const SizedBox(height: 20),
           ElevatedButton.icon(
-            onPressed: factuur.isBetaalbaar && betaalUrl != null
-                ? () => _openBetaalLink(context, betaalUrl)
+            onPressed: factuur.isBetaalbaar && !_betalingAanvragen
+                ? () => _startBetaling(context, betaalUrl)
                 : null,
-            icon: const Icon(Icons.account_balance_rounded, size: 18),
-            label: const Text('Betaal met iDEAL'),
+            icon: _betalingAanvragen
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : const Icon(Icons.account_balance_rounded, size: 18),
+            label: Text(_betalingAanvragen
+                ? 'Betaling aanmaken...'
+                : 'Betaal met iDEAL'),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
@@ -285,12 +293,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
           ),
           if (!factuur.isBetaalbaar)
             const _ActionHint(
-                text: 'Deze factuur staat niet open voor betaling.')
-          else if (betaalUrl == null)
-            const _ActionHint(
-              text:
-                  'Betaallink ontbreekt. Vraag je rijschool om de factuur te versturen of een iDEAL-link toe te voegen.',
-            ),
+                text: 'Deze factuur staat niet open voor betaling.'),
           const SizedBox(height: 10),
           OutlinedButton.icon(
             onPressed: downloadUrl != null
@@ -333,6 +336,46 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
     }
     if (context.mounted) {
       showAppSnackBar(context, errorMessage, isError: true);
+    }
+  }
+
+  Future<void> _startBetaling(BuildContext context, String? betaalUrl) async {
+    if (betaalUrl != null) {
+      return _openBetaalLink(context, betaalUrl);
+    }
+
+    setState(() => _betalingAanvragen = true);
+    try {
+      final result =
+          await StudentService.requestMollieFactuurPayment(factuur.id);
+      if (!context.mounted) return;
+
+      final checkoutUrl = result['checkout_url'] as String?;
+      if (checkoutUrl != null) {
+        await _openBetaalLink(context, checkoutUrl);
+      } else if (result['error'] == 'MOLLIE_NOT_CONNECTED') {
+        showAppSnackBar(
+          context,
+          'Je instructeur heeft iDEAL nog niet ingesteld. Neem contact op.',
+          isError: true,
+        );
+      } else {
+        showAppSnackBar(
+          context,
+          'Kon betaallink niet aanmaken. Probeer later opnieuw.',
+          isError: true,
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        showAppSnackBar(
+          context,
+          'Er ging iets mis bij het aanmaken van de betaling.',
+          isError: true,
+        );
+      }
+    } finally {
+      if (context.mounted) setState(() => _betalingAanvragen = false);
     }
   }
 

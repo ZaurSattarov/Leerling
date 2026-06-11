@@ -267,6 +267,26 @@ class StudentService {
     return res != null ? Factuur.fromJson(res) : null;
   }
 
+  static Future<Map<String, dynamic>> requestMollieFactuurPayment(
+      String factuurId) async {
+    try {
+      final result = await client.functions.invoke(
+        'create-factuur-payment',
+        body: {'factuur_id': factuurId},
+      );
+      final data = result.data as Map<String, dynamic>? ?? {};
+      if (data['code'] == 'MOLLIE_NOT_CONNECTED') {
+        return {'error': 'MOLLIE_NOT_CONNECTED'};
+      }
+      final url = data['checkout_url'] as String?;
+      if (url != null) return {'checkout_url': url};
+      return {'error': data['error'] ?? 'Onbekende fout'};
+    } catch (e) {
+      debugPrint('[requestMollieFactuurPayment] fout: $e');
+      return {'error': e.toString()};
+    }
+  }
+
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // NOTIFICATIES
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

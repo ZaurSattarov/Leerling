@@ -37,6 +37,9 @@ class Factuur {
   final String? betaalmethode;
   final String? betaalLinkUrl;
   final String? stripeCheckoutUrl;
+  final String? mollieCheckoutUrl;
+  final String? molliePaymentId;
+  final String? mollieStatus;
   final String? paymentUrl;
   final String? invoicePdfUrl;
   final String? downloadUrl;
@@ -59,6 +62,9 @@ class Factuur {
     this.betaalmethode,
     this.betaalLinkUrl,
     this.stripeCheckoutUrl,
+    this.mollieCheckoutUrl,
+    this.molliePaymentId,
+    this.mollieStatus,
     this.paymentUrl,
     this.invoicePdfUrl,
     this.downloadUrl,
@@ -85,7 +91,12 @@ class Factuur {
   bool get isBetaalbaar => isOpen || isVerlopen;
 
   String? get effectieveBetaalUrl {
-    for (final url in [stripeCheckoutUrl, betaalLinkUrl, paymentUrl]) {
+    for (final url in [
+      mollieCheckoutUrl,
+      stripeCheckoutUrl,
+      betaalLinkUrl,
+      paymentUrl,
+    ]) {
       if (url?.trim().isNotEmpty == true) return url!.trim();
     }
     return null;
@@ -125,6 +136,9 @@ class Factuur {
       betaalmethode: json['betaalmethode'] as String?,
       betaalLinkUrl: json['betaal_link_url'] as String?,
       stripeCheckoutUrl: json['stripe_checkout_url'] as String?,
+      mollieCheckoutUrl: json['mollie_checkout_url'] as String?,
+      molliePaymentId: json['mollie_payment_id'] as String?,
+      mollieStatus: json['mollie_status'] as String?,
       paymentUrl: json['payment_url'] as String?,
       invoicePdfUrl: (json['invoice_pdf_url'] ??
           json['factuur_pdf_url'] ??
