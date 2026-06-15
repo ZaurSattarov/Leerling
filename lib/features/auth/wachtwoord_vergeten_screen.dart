@@ -86,7 +86,7 @@ class _WachtwoordVergetenScreenState extends State<WachtwoordVergetenScreen> {
         child: Align(
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 18, 24, 24),
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 400),
               child: Form(
@@ -94,6 +94,15 @@ class _WachtwoordVergetenScreenState extends State<WachtwoordVergetenScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    Center(
+                      child: Image.asset(
+                        'assets/Inlogassets/Login-bro.png',
+                        height:
+                            MediaQuery.sizeOf(context).height < 700 ? 130 : 160,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     const Text(
                       'Wachtwoord vergeten?',
                       style: TextStyle(

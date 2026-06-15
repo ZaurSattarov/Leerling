@@ -116,12 +116,23 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         child: Align(
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 18, 24, 24),
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 420),
-              child: Form(
-                key: _formKey,
-                child: Container(
+              child: Column(
+                children: [
+                  Center(
+                    child: Image.asset(
+                      'assets/Inlogassets/Login-bro.png',
+                      height:
+                          MediaQuery.sizeOf(context).height < 700 ? 130 : 160,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Form(
+                    key: _formKey,
+                    child: Container(
                   padding: const EdgeInsets.all(22),
                   decoration: BoxDecoration(
                     color: AppColors.white,
@@ -224,6 +235,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ],
                   ),
                 ),
+              ),
+                ],
               ),
             ),
           ),

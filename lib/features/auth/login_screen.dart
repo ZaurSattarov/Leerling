@@ -232,8 +232,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         'Wachtwoord vergeten?',
                         style: GoogleFonts.inter(
                           fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primary,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ),
@@ -244,22 +244,30 @@ class _LoginScreenState extends State<LoginScreen> {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
+                        horizontal: 14, vertical: 12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFEF2F2),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFFFECACA)),
+                      color: const Color(0xFFF8F8FA),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: const Color(0xFFCBD5E1)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline_rounded,
-                            color: AuthDesign.error, size: 18),
-                        const SizedBox(width: 10),
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF0F2F5),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(Icons.error_outline_rounded,
+                              color: Color(0xFFB91C1C), size: 17),
+                        ),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             _fout!,
                             style: GoogleFonts.inter(
-                                color: AuthDesign.error,
+                                color: AppColors.textPrimary,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500),
                           ),
@@ -267,7 +275,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         GestureDetector(
                           onTap: () => setState(() => _fout = null),
                           child: const Icon(Icons.close_rounded,
-                              color: AuthDesign.error, size: 16),
+                              color: AppColors.textHint, size: 16),
                         ),
                       ],
                     ),
@@ -312,7 +320,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: GoogleFonts.inter(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.primary,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                     ),
