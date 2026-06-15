@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/les.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/gradient_header.dart';
 import '../../shared/widgets/status_pill.dart';
 import 'lespakket_voortgang_provider.dart';
 
@@ -17,33 +17,36 @@ class LespakketDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        backgroundColor: AppColors.white,
-        foregroundColor: AppColors.textPrimary,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text('Lespakket & voortgang'),
-      ),
-      body: dataAsync.when(
-        data: (data) {
-          if (data == null) {
-            return const EmptyState(
-              icon: Icons.person_off_outlined,
-              title: 'Geen profiel gevonden',
-            );
-          }
-          return _LespakketDetailBody(data: data);
-        },
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
-        ),
-        error: (e, _) => EmptyState(
-          icon: Icons.wifi_off_rounded,
-          title: 'Kon lespakket niet laden',
-          subtitle: e.toString(),
-        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const DetailGradientHeader(title: 'Lespakket & voortgang'),
+          Expanded(
+            child: dataAsync.when(
+              data: (data) {
+                if (data == null) {
+                  return const Center(
+                    child: EmptyState(
+                      icon: Icons.person_off_outlined,
+                      title: 'Geen profiel gevonden',
+                    ),
+                  );
+                }
+                return _LespakketDetailBody(data: data);
+              },
+              loading: () => const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              ),
+              error: (e, _) => Center(
+                child: EmptyState(
+                  icon: Icons.wifi_off_rounded,
+                  title: 'Kon lespakket niet laden',
+                  subtitle: e.toString(),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -277,9 +280,9 @@ class _InlineNotice extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.primaryLight,
+        color: const Color(0xFFF0F2F5),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.dangerBorder),
+        border: Border.all(color: const Color(0xFFE2E2E7)),
       ),
       child: Row(
         children: [

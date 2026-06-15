@@ -14,18 +14,35 @@ class HelpScreen extends StatelessWidget {
       backgroundColor: AppColors.surface,
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            backgroundColor: AppColors.dark,
-            pinned: true,
-            expandedHeight: 110,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-              onPressed: () => context.pop(),
-            ),
-            flexibleSpace: const FlexibleSpaceBar(
-              titlePadding: EdgeInsets.fromLTRB(56, 0, 20, 16),
-              title: ScreenHeader(
-                  label: 'SUPPORT', title: 'Help & ondersteuning'),
+          SliverToBoxAdapter(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF141C2B), Color(0xFF1A2D42)],
+                ),
+              ),
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 6, 16, 20),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+                        onPressed: () => context.pop(),
+                      ),
+                      const Expanded(
+                        child: ScreenHeader(
+                          label: 'SUPPORT',
+                          title: 'Help & ondersteuning',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
           SliverPadding(

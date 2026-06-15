@@ -531,6 +531,58 @@ class StudentService {
     }
   }
 
+  static Future<Map<String, dynamic>?> getLesEvaluatie(
+      String lesId, String leerlingId) async {
+    try {
+      final row = await client
+          .from('lesson_evaluations')
+          .select('*, skill_scores:lesson_skill_scores(id, skill_key, score)')
+          .eq('lesson_id', lesId)
+          .eq('student_id', leerlingId)
+          .maybeSingle();
+      return row != null ? Map<String, dynamic>.from(row) : null;
+    } catch (e) {
+      debugPrint('[student.lesEvaluatie] ophalen mislukt: $e');
+      return null;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getAllEvaluaties(
+      String leerlingId) async {
+    try {
+      final res = await client
+          .from('lesson_evaluations')
+          .select('*, skill_scores:lesson_skill_scores(id, skill_key, score)')
+          .eq('student_id', leerlingId)
+          .order('created_at', ascending: false);
+      return (res as List).map((e) => Map<String, dynamic>.from(e)).toList();
+    } catch (e) {
+      debugPrint('[student.alleEvaluaties] ophalen mislukt: $e');
+      return [];
+    }
+  }
+
+  static Future<Examen?> getEerstvolgendExamen(String leerlingId) async {
+    try {
+      final vandaag = DateTime.now()
+          .toIso8601String()
+          .substring(0, 10);
+      final res = await client
+          .from('examens')
+          .select()
+          .eq('leerling_id', leerlingId)
+          .eq('status', 'gepland')
+          .gte('datum', vandaag)
+          .order('datum')
+          .limit(1)
+          .maybeSingle();
+      return res != null ? Examen.fromJson(res) : null;
+    } catch (e) {
+      debugPrint('[student.eerstvolgendExamen] ophalen mislukt: $e');
+      return null;
+    }
+  }
+
   // ─────────────────────────────────────────────────────────────
   // REALTIME SUBSCRIPTIONS
   // ─────────────────────────────────────────────────────────────

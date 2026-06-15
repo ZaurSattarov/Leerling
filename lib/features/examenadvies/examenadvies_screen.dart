@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/coach_widgets.dart';
-import '../../shared/widgets/screen_header.dart';
+import '../../shared/widgets/gradient_header.dart';
 import 'examenadvies_provider.dart';
 
 class ExamenadviesScreen extends ConsumerWidget {
@@ -21,19 +20,8 @@ class ExamenadviesScreen extends ConsumerWidget {
       backgroundColor: AppColors.surface,
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            backgroundColor: AppColors.dark,
-            pinned: true,
-            expandedHeight: 110,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-              onPressed: () => context.pop(),
-            ),
-            flexibleSpace: const FlexibleSpaceBar(
-              titlePadding: EdgeInsets.fromLTRB(56, 0, 20, 16),
-              title:
-                  ScreenHeader(label: 'ADVIES', title: 'Examenadvies'),
-            ),
+          const SliverToBoxAdapter(
+            child: DetailGradientHeader(title: 'Examenadvies'),
           ),
           SliverPadding(
             padding: const EdgeInsets.all(20),

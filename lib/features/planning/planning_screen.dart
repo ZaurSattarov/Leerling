@@ -36,57 +36,76 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surface,
-      body: NestedScrollView(
-        headerSliverBuilder: (context, _) => [
-          SliverAppBar(
-            backgroundColor: AppColors.dark,
-            pinned: true,
-            floating: false,
-            expandedHeight: 120,
-            automaticallyImplyLeading: false,
-            actions: [
-              GestureDetector(
-                onTap: () => context.go('/notificaties'),
-                child: Container(
-                  margin: const EdgeInsets.only(right: 16, top: 10),
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: AppColors.dark2,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(Icons.notifications_outlined,
-                      color: Colors.white, size: 20),
-                ),
+      body: Column(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF141C2B), Color(0xFF1A2D42)],
               ),
-            ],
-            flexibleSpace: const FlexibleSpaceBar(
-              titlePadding: EdgeInsets.fromLTRB(20, 0, 64, 56),
-              title: ScreenHeader(label: 'PLANNING', title: 'Mijn lessen'),
             ),
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(52),
+            child: SafeArea(
+              bottom: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-                child: AnimatedBuilder(
-                  animation: _tabs,
-                  builder: (_, __) => _PillTabBar(
-                    activeIndex: _tabs.index,
-                    labels: const ['Komende lessen', 'Afgerond'],
-                    onTap: (i) => _tabs.animateTo(i),
-                  ),
+                padding: const EdgeInsets.fromLTRB(20, 14, 16, 20),
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: ScreenHeader(
+                        label: 'PLANNING',
+                        title: 'Mijn lessen',
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => context.go('/notificaties'),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.35),
+                              blurRadius: 14,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(Icons.notifications_none_rounded,
+                            color: Colors.white, size: 20),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
+          Container(
+            color: AppColors.white,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+            child: AnimatedBuilder(
+              animation: _tabs,
+              builder: (_, __) => _PillTabBar(
+                activeIndex: _tabs.index,
+                labels: const ['Komende lessen', 'Afgerond'],
+                onTap: (i) => _tabs.animateTo(i),
+              ),
+            ),
+          ),
+          const Divider(height: 1, thickness: 1, color: Color(0xFFE8EAF0)),
+          Expanded(
+            child: TabBarView(
+              controller: _tabs,
+              children: [
+                _LessenTab(provider: komendeLessenProvider, isKomend: true),
+                _LessenTab(provider: vorigeLessenProvider, isKomend: false),
+              ],
+            ),
+          ),
         ],
-        body: TabBarView(
-          controller: _tabs,
-          children: [
-            _LessenTab(provider: komendeLessenProvider, isKomend: true),
-            _LessenTab(provider: vorigeLessenProvider, isKomend: false),
-          ],
-        ),
       ),
     );
   }
@@ -108,8 +127,9 @@ class _PillTabBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.dark2,
+        color: const Color(0xFFF0F2F5),
         borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: const Color(0xFFE2E2E7)),
       ),
       child: Row(
         children: List.generate(labels.length, (i) {
@@ -123,14 +143,21 @@ class _PillTabBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isActive ? AppColors.primary : Colors.transparent,
                   borderRadius: BorderRadius.circular(26),
+                  boxShadow: isActive
+                      ? [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.22),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          )
+                        ]
+                      : null,
                 ),
                 child: Text(
                   labels[i],
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: isActive
-                        ? Colors.white
-                        : Colors.white.withValues(alpha: 0.5),
+                    color: isActive ? Colors.white : AppColors.textSecondary,
                     fontSize: 13,
                     fontWeight:
                         isActive ? FontWeight.w600 : FontWeight.w500,
@@ -219,20 +246,20 @@ class _NieuweLesButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: () => context.go('/beschikbaarheid'),
+      child: OutlinedButton.icon(
+        onPressed: () => context.push('/beschikbaarheid'),
         icon: const Icon(Icons.add_rounded, size: 18),
         label: const Text('Nieuwe les aanvragen'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          minimumSize: const Size.fromHeight(52),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.textPrimary,
+          side: const BorderSide(color: Color(0xFFE2E2E7), width: 1.25),
+          minimumSize: const Size.fromHeight(48),
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14)),
-          elevation: 0,
           textStyle: const TextStyle(
             fontSize: 14,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -254,47 +281,40 @@ class _LesCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 60,
-            height: 76,
+            width: 58,
+            height: 70,
             decoration: BoxDecoration(
-              color: isNext ? AppColors.primary : AppColors.dark,
-              borderRadius: BorderRadius.circular(14),
-              boxShadow: isNext
-                  ? [
-                      BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.28),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
-                      )
-                    ]
-                  : null,
+              color: const Color(0xFFF0F2F5),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                  color: const Color(0xFFE2E2E7), width: 0.75),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   _dagAfk(les.datum),
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.7),
-                    fontSize: 11,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 10,
                     fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
+                    letterSpacing: 0.6,
                   ),
                 ),
                 Text(
                   _dagNummer(les.datum),
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppColors.primary,
                     fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    height: 1.1,
+                    fontWeight: FontWeight.w900,
+                    height: 1.05,
                   ),
                 ),
                 Text(
                   _maandAfk(les.datum),
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.7),
-                    fontSize: 11,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 10,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -336,36 +356,8 @@ class _LesCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                if (les.instructeurNaam?.isNotEmpty == true ||
-                    les.locatie?.isNotEmpty == true) ...[
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      if (les.instructeurNaam?.isNotEmpty == true) ...[
-                        const Icon(Icons.person_outline_rounded,
-                            size: 13, color: AppColors.textHint),
-                        const SizedBox(width: 3),
-                        Text(les.instructeurNaam!,
-                            style: const TextStyle(
-                                fontSize: 12, color: AppColors.textHint)),
-                        const SizedBox(width: 10),
-                      ],
-                      if (les.locatie?.isNotEmpty == true) ...[
-                        const Icon(Icons.location_on_outlined,
-                            size: 13, color: AppColors.textHint),
-                        const SizedBox(width: 3),
-                        Expanded(
-                          child: Text(
-                            les.locatie!,
-                            style: const TextStyle(
-                                fontSize: 12, color: AppColors.textHint),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ],
+                const SizedBox(height: 6),
+                _LesMetaRij(les: les),
               ],
             ),
           ),
@@ -404,6 +396,54 @@ class _LesCard extends StatelessWidget {
   }
 }
 
+class _LesMetaRij extends StatelessWidget {
+  final Les les;
+  const _LesMetaRij({required this.les});
+
+  static bool _isEmail(String s) => s.contains('@');
+
+  @override
+  Widget build(BuildContext context) {
+    final naam = les.instructeurNaam;
+    final toonNaam = naam != null && naam.isNotEmpty && !_isEmail(naam);
+    final voertuig = (les.voertuigMerk != null || les.voertuigModel != null)
+        ? [les.voertuigMerk, les.voertuigModel]
+            .whereType<String>()
+            .where((s) => s.isNotEmpty)
+            .join(' ')
+        : null;
+    final duur = DatumUtils.duurLabel(les.duurMinuten);
+
+    final items = <({IconData icon, String tekst})>[
+      if (toonNaam) (icon: Icons.person_outline_rounded, tekst: naam),
+      if (les.locatie?.isNotEmpty == true)
+        (icon: Icons.location_on_outlined, tekst: les.locatie!),
+      if (voertuig != null && voertuig.isNotEmpty)
+        (icon: Icons.directions_car_outlined, tekst: voertuig),
+      (icon: Icons.timer_outlined, tekst: duur),
+    ];
+
+    if (items.isEmpty) return const SizedBox.shrink();
+
+    return Wrap(
+      spacing: 10,
+      runSpacing: 3,
+      children: items.map((item) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(item.icon, size: 12, color: AppColors.textHint),
+          const SizedBox(width: 3),
+          Text(
+            item.tekst,
+            style: const TextStyle(fontSize: 11, color: AppColors.textHint),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      )).toList(),
+    );
+  }
+}
+
 class _VolgendeBadge extends StatelessWidget {
   const _VolgendeBadge();
 
@@ -414,6 +454,13 @@ class _VolgendeBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.primary,
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.25),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: const Text(
         'Volgende',

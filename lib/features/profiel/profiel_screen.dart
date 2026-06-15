@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/avatar_service.dart';
 import '../../core/services/student_service.dart';
@@ -273,6 +274,12 @@ class ProfielScreen extends ConsumerWidget {
                                     label: 'E-mail',
                                     value: instructeur.email!,
                                   ),
+                                ],
+                                if (instructeur.telefoon?.isNotEmpty == true ||
+                                    instructeur.whatsappNummer?.isNotEmpty == true ||
+                                    instructeur.volledigAdres != null) ...[
+                                  const Divider(height: 20),
+                                  _RijschoolActies(instructeur: instructeur),
                                 ],
                               ],
                             ),
@@ -687,4 +694,106 @@ class _ActionTile extends StatelessWidget {
       ),
     );
   }
+}
+
+class _RijschoolActies extends StatelessWidget {
+  final Instructeur instructeur;
+
+  const _RijschoolActies({required this.instructeur});
+
+  Future<void> _launch(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final String? tel = instructeur.telefoon?.isNotEmpty == true ? instructeur.telefoon : null;
+    final String? wa = instructeur.whatsappNummer?.isNotEmpty == true
+        ? instructeur.whatsappNummer
+        : tel;
+    final String? adres = instructeur.volledigAdres;
+
+    final btns = <_ActieKnop>[
+      if (tel != null)
+        _ActieKnop(
+          icon: Icons.phone_rounded,
+          label: 'Bellen',
+          color: const Color(0xFF16A34A),
+          onTap: () => _launch('tel:$tel'),
+        ),
+      if (wa != null)
+        _ActieKnop(
+          icon: Icons.chat_rounded,
+          label: 'WhatsApp',
+          color: const Color(0xFF16A34A),
+          onTap: () {
+            final nr = wa.replaceAll(RegExp(r'\D'), '');
+            _launch('https://wa.me/$nr');
+          },
+        ),
+      if (adres != null)
+        _ActieKnop(
+          icon: Icons.directions_rounded,
+          label: 'Route',
+          color: const Color(0xFF2563EB),
+          onTap: () => _launch(
+              'https://maps.google.com/?q=${Uri.encodeComponent(adres)}'),
+        ),
+    ];
+
+    if (btns.isEmpty) return const SizedBox.shrink();
+
+    return Row(
+      children: btns.map((b) {
+        final isLast = b == btns.last;
+        return Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(right: isLast ? 0 : 8),
+            child: GestureDetector(
+              onTap: b.onTap,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF0F2F5),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFE2E2E7)),
+                ),
+                child: Column(
+                  children: [
+                    Icon(b.icon, color: AppColors.textPrimary, size: 20),
+                    const SizedBox(height: 4),
+                    Text(
+                      b.label,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _ActieKnop {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ActieKnop({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
 }

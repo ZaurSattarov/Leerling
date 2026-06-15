@@ -56,6 +56,10 @@ class HomeScreen extends ConsumerWidget {
                       profielAsync: profielAsync,
                       homeAsync: homeAsync,
                     ),
+                    const SizedBox(height: 16),
+
+                    // Next Action card
+                    _VolgendeActieCard(home: home),
                     const SizedBox(height: 24),
 
                     // Volgende les
@@ -1141,7 +1145,6 @@ class _FactuurRij extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isVerlopen = factuur.isVerlopen;
-    final borderColor = isVerlopen ? AppColors.dangerSolid : AppColors.warningSolid;
 
     return GestureDetector(
       onTap: () => context.push('/facturen/${factuur.id}'),
@@ -1162,11 +1165,18 @@ class _FactuurRij extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 4,
-              height: 40,
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
-                color: borderColor,
-                borderRadius: BorderRadius.circular(4),
+                color: const Color(0xFFF0F2F5),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                Icons.receipt_long_rounded,
+                size: 17,
+                color: isVerlopen
+                    ? AppColors.dangerSolid
+                    : AppColors.textPrimary,
               ),
             ),
             const SizedBox(width: 12),
@@ -1216,6 +1226,173 @@ class _FactuurRij extends StatelessWidget {
   }
 }
 
+
+// ── Volgende actie card ───────────────────────────────────────────────────────
+
+class _VolgendeActieCard extends StatelessWidget {
+  final HomeData home;
+  const _VolgendeActieCard({required this.home});
+
+  @override
+  Widget build(BuildContext context) {
+    // Priority: 1. Verlopen factuur, 2. Open factuur, 3. Upcoming lesson
+    final verlopenFacturen = home.openFacturen.where((f) => f.isVerlopen).toList();
+    final openFacturen = home.openFacturen.where((f) => !f.isVerlopen).toList();
+
+    if (verlopenFacturen.isNotEmpty) {
+      return _ActieCard(
+        icon: Icons.warning_rounded,
+        iconColor: const Color(0xFFDC2626),
+        label: 'Actie vereist',
+        title: '${verlopenFacturen.length} factuur${verlopenFacturen.length > 1 ? 'en' : ''} verlopen',
+        subtitle: 'Bekijk je openstaande facturen',
+        onTap: () => context.go('/facturen'),
+      );
+    }
+
+    if (openFacturen.isNotEmpty) {
+      final f = openFacturen.first;
+      return _ActieCard(
+        icon: Icons.receipt_long_rounded,
+        iconColor: AppColors.primary,
+        label: 'Openstaande factuur',
+        title: f.bedragEuro,
+        subtitle: f.beschrijving.isNotEmpty ? f.beschrijving : f.factuurnummer,
+        onTap: () => context.push('/facturen/${f.id}'),
+      );
+    }
+
+    if (home.heeftVolgendeLes) {
+      final les = home.volgendeLes!;
+      try {
+        final datum = DateTime.parse(les.datum);
+        final diff = datum.difference(DateTime.now()).inDays;
+        final dagLabel = diff == 0
+            ? 'Vandaag'
+            : diff == 1
+                ? 'Morgen'
+                : 'Over $diff dagen';
+        return _ActieCard(
+          icon: Icons.directions_car_rounded,
+          iconColor: const Color(0xFF2563EB),
+          label: 'Volgende les',
+          title: '$dagLabel · ${les.starttijd}',
+          subtitle: les.instructeurNaam ?? 'Rijles',
+          onTap: () => context.go('/planning'),
+        );
+      } catch (_) {}
+    }
+
+    return const SizedBox.shrink();
+  }
+}
+
+class _ActieCard extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String label;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _ActieCard({
+    required this.icon,
+    required this.iconColor,
+    required this.label,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border, width: 0.75),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Left accent bar
+            Container(
+              width: 4,
+              height: 64,
+              decoration: BoxDecoration(
+                color: iconColor,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                ),
+              ),
+            ),
+            const SizedBox(width: 14),
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0F2F5),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: AppColors.textPrimary, size: 18),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(right: 14),
+              child: Icon(Icons.chevron_right_rounded,
+                  color: AppColors.textHint, size: 18),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 // ── Skeleton hero ─────────────────────────────────────────────────────────────
 

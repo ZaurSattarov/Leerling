@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import '../../models/leerling_profiel.dart';
-import '../../shared/widgets/app_logo.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -18,32 +18,52 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _fadeIn;
-  late Animation<double> _scale;
-  Timer? _bootstrapTimer;
+  late final AnimationController _ctrl;
+  late final Animation<double> _logoFade;
+  late final Animation<double> _logoScale;
+  late final Animation<double> _subtitleFade;
+  late final Animation<double> _screenFade;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-    _fadeIn = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
-    _scale = Tween<double>(begin: 0.85, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
-    _controller.forward();
 
-    _bootstrapTimer = Timer(const Duration(milliseconds: 1200), _bootstrap);
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2600),
+    );
+
+    _logoFade = CurvedAnimation(
+      parent: _ctrl,
+      curve: const Interval(0.0, 0.25, curve: Curves.easeOut),
+    );
+
+    _logoScale = Tween<double>(begin: 0.87, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _ctrl,
+        curve: const Interval(0.0, 0.25, curve: Curves.easeOutCubic),
+      ),
+    );
+
+    _subtitleFade = CurvedAnimation(
+      parent: _ctrl,
+      curve: const Interval(0.15, 0.40, curve: Curves.easeOut),
+    );
+
+    _screenFade = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _ctrl,
+        curve: const Interval(0.81, 1.0, curve: Curves.easeIn),
+      ),
+    );
+
+    _ctrl.forward().whenCompleteOrCancel(_bootstrap);
   }
 
   Future<void> _bootstrap() async {
     if (!mounted) return;
 
     final user = Supabase.instance.client.auth.currentUser;
-    debugPrint('[splash] bootstrap user=${user?.id ?? 'null'}');
     if (user == null) {
       context.go('/login');
       return;
@@ -58,9 +78,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final profiel = await _laadProfiel();
     if (!mounted) return;
 
-    final route = profiel != null ? '/home' : '/koppelcode';
-    debugPrint('[splash] profiel=${profiel?.id ?? 'null'} route=$route');
-    context.go(route);
+    context.go(profiel != null ? '/home' : '/koppelcode');
   }
 
   Future<LeerlingProfiel?> _laadProfiel() async {
@@ -74,72 +92,76 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   void dispose() {
-    _bootstrapTimer?.cancel();
-    _controller.dispose();
+    _ctrl.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.dark,
-      body: Center(
-        child: FadeTransition(
-          opacity: _fadeIn,
-          child: ScaleTransition(
-            scale: _scale,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.22),
-                        blurRadius: 32,
-                        offset: const Offset(0, 8),
+      backgroundColor: AppColors.surface,
+      body: AnimatedBuilder(
+        animation: _ctrl,
+        builder: (context, _) {
+          return Opacity(
+            opacity: _screenFade.value,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // ── KLANTIO met rode balk ─────────────────────────────────
+                  FadeTransition(
+                    opacity: _logoFade,
+                    child: ScaleTransition(
+                      scale: _logoScale,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 9,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                          ),
+                          const SizedBox(width: 11),
+                          Text(
+                            'KLANTIO',
+                            style: GoogleFonts.inter(
+                              color: AppColors.dark,
+                              fontSize: 30,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 3.2,
+                              height: 1.0,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                  child: const AppLogo(
-                    size: 88,
-                    padding: 14,
-                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                  const SizedBox(height: 10),
+                  // ── LEERLINGEN subtitle ───────────────────────────────────
+                  FadeTransition(
+                    opacity: _subtitleFade,
+                    child: Text(
+                      'LEERLINGENPORTAAL',
+                      style: GoogleFonts.inter(
+                        color: AppColors.textSecondary,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 5.5,
+                        height: 1.0,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 24),
-                const Text(
-                  'Mijn Rijschool',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Leerling app',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.5),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: AppColors.primary.withValues(alpha: 0.6),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/coach_widgets.dart';
+import '../../shared/widgets/gradient_header.dart';
 import '../../shared/providers/auth_provider.dart';
 import 'les_logboek_item.dart';
 import 'les_logboek_provider.dart';
@@ -20,25 +20,8 @@ class LesLogboekScreen extends ConsumerWidget {
       backgroundColor: AppColors.surface,
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            backgroundColor: AppColors.dark,
-            pinned: true,
-            expandedHeight: 110,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-              onPressed: () => context.pop(),
-            ),
-            flexibleSpace: const FlexibleSpaceBar(
-              titlePadding: EdgeInsets.fromLTRB(56, 0, 20, 16),
-              title: Text(
-                'Les-logboek',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
+          const SliverToBoxAdapter(
+            child: DetailGradientHeader(title: 'Les-logboek'),
           ),
           lessenAsync.when(
             data: (lessen) => SliverPadding(

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/examen.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/screen_header.dart';
+import '../../shared/widgets/gradient_header.dart';
 import 'examens_provider.dart';
 
 class ExamensScreen extends ConsumerWidget {
@@ -22,20 +21,8 @@ class ExamensScreen extends ConsumerWidget {
         onRefresh: () async => ref.invalidate(examensProvider),
         child: CustomScrollView(
           slivers: [
-            SliverAppBar(
-              backgroundColor: AppColors.dark,
-              pinned: true,
-              expandedHeight: 110,
-              leading: IconButton(
-                icon:
-                    const Icon(Icons.arrow_back_rounded, color: Colors.white),
-                onPressed: () => context.pop(),
-              ),
-              flexibleSpace: const FlexibleSpaceBar(
-                titlePadding: EdgeInsets.fromLTRB(56, 0, 20, 16),
-                title: ScreenHeader(
-                    label: 'EXAMENS', title: 'Mijn examens'),
-              ),
+            const SliverToBoxAdapter(
+              child: DetailGradientHeader(title: 'Mijn examens'),
             ),
             examensAsync.when(
               data: (examens) {
@@ -251,28 +238,25 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color bgColor;
     final Color textColor;
     switch (status) {
       case ExamenStatus.geslaagd:
-        bgColor = AppColors.successBg;
-        textColor = AppColors.successText;
+        textColor = AppColors.successSolid;
         break;
       case ExamenStatus.gezakt:
-        bgColor = AppColors.dangerBg;
-        textColor = AppColors.dangerText;
+        textColor = AppColors.dangerSolid;
         break;
       case ExamenStatus.gepland:
-        bgColor = AppColors.infoBg;
-        textColor = AppColors.infoText;
+        textColor = AppColors.textSecondary;
         break;
     }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: bgColor,
+        color: const Color(0xFFF0F2F5),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2E2E7), width: 0.75),
       ),
       child: Text(
         status.label,

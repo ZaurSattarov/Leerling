@@ -6,7 +6,7 @@ import '../../core/services/student_service.dart';
 import '../../models/notificatie.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/screen_header.dart';
+import '../../shared/widgets/gradient_header.dart';
 import '../../shared/widgets/snackbar.dart';
 import 'notificaties_provider.dart';
 
@@ -24,36 +24,30 @@ class NotificatiesScreen extends ConsumerWidget {
         onRefresh: () async => ref.invalidate(notificatiesProvider),
         child: CustomScrollView(
           slivers: [
-            SliverAppBar(
-              backgroundColor: AppColors.dark,
-              pinned: true,
-              expandedHeight: 110,
-              leading: IconButton(
-                icon: const Icon(
-                    Icons.arrow_back_rounded, color: Colors.white),
-                onPressed: () => context.go('/home'),
-              ),
-              actions: [
-                notificatiesAsync.when(
+            SliverToBoxAdapter(
+              child: DetailGradientHeader(
+                title: 'Mijn meldingen',
+                onBack: () => context.go('/home'),
+                trailing: notificatiesAsync.when(
                   data: (list) {
-                    final heeftOngelezen = list.any((n) => !n.gelezen);
-                    if (!heeftOngelezen) return const SizedBox.shrink();
-                    return TextButton(
-                      onPressed: () => _markeerAlles(context, ref),
-                      child: const Text('Alles gelezen',
-                          style: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w600)),
+                    if (!list.any((n) => !n.gelezen)) {
+                      return const SizedBox.shrink();
+                    }
+                    return GestureDetector(
+                      onTap: () => _markeerAlles(context, ref),
+                      child: Text(
+                        'Alles gelezen',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.7),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     );
                   },
                   loading: () => const SizedBox.shrink(),
                   error: (_, __) => const SizedBox.shrink(),
                 ),
-              ],
-              flexibleSpace: const FlexibleSpaceBar(
-                titlePadding: EdgeInsets.fromLTRB(56, 0, 20, 16),
-                title: ScreenHeader(
-                    label: 'MELDINGEN', title: 'Mijn meldingen'),
               ),
             ),
             notificatiesAsync.when(

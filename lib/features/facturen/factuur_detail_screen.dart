@@ -112,15 +112,9 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppColors.dark,
+              color: Colors.white,
               borderRadius: BorderRadius.circular(18),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.12),
-                  blurRadius: 20,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              border: Border.all(color: const Color(0xFFE2E2E7), width: 1),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,13 +122,13 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
                 Row(
                   children: [
                     const Icon(Icons.receipt_long_rounded,
-                        color: Colors.white54, size: 16),
+                        color: AppColors.textHint, size: 16),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         factuur.factuurnummer,
                         style: const TextStyle(
-                            color: Colors.white54, fontSize: 13),
+                            color: AppColors.textSecondary, fontSize: 13),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -146,7 +140,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
                 Text(
                   factuur.bedragEuro,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                     fontSize: 34,
                     fontWeight: FontWeight.w900,
                   ),
@@ -156,7 +150,8 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
                   factuur.beschrijving.isNotEmpty
                       ? factuur.beschrijving
                       : 'Geen omschrijving toegevoegd',
-                  style: const TextStyle(color: Colors.white70, fontSize: 14),
+                  style: const TextStyle(
+                      color: AppColors.textSecondary, fontSize: 14),
                 ),
               ],
             ),

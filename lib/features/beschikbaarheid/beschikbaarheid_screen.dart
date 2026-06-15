@@ -6,7 +6,7 @@ import '../../models/leerling_beschikbaarheid.dart';
 import '../../models/leerling_profiel.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/screen_header.dart';
+import '../../shared/widgets/gradient_header.dart';
 import '../../shared/widgets/snackbar.dart';
 
 // ─── Screen ───────────────────────────────────────────────────────
@@ -150,17 +150,8 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
                   onRefresh: _refresh,
                   child: CustomScrollView(
                     slivers: [
-                      SliverAppBar(
-                        backgroundColor: AppColors.dark,
-                        pinned: true,
-                        expandedHeight: 110,
-                        flexibleSpace: const FlexibleSpaceBar(
-                          titlePadding:
-                              EdgeInsets.fromLTRB(56, 0, 20, 16),
-                          title: ScreenHeader(
-                              label: 'BESCHIKBAARHEID',
-                              title: 'Mijn tijden'),
-                        ),
+                      const SliverToBoxAdapter(
+                        child: DetailGradientHeader(title: 'Mijn tijden'),
                       ),
                       // Info banner
                       SliverToBoxAdapter(
@@ -601,13 +592,13 @@ class _BeschikbaarheidFormulierState
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   decoration: BoxDecoration(
-                    color: AppColors.dangerBg,
+                    color: const Color(0xFFF0F2F5),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.dangerBorder),
+                    border: Border.all(color: const Color(0xFFE2E2E7)),
                   ),
                   child: Text(_fout!,
                       style: const TextStyle(
-                          fontSize: 13, color: AppColors.dangerText)),
+                          fontSize: 13, color: AppColors.dangerSolid)),
                 ),
               ],
 

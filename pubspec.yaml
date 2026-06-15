@@ -1,7 +1,7 @@
 name: leerling_app
 description: Rijschool Leerling App – student app voor rijschool leerlingen
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.4+4
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -58,3 +58,19 @@ flutter:
     - assets/icons/
     - assets/Inlogassets/
     - assets/avatars/
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Inter-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Inter-Black.ttf
+          weight: 900

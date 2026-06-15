@@ -140,9 +140,9 @@ class _WachtwoordVergetenScreenState extends State<WachtwoordVergetenScreen> {
                           vertical: 12,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFEF2F2),
+                          color: const Color(0xFFF0F2F5),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: const Color(0xFFFECACA)),
+                          border: Border.all(color: const Color(0xFFE2E2E7)),
                         ),
                         child: Row(
                           children: [

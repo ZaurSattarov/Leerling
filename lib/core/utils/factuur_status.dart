@@ -7,6 +7,7 @@ class FactuurStatusUi {
   final String label;
   final Color backgroundColor;
   final Color textColor;
+  final Color? borderColor;
   final IconData icon;
 
   const FactuurStatusUi({
@@ -14,6 +15,7 @@ class FactuurStatusUi {
     required this.backgroundColor,
     required this.textColor,
     required this.icon,
+    this.borderColor,
   });
 }
 
@@ -24,27 +26,31 @@ extension FactuurStatusUiMapper on FactuurStatus {
       FactuurStatus.verstuurd ||
       FactuurStatus.open =>
         const FactuurStatusUi(
-          label: 'Nog niet betaald',
-          backgroundColor: AppColors.primary,
-          textColor: Colors.white,
+          label: 'Openstaand',
+          backgroundColor: Color(0xFFF0F2F5),
+          textColor: AppColors.warningSolid,
+          borderColor: Color(0xFFE2E2E7),
           icon: Icons.schedule_rounded,
         ),
       FactuurStatus.betaald => const FactuurStatusUi(
           label: 'Betaald',
-          backgroundColor: AppColors.successSolid,
-          textColor: Colors.white,
+          backgroundColor: Color(0xFFF0F2F5),
+          textColor: AppColors.successSolid,
+          borderColor: Color(0xFFE2E2E7),
           icon: Icons.check_circle_rounded,
         ),
       FactuurStatus.verlopen || FactuurStatus.teLaat => const FactuurStatusUi(
           label: 'Te laat',
-          backgroundColor: AppColors.dangerSolid,
-          textColor: Colors.white,
+          backgroundColor: Color(0xFFF0F2F5),
+          textColor: AppColors.dangerSolid,
+          borderColor: Color(0xFFE2E2E7),
           icon: Icons.warning_amber_rounded,
         ),
       FactuurStatus.geannuleerd => const FactuurStatusUi(
           label: 'Geannuleerd',
-          backgroundColor: AppColors.neutralBg,
-          textColor: AppColors.neutralText,
+          backgroundColor: Color(0xFFF0F2F5),
+          textColor: AppColors.textSecondary,
+          borderColor: Color(0xFFE2E2E7),
           icon: Icons.cancel_outlined,
         ),
     };

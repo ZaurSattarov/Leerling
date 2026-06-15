@@ -8,40 +8,47 @@ class StatusPill extends StatelessWidget {
   final String label;
   final Color backgroundColor;
   final Color textColor;
+  final Color? borderColor;
 
   const StatusPill({
     super.key,
     required this.label,
     required this.backgroundColor,
     required this.textColor,
+    this.borderColor,
   });
 
   factory StatusPill.les(LesStatus status) {
     return switch (status) {
       LesStatus.gepland => const StatusPill(
           label: 'Gepland',
-          backgroundColor: AppColors.infoSolid,
-          textColor: AppColors.white,
+          backgroundColor: Color(0xFFF0F2F5),
+          textColor: AppColors.textPrimary,
+          borderColor: Color(0xFFE2E2E7),
         ),
       LesStatus.afgerond => const StatusPill(
           label: 'Afgerond',
-          backgroundColor: AppColors.successSolid,
-          textColor: AppColors.white,
+          backgroundColor: Color(0xFFF0F2F5),
+          textColor: AppColors.successSolid,
+          borderColor: Color(0xFFE2E2E7),
         ),
       LesStatus.geannuleerd => const StatusPill(
           label: 'Geannuleerd',
-          backgroundColor: AppColors.neutralBg,
-          textColor: AppColors.neutralText,
+          backgroundColor: Color(0xFFF0F2F5),
+          textColor: AppColors.textSecondary,
+          borderColor: Color(0xFFE2E2E7),
         ),
       LesStatus.verzet => const StatusPill(
           label: 'Verzet',
-          backgroundColor: AppColors.neutralBg,
-          textColor: AppColors.neutralText,
+          backgroundColor: Color(0xFFF0F2F5),
+          textColor: AppColors.textSecondary,
+          borderColor: Color(0xFFE2E2E7),
         ),
       LesStatus.geen_toon => const StatusPill(
           label: 'Geen toon',
-          backgroundColor: AppColors.dangerSolid,
-          textColor: AppColors.white,
+          backgroundColor: Color(0xFFF0F2F5),
+          textColor: AppColors.dangerSolid,
+          borderColor: Color(0xFFE2E2E7),
         ),
     };
   }
@@ -52,6 +59,7 @@ class StatusPill extends StatelessWidget {
       label: ui.label,
       backgroundColor: ui.backgroundColor,
       textColor: ui.textColor,
+      borderColor: ui.borderColor,
     );
   }
 
@@ -62,13 +70,9 @@ class StatusPill extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(999),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: borderColor != null
+            ? Border.all(color: borderColor!, width: 0.75)
+            : null,
       ),
       child: Text(
         label,

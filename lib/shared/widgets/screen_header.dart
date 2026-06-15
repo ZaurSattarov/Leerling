@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
-
 class ScreenHeader extends StatelessWidget {
   final String label;
   final String title;
@@ -16,7 +14,7 @@ class ScreenHeader extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
-            color: AppColors.primary,
+            color: Colors.white54,
             fontSize: 10,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,

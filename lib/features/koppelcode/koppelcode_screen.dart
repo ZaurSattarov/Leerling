@@ -95,7 +95,7 @@ class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
                   width: 72,
                   height: 72,
                   decoration: BoxDecoration(
-                    color: AppColors.primaryLight,
+                    color: const Color(0xFFF0F2F5),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Icon(Icons.link_rounded,
@@ -128,15 +128,15 @@ class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: AppColors.dangerBg,
+                    color: const Color(0xFFF0F2F5),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.dangerBorder),
+                    border: Border.all(color: const Color(0xFFE2E2E7)),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Icon(Icons.error_outline_rounded,
-                          color: AppColors.dangerText, size: 18),
+                          color: AppColors.dangerSolid, size: 18),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(_error!,

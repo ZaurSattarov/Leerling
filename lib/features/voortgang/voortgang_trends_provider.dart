@@ -1,8 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/services/student_service.dart';
 import '../../models/leerling_profiel.dart';
 import '../../models/les.dart';
-import '../../shared/providers/auth_provider.dart';
 import 'voortgang_provider.dart';
 
 final voortgangTrendsProvider =
@@ -24,6 +24,8 @@ final voortgangTrendsProvider =
   }
 });
 
+// ── Data models ───────────────────────────────────────────────────────────────
+
 class VoortgangTrendsData {
   final bool isMock;
   final int huidigeScore;
@@ -39,6 +41,14 @@ class VoortgangTrendsData {
   final List<CompetentieTrend> competenties;
   final List<LesTijdlijnItem> tijdlijn;
 
+  // New: enriched fields for redesigned UI
+  final List<String> sterkeCompetenties;
+  final List<String> aandachtspunten;
+  final String lesAdvies;
+  final String motivatieTekst;
+  final List<InzichtItem> inzichten;
+  final List<double> radarWaarden; // 0..1 per CBR-competentie (6 values)
+
   const VoortgangTrendsData({
     required this.isMock,
     required this.huidigeScore,
@@ -53,6 +63,12 @@ class VoortgangTrendsData {
     required this.scoreHistorie,
     required this.competenties,
     required this.tijdlijn,
+    required this.sterkeCompetenties,
+    required this.aandachtspunten,
+    required this.lesAdvies,
+    required this.motivatieTekst,
+    required this.inzichten,
+    required this.radarWaarden,
   });
 
   bool get heeftHistorie => scoreHistorie.length >= 2 || tijdlijn.length >= 2;
@@ -81,19 +97,56 @@ class CompetentieTrend {
   });
 }
 
+/// Eén inzicht-item voor "Wat verandert er?" sectie
+class InzichtItem {
+  final IconData icon;
+  final Color iconColor;
+  final String tekst;
+  final String? delta;
+  final Color? deltaColor;
+
+  const InzichtItem({
+    required this.icon,
+    required this.iconColor,
+    required this.tekst,
+    this.delta,
+    this.deltaColor,
+  });
+}
+
+/// Tijdlijn item — rijker dan voorheen
 class LesTijdlijnItem {
   final String datumLabel;
+  final String tijdLabel;
+  final String eventType; // 'les_afgerond' | 'beoordeling' | 'aandachtspunt'
+  final String? lesType;
   final String beoordelingLabel;
   final String feedback;
   final String competentieLabel;
+  final List<String> onderwerpen;
+  final List<CompetentieDelta> verbeteringen;
 
   const LesTijdlijnItem({
     required this.datumLabel,
+    required this.tijdLabel,
+    required this.eventType,
+    this.lesType,
     required this.beoordelingLabel,
     required this.feedback,
     required this.competentieLabel,
+    this.onderwerpen = const [],
+    this.verbeteringen = const [],
   });
 }
+
+class CompetentieDelta {
+  final String naam;
+  final int delta;
+
+  const CompetentieDelta({required this.naam, required this.delta});
+}
+
+// ── Calculator ────────────────────────────────────────────────────────────────
 
 class VoortgangTrendsCalculator {
   const VoortgangTrendsCalculator._();
@@ -130,6 +183,11 @@ class VoortgangTrendsCalculator {
         ? chronologisch.sublist(chronologisch.length - 4)
         : chronologisch;
 
+    final competentieTrends = _competentieTrends(chronologisch).take(4).toList();
+    final sterke = _sterkeCompetenties(chronologisch);
+    final aandacht = _aandachtspunten(chronologisch);
+    final radarWaarden = _radarWaarden(profiel);
+
     return VoortgangTrendsData(
       isMock: false,
       huidigeScore: huidige,
@@ -142,10 +200,224 @@ class VoortgangTrendsCalculator {
       competentieTrend: _competentieTrend(chronologisch),
       lessenPerWeekLabel: _lessenPerWeekLabel(chronologisch),
       scoreHistorie: scoreHistorie.takeLast(6),
-      competenties: _competentieTrends(chronologisch).take(4).toList(),
-      tijdlijn: chronologisch.reversed.take(6).map(_tijdlijnItem).toList(),
+      competenties: competentieTrends,
+      tijdlijn: chronologisch.reversed.take(8).map(_tijdlijnItem).toList(),
+      sterkeCompetenties: sterke,
+      aandachtspunten: aandacht,
+      lesAdvies: _lesAdvies(aandacht, chronologisch),
+      motivatieTekst: _motivatieTekst(huidige, verschil, sterke),
+      inzichten: _inzichten(
+        competentieTrends: competentieTrends,
+        chronologisch: chronologisch,
+        huidige: huidige,
+        vorige: vorige,
+        verschil: verschil,
+      ),
+      radarWaarden: radarWaarden,
     );
   }
+
+  // ── Radar waarden (per CBR-competentie in volgorde van cbrCompetenties) ─────
+
+  static List<double> _radarWaarden(LeerlingProfiel profiel) {
+    final vaardigheden = profiel.vaardigheden ?? <String, dynamic>{};
+    return cbrCompetenties.map((c) {
+      final scores = c.vaardigheidKeys
+          .map((key) => (vaardigheden[key] as num? ?? 0).toDouble())
+          .where((s) => s > 0)
+          .toList();
+      if (scores.isEmpty) return 0.0;
+      return (scores.reduce((a, b) => a + b) / scores.length / 5.0)
+          .clamp(0.0, 1.0);
+    }).toList();
+  }
+
+  // ── Sterke / aandacht punten ──────────────────────────────────────────────
+
+  static List<String> _sterkeCompetenties(List<Les> lessen) {
+    final gemiddelden = _competentieGemiddelden(lessen);
+    final gesorteerd = gemiddelden.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    return gesorteerd
+        .where((e) => e.value >= 60)
+        .take(3)
+        .map((e) => _competentieNaam(e.key))
+        .toList();
+  }
+
+  static List<String> _aandachtspunten(List<Les> lessen) {
+    final gemiddelden = _competentieGemiddelden(lessen);
+    final gesorteerd = gemiddelden.entries.toList()
+      ..sort((a, b) => a.value.compareTo(b.value));
+    return gesorteerd
+        .where((e) => e.value < 65)
+        .take(3)
+        .map((e) => _competentieNaam(e.key))
+        .toList();
+  }
+
+  // ── Les advies & motivatie ────────────────────────────────────────────────
+
+  static String _lesAdvies(List<String> aandacht, List<Les> lessen) {
+    if (aandacht.isEmpty) return 'Blijf consistent oefenen en focus op je sterkste punten.';
+    if (aandacht.length == 1) return 'Focus de volgende les op ${aandacht.first.toLowerCase()}.';
+    return 'Focus de volgende les op ${aandacht.first.toLowerCase()} en ${aandacht[1].toLowerCase()}.';
+  }
+
+  static String _motivatieTekst(int huidige, int verschil, List<String> sterk) {
+    if (huidige >= 85) return 'Je bent klaar voor het examen! Blijf consistent.';
+    if (huidige >= 70) return 'Goed bezig, je bent bijna examenklaar.';
+    if (verschil > 0) {
+      if (sterk.isNotEmpty) {
+        return 'Mooi! Je ${sterk.first.toLowerCase()} gaat steeds beter.';
+      }
+      return 'Je bent goed op weg, blijf zo doorgaan.';
+    }
+    if (verschil < 0) return 'Extra oefenen loont — focus op de aandachtspunten.';
+    return 'Je voortgang is stabiel. Meer lessen helpen je verder.';
+  }
+
+  // ── Dynamische inzichten ──────────────────────────────────────────────────
+
+  static List<InzichtItem> _inzichten({
+    required List<CompetentieTrend> competentieTrends,
+    required List<Les> chronologisch,
+    required int huidige,
+    required int vorige,
+    required int verschil,
+  }) {
+    final items = <InzichtItem>[];
+
+    // Score verandering
+    if (verschil != 0) {
+      items.add(InzichtItem(
+        icon: verschil > 0
+            ? Icons.trending_up_rounded
+            : Icons.trending_down_rounded,
+        iconColor: verschil > 0
+            ? const Color(0xFF16A34A)
+            : const Color(0xFFE11D48),
+        tekst: verschil > 0
+            ? 'Je examenadvies steeg van $vorige% naar $huidige%.'
+            : 'Je examenadvies daalde van $vorige% naar $huidige%.',
+        delta: '${verschil >= 0 ? '+' : ''}$verschil%',
+        deltaColor: verschil > 0
+            ? const Color(0xFF16A34A)
+            : const Color(0xFFE11D48),
+      ));
+    }
+
+    // Stijgende competentie
+    final stijgend = competentieTrends.where((c) => c.verschil >= 5).toList();
+    for (final c in stijgend.take(2)) {
+      items.add(InzichtItem(
+        icon: Icons.arrow_upward_rounded,
+        iconColor: const Color(0xFF16A34A),
+        tekst: 'Je ${c.naam.toLowerCase()} verbeterde van ${c.vorigeScore}% naar ${c.huidigeScore}%.',
+        delta: '+${c.verschil}%',
+        deltaColor: const Color(0xFF16A34A),
+      ));
+    }
+
+    // Dalende competentie
+    final dalend = competentieTrends.where((c) => c.verschil <= -5).toList();
+    for (final c in dalend.take(1)) {
+      items.add(InzichtItem(
+        icon: Icons.arrow_downward_rounded,
+        iconColor: const Color(0xFFD97706),
+        tekst: '${c.naam} vraagt extra aandacht (${c.huidigeScore}%).',
+        delta: '${c.verschil}%',
+        deltaColor: const Color(0xFFD97706),
+      ));
+    }
+
+    // Stabiele competentie
+    final stabiel = competentieTrends
+        .where((c) => c.verschil.abs() < 5 && c.huidigeScore >= 60)
+        .toList();
+    if (stabiel.isNotEmpty) {
+      items.add(InzichtItem(
+        icon: Icons.remove_rounded,
+        iconColor: const Color(0xFF64748B),
+        tekst: '${stabiel.first.naam} blijft stabiel op ${stabiel.first.huidigeScore}%.',
+      ));
+    }
+
+    // Lesritme
+    if (chronologisch.length >= 2) {
+      items.add(InzichtItem(
+        icon: Icons.calendar_month_rounded,
+        iconColor: const Color(0xFF2563EB),
+        tekst: _lessenPerWeekLabel(chronologisch),
+      ));
+    }
+
+    // Laatste beoordeling
+    final laatste = chronologisch.isNotEmpty ? chronologisch.last : null;
+    if (laatste?.beoordeling != null &&
+        _beoordelingLabel(laatste!.beoordeling) != 'Geen beoordeling') {
+      items.add(InzichtItem(
+        icon: Icons.grade_rounded,
+        iconColor: const Color(0xFFD97706),
+        tekst: 'Laatste beoordeling: ${_beoordelingLabel(laatste.beoordeling)} op ${_dagMaand(laatste.datum)}.',
+      ));
+    }
+
+    return items.take(5).toList();
+  }
+
+  // ── Tijdlijn ──────────────────────────────────────────────────────────────
+
+  static LesTijdlijnItem _tijdlijnItem(Les les) {
+    final besteCompetentie = _besteCompetentie(les);
+    final competentieDeltas = _deltaVoorLes(les);
+    final heeftBeoordeling = les.beoordeling != null &&
+        _beoordelingLabel(les.beoordeling) != 'Geen beoordeling';
+    final heeftAandachtspunt = les.instructeurFeedback?.isNotEmpty == true &&
+        les.zichtbaarVoorLeerling;
+
+    String eventType;
+    if (heeftBeoordeling) {
+      eventType = 'beoordeling';
+    } else if (heeftAandachtspunt) {
+      eventType = 'aandachtspunt';
+    } else {
+      eventType = 'les_afgerond';
+    }
+
+    return LesTijdlijnItem(
+      datumLabel: _langeDatum(les.datum),
+      tijdLabel: les.starttijd,
+      eventType: eventType,
+      lesType: les.lesType,
+      beoordelingLabel: _beoordelingLabel(les.beoordeling),
+      feedback: les.zichtbaarVoorLeerling &&
+              les.instructeurFeedback?.trim().isNotEmpty == true
+          ? les.instructeurFeedback!.trim()
+          : '',
+      competentieLabel: besteCompetentie,
+      onderwerpen: les.geoefendeOnderwerpen.take(3).toList(),
+      verbeteringen: competentieDeltas,
+    );
+  }
+
+  static List<CompetentieDelta> _deltaVoorLes(Les les) {
+    final scores = les.competentieScores ?? const <String, dynamic>{};
+    final result = <CompetentieDelta>[];
+    for (final entry in scores.entries) {
+      final raw = entry.value;
+      if (raw is! num || raw.toDouble() <= 0) continue;
+      final pct = (raw.toDouble() / 5 * 100).round();
+      result.add(CompetentieDelta(
+        naam: _competentieNaam(entry.key),
+        delta: pct,
+      ));
+    }
+    result.sort((a, b) => b.delta.compareTo(a.delta));
+    return result.take(3).toList();
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
 
   static int _readinessVoor({
     required LeerlingProfiel profiel,
@@ -206,18 +478,6 @@ class VoortgangTrendsCalculator {
     return values.map((key, scores) => MapEntry(key, _average(scores)));
   }
 
-  static LesTijdlijnItem _tijdlijnItem(Les les) {
-    final besteCompetentie = _besteCompetentie(les);
-    return LesTijdlijnItem(
-      datumLabel: '${_dagMaand(les.datum)} · ${les.starttijd}',
-      beoordelingLabel: _beoordelingLabel(les.beoordeling),
-      feedback: (les.instructeurFeedback ?? '').trim().isNotEmpty
-          ? les.instructeurFeedback!.trim()
-          : 'Feedback is zichtbaar gemaakt voor je logboek.',
-      competentieLabel: besteCompetentie,
-    );
-  }
-
   static String _besteCompetentie(Les les) {
     final scores = les.competentieScores ?? const <String, dynamic>{};
     MapEntry<String, dynamic>? beste;
@@ -230,10 +490,10 @@ class VoortgangTrendsCalculator {
     }
     if (beste == null) {
       return les.geoefendeOnderwerpen.isEmpty
-          ? 'Nog geen competentiescore'
-          : 'Geoefend: ${les.geoefendeOnderwerpen.take(2).join(', ')}';
+          ? ''
+          : les.geoefendeOnderwerpen.take(2).join(', ');
     }
-    return '${_competentieNaam(beste.key)} scoorde ${beste.value}/5';
+    return '${_competentieNaam(beste.key)} ${beste.value}/5';
   }
 
   static double? _gemiddeldeBeoordeling(List<Les> lessen) {
@@ -299,13 +559,11 @@ class VoortgangTrendsCalculator {
     final dagen = laatste.difference(eerste).inDays.abs().clamp(1, 365);
     final weken = (dagen / 7).clamp(1, 99);
     final perWeek = lessen.length / weken;
-    return '${perWeek.toStringAsFixed(1)} afgeronde lessen per week';
+    return 'Je rijdt gemiddeld ${perWeek.toStringAsFixed(1)} lessen per week.';
   }
 
   static String _scoreUitleg(int vorige, int huidige, int verschil) {
-    if (verschil > 0) {
-      return 'Je examenadvies steeg van $vorige% naar $huidige%.';
-    }
+    if (verschil > 0) return 'Je examenadvies steeg van $vorige% naar $huidige%.';
     if (verschil < 0) {
       return 'Je examenadvies ging van $vorige% naar $huidige%; focus op consistentie.';
     }
@@ -320,11 +578,11 @@ class VoortgangTrendsCalculator {
 
   static String _beoordelingLabel(String? beoordeling) {
     return switch (beoordeling) {
-      '5' => '5 van 5',
-      '4' => '4 van 5',
-      '3' => '3 van 5',
-      '2' => '2 van 5',
-      '1' => '1 van 5',
+      '5' => '5/5',
+      '4' => '4/5',
+      '3' => '3/5',
+      '2' => '2/5',
+      '1' => '1/5',
       'goed' => 'Goed',
       'voldoende' => 'Voldoende',
       'onvoldoende' => 'Onvoldoende',
@@ -348,6 +606,16 @@ class VoortgangTrendsCalculator {
     final parsed = DateTime.tryParse(datum);
     if (parsed == null) return datum;
     return '${parsed.day.toString().padLeft(2, '0')}-${parsed.month.toString().padLeft(2, '0')}';
+  }
+
+  static String _langeDatum(String datum) {
+    final parsed = DateTime.tryParse(datum);
+    if (parsed == null) return datum;
+    const maanden = [
+      'jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
+      'jul', 'aug', 'sep', 'okt', 'nov', 'dec'
+    ];
+    return '${parsed.day} ${maanden[parsed.month - 1]} ${parsed.year}';
   }
 
   static double _weightedAverage(List<_WeightedScore> scores) {
@@ -393,4 +661,10 @@ const emptyVoortgangTrends = VoortgangTrendsData(
   scoreHistorie: [],
   competenties: [],
   tijdlijn: [],
+  sterkeCompetenties: [],
+  aandachtspunten: [],
+  lesAdvies: 'Volg meer lessen voor persoonlijk lesadvies.',
+  motivatieTekst: 'Volg je eerste les om je voortgang bij te houden.',
+  inzichten: [],
+  radarWaarden: [0, 0, 0, 0, 0, 0],
 );

@@ -105,7 +105,11 @@ final _routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/verificatie',
-        builder: (_, state) => VerificatieScreen(email: state.extra as String),
+        builder: (_, state) => VerificatieScreen(
+          email: state.extra as String? ??
+              Supabase.instance.client.auth.currentUser?.email ??
+              '',
+        ),
       ),
       GoRoute(
         path: '/reset-password',
@@ -118,7 +122,7 @@ final _routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/wachtwoord-reset-code',
         builder: (_, state) => WachtwoordResetCodeScreen(
-          email: state.extra as String,
+          email: state.extra as String? ?? '',
         ),
       ),
       GoRoute(
@@ -245,19 +249,34 @@ class LeerlingApp extends ConsumerWidget {
           ),
         ),
         bottomSheetTheme: const BottomSheetThemeData(
-          backgroundColor: AppColors.white,
+          backgroundColor: AppColors.surface,
           surfaceTintColor: Colors.transparent,
-          modalBackgroundColor: AppColors.white,
+          modalBackgroundColor: AppColors.surface,
           modalBarrierColor: Colors.black54,
         ),
         datePickerTheme: DatePickerThemeData(
           backgroundColor: AppColors.white,
           surfaceTintColor: Colors.transparent,
-          headerBackgroundColor: AppColors.white,
-          headerForegroundColor: AppColors.textPrimary,
+          headerBackgroundColor: AppColors.dark,
+          headerForegroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
           ),
+          dayStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          todayBorder: BorderSide(color: AppColors.primary.withValues(alpha: 0.55)),
+          todayForegroundColor: WidgetStateProperty.all(AppColors.primary),
+        ),
+        timePickerTheme: TimePickerThemeData(
+          backgroundColor: AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
+          hourMinuteTextStyle: const TextStyle(fontSize: 44, fontWeight: FontWeight.w700),
+          dayPeriodTextStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          dialHandColor: AppColors.primary,
+          dialBackgroundColor: AppColors.surface,
+          hourMinuteColor: AppColors.surface,
+          entryModeIconColor: AppColors.textSecondary,
         ),
         textTheme: GoogleFonts.interTextTheme(
           ThemeData.light().textTheme.copyWith(
@@ -301,8 +320,8 @@ class LeerlingApp extends ConsumerWidget {
         ),
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: AppColors.primary,
-          selectionColor: AppColors.primary.withValues(alpha: 0.18),
-          selectionHandleColor: AppColors.primaryDark,
+          selectionColor: AppColors.dark.withValues(alpha: 0.20),
+          selectionHandleColor: AppColors.primary,
         ),
         checkboxTheme: CheckboxThemeData(
           fillColor: WidgetStateProperty.resolveWith((states) {
@@ -357,7 +376,7 @@ class LeerlingApp extends ConsumerWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+            borderSide: const BorderSide(color: AppColors.dark, width: 1.15),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
@@ -387,8 +406,8 @@ class LeerlingApp extends ConsumerWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
-            elevation: 2,
-            shadowColor: AppColors.shadow,
+            elevation: 0,
+            shadowColor: Colors.transparent,
             textStyle: GoogleFonts.inter(
               fontWeight: FontWeight.w600,
               fontSize: 15,
@@ -411,17 +430,17 @@ class LeerlingApp extends ConsumerWidget {
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            foregroundColor: AppColors.primary,
+            foregroundColor: AppColors.dark,
             textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600),
           ),
         ),
         cardTheme: CardThemeData(
           color: AppColors.white,
-          elevation: 2,
-          shadowColor: AppColors.shadow,
+          elevation: 0,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: const BorderSide(color: AppColors.border),
+            borderRadius: BorderRadius.circular(24),
+            side: const BorderSide(color: AppColors.borderLight),
           ),
           margin: EdgeInsets.zero,
         ),

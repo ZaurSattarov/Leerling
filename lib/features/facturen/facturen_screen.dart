@@ -16,9 +16,9 @@ import 'facturen_provider.dart';
 // Alleen voor status-indicatoren, NIET voor waarden of bedragen.
 
 const _groenStatus = Color(0xFF16A34A); // Betaald
-const _roodWaarschuwing = Color(0xFFDC2626); // Verlopen (echte fout)
+const _roodWaarschuwing = Color(0xFFDC2626); // Verlopen
+const _oranjeWaarschuwing = Color(0xFFF59E0B); // Openstaand
 const _ringNeutraal = Color(0xFFE4E7EC); // Donut achtergrond ring
-const _ringBetaald = Color(0xFFBBF7D0); // Donut betaald segment (licht groen)
 
 // ── Hoofd scherm ──────────────────────────────────────────────────────────────
 
@@ -30,9 +30,12 @@ class FacturenScreen extends ConsumerStatefulWidget {
 }
 
 class _FacturenScreenState extends ConsumerState<FacturenScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final AnimationController _animCtrl;
   late final Animation<double> _chartAnim;
+  late final TabController _tabCtrl;
+
+  static const _tabs = ['Alle', 'Open', 'Betaald', 'Verlopen'];
 
   @override
   void initState() {
@@ -45,16 +48,31 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
       parent: _animCtrl,
       curve: Curves.easeOutCubic,
     );
+    _tabCtrl = TabController(length: _tabs.length, vsync: this);
   }
 
   @override
   void dispose() {
     _animCtrl.dispose();
+    _tabCtrl.dispose();
     super.dispose();
   }
 
   void _startAnim() {
     if (!_animCtrl.isCompleted) _animCtrl.forward();
+  }
+
+  List<Factuur> _filterFacturen(List<Factuur> all, int tabIndex) {
+    switch (tabIndex) {
+      case 1:
+        return all.where((f) => f.isOpen && !f.isVerlopen).toList();
+      case 2:
+        return all.where((f) => f.status == FactuurStatus.betaald).toList();
+      case 3:
+        return all.where((f) => f.isVerlopen).toList();
+      default:
+        return all;
+    }
   }
 
   @override
@@ -124,10 +142,41 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
               ),
             ),
 
+            // Tabs
+            SliverToBoxAdapter(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: AppColors.white,
+                  border: Border(
+                    bottom: BorderSide(color: Color(0xFFE4E7EC), width: 1),
+                  ),
+                ),
+                child: TabBar(
+                  controller: _tabCtrl,
+                  labelColor: AppColors.primary,
+                  unselectedLabelColor: AppColors.textSecondary,
+                  indicatorColor: AppColors.primary,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  labelStyle: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  unselectedLabelStyle: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  tabs: _tabs.map((t) => Tab(text: t)).toList(),
+                  onTap: (_) => setState(() {}),
+                ),
+              ),
+            ),
+
             // Content
             facturenAsync.when(
-              data: (facturen) {
-                if (facturen.isEmpty) {
+              data: (alleFacturen) {
+                final facturen = _filterFacturen(alleFacturen, _tabCtrl.index);
+
+                if (alleFacturen.isEmpty) {
                   return const SliverFillRemaining(
                     child: EmptyState(
                       icon: Icons.receipt_long_outlined,
@@ -137,23 +186,35 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
                   );
                 }
 
-                final stats = _FactuurStats.van(facturen);
+                if (facturen.isEmpty) {
+                  return SliverFillRemaining(
+                    child: EmptyState(
+                      icon: Icons.receipt_long_outlined,
+                      title: 'Geen ${_tabs[_tabCtrl.index].toLowerCase()} facturen',
+                      subtitle: 'Er zijn geen facturen in deze categorie.',
+                    ),
+                  );
+                }
+
+                final stats = _FactuurStats.van(alleFacturen);
                 WidgetsBinding.instance.addPostFrameCallback((_) => _startAnim());
 
                 return SliverPadding(
                   padding: const EdgeInsets.all(20),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
-                      // 1. Finance overzicht kaart
-                      _FinanceOverzichtKaart(stats: stats),
-                      const SizedBox(height: 12),
+                      // 1. Finance overzicht kaart (alleen op "Alle" tab)
+                      if (_tabCtrl.index == 0) ...[
+                        _FinanceOverzichtKaart(stats: stats),
+                        const SizedBox(height: 12),
 
-                      // 2. Status verdeling
-                      _DonutChartKaart(stats: stats, animation: _chartAnim),
-                      const SizedBox(height: 24),
+                        // 2. Status verdeling
+                        _DonutChartKaart(stats: stats, animation: _chartAnim),
+                        const SizedBox(height: 24),
+                      ],
 
                       // 3. Facturenlijst
-                      const SectionHeader(title: 'Alle facturen'),
+                      SectionHeader(title: '${_tabs[_tabCtrl.index]} facturen (${facturen.length})'),
                       const SizedBox(height: 12),
                       ...facturen.map(
                         (f) => Padding(
@@ -326,7 +387,7 @@ class _FinanceOverzichtKaart extends StatelessWidget {
                   waarde: stats.openstaandLabel,
                   icon: Icons.schedule_rounded,
                   accentKleur: stats.openstaandCents > 0
-                      ? AppColors.primary
+                      ? _oranjeWaarschuwing
                       : null,
                 ),
               ),
@@ -336,6 +397,7 @@ class _FinanceOverzichtKaart extends StatelessWidget {
                   label: 'Betaald',
                   waarde: stats.betaaldLabel,
                   icon: Icons.check_circle_outline_rounded,
+                  accentKleur: stats.betaaldCents > 0 ? _groenStatus : null,
                 ),
               ),
             ],
@@ -450,7 +512,7 @@ class _DonutChartKaart extends StatelessWidget {
       if (stats.betaaldAantal > 0)
         _DonutSegment(
           waarde: stats.betaaldAantal / totaal,
-          kleur: _ringBetaald,
+          kleur: _groenStatus,
           label: 'Betaald',
           aantal: stats.betaaldAantal,
           statusKleur: _groenStatus,
@@ -458,10 +520,10 @@ class _DonutChartKaart extends StatelessWidget {
       if (stats.openstaandAantal > 0)
         _DonutSegment(
           waarde: stats.openstaandAantal / totaal,
-          kleur: AppColors.primary,
+          kleur: _oranjeWaarschuwing,
           label: 'Openstaand',
           aantal: stats.openstaandAantal,
-          statusKleur: AppColors.primary,
+          statusKleur: _oranjeWaarschuwing,
         ),
       if (stats.verlopenAantal > 0)
         _DonutSegment(
