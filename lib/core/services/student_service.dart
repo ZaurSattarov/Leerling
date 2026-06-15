@@ -275,7 +275,8 @@ class StudentService {
         body: {'factuur_id': factuurId},
       );
       final data = result.data as Map<String, dynamic>? ?? {};
-      if (data['code'] == 'MOLLIE_NOT_CONNECTED') {
+      final code = data['code'];
+      if (code == 'MOLLIE_NOT_CONNECTED' || code == 'MOLLIE_NOT_CONFIGURED') {
         return {'error': 'MOLLIE_NOT_CONNECTED'};
       }
       final url = data['checkout_url'] as String?;

@@ -4,12 +4,26 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/services/avatar_service.dart';
 import '../../core/services/student_service.dart';
 import '../../models/instructeur.dart';
 import '../../models/leerling_profiel.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/snackbar.dart';
+
+Color _statusColor(LeerlingStatus status) {
+  switch (status) {
+    case LeerlingStatus.actief:
+      return AppColors.success;
+    case LeerlingStatus.geslaagd:
+      return AppColors.success;
+    case LeerlingStatus.gestopt:
+      return AppColors.neutralText;
+    case LeerlingStatus.wachtlijst:
+      return AppColors.warningSolid;
+  }
+}
 
 final _instructeurProvider =
     FutureProvider.autoDispose<Instructeur?>((ref) async {
@@ -39,7 +53,13 @@ class ProfielScreen extends ConsumerWidget {
             // Header
             SliverToBoxAdapter(
               child: Container(
-                color: AppColors.dark,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF141C2B), Color(0xFF1A2D42)],
+                  ),
+                ),
                 padding: const EdgeInsets.fromLTRB(20, 60, 20, 28),
                 child: profielAsync.when(
                   data: (profiel) => Column(
@@ -115,8 +135,8 @@ class ProfielScreen extends ConsumerWidget {
                                   Container(
                                     width: 6,
                                     height: 6,
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.dangerSolid,
+                                    decoration: BoxDecoration(
+                                      color: _statusColor(profiel.status),
                                       shape: BoxShape.circle,
                                     ),
                                   ),
@@ -205,7 +225,7 @@ class ProfielScreen extends ConsumerWidget {
                                   children: [
                                     const IconBadge(
                                       icon: Icons.directions_car_rounded,
-                                      color: AppColors.primary,
+                                      color: AppColors.iconSlate,
                                     ),
                                     const SizedBox(width: 14),
                                     Expanded(
@@ -221,15 +241,6 @@ class ProfielScreen extends ConsumerWidget {
                                               color: AppColors.textPrimary,
                                             ),
                                           ),
-                                          if (instructeur.naam?.isNotEmpty ==
-                                              true)
-                                            Text(
-                                              instructeur.naam!,
-                                              style: const TextStyle(
-                                                  fontSize: 13,
-                                                  color:
-                                                      AppColors.textSecondary),
-                                            ),
                                         ],
                                       ),
                                     ),
@@ -288,7 +299,7 @@ class ProfielScreen extends ConsumerWidget {
                         const Divider(height: 20),
                         _ActionTile(
                           icon: Icons.notifications_outlined,
-                          iconColor: AppColors.primary,
+                          iconColor: AppColors.iconSlate,
                           label: 'Meldingen',
                           onTap: () => context.go('/notificaties'),
                         ),
@@ -458,10 +469,31 @@ class ProfileAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final avatarUrl = profiel?.avatarUrl;
+    final avatarAsset = AvatarService.assetPathFor(profiel?.avatarId);
     final initialen = profiel == null
         ? '?'
         : '${profiel!.voornaam.isNotEmpty ? profiel!.voornaam[0] : ''}${profiel!.achternaam.isNotEmpty ? profiel!.achternaam[0] : ''}'
             .toUpperCase();
+
+    Widget avatarContent;
+    if (avatarUrl?.isNotEmpty == true) {
+      avatarContent = CachedNetworkImage(
+        imageUrl: avatarUrl!,
+        fit: BoxFit.cover,
+        placeholder: (_, __) => const Center(
+          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+        ),
+        errorWidget: (_, __, ___) => _InitialsAvatar(initialen: initialen),
+      );
+    } else if (avatarAsset != null) {
+      avatarContent = Image.asset(
+        avatarAsset,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _InitialsAvatar(initialen: initialen),
+      );
+    } else {
+      avatarContent = _InitialsAvatar(initialen: initialen);
+    }
 
     return Semantics(
       button: true,
@@ -483,20 +515,7 @@ class ProfileAvatar extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: avatarUrl?.isNotEmpty == true
-                    ? CachedNetworkImage(
-                        imageUrl: avatarUrl!,
-                        fit: BoxFit.cover,
-                        placeholder: (_, __) => const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        ),
-                        errorWidget: (_, __, ___) =>
-                            _InitialsAvatar(initialen: initialen),
-                      )
-                    : _InitialsAvatar(initialen: initialen),
+                child: avatarContent,
               ),
             ),
             Positioned(

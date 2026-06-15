@@ -1,13 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/utils/datum_utils.dart';
+import '../../core/services/avatar_service.dart';
 import '../../models/leerling_profiel.dart';
 import '../../models/les.dart';
 import '../../models/factuur.dart';
-import '../../models/notificatie.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/status_pill.dart';
@@ -79,7 +78,7 @@ class HomeScreen extends ConsumerWidget {
                     homeCoachAsync.when(
                       data: (coach) => _ExamenadviesHero(
                         data: coach,
-                        onTap: () => context.go('/examenadvies'),
+                        onTap: () => context.push('/examenadvies'),
                       ),
                       loading: () => const _SkeletonHero(),
                       error: (_, __) => const SizedBox.shrink(),
@@ -105,7 +104,7 @@ class HomeScreen extends ConsumerWidget {
                     lesvoorbereidingAsync.when(
                       data: (data) => _LesvoorbereidingCard(
                         data: data,
-                        onTap: () => context.go('/lesvoorbereiding'),
+                        onTap: () => context.push('/lesvoorbereiding'),
                       ),
                       loading: () => const SkeletonCard(),
                       error: (_, __) => const SizedBox.shrink(),
@@ -128,22 +127,6 @@ class HomeScreen extends ConsumerWidget {
                           ),
                     ],
 
-                    // Recente meldingen
-                    if (home.recenteNotificaties.isNotEmpty) ...[
-                      const SizedBox(height: 24),
-                      _SectionLabel(
-                        title: 'Recente meldingen',
-                        action: 'Alle meldingen',
-                        onAction: () => context.go('/notificaties'),
-                      ),
-                      const SizedBox(height: 10),
-                      ...home.recenteNotificaties.take(3).map(
-                            (n) => Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: _NotificatieRij(notificatie: n),
-                            ),
-                          ),
-                    ],
                   ]),
                 ),
               ),
@@ -192,6 +175,51 @@ class _GradientHeader extends StatelessWidget {
     final naam = profiel?.voornaam ?? '';
     final initials = naam.isNotEmpty ? naam[0].toUpperCase() : '?';
     final avatarUrl = profiel?.avatarUrl;
+    final avatarAsset = AvatarService.assetPathFor(profiel?.avatarId);
+
+    Widget avatarChild;
+    if (avatarUrl?.isNotEmpty == true) {
+      avatarChild = CachedNetworkImage(
+        imageUrl: avatarUrl!,
+        fit: BoxFit.cover,
+        width: 36,
+        height: 36,
+        placeholder: (_, __) => Center(
+          child: Text(initials,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700)),
+        ),
+        errorWidget: (_, __, ___) => Center(
+          child: Text(initials,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700)),
+        ),
+      );
+    } else if (avatarAsset != null) {
+      avatarChild = Image.asset(avatarAsset,
+          fit: BoxFit.cover,
+          width: 36,
+          height: 36,
+          errorBuilder: (_, __, ___) => Center(
+                child: Text(initials,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700)),
+              ));
+    } else {
+      avatarChild = Center(
+        child: Text(initials,
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w700)),
+      );
+    }
 
     return Container(
       decoration: const BoxDecoration(
@@ -204,88 +232,47 @@ class _GradientHeader extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          padding: const EdgeInsets.fromLTRB(20, 14, 16, 18),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              // Avatar circle — shows real photo or initials fallback
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.25),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.5),
-                    width: 1.5,
-                  ),
-                ),
-                child: ClipOval(
-                  child: avatarUrl?.isNotEmpty == true
-                      ? CachedNetworkImage(
-                          imageUrl: avatarUrl!,
-                          fit: BoxFit.cover,
-                          width: 40,
-                          height: 40,
-                          placeholder: (_, __) => Center(
-                            child: Text(
-                              initials,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                          errorWidget: (_, __, ___) => Center(
-                            child: Text(
-                              initials,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        )
-                      : Center(
-                          child: Text(
-                            initials,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
+              ClipOval(
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  color: Colors.white.withValues(alpha: 0.15),
+                  child: avatarChild,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      DatumUtils.langeDatum(DatumUtils.vandaagString())
-                          .toUpperCase(),
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.5),
+                      'Dashboard',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.white54,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        letterSpacing: 0.8,
+                        letterSpacing: 0.7,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 5),
                     profielAsync.when(
                       data: (p) => Text(
                         naam.isNotEmpty ? 'Hoi, $naam.' : 'Welkom terug.',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 26,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w600,
                           height: 1.1,
-                          letterSpacing: -0.3,
+                          letterSpacing: -0.5,
                         ),
                       ),
                       loading: () => const SkeletonBox(
@@ -414,8 +401,8 @@ class _StatsRow extends StatelessWidget {
           label: 'Facturen',
           value: '$openFacturen',
           icon: Icons.receipt_long_rounded,
-          iconColor: heeftFacturen ? AppColors.warningSolid : AppColors.iconDark,
-          isAlert: heeftFacturen,
+          iconColor: AppColors.iconDark,
+          showBadge: heeftFacturen,
           onTap: () => context.go('/facturen'),
         ),
       ],
@@ -428,7 +415,7 @@ class _StatCard extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color iconColor;
-  final bool isAlert;
+  final bool showBadge;
   final VoidCallback? onTap;
 
   const _StatCard({
@@ -436,7 +423,7 @@ class _StatCard extends StatelessWidget {
     required this.value,
     required this.icon,
     required this.iconColor,
-    this.isAlert = false,
+    this.showBadge = false,
     this.onTap,
   });
 
@@ -450,12 +437,7 @@ class _StatCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isAlert
-                  ? AppColors.warningSolid.withValues(alpha: 0.35)
-                  : AppColors.border,
-              width: 1,
-            ),
+            border: Border.all(color: AppColors.border, width: 1),
             boxShadow: [
               BoxShadow(
                 color: const Color(0xFF0F172A).withValues(alpha: 0.05),
@@ -468,14 +450,32 @@ class _StatCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, size: 15, color: iconColor),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF0F2F5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(icon, size: 15, color: iconColor),
+                  ),
+                  if (showBadge)
+                    Positioned(
+                      right: -3,
+                      top: -3,
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
               ),
               const SizedBox(height: 8),
               Text(
@@ -597,59 +597,55 @@ class _VolgendeLesHero extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: AppColors.dark,
+          color: AppColors.white,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.border, width: 0.75),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.18),
-              blurRadius: 24,
-              offset: const Offset(0, 8),
+              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
         child: Row(
           children: [
-            // Date block
+            // Date block — flat, clean
             Container(
-              width: 72,
-              height: 88,
+              width: 58,
+              height: 70,
               decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.35),
-                    blurRadius: 16,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
+                color: const Color(0xFFF0F2F5),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                    color: const Color(0xFFE2E2E7), width: 0.75),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     _dagAfk(les.datum),
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.75),
-                      fontSize: 11,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 10,
                       fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
+                      letterSpacing: 0.6,
                     ),
                   ),
                   Text(
                     _dagNr(les.datum),
                     style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
+                      color: AppColors.primary,
+                      fontSize: 24,
                       fontWeight: FontWeight.w900,
-                      height: 1.0,
+                      height: 1.05,
                     ),
                   ),
                   Text(
                     _maandAfk(les.datum),
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.75),
-                      fontSize: 11,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 10,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -664,17 +660,19 @@ class _VolgendeLesHero extends StatelessWidget {
                 children: [
                   Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.18),
+                      color: const Color(0xFFF0F2F5),
                       borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                          color: const Color(0xFFE2E2E7), width: 0.75),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Volgende les',
                       style: TextStyle(
-                        color: AppColors.primary.withValues(alpha: 0.9),
+                        color: AppColors.textPrimary,
                         fontSize: 10,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                         letterSpacing: 0.3,
                       ),
                     ),
@@ -683,7 +681,7 @@ class _VolgendeLesHero extends StatelessWidget {
                   Text(
                     '${les.starttijd} — ${les.eindtijd}',
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
                       height: 1.1,
@@ -693,14 +691,13 @@ class _VolgendeLesHero extends StatelessWidget {
                   if (les.instructeurNaam?.isNotEmpty == true) ...[
                     Row(
                       children: [
-                        Icon(Icons.person_outline_rounded,
-                            size: 13,
-                            color: Colors.white.withValues(alpha: 0.45)),
+                        const Icon(Icons.person_outline_rounded,
+                            size: 13, color: AppColors.textHint),
                         const SizedBox(width: 4),
                         Text(
                           les.instructeurNaam!,
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.6),
+                          style: const TextStyle(
+                            color: AppColors.textSecondary,
                             fontSize: 12,
                           ),
                         ),
@@ -711,15 +708,14 @@ class _VolgendeLesHero extends StatelessWidget {
                   if (les.locatie?.isNotEmpty == true)
                     Row(
                       children: [
-                        Icon(Icons.location_on_outlined,
-                            size: 13,
-                            color: Colors.white.withValues(alpha: 0.45)),
+                        const Icon(Icons.location_on_outlined,
+                            size: 13, color: AppColors.textHint),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             les.locatie!,
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.6),
+                            style: const TextStyle(
+                              color: AppColors.textSecondary,
                               fontSize: 12,
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -731,10 +727,10 @@ class _VolgendeLesHero extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Icon(
+            const Icon(
               Icons.chevron_right_rounded,
-              color: Colors.white.withValues(alpha: 0.3),
-              size: 22,
+              color: AppColors.textHint,
+              size: 20,
             ),
           ],
         ),
@@ -882,18 +878,34 @@ class _ExamenadviesHero extends StatelessWidget {
                 children: [
                   Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
                     decoration: BoxDecoration(
-                      color: labelColor.withValues(alpha: 0.1),
+                      color: const Color(0xFFF0F2F5),
                       borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                          color: const Color(0xFFE2E2E7), width: 0.75),
                     ),
-                    child: Text(
-                      label,
-                      style: TextStyle(
-                        color: labelColor,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: labelColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          label,
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -1204,89 +1216,6 @@ class _FactuurRij extends StatelessWidget {
   }
 }
 
-// ── Notificatie rij ───────────────────────────────────────────────────────────
-
-class _NotificatieRij extends StatelessWidget {
-  final Notificatie notificatie;
-  const _NotificatieRij({required this.notificatie});
-
-  Color get _color {
-    switch (notificatie.type) {
-      case 'les_ingepland':
-      case 'les_gewijzigd':
-        return AppColors.infoSolid;
-      case 'les_geannuleerd':
-        return AppColors.dangerSolid;
-      case 'factuur':
-        return AppColors.warningSolid;
-      case 'reminder':
-        return AppColors.iconDark;
-      default:
-        return AppColors.iconDark;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border, width: 0.75),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F2F5),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(Icons.notifications_none_rounded,
-                size: 18, color: _color),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  notificatie.titel,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (notificatie.bericht?.isNotEmpty == true) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    notificatie.bericht!,
-                    style: const TextStyle(
-                        fontSize: 11, color: AppColors.textSecondary),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // ── Skeleton hero ─────────────────────────────────────────────────────────────
 
