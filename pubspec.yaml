@@ -1,7 +1,7 @@
 name: leerling_app
 description: Rijschool Leerling App – student app voor rijschool leerlingen
 publish_to: 'none'
-version: 1.0.4+4
+version: 1.0.7+7
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
