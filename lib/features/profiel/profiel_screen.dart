@@ -11,6 +11,7 @@ import '../../models/instructeur.dart';
 import '../../models/leerling_profiel.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/main_tab_header.dart';
 import '../../shared/widgets/snackbar.dart';
 
 Color _statusColor(LeerlingStatus status) {
@@ -43,6 +44,7 @@ class ProfielScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
+<<<<<<< Updated upstream
       body: RefreshIndicator(
         color: AppColors.primary,
         onRefresh: () async {
@@ -95,125 +97,196 @@ class ProfielScreen extends ConsumerWidget {
                       if (profiel != null)
                         Row(
                           mainAxisSize: MainAxisSize.min,
+=======
+      body: Column(
+        children: [
+          const MainTabHeader(
+            eyebrowText: 'LEERLING',
+            title: 'Profiel',
+            actions: [MainHeaderNotificatieKnop()],
+          ),
+          Expanded(
+            child: RefreshIndicator(
+              color: AppColors.primary,
+              onRefresh: () async {
+                ref.invalidate(mijnProfielProvider);
+                ref.invalidate(_instructeurProvider);
+              },
+              child: CustomScrollView(
+                slivers: [
+                  // Identiteitskaart (avatar/naam/pakket) -- ongewijzigde
+                  // content, alleen de bovenste padding aangepast: die
+                  // compenseerde voorheen zelf voor de statusbalk (geen
+                  // eigen header/SafeArea erboven); nu staat de
+                  // MainTabHeader daarboven, dus normale symmetrische
+                  // padding i.p.v. de hardcoded 60.
+                  SliverToBoxAdapter(
+                    child: Container(
+                      color: AppColors.dark,
+                      padding: const EdgeInsets.fromLTRB(20, 28, 20, 28),
+                      child: profielAsync.when(
+                        data: (profiel) => Column(
+>>>>>>> Stashed changes
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 7),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
-                                borderRadius: BorderRadius.circular(99),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.school_rounded,
-                                      color: Colors.white, size: 13),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    profiel.pakket.label,
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ],
+                            ProfileAvatar(
+                              profiel: profiel,
+                              onTap: profiel == null
+                                  ? null
+                                  : () =>
+                                      _kiesProfielfoto(context, ref, profiel),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              profiel?.volledigeNaam ?? '',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 7),
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(99),
-                                border: Border.all(
-                                    color:
-                                        Colors.white.withValues(alpha: 0.3)),
+                            if (profiel?.email?.isNotEmpty == true) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                profiel!.email!,
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.84),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                              child: Row(
+                            ],
+                            const SizedBox(height: 12),
+                            if (profiel != null)
+                              Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Container(
+<<<<<<< Updated upstream
                                     width: 6,
                                     height: 6,
                                     decoration: BoxDecoration(
                                       color: _statusColor(profiel.status),
                                       shape: BoxShape.circle,
+=======
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 7),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary,
+                                      borderRadius: BorderRadius.circular(99),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(Icons.school_rounded,
+                                            color: Colors.white, size: 13),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          profiel.pakket.label,
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ],
+>>>>>>> Stashed changes
                                     ),
                                   ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    profiel.status.label,
-                                    style: TextStyle(
-                                        color: Colors.white
-                                            .withValues(alpha: 0.85),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 7),
+                                    decoration: BoxDecoration(
+                                      color: Colors.transparent,
+                                      borderRadius: BorderRadius.circular(99),
+                                      border: Border.all(
+                                          color: Colors.white
+                                              .withValues(alpha: 0.3)),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          width: 6,
+                                          height: 6,
+                                          decoration: const BoxDecoration(
+                                            color: AppColors.dangerSolid,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          profiel.status.label,
+                                          style: TextStyle(
+                                              color: Colors.white
+                                                  .withValues(alpha: 0.85),
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
                           ],
                         ),
-                    ],
-                  ),
-                  loading: () => const Center(
-                    child: SizedBox(
-                      height: 80,
-                      child: CircularProgressIndicator(
-                          color: AppColors.primary, strokeWidth: 2),
+                        loading: () => const Center(
+                          child: SizedBox(
+                            height: 80,
+                            child: CircularProgressIndicator(
+                                color: AppColors.primary, strokeWidth: 2),
+                          ),
+                        ),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
                     ),
                   ),
-                  error: (_, __) => const SizedBox.shrink(),
-                ),
-              ),
-            ),
 
-            // Body
-            SliverPadding(
-              padding: const EdgeInsets.all(20),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  // Student info
-                  profielAsync.when(
-                    data: (profiel) => profiel != null
-                        ? AppCard(
-                            child: Column(
-                              children: [
-                                if (profiel.telefoon?.isNotEmpty == true)
-                                  _InfoTile(
-                                    icon: Icons.phone_outlined,
-                                    iconColor: AppColors.iconBlue,
-                                    label: 'Telefoon',
-                                    value: profiel.telefoon!,
+                  // Body
+                  SliverPadding(
+                    padding: const EdgeInsets.all(20),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        // Student info
+                        profielAsync.when(
+                          data: (profiel) => profiel != null
+                              ? AppCard(
+                                  child: Column(
+                                    children: [
+                                      if (profiel.telefoon?.isNotEmpty == true)
+                                        _InfoTile(
+                                          icon: Icons.phone_outlined,
+                                          iconColor: AppColors.iconBlue,
+                                          label: 'Telefoon',
+                                          value: profiel.telefoon!,
+                                        ),
+                                      if (profiel.geboortedatum?.isNotEmpty ==
+                                          true) ...[
+                                        const Divider(height: 20),
+                                        _InfoTile(
+                                          icon: Icons.cake_outlined,
+                                          iconColor: AppColors.iconPurple,
+                                          label: 'Geboortedatum',
+                                          value: profiel.geboortedatum!,
+                                        ),
+                                      ],
+                                      const Divider(height: 20),
+                                      _InfoTile(
+                                        icon: Icons.school_outlined,
+                                        iconColor: AppColors.iconGreen,
+                                        label: 'Status',
+                                        value: profiel.status.label,
+                                      ),
+                                    ],
                                   ),
-                                if (profiel.geboortedatum?.isNotEmpty ==
-                                    true) ...[
-                                  const Divider(height: 20),
-                                  _InfoTile(
-                                    icon: Icons.cake_outlined,
-                                    iconColor: AppColors.iconPurple,
-                                    label: 'Geboortedatum',
-                                    value: profiel.geboortedatum!,
-                                  ),
-                                ],
-                                const Divider(height: 20),
-                                _InfoTile(
-                                  icon: Icons.school_outlined,
-                                  iconColor: AppColors.iconGreen,
-                                  label: 'Status',
-                                  value: profiel.status.label,
-                                ),
-                              ],
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                    loading: () => const SkeletonCard(),
-                    error: (_, __) => const SizedBox.shrink(),
-                  ),
+                                )
+                              : const SizedBox.shrink(),
+                          loading: () => const SkeletonCard(),
+                          error: (_, __) => const SizedBox.shrink(),
+                        ),
 
-                  const SizedBox(height: 20),
+                        const SizedBox(height: 20),
 
+<<<<<<< Updated upstream
                   // Rijschool / instructor info
                   const SectionHeader(title: 'Mijn rijschool'),
                   const SizedBox(height: 12),
@@ -233,28 +306,85 @@ class ProfielScreen extends ConsumerWidget {
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
+=======
+                        // Rijschool / instructor info
+                        const SectionHeader(title: 'Mijn rijschool'),
+                        const SizedBox(height: 12),
+                        instructeurAsync.when(
+                          data: (instructeur) => instructeur != null
+                              ? AppCard(
+                                  child: Column(
+                                    children: [
+                                      Row(
+>>>>>>> Stashed changes
                                         children: [
-                                          Text(
-                                            instructeur.weergaveNaam,
-                                            style: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w700,
-                                              color: AppColors.textPrimary,
+                                          const IconBadge(
+                                            icon: Icons.directions_car_rounded,
+                                            color: AppColors.primary,
+                                          ),
+                                          const SizedBox(width: 14),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  instructeur.weergaveNaam,
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w700,
+                                                    color:
+                                                        AppColors.textPrimary,
+                                                  ),
+                                                ),
+                                                if (instructeur
+                                                        .naam?.isNotEmpty ==
+                                                    true)
+                                                  Text(
+                                                    instructeur.naam!,
+                                                    style: const TextStyle(
+                                                        fontSize: 13,
+                                                        color: AppColors
+                                                            .textSecondary),
+                                                  ),
+                                              ],
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                if (instructeur.volledigAdres != null) ...[
-                                  const Divider(height: 20),
-                                  _InfoTile(
-                                    icon: Icons.location_on_outlined,
-                                    iconColor: AppColors.iconSlate,
-                                    label: 'Adres',
-                                    value: instructeur.volledigAdres!,
+                                      if (instructeur.volledigAdres !=
+                                          null) ...[
+                                        const Divider(height: 20),
+                                        _InfoTile(
+                                          icon: Icons.location_on_outlined,
+                                          iconColor: AppColors.iconSlate,
+                                          label: 'Adres',
+                                          value: instructeur.volledigAdres!,
+                                        ),
+                                      ],
+                                      if (instructeur.telefoon?.isNotEmpty ==
+                                          true) ...[
+                                        const Divider(height: 20),
+                                        _InfoTile(
+                                          icon: Icons.phone_outlined,
+                                          iconColor: AppColors.iconBlue,
+                                          label: 'Telefoon',
+                                          value: instructeur.telefoon!,
+                                        ),
+                                      ],
+                                      if (instructeur.email?.isNotEmpty ==
+                                          true) ...[
+                                        const Divider(height: 20),
+                                        _InfoTile(
+                                          icon: Icons.email_outlined,
+                                          iconColor: AppColors.iconBlue,
+                                          label: 'E-mail',
+                                          value: instructeur.email!,
+                                        ),
+                                      ],
+                                    ],
                                   ),
+<<<<<<< Updated upstream
                                 ],
                                 if (instructeur.telefoon?.isNotEmpty ==
                                     true) ...[
@@ -288,67 +418,87 @@ class ProfielScreen extends ConsumerWidget {
                     loading: () => const SkeletonCard(),
                     error: (_, __) => const SizedBox.shrink(),
                   ),
-
-                  const SizedBox(height: 20),
-
-                  // Actions
-                  const SectionHeader(title: 'Account'),
-                  const SizedBox(height: 12),
-                  AppCard(
-                    child: Column(
-                      children: [
-                        _ActionTile(
-                          icon: Icons.schedule_outlined,
-                          iconColor: AppColors.iconPurple,
-                          label: 'Mijn beschikbaarheid',
-                          onTap: () => context.push('/beschikbaarheid'),
+=======
+                                )
+                              : const SizedBox.shrink(),
+                          loading: () => const SkeletonCard(),
+                          error: (_, __) => const SizedBox.shrink(),
                         ),
+>>>>>>> Stashed changes
+
+                        const SizedBox(height: 20),
+
+                        // Actions
+                        const SectionHeader(title: 'Account'),
+                        const SizedBox(height: 12),
+                        AppCard(
+                          child: Column(
+                            children: [
+                              _ActionTile(
+                                icon: Icons.schedule_outlined,
+                                iconColor: AppColors.iconPurple,
+                                label: 'Mijn beschikbaarheid',
+                                onTap: () => context.push('/beschikbaarheid'),
+                              ),
+                              const Divider(height: 20),
+                              _ActionTile(
+                                icon: Icons.notifications_outlined,
+                                iconColor: AppColors.primary,
+                                label: 'Meldingen',
+                                onTap: () => context.go('/notificaties'),
+                              ),
+                              const Divider(height: 20),
+                              _ActionTile(
+                                icon: Icons.quiz_outlined,
+                                iconColor: AppColors.iconAmber,
+                                label: 'Mijn examens',
+                                onTap: () => context.push('/examens'),
+                              ),
+                              const Divider(height: 20),
+                              _ActionTile(
+                                icon: Icons.help_outline_rounded,
+                                iconColor: AppColors.iconBlue,
+                                label: 'Help & ondersteuning',
+                                onTap: () => context.push('/help'),
+                              ),
+                              const Divider(height: 20),
+                              _ActionTile(
+                                icon: Icons.logout_rounded,
+                                iconColor: AppColors.dangerSolid,
+                                label: 'Uitloggen',
+                                labelColor: AppColors.dangerText,
+                                onTap: () => _uitloggen(context, ref),
+                              ),
+                            ],
+                          ),
+                        ),
+<<<<<<< Updated upstream
                         const Divider(height: 20),
                         _ActionTile(
                           icon: Icons.notifications_outlined,
                           iconColor: AppColors.iconSlate,
                           label: 'Meldingen',
                           onTap: () => context.go('/notificaties'),
-                        ),
-                        const Divider(height: 20),
-                        _ActionTile(
-                          icon: Icons.quiz_outlined,
-                          iconColor: AppColors.iconAmber,
-                          label: 'Mijn examens',
-                          onTap: () => context.push('/examens'),
-                        ),
-                        const Divider(height: 20),
-                        _ActionTile(
-                          icon: Icons.help_outline_rounded,
-                          iconColor: AppColors.iconBlue,
-                          label: 'Help & ondersteuning',
-                          onTap: () => context.push('/help'),
-                        ),
-                        const Divider(height: 20),
-                        _ActionTile(
-                          icon: Icons.logout_rounded,
-                          iconColor: AppColors.dangerSolid,
-                          label: 'Uitloggen',
-                          labelColor: AppColors.dangerText,
-                          onTap: () => _uitloggen(context, ref),
-                        ),
-                      ],
-                    ),
-                  ),
+=======
 
-                  const SizedBox(height: 32),
-                  const Center(
-                    child: Text(
-                      'Instrecteur Leerling · v1.0',
-                      style: TextStyle(fontSize: 11, color: AppColors.textHint),
+                        const SizedBox(height: 32),
+                        const Center(
+                          child: Text(
+                            'Instrecteur Leerling · v1.0',
+                            style: TextStyle(
+                                fontSize: 11, color: AppColors.textHint),
+                          ),
+>>>>>>> Stashed changes
+                        ),
+                        const SizedBox(height: 32),
+                      ]),
                     ),
                   ),
-                  const SizedBox(height: 32),
-                ]),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

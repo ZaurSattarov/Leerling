@@ -5,7 +5,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/les.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/screen_header.dart';
+import '../../shared/widgets/main_tab_header.dart';
 import '../../shared/widgets/status_pill.dart';
 import 'planning_provider.dart';
 
@@ -38,6 +38,7 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
       backgroundColor: AppColors.surface,
       body: Column(
         children: [
+<<<<<<< Updated upstream
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -96,6 +97,29 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
             ),
           ),
           const Divider(height: 1, thickness: 1, color: Color(0xFFE8EAF0)),
+=======
+          MainTabHeader(
+            eyebrowText: 'PLANNING',
+            title: 'Mijn lessen',
+            actions: [
+              MainHeaderIconKnop(
+                icon: Icons.notifications_outlined,
+                onTap: () => context.go('/notificaties'),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 10),
+            child: AnimatedBuilder(
+              animation: _tabs,
+              builder: (_, __) => _PillTabBar(
+                activeIndex: _tabs.index,
+                labels: const ['Komende lessen', 'Afgerond'],
+                onTap: (i) => _tabs.animateTo(i),
+              ),
+            ),
+          ),
+>>>>>>> Stashed changes
           Expanded(
             child: TabBarView(
               controller: _tabs,
@@ -159,8 +183,7 @@ class _PillTabBar extends StatelessWidget {
                   style: TextStyle(
                     color: isActive ? Colors.white : AppColors.textSecondary,
                     fontSize: 13,
-                    fontWeight:
-                        isActive ? FontWeight.w600 : FontWeight.w500,
+                    fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
                   ),
                 ),
               ),
@@ -250,6 +273,7 @@ class _NieuweLesButton extends StatelessWidget {
         onPressed: () => context.push('/beschikbaarheid'),
         icon: const Icon(Icons.add_rounded, size: 18),
         label: const Text('Nieuwe les aanvragen'),
+<<<<<<< Updated upstream
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.textPrimary,
           side: const BorderSide(color: Color(0xFFE2E2E7), width: 1.25),
@@ -257,6 +281,15 @@ class _NieuweLesButton extends StatelessWidget {
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14)),
+=======
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          minimumSize: const Size.fromHeight(52),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          elevation: 0,
+>>>>>>> Stashed changes
           textStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -386,8 +419,18 @@ class _LesCard extends StatelessWidget {
   String _maandAfk(String datum) {
     try {
       const months = [
-        'jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
-        'jul', 'aug', 'sep', 'okt', 'nov', 'dec'
+        'jan',
+        'feb',
+        'mrt',
+        'apr',
+        'mei',
+        'jun',
+        'jul',
+        'aug',
+        'sep',
+        'okt',
+        'nov',
+        'dec'
       ];
       return months[DateTime.parse(datum).month - 1];
     } catch (_) {

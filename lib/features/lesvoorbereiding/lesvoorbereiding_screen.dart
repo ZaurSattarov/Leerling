@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
+<<<<<<< Updated upstream
 import '../../shared/widgets/gradient_header.dart';
+=======
+import '../../shared/widgets/main_detail_header.dart';
+>>>>>>> Stashed changes
 import 'lesvoorbereiding_provider.dart';
 
 class LesvoorbereidingScreen extends ConsumerWidget {
@@ -14,82 +18,98 @@ class LesvoorbereidingScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
+<<<<<<< Updated upstream
       body: CustomScrollView(
         slivers: [
           const SliverToBoxAdapter(
             child: DetailGradientHeader(title: 'Lesvoorbereiding'),
+=======
+      body: Column(
+        children: [
+          const MainDetailHeader(
+            eyebrowText: 'VOORBEREIDING',
+            title: 'Lesvoorbereiding',
+>>>>>>> Stashed changes
           ),
-          voorbereidingAsync.when(
-            loading: () => const SliverFillRemaining(
-              child: Center(child: CircularProgressIndicator()),
-            ),
-            error: (_, __) => const SliverFillRemaining(child: SizedBox()),
-            data: (voorbereiding) => SliverPadding(
-              padding: const EdgeInsets.all(20),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  _FocusCard(data: voorbereiding),
-                  if (voorbereiding.tips.isNotEmpty) ...[
-                    const SizedBox(height: 14),
-                    _ListCard(
-                      title: 'Aandachtspunten volgende les',
-                      icon: Icons.lightbulb_outline_rounded,
-                      iconColor: AppColors.warningSolid,
-                      items: voorbereiding.tips,
-                    ),
-                  ],
-                  if (voorbereiding.oefenen.isNotEmpty) ...[
-                    const SizedBox(height: 14),
-                    _ListCard(
-                      title: 'Dit ga je oefenen',
-                      icon: Icons.route_rounded,
-                      iconColor: AppColors.infoSolid,
-                      items: voorbereiding.oefenen,
-                    ),
-                  ],
-                  if (voorbereiding.motivatie.isNotEmpty) ...[
-                    const SizedBox(height: 14),
-                    AppCard(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const IconBadge(
-                            icon: Icons.favorite_border_rounded,
-                            color: AppColors.successSolid,
-                            size: 38,
+          Expanded(
+            child: CustomScrollView(
+              slivers: [
+                voorbereidingAsync.when(
+                  loading: () => const SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                  error: (_, __) =>
+                      const SliverFillRemaining(child: SizedBox()),
+                  data: (voorbereiding) => SliverPadding(
+                    padding: const EdgeInsets.all(20),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        _FocusCard(data: voorbereiding),
+                        if (voorbereiding.tips.isNotEmpty) ...[
+                          const SizedBox(height: 14),
+                          _ListCard(
+                            title: 'Aandachtspunten volgende les',
+                            icon: Icons.lightbulb_outline_rounded,
+                            iconColor: AppColors.warningSolid,
+                            items: voorbereiding.tips,
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
+                        ],
+                        if (voorbereiding.oefenen.isNotEmpty) ...[
+                          const SizedBox(height: 14),
+                          _ListCard(
+                            title: 'Dit ga je oefenen',
+                            icon: Icons.route_rounded,
+                            iconColor: AppColors.infoSolid,
+                            items: voorbereiding.oefenen,
+                          ),
+                        ],
+                        if (voorbereiding.motivatie.isNotEmpty) ...[
+                          const SizedBox(height: 14),
+                          AppCard(
+                            child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'Feedback instructeur',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w800,
-                                    color: AppColors.textPrimary,
-                                  ),
+                                const IconBadge(
+                                  icon: Icons.favorite_border_rounded,
+                                  color: AppColors.successSolid,
+                                  size: 38,
                                 ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  voorbereiding.motivatie,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    height: 1.45,
-                                    color: AppColors.textSecondary,
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Feedback instructeur',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w800,
+                                          color: AppColors.textPrimary,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        voorbereiding.motivatie,
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          height: 1.45,
+                                          color: AppColors.textSecondary,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ],
-                      ),
+                        const SizedBox(height: 28),
+                      ]),
                     ),
-                  ],
-                  const SizedBox(height: 28),
-                ]),
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

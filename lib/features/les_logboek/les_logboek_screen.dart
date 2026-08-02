@@ -4,7 +4,11 @@ import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/coach_widgets.dart';
+<<<<<<< Updated upstream
 import '../../shared/widgets/gradient_header.dart';
+=======
+import '../../shared/widgets/main_detail_header.dart';
+>>>>>>> Stashed changes
 import '../../shared/providers/auth_provider.dart';
 import 'les_logboek_item.dart';
 import 'les_logboek_provider.dart';
@@ -18,12 +22,23 @@ class LesLogboekScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
+<<<<<<< Updated upstream
       body: CustomScrollView(
         slivers: [
           const SliverToBoxAdapter(
             child: DetailGradientHeader(title: 'Les-logboek'),
+=======
+      body: Column(
+        children: [
+          const MainDetailHeader(
+            eyebrowText: 'LOGBOEK',
+            title: 'Les-logboek',
+>>>>>>> Stashed changes
           ),
-          lessenAsync.when(
+          Expanded(
+            child: CustomScrollView(
+              slivers: [
+                lessenAsync.when(
             data: (lessen) => SliverPadding(
               padding: const EdgeInsets.all(20),
               sliver: SliverList.separated(
@@ -80,6 +95,9 @@ class LesLogboekScreen extends ConsumerWidget {
                   ),
                 ),
               ),
+            ),
+                ),
+              ],
             ),
           ),
         ],

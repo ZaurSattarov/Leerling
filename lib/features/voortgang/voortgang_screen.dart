@@ -5,7 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
+<<<<<<< Updated upstream
 import '../../shared/widgets/screen_header.dart';
+=======
+import '../../shared/widgets/coach_widgets.dart';
+import '../../shared/widgets/main_tab_header.dart';
+>>>>>>> Stashed changes
 import 'lespakket_voortgang_provider.dart';
 import 'voortgang_provider.dart';
 import 'voortgang_trends_provider.dart';
@@ -31,6 +36,7 @@ class VoortgangScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
+<<<<<<< Updated upstream
       body: RefreshIndicator(
         color: AppColors.primary,
         onRefresh: () async {
@@ -121,12 +127,77 @@ class VoortgangScreen extends ConsumerWidget {
                         data: (data) => data != null
                             ? _TotaleVoortgangCard(data: data)
                             : _TotaleVoortgangCard(
+=======
+      body: Column(
+        children: [
+          MainTabHeader(
+            eyebrowText: 'VOORTGANG',
+            title: 'Mijn voortgang',
+            actions: [
+              MainHeaderIconKnop(
+                icon: Icons.notifications_outlined,
+                onTap: () => context.go('/notificaties'),
+              ),
+            ],
+          ),
+          Expanded(
+            child: RefreshIndicator(
+              color: AppColors.primary,
+              onRefresh: () async {
+                ref.invalidate(mijnProfielProvider);
+                ref.invalidate(lespakketVoortgangProvider);
+                ref.invalidate(voortgangTrendsProvider);
+              },
+              child: CustomScrollView(
+                slivers: [
+                  profielAsync.when(
+                    data: (profiel) {
+                      if (profiel == null) {
+                        return const SliverFillRemaining(
+                          child: EmptyState(
+                            icon: Icons.person_off_outlined,
+                            title: 'Geen profiel gevonden',
+                          ),
+                        );
+                      }
+
+                      final vaardigheden =
+                          profiel.vaardigheden ?? <String, dynamic>{};
+                      final competentieScores = cbrCompetenties
+                          .map((competentie) =>
+                              _CompetentieScore.fromVaardigheden(
+                                competentie: competentie,
+                                vaardigheden: vaardigheden,
+                              ))
+                          .toList();
+
+                      return SliverPadding(
+                        padding: const EdgeInsets.all(20),
+                        sliver: SliverList(
+                          delegate: SliverChildListDelegate([
+                            lespakketAsync.when(
+                              data: (data) => data != null
+                                  ? _TotaleVoortgangCard(data: data)
+                                  : _TotaleVoortgangCard(
+                                      data: LespakketVoortgangData
+                                          .fromProfielEnLessen(
+                                        profiel: profiel,
+                                        lessen: const [],
+                                      ),
+                                    ),
+                              loading: () => const SkeletonBox(
+                                height: 200,
+                                radius: 18,
+                              ),
+                              error: (_, __) => _TotaleVoortgangCard(
+>>>>>>> Stashed changes
                                 data:
                                     LespakketVoortgangData.fromProfielEnLessen(
                                   profiel: profiel,
                                   lessen: const [],
                                 ),
                               ),
+<<<<<<< Updated upstream
                         loading: () =>
                             const SkeletonBox(height: 200, radius: 18),
                         error: (_, __) => _TotaleVoortgangCard(
@@ -134,8 +205,54 @@ class VoortgangScreen extends ConsumerWidget {
                             profiel: profiel,
                             lessen: const [],
                           ),
+=======
+                            ),
+                            const SizedBox(height: 16),
+                            trendsAsync.when(
+                              data: (trends) => _DezeWeekCard(data: trends),
+                              loading: () => const SkeletonCard(),
+                              error: (_, __) => const SizedBox.shrink(),
+                            ),
+                            const SizedBox(height: 24),
+                            const SectionHeader(title: 'CBR-competenties'),
+                            const SizedBox(height: 12),
+                            ...competentieScores.asMap().entries.map(
+                                  (entry) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 14),
+                                    child: _CompetentieCard(
+                                        score: entry.value, index: entry.key),
+                                  ),
+                                ),
+                            const SizedBox(height: 10),
+                            const SectionHeader(title: 'Voortgang in de tijd'),
+                            const SizedBox(height: 12),
+                            trendsAsync.when(
+                              data: (trends) =>
+                                  _VoortgangTrendsSection(data: trends),
+                              loading: () => const SkeletonCard(),
+                              error: (_, __) => const _VoortgangTrendsSection(
+                                  data: emptyVoortgangTrends),
+                            ),
+                            const SizedBox(height: 16),
+                          ]),
+>>>>>>> Stashed changes
                         ),
+                      );
+                    },
+                    loading: () => SliverPadding(
+                      padding: const EdgeInsets.all(20),
+                      sliver: SliverList(
+                        delegate: SliverChildListDelegate([
+                          const SkeletonBox(height: 200, radius: 18),
+                          const SizedBox(height: 14),
+                          const SkeletonCard(),
+                          const SizedBox(height: 10),
+                          const SkeletonCard(),
+                          const SizedBox(height: 10),
+                          const SkeletonCard(),
+                        ]),
                       ),
+<<<<<<< Updated upstream
                       const SizedBox(height: 12),
 
                       // 2. Examen readiness + motivatie
@@ -229,10 +346,22 @@ class VoortgangScreen extends ConsumerWidget {
                   title: 'Kon voortgang niet laden',
                   subtitle: e.toString(),
                 ),
+=======
+                    ),
+                    error: (e, _) => SliverFillRemaining(
+                      child: EmptyState(
+                        icon: Icons.wifi_off_rounded,
+                        title: 'Kon voortgang niet laden',
+                        subtitle: e.toString(),
+                      ),
+                    ),
+                  ),
+                ],
+>>>>>>> Stashed changes
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -1367,6 +1496,488 @@ class _StatPill extends StatelessWidget {
   }
 }
 
+<<<<<<< Updated upstream
+=======
+class _CircularProgressWidget extends StatelessWidget {
+  final double value;
+
+  const _CircularProgressWidget({required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 90,
+      height: 90,
+      child: Stack(
+        children: [
+          CustomPaint(
+            size: const Size(90, 90),
+            painter: _CircularProgressPainter(value: value),
+          ),
+          Center(
+            child: Text(
+              '${(value * 100).round()}%',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 19,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CircularProgressPainter extends CustomPainter {
+  final double value;
+
+  const _CircularProgressPainter({required this.value});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const strokeWidth = 9.0;
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (size.width - strokeWidth) / 2;
+
+    final bgPaint = Paint()
+      ..color = AppColors.dark3
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    final fgPaint = Paint()
+      ..color = AppColors.primary
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawCircle(center, radius, bgPaint);
+
+    final sweepAngle = 2 * pi * value.clamp(0.0, 1.0);
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -pi / 2,
+      sweepAngle,
+      false,
+      fgPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _CircularProgressPainter oldDelegate) =>
+      oldDelegate.value != value;
+}
+
+class _DezeWeekCard extends StatelessWidget {
+  final VoortgangTrendsData data;
+
+  const _DezeWeekCard({required this.data});
+
+  String get _titel {
+    if (!data.heeftHistorie) return 'Start met je eerste lessen';
+    if (data.verschil > 0) return 'Je bent goed op weg';
+    if (data.verschil < 0) return 'Extra oefenen loont';
+    return 'Stabiele voortgang';
+  }
+
+  String get _advies {
+    if (!data.heeftHistorie) {
+      return 'Volg meer lessen zodat we je voortgang kunnen bijhouden.';
+    }
+    if (data.competenties.isNotEmpty) {
+      final zwakste = data.competenties.where((c) => c.verschil <= 0).toList();
+      if (zwakste.isNotEmpty) {
+        return 'Focus op ${zwakste.first.naam.toLowerCase()} voor meer verbetering.';
+      }
+      return '${data.competenties.first.naam} gaat goed, blijf oefenen.';
+    }
+    return data.beoordelingTrend;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF0F2F5),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.auto_awesome_rounded,
+                color: AppColors.iconDark, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'DEZE WEEK',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primary,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  _titel,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  _advies,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    height: 1.4,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _VoortgangTrendsSection extends StatelessWidget {
+  final VoortgangTrendsData data;
+
+  const _VoortgangTrendsSection({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _TrendSamenvattingCard(data: data),
+        const SizedBox(height: 14),
+        _TrendDetailsCard(data: data),
+        const SizedBox(height: 14),
+        _TijdlijnCard(items: data.tijdlijn),
+      ],
+    );
+  }
+}
+
+class _TrendSamenvattingCard extends StatelessWidget {
+  final VoortgangTrendsData data;
+
+  const _TrendSamenvattingCard({required this.data});
+
+  Color get _trendColor {
+    if (data.verschil > 0) return AppColors.successSolid;
+    if (data.verschil < 0) return AppColors.dangerSolid;
+    return AppColors.infoSolid;
+  }
+
+  IconData get _trendIcon {
+    if (data.verschil > 0) return Icons.trending_up_rounded;
+    if (data.verschil < 0) return Icons.trending_down_rounded;
+    return Icons.trending_flat_rounded;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconBadge(icon: _trendIcon, color: _trendColor, size: 42),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Examenadvies trend',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      data.uitleg,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        height: 1.35,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              _TrendBadge(label: data.trendLabel, color: _trendColor),
+            ],
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 118,
+            width: double.infinity,
+            child: CustomPaint(
+              painter: _LineChartPainter(data.scoreHistorie),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _MiniStat(
+                  label: 'Vorige score',
+                  value: '${data.vorigeScore}%',
+                ),
+              ),
+              Expanded(
+                child: _MiniStat(
+                  label: 'Huidige score',
+                  value: '${data.huidigeScore}%',
+                ),
+              ),
+              Expanded(
+                child: _MiniStat(
+                  label: 'Verschil',
+                  value: '${data.verschil >= 0 ? '+' : ''}${data.verschil}%',
+                  valueColor: _trendColor,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TrendDetailsCard extends StatelessWidget {
+  final VoortgangTrendsData data;
+
+  const _TrendDetailsCard({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Wat verandert er?',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _TrendInfoRow(
+            icon: Icons.grade_rounded,
+            label: 'Beoordelingen',
+            value: data.gemiddeldeBeoordeling == null
+                ? 'Nog onvoldoende data'
+                : '${data.gemiddeldeBeoordeling!.toStringAsFixed(1)} / 3 gemiddeld',
+            subtitle: data.beoordelingTrend,
+          ),
+          const SizedBox(height: 12),
+          _TrendInfoRow(
+            icon: Icons.checklist_rounded,
+            label: 'Competenties',
+            value: data.competentieTrend,
+            subtitle: data.competenties.isEmpty
+                ? 'Scores per les worden getoond zodra ze beschikbaar zijn.'
+                : data.competenties
+                    .map((c) =>
+                        '${c.naam}: ${c.vorigeScore}% -> ${c.huidigeScore}%')
+                    .take(2)
+                    .join(' · '),
+          ),
+          const SizedBox(height: 12),
+          _TrendInfoRow(
+            icon: Icons.calendar_month_rounded,
+            label: 'Lesritme',
+            value: data.lessenPerWeekLabel,
+            subtitle: 'Gebaseerd op zichtbare afgeronde lessen.',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TijdlijnCard extends StatelessWidget {
+  final List<LesTijdlijnItem> items;
+
+  const _TijdlijnCard({required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Tijdlijn',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ...items.take(5).map(
+                (item) => Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: _TimelineItem(item: item),
+                ),
+              ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TimelineItem extends StatelessWidget {
+  final LesTijdlijnItem item;
+
+  const _TimelineItem({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          margin: const EdgeInsets.only(top: 5),
+          decoration: const BoxDecoration(
+            color: AppColors.primary,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      item.datumLabel,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  _TrendBadge(
+                    label: item.beoordelingLabel,
+                    color: AppColors.dark3,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 5),
+              Text(
+                item.feedback,
+                style: const TextStyle(
+                  fontSize: 12,
+                  height: 1.35,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                item.competentieLabel,
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textHint,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TrendInfoRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final String subtitle;
+
+  const _TrendInfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        IconBadge(icon: icon, color: AppColors.dark3, size: 34),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  fontSize: 12,
+                  height: 1.35,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+>>>>>>> Stashed changes
 class _MiniStat extends StatelessWidget {
   final String label;
   final String value;
@@ -1505,14 +2116,18 @@ class _LineChartPainter extends CustomPainter {
         Offset(size.width, size.height - 18), axisPaint);
     if (points.isEmpty) return;
 
+<<<<<<< Updated upstream
     final minScore =
         points.map((p) => p.score).reduce((a, b) => a < b ? a : b);
     final maxScore =
         points.map((p) => p.score).reduce((a, b) => a > b ? a : b);
+=======
+    final minScore = points.map((p) => p.score).reduce((a, b) => a < b ? a : b);
+    final maxScore = points.map((p) => p.score).reduce((a, b) => a > b ? a : b);
+>>>>>>> Stashed changes
     final range = (maxScore - minScore).abs() < 8 ? 8 : maxScore - minScore;
     final usableHeight = size.height - 32;
-    final stepX =
-        points.length == 1 ? 0.0 : size.width / (points.length - 1);
+    final stepX = points.length == 1 ? 0.0 : size.width / (points.length - 1);
 
     Offset offsetFor(int index) {
       final score = points[index].score;

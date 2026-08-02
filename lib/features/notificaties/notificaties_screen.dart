@@ -6,7 +6,11 @@ import '../../core/services/student_service.dart';
 import '../../models/notificatie.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
+<<<<<<< Updated upstream
 import '../../shared/widgets/gradient_header.dart';
+=======
+import '../../shared/widgets/main_detail_header.dart';
+>>>>>>> Stashed changes
 import '../../shared/widgets/snackbar.dart';
 import 'notificaties_provider.dart';
 
@@ -19,6 +23,7 @@ class NotificatiesScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
+<<<<<<< Updated upstream
       body: RefreshIndicator(
         color: AppColors.primary,
         onRefresh: () async => ref.invalidate(notificatiesProvider),
@@ -51,6 +56,38 @@ class NotificatiesScreen extends ConsumerWidget {
               ),
             ),
             notificatiesAsync.when(
+=======
+      body: Column(
+        children: [
+          MainDetailHeader(
+            eyebrowText: 'MELDINGEN',
+            title: 'Mijn meldingen',
+            actions: [
+              notificatiesAsync.when(
+                data: (list) {
+                  final heeftOngelezen = list.any((n) => !n.gelezen);
+                  if (!heeftOngelezen) return const SizedBox.shrink();
+                  return TextButton(
+                    onPressed: () => _markeerAlles(context, ref),
+                    child: const Text('Alles gelezen',
+                        style: TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w600)),
+                  );
+                },
+                loading: () => const SizedBox.shrink(),
+                error: (_, __) => const SizedBox.shrink(),
+              ),
+            ],
+          ),
+          Expanded(
+            child: RefreshIndicator(
+              color: AppColors.primary,
+              onRefresh: () async => ref.invalidate(notificatiesProvider),
+              child: CustomScrollView(
+                slivers: [
+                  notificatiesAsync.when(
+>>>>>>> Stashed changes
               data: (notificaties) {
                 if (notificaties.isEmpty) {
                   return const SliverFillRemaining(
@@ -95,8 +132,11 @@ class NotificatiesScreen extends ConsumerWidget {
                 ),
               ),
             ),
-          ],
-        ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

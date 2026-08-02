@@ -154,7 +154,58 @@ final _routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      // App routes with bottom nav shell
+      // ── Detailschermen — bewust BUITEN de ShellRoute (dus geen bottom
+      // navbar), consistent met /help, /notificaties en /beschikbaarheid
+      // hierboven. Elk heeft een terugpijl (MainDetailHeader) i.p.v. een
+      // tabbestemming te zijn. Absolute paden (bv. '/planning/:id') zijn
+      // hier bewust NIET meer genest onder hun hoofdtab-route -- GoRouter
+      // matcht op het volledige pad, ongeacht waar de route in de boom
+      // staat, en `context.push('/planning/$id')`-aanroepen (absoluut pad)
+      // blijven daardoor ongewijzigd werken.
+      GoRoute(
+        path: '/planning/:id',
+        builder: (_, state) => StudentProfileGate(
+          child: LesDetailScreen(id: state.pathParameters['id']!),
+        ),
+      ),
+      GoRoute(
+        path: '/les-logboek',
+        builder: (_, __) => const StudentProfileGate(
+          child: LesLogboekScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/examenadvies',
+        builder: (_, __) => const StudentProfileGate(
+          child: ExamenadviesScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/examens',
+        builder: (_, __) => const StudentProfileGate(
+          child: ExamensScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/lesvoorbereiding',
+        builder: (_, __) => const StudentProfileGate(
+          child: LesvoorbereidingScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/voortgang/lespakket',
+        builder: (_, __) => const StudentProfileGate(
+          child: LespakketDetailScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/facturen/:id',
+        builder: (_, state) => StudentProfileGate(
+          child: FactuurDetailScreen(id: state.pathParameters['id']!),
+        ),
+      ),
+
+      // App routes with bottom nav shell -- alleen de vijf echte hoofdtabs
       ShellRoute(
         builder: (_, __, child) => StudentProfileGate(
           child: MainScaffold(child: child),
@@ -167,50 +218,14 @@ final _routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/planning',
             builder: (_, __) => const PlanningScreen(),
-            routes: [
-              GoRoute(
-                path: ':id',
-                builder: (_, state) =>
-                    LesDetailScreen(id: state.pathParameters['id']!),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: '/les-logboek',
-            builder: (_, __) => const LesLogboekScreen(),
-          ),
-          GoRoute(
-            path: '/examenadvies',
-            builder: (_, __) => const ExamenadviesScreen(),
-          ),
-          GoRoute(
-            path: '/examens',
-            builder: (_, __) => const ExamensScreen(),
-          ),
-          GoRoute(
-            path: '/lesvoorbereiding',
-            builder: (_, __) => const LesvoorbereidingScreen(),
           ),
           GoRoute(
             path: '/voortgang',
             builder: (_, __) => const VoortgangScreen(),
-            routes: [
-              GoRoute(
-                path: 'lespakket',
-                builder: (_, __) => const LespakketDetailScreen(),
-              ),
-            ],
           ),
           GoRoute(
             path: '/facturen',
             builder: (_, __) => const FacturenScreen(),
-            routes: [
-              GoRoute(
-                path: ':id',
-                builder: (_, state) =>
-                    FactuurDetailScreen(id: state.pathParameters['id']!),
-              ),
-            ],
           ),
           GoRoute(
             path: '/profiel',

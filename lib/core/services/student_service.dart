@@ -282,9 +282,9 @@ class StudentService {
       final url = data['checkout_url'] as String?;
       if (url != null) return {'checkout_url': url};
       return {'error': data['error'] ?? 'Onbekende fout'};
-    } catch (e) {
-      debugPrint('[requestMollieFactuurPayment] fout: $e');
-      return {'error': e.toString()};
+    } catch (e, st) {
+      debugPrint('[requestMollieFactuurPayment] fout: $e\n$st');
+      return {'error': 'DEBUG: $e'};
     }
   }
 

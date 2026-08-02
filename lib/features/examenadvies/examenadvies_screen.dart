@@ -3,7 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/coach_widgets.dart';
+<<<<<<< Updated upstream
 import '../../shared/widgets/gradient_header.dart';
+=======
+import '../../shared/widgets/main_detail_header.dart';
+>>>>>>> Stashed changes
 import 'examenadvies_provider.dart';
 
 class ExamenadviesScreen extends ConsumerWidget {
@@ -18,15 +22,26 @@ class ExamenadviesScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
+<<<<<<< Updated upstream
       body: CustomScrollView(
         slivers: [
           const SliverToBoxAdapter(
             child: DetailGradientHeader(title: 'Examenadvies'),
+=======
+      body: Column(
+        children: [
+          const MainDetailHeader(
+            eyebrowText: 'ADVIES',
+            title: 'Examenadvies',
+>>>>>>> Stashed changes
           ),
-          SliverPadding(
-            padding: const EdgeInsets.all(20),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
+          Expanded(
+            child: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.all(20),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
                 _ScoreCard(advies: advies),
                 const SizedBox(height: 14),
                 _ScoreBreakdownCard(items: advies.scoreOnderdelen),
@@ -62,6 +77,9 @@ class ExamenadviesScreen extends ConsumerWidget {
                 _BasedOnCard(items: advies.gebaseerdOp),
                 const SizedBox(height: 28),
               ]),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

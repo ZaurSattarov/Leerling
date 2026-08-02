@@ -5,7 +5,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/factuur.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/gradient_header.dart';
+import '../../shared/widgets/main_detail_header.dart';
 import '../../core/services/student_service.dart';
 import '../../shared/widgets/snackbar.dart';
 import '../../shared/widgets/status_pill.dart';
@@ -27,11 +27,12 @@ class FactuurDetailScreen extends ConsumerWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          DetailGradientHeader(
+          MainDetailHeader(
+            eyebrowText: 'FACTUUR',
             title: 'Factuur',
-            trailing: factuur != null
-                ? StatusPill.factuur(factuur.status)
-                : null,
+            actions: [
+              if (factuur != null) StatusPill.factuur(factuur.status),
+            ],
           ),
           Expanded(
             child: factuurAsync.when(
@@ -355,13 +356,15 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
           isError: true,
         );
       } else {
+        final errMsg = result['error']?.toString() ?? 'Onbekende fout';
+        final mollieErr = result['mollie_error']?.toString() ?? '';
         showAppSnackBar(
           context,
-          'Kon betaallink niet aanmaken. Probeer later opnieuw.',
+          'Fout: $errMsg ${mollieErr.isNotEmpty ? "| $mollieErr" : ""}',
           isError: true,
         );
       }
-    } catch (_) {
+    } catch (e) {
       if (context.mounted) {
         showAppSnackBar(
           context,

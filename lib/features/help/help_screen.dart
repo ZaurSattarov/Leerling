@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/screen_header.dart';
+import '../../shared/widgets/main_detail_header.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
@@ -12,6 +11,7 @@ class HelpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surface,
+<<<<<<< Updated upstream
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -44,11 +44,21 @@ class HelpScreen extends StatelessWidget {
                 ),
               ),
             ),
+=======
+      body: Column(
+        children: [
+          const MainDetailHeader(
+            eyebrowText: 'SUPPORT',
+            title: 'Help & ondersteuning',
+>>>>>>> Stashed changes
           ),
-          SliverPadding(
-            padding: const EdgeInsets.all(20),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
+          Expanded(
+            child: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.all(20),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
                 const SectionHeader(title: 'Contact'),
                 const SizedBox(height: 12),
                 AppCard(
@@ -132,7 +142,10 @@ class HelpScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-              ]),
+                ]),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

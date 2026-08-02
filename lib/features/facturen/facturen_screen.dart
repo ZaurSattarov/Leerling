@@ -7,7 +7,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/factuur.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/screen_header.dart';
+import '../../shared/widgets/main_tab_header.dart';
 import '../../shared/widgets/status_pill.dart';
 import 'facturen_provider.dart';
 
@@ -81,65 +81,17 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
 
     return Scaffold(
       backgroundColor: AppColors.surface,
-      body: RefreshIndicator(
-        color: AppColors.primary,
-        onRefresh: () async {
-          _animCtrl.reset();
-          ref.invalidate(facturenProvider);
-        },
-        child: CustomScrollView(
-          slivers: [
-            // Header — identiek aan voortgang_screen.dart
-            SliverToBoxAdapter(
-              child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF141C2B), Color(0xFF1A2D42)],
-                  ),
-                ),
-                child: SafeArea(
-                  bottom: false,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 14, 16, 20),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Expanded(
-                          child: ScreenHeader(
-                            label: 'FACTUREN',
-                            title: 'Mijn facturen',
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () => context.go('/notificaties'),
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.primary.withValues(alpha: 0.35),
-                                  blurRadius: 14,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.notifications_none_rounded,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+      body: Column(
+        children: [
+          MainTabHeader(
+            eyebrowText: 'FACTUREN',
+            title: 'Mijn facturen',
+            actions: [
+              MainHeaderIconKnop(
+                icon: Icons.notifications_none_rounded,
+                onTap: () => context.go('/notificaties'),
               ),
+<<<<<<< Updated upstream
             ),
 
             // Tabs
@@ -226,31 +178,90 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
                     ]),
                   ),
                 );
+=======
+            ],
+          ),
+          Expanded(
+            child: RefreshIndicator(
+              color: AppColors.primary,
+              onRefresh: () async {
+                _animCtrl.reset();
+                ref.invalidate(facturenProvider);
+>>>>>>> Stashed changes
               },
-              loading: () => SliverPadding(
-                padding: const EdgeInsets.all(20),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    const SkeletonBox(height: 148, radius: 18),
-                    const SizedBox(height: 12),
-                    const SkeletonBox(height: 190, radius: 18),
-                    const SizedBox(height: 10),
-                    const SkeletonCard(),
-                    const SizedBox(height: 10),
-                    const SkeletonCard(),
-                  ]),
-                ),
-              ),
-              error: (e, _) => SliverFillRemaining(
-                child: EmptyState(
-                  icon: Icons.wifi_off_rounded,
-                  title: 'Kon facturen niet laden',
-                  subtitle: e.toString(),
-                ),
+              child: CustomScrollView(
+                slivers: [
+                  // Content
+                  facturenAsync.when(
+                    data: (facturen) {
+                      if (facturen.isEmpty) {
+                        return const SliverFillRemaining(
+                          child: EmptyState(
+                            icon: Icons.receipt_long_outlined,
+                            title: 'Geen facturen',
+                            subtitle: 'Je hebt nog geen facturen ontvangen.',
+                          ),
+                        );
+                      }
+
+                      final stats = _FactuurStats.van(facturen);
+                      WidgetsBinding.instance
+                          .addPostFrameCallback((_) => _startAnim());
+
+                      return SliverPadding(
+                        padding: const EdgeInsets.all(20),
+                        sliver: SliverList(
+                          delegate: SliverChildListDelegate([
+                            // 1. Finance overzicht kaart
+                            _FinanceOverzichtKaart(stats: stats),
+                            const SizedBox(height: 12),
+
+                            // 2. Status verdeling
+                            _DonutChartKaart(
+                                stats: stats, animation: _chartAnim),
+                            const SizedBox(height: 24),
+
+                            // 3. Facturenlijst
+                            const SectionHeader(title: 'Alle facturen'),
+                            const SizedBox(height: 12),
+                            ...facturen.map(
+                              (f) => Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: _FactuurCard(factuur: f),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                          ]),
+                        ),
+                      );
+                    },
+                    loading: () => SliverPadding(
+                      padding: const EdgeInsets.all(20),
+                      sliver: SliverList(
+                        delegate: SliverChildListDelegate([
+                          const SkeletonBox(height: 148, radius: 18),
+                          const SizedBox(height: 12),
+                          const SkeletonBox(height: 190, radius: 18),
+                          const SizedBox(height: 10),
+                          const SkeletonCard(),
+                          const SizedBox(height: 10),
+                          const SkeletonCard(),
+                        ]),
+                      ),
+                    ),
+                    error: (e, _) => SliverFillRemaining(
+                      child: EmptyState(
+                        icon: Icons.wifi_off_rounded,
+                        title: 'Kon facturen niet laden',
+                        subtitle: e.toString(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -286,13 +297,12 @@ class _FactuurStats {
         .where((f) => f.isBetaalbaar && f.vervaldatum?.isNotEmpty == true)
         .map((f) => f.vervaldatum!)
         .where((d) {
-          try {
-            return DateTime.parse(d).isAfter(DateTime.now());
-          } catch (_) {
-            return false;
-          }
-        })
-        .toList()
+      try {
+        return DateTime.parse(d).isAfter(DateTime.now());
+      } catch (_) {
+        return false;
+      }
+    }).toList()
       ..sort();
 
     return _FactuurStats(
@@ -386,9 +396,14 @@ class _FinanceOverzichtKaart extends StatelessWidget {
                   label: 'Openstaand',
                   waarde: stats.openstaandLabel,
                   icon: Icons.schedule_rounded,
+<<<<<<< Updated upstream
                   accentKleur: stats.openstaandCents > 0
                       ? _oranjeWaarschuwing
                       : null,
+=======
+                  accentKleur:
+                      stats.openstaandCents > 0 ? AppColors.primary : null,
+>>>>>>> Stashed changes
                 ),
               ),
               const SizedBox(width: 10),
@@ -712,8 +727,7 @@ class _DonutPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _DonutPainter old) =>
-      old.voortgang != voortgang;
+  bool shouldRepaint(covariant _DonutPainter old) => old.voortgang != voortgang;
 }
 
 class _LegendeRij extends StatelessWidget {

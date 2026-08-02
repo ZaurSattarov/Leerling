@@ -9,6 +9,7 @@ import '../../models/les.dart';
 import '../../models/factuur.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/main_tab_header.dart';
 import '../../shared/widgets/status_pill.dart';
 import '../lesvoorbereiding/lesvoorbereiding_provider.dart';
 import 'home_coach_provider.dart';
@@ -225,6 +226,7 @@ class _GradientHeader extends StatelessWidget {
       );
     }
 
+<<<<<<< Updated upstream
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -342,9 +344,70 @@ class _GradientHeader extends StatelessWidget {
                 ),
               ),
             ],
+=======
+    return MainTabHeader(
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: AppColors.primary.withValues(alpha: 0.25),
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: AppColors.primary.withValues(alpha: 0.5),
+            width: 1.5,
+>>>>>>> Stashed changes
           ),
         ),
+        child: ClipOval(
+          child: avatarUrl?.isNotEmpty == true
+              ? CachedNetworkImage(
+                  imageUrl: avatarUrl!,
+                  fit: BoxFit.cover,
+                  width: 40,
+                  height: 40,
+                  placeholder: (_, __) => Center(
+                    child: Text(
+                      initials,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  errorWidget: (_, __, ___) => Center(
+                    child: Text(
+                      initials,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                )
+              : Center(
+                  child: Text(
+                    initials,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+        ),
       ),
+      eyebrowText:
+          DatumUtils.langeDatum(DatumUtils.vandaagString()).toUpperCase(),
+      title: naam.isNotEmpty ? 'Hoi, $naam.' : 'Welkom terug.',
+      actions: [
+        MainHeaderIconKnop(
+          icon: Icons.notifications_none_rounded,
+          badgeCount: home?.ongelezenNotificaties,
+          onTap: () => context.go('/notificaties'),
+        ),
+      ],
     );
   }
 }
@@ -377,9 +440,8 @@ class _StatsRow extends StatelessWidget {
 
     final lessenGevolgd = profiel?.lessenGevolgd ?? 0;
     final lessenTotaal = profiel?.lessenTotaal ?? 0;
-    final voortgangPct = profiel != null
-        ? (profiel.voortgangPercent * 100).round()
-        : 0;
+    final voortgangPct =
+        profiel != null ? (profiel.voortgangPercent * 100).round() : 0;
     final openFacturen = home?.openFacturen.length ?? 0;
     final heeftFacturen = (home?.heeftOpenFacturen ?? false);
 
@@ -405,8 +467,14 @@ class _StatsRow extends StatelessWidget {
           label: 'Facturen',
           value: '$openFacturen',
           icon: Icons.receipt_long_rounded,
+<<<<<<< Updated upstream
           iconColor: AppColors.iconDark,
           showBadge: heeftFacturen,
+=======
+          iconColor:
+              heeftFacturen ? AppColors.warningSolid : AppColors.iconDark,
+          isAlert: heeftFacturen,
+>>>>>>> Stashed changes
           onTap: () => context.go('/facturen'),
         ),
       ],
@@ -585,8 +653,18 @@ class _VolgendeLesHero extends StatelessWidget {
   String _maandAfk(String datum) {
     try {
       const m = [
-        'jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
-        'jul', 'aug', 'sep', 'okt', 'nov', 'dec',
+        'jan',
+        'feb',
+        'mrt',
+        'apr',
+        'mei',
+        'jun',
+        'jul',
+        'aug',
+        'sep',
+        'okt',
+        'nov',
+        'dec',
       ];
       return m[DateTime.parse(datum).month - 1];
     } catch (_) {
@@ -788,7 +866,8 @@ class _GeenLesCard extends StatelessWidget {
                 SizedBox(height: 2),
                 Text(
                   'Je instructeur plant binnenkort een les in.',
-                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                  style:
+                      TextStyle(fontSize: 12, color: AppColors.textSecondary),
                 ),
               ],
             ),
@@ -1034,13 +1113,13 @@ class _VoortgangCard extends StatelessWidget {
               children: [
                 Text(
                   'Start',
-                  style: const TextStyle(
-                      fontSize: 10, color: AppColors.textHint),
+                  style:
+                      const TextStyle(fontSize: 10, color: AppColors.textHint),
                 ),
                 Text(
                   'Examen',
-                  style: const TextStyle(
-                      fontSize: 10, color: AppColors.textHint),
+                  style:
+                      const TextStyle(fontSize: 10, color: AppColors.textHint),
                 ),
               ],
             ),
@@ -1145,6 +1224,11 @@ class _FactuurRij extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isVerlopen = factuur.isVerlopen;
+<<<<<<< Updated upstream
+=======
+    final borderColor =
+        isVerlopen ? AppColors.dangerSolid : AppColors.warningSolid;
+>>>>>>> Stashed changes
 
     return GestureDetector(
       onTap: () => context.push('/facturen/${factuur.id}'),
@@ -1319,6 +1403,7 @@ class _ActieCard extends StatelessWidget {
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
+<<<<<<< Updated upstream
           ],
         ),
         child: Row(
@@ -1332,6 +1417,25 @@ class _ActieCard extends StatelessWidget {
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16),
                   bottomLeft: Radius.circular(16),
+=======
+            child:
+                Icon(Icons.notifications_none_rounded, size: 18, color: _color),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  notificatie.titel,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+>>>>>>> Stashed changes
                 ),
               ),
             ),
