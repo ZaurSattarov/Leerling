@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
-<<<<<<< Updated upstream
-import '../../shared/widgets/gradient_header.dart';
-=======
 import '../../shared/widgets/main_detail_header.dart';
->>>>>>> Stashed changes
 import 'lesvoorbereiding_provider.dart';
 
 class LesvoorbereidingScreen extends ConsumerWidget {
@@ -18,18 +14,11 @@ class LesvoorbereidingScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
-<<<<<<< Updated upstream
-      body: CustomScrollView(
-        slivers: [
-          const SliverToBoxAdapter(
-            child: DetailGradientHeader(title: 'Lesvoorbereiding'),
-=======
       body: Column(
         children: [
           const MainDetailHeader(
             eyebrowText: 'VOORBEREIDING',
             title: 'Lesvoorbereiding',
->>>>>>> Stashed changes
           ),
           Expanded(
             child: CustomScrollView(

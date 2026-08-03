@@ -59,7 +59,12 @@ class MainScaffold extends StatelessWidget {
 
     // Zie toelichting bij `bottomNavigationBar` hieronder.
     final systeemInsetOnder = MediaQuery.paddingOf(context).bottom;
-    final navBarOnderMarge = math.max(12.0, systeemInsetOnder * 0.5);
+    // +_kBarLiftPixels: de balk stond te laag richting de home indicator --
+    // een vaste extra marge (bovenop de bestaande, aan het toestel
+    // geschaalde ondergrens) tilt de HELE witte pil gelijkmatig omhoog --
+    // 1-op-1 overgenomen uit de Instructeur-app.
+    final navBarOnderMarge =
+        math.max(12.0, systeemInsetOnder * 0.5) + _kBarLiftPixels;
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -91,6 +96,11 @@ class MainScaffold extends StatelessWidget {
 // zijn Leerling-eigen; die waren al identiek in structuur.
 
 const double _kBarHeight = 56;
+// Balk 6-8px dichter naar de home indicator (zie toelichting bij
+// `navBarOnderMarge` in MainScaffold.build()) -- gekozen als het midden
+// van de gevraagde 6-8px-bandbreedte -- 1-op-1 overgenomen uit de
+// Instructeur-app.
+const double _kBarLiftPixels = 7;
 const double _kIconSize = 22;
 const double _kIconLabelGap = 3;
 const double _kLabelFontSize = 10;

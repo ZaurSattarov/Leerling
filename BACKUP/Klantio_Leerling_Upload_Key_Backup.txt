@@ -1,0 +1,79 @@
+﻿==================================================
+KLANTIO LEERLING - UPLOAD SIGNING BACKUP
+==================================================
+
+Project:
+Klantio Leerling
+
+Package:
+com.klantio.leerling
+
+Datum:
+2026-07-23
+
+--------------------------------------------------
+KEYSTORE
+--------------------------------------------------
+
+Bestandsnaam:
+upload-keystore.jks
+
+Volledig pad:
+C:\PROJECTS\Planner-Lerlingen\android\upload-keystore.jks
+
+Alias:
+upload
+
+Entry type:
+PrivateKeyEntry
+
+--------------------------------------------------
+CERTIFICAAT
+--------------------------------------------------
+
+SHA-1:
+F3:CC:A8:08:D2:BB:57:2F:37:C8:16:A0:F3:3B:B8:C5:57:85:38:24
+
+SHA-256:
+95:3A:6F:98:48:F1:45:DC:D3:67:28:BF:FE:E8:05:20:BC:12:7B:CD:4C:1F:03:9F:82:03:28:1F:AC:80:77:19
+
+Owner:
+CN=Klantio Leerling, OU=Mobile, O=Klantio, L=Amsterdam, ST=Noord-Holland, C=NL
+
+Issuer:
+CN=Klantio Leerling, OU=Mobile, O=Klantio, L=Amsterdam, ST=Noord-Holland, C=NL
+
+Geldig vanaf:
+Mon Jun 15 12:51:49 CEST 2026
+
+Geldig tot:
+Fri Oct 31 11:51:49 CET 2053
+
+--------------------------------------------------
+BIJBEHORENDE BESTANDEN
+--------------------------------------------------
+
+- upload-keystore.jks
+  C:\PROJECTS\Planner-Lerlingen\android\upload-keystore.jks
+
+- key.properties
+  C:\PROJECTS\Planner-Lerlingen\android\key.properties
+
+- klantio-leerling-upload-certificate.pem
+  C:\TEMP\klantio-leerling-upload-certificate.pem
+
+--------------------------------------------------
+BELANGRIJK
+--------------------------------------------------
+
+Deze keystore is succesvol geaccepteerd door Google Play Console
+tijdens het uploaden van een nieuwe Android App Bundle.
+
+Gebruik op andere pc's exact deze:
+
+- upload-keystore.jks
+- key.properties
+
+Gebruik nooit een andere keystore voor deze app.
+
+==================================================

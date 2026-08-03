@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
@@ -7,12 +8,7 @@ import '../../models/les.dart';
 import '../../models/les_evaluatie.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
-<<<<<<< Updated upstream
-import '../../shared/widgets/gradient_header.dart';
-=======
 import '../../shared/widgets/main_detail_header.dart';
-import '../../shared/widgets/status_pill.dart';
->>>>>>> Stashed changes
 import '../../shared/widgets/snackbar.dart';
 import '../../shared/widgets/status_pill.dart';
 import 'planning_provider.dart';
@@ -28,32 +24,6 @@ class LesDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
-<<<<<<< Updated upstream
-      body: lesAsync.when(
-        data: (les) {
-          if (les == null) {
-            return SafeArea(
-              child: Center(
-                child: EmptyState(
-                  icon: Icons.search_off_rounded,
-                  title: 'Les niet gevonden',
-                  subtitle: 'Deze les bestaat niet of je hebt geen toegang.',
-                ),
-              ),
-            );
-          }
-          final leerlingId = profielAsync.valueOrNull?.id;
-          return _LesDetailBody(les: les, leerlingId: leerlingId);
-        },
-        loading: () => const Center(
-            child: CircularProgressIndicator(color: AppColors.primary)),
-        error: (e, _) => SafeArea(
-          child: Center(
-            child: EmptyState(
-              icon: Icons.wifi_off_rounded,
-              title: 'Kon les niet laden',
-              subtitle: e.toString(),
-=======
       body: Column(
         children: [
           MainDetailHeader(
@@ -61,8 +31,9 @@ class LesDetailScreen extends ConsumerWidget {
             title: 'Les detail',
             actions: [
               lesAsync.when(
-                data: (les) =>
-                    les != null ? StatusPill.les(les.status) : const SizedBox.shrink(),
+                data: (les) => les != null
+                    ? StatusPill.les(les.status)
+                    : const SizedBox.shrink(),
                 loading: () => const SizedBox.shrink(),
                 error: (_, __) => const SizedBox.shrink(),
               ),
@@ -81,10 +52,11 @@ class LesDetailScreen extends ConsumerWidget {
                     ),
                   );
                 }
-                return _LesDetailBody(les: les);
+                final leerlingId = profielAsync.valueOrNull?.id;
+                return _LesDetailBody(les: les, leerlingId: leerlingId);
               },
-        loading: () => const Center(
-            child: CircularProgressIndicator(color: AppColors.primary)),
+              loading: () => const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary)),
               error: (e, _) => Center(
                 child: EmptyState(
                   icon: Icons.wifi_off_rounded,
@@ -92,7 +64,6 @@ class LesDetailScreen extends ConsumerWidget {
                   subtitle: e.toString(),
                 ),
               ),
->>>>>>> Stashed changes
             ),
           ),
         ],
@@ -117,12 +88,6 @@ class _LesDetailBody extends ConsumerWidget {
 
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(
-          child: DetailGradientHeader(
-            title: 'Lesdetails',
-            trailing: StatusPill.les(les.status),
-          ),
-        ),
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
           sliver: SliverList(

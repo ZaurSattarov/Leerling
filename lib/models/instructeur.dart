@@ -9,6 +9,8 @@ class Instructeur {
   final String? stad;
   final String? logoUrl;
   final String? whatsappNummer;
+  final String? website;
+  final String? kvkNummer;
 
   const Instructeur({
     required this.id,
@@ -21,6 +23,8 @@ class Instructeur {
     this.stad,
     this.logoUrl,
     this.whatsappNummer,
+    this.website,
+    this.kvkNummer,
   });
 
   String get weergaveNaam =>
@@ -44,6 +48,8 @@ class Instructeur {
       stad: json['stad'] as String?,
       logoUrl: json['logo_url'] as String?,
       whatsappNummer: json['whatsapp_nummer'] as String?,
+      website: json['website'] as String?,
+      kvkNummer: json['kvk_nummer'] as String?,
     );
   }
 }

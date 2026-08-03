@@ -6,11 +6,7 @@ import '../../models/leerling_beschikbaarheid.dart';
 import '../../models/leerling_profiel.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
-<<<<<<< Updated upstream
-import '../../shared/widgets/gradient_header.dart';
-=======
 import '../../shared/widgets/main_detail_header.dart';
->>>>>>> Stashed changes
 import '../../shared/widgets/snackbar.dart';
 
 // ─── Screen ───────────────────────────────────────────────────────
@@ -144,22 +140,6 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
               label: const Text('Tijd toevoegen',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
             ),
-<<<<<<< Updated upstream
-      body: _laden
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.primary))
-          : _fout != null
-              ? _FoutWeergave(fout: _fout!, onRetry: _laadData)
-              : RefreshIndicator(
-                  color: AppColors.primary,
-                  onRefresh: _refresh,
-                  child: CustomScrollView(
-                    slivers: [
-                      const SliverToBoxAdapter(
-                        child: DetailGradientHeader(title: 'Mijn tijden'),
-                      ),
-                      // Info banner
-=======
       body: Column(
         children: [
           const MainDetailHeader(
@@ -179,7 +159,6 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
                         child: CustomScrollView(
                           slivers: [
                             // Info banner
->>>>>>> Stashed changes
                       SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),

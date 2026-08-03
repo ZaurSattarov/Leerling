@@ -4,11 +4,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/examen.dart';
 import '../../shared/widgets/app_card.dart';
-<<<<<<< Updated upstream
-import '../../shared/widgets/gradient_header.dart';
-=======
 import '../../shared/widgets/main_detail_header.dart';
->>>>>>> Stashed changes
 import 'examens_provider.dart';
 
 class ExamensScreen extends ConsumerWidget {
@@ -20,17 +16,6 @@ class ExamensScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
-<<<<<<< Updated upstream
-      body: RefreshIndicator(
-        color: AppColors.primary,
-        onRefresh: () async => ref.invalidate(examensProvider),
-        child: CustomScrollView(
-          slivers: [
-            const SliverToBoxAdapter(
-              child: DetailGradientHeader(title: 'Mijn examens'),
-            ),
-            examensAsync.when(
-=======
       body: Column(
         children: [
           const MainDetailHeader(
@@ -44,7 +29,6 @@ class ExamensScreen extends ConsumerWidget {
               child: CustomScrollView(
                 slivers: [
                   examensAsync.when(
->>>>>>> Stashed changes
               data: (examens) {
                 if (examens.isEmpty) {
                   return const SliverFillRemaining(

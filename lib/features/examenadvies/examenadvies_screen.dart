@@ -3,11 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/coach_widgets.dart';
-<<<<<<< Updated upstream
-import '../../shared/widgets/gradient_header.dart';
-=======
 import '../../shared/widgets/main_detail_header.dart';
->>>>>>> Stashed changes
 import 'examenadvies_provider.dart';
 
 class ExamenadviesScreen extends ConsumerWidget {
@@ -22,18 +18,11 @@ class ExamenadviesScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
-<<<<<<< Updated upstream
-      body: CustomScrollView(
-        slivers: [
-          const SliverToBoxAdapter(
-            child: DetailGradientHeader(title: 'Examenadvies'),
-=======
       body: Column(
         children: [
           const MainDetailHeader(
             eyebrowText: 'ADVIES',
             title: 'Examenadvies',
->>>>>>> Stashed changes
           ),
           Expanded(
             child: CustomScrollView(

@@ -1,38 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/services/avatar_service.dart';
 import '../../core/services/student_service.dart';
 import '../../models/instructeur.dart';
 import '../../models/leerling_profiel.dart';
 import '../../shared/providers/auth_provider.dart';
-import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_tab_header.dart';
 import '../../shared/widgets/snackbar.dart';
+import 'profielfoto_editor.dart';
+import 'rijschool_provider.dart';
 
-Color _statusColor(LeerlingStatus status) {
-  switch (status) {
-    case LeerlingStatus.actief:
-      return AppColors.success;
-    case LeerlingStatus.geslaagd:
-      return AppColors.success;
-    case LeerlingStatus.gestopt:
-      return AppColors.neutralText;
-    case LeerlingStatus.wachtlijst:
-      return AppColors.warningSolid;
-  }
+// ── Design tokens ────────────────────────────────────────────────────────────
+// 1-op-1 overgenomen uit de Instructeur-app (rijschool-planner-flutter,
+// lib/features/profiel/profiel_screen.dart, class _ProfileDesign) -- zelfde
+// paletnamen, spacing en typografie. Alleen de inhoud van de kaarten is
+// leerling-eigen.
+
+class _ProfileDesign {
+  const _ProfileDesign._();
+
+  static const background = AppColors.surface;
+  static const card = Color(0xFFFFFFFF);
+  static const text = AppColors.textPrimary;
+  static const secondary = AppColors.textSecondary;
+  static const muted = Color(0xFF7B8089);
+  static const arrow = Color(0x52222936);
+  static const pressed = Color(0x08222936);
+  static const hairline = Color(0xFFE4E5E7);
+  static const danger = Color(0xFFDC2626);
+
+  static const horizontalPadding = 20.0;
+  static const sectionGap = 22.0;
+  static const cardRadius = 12.0;
+  static const smallRadius = 12.0;
+
+  static const sectionTitle = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.5,
+    color: muted,
+  );
+
+  static const cardTitle = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+    color: text,
+    height: 1.3,
+  );
+
+  static const subtitle = TextStyle(
+    fontSize: 13,
+    height: 1.5,
+    fontWeight: FontWeight.w400,
+    color: muted,
+  );
 }
 
-final _instructeurProvider =
-    FutureProvider.autoDispose<Instructeur?>((ref) async {
-  final profiel = await ref.watch(mijnProfielProvider.future);
-  if (profiel == null) return null;
-  return StudentService.getMijnInstructeur(profiel.instructeurId);
-});
+// ── Hoofdscherm ───────────────────────────────────────────────────────────────
 
 class ProfielScreen extends ConsumerWidget {
   const ProfielScreen({super.key});
@@ -40,64 +66,9 @@ class ProfielScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profielAsync = ref.watch(mijnProfielProvider);
-    final instructeurAsync = ref.watch(_instructeurProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
-<<<<<<< Updated upstream
-      body: RefreshIndicator(
-        color: AppColors.primary,
-        onRefresh: () async {
-          ref.invalidate(mijnProfielProvider);
-          ref.invalidate(_instructeurProvider);
-        },
-        child: CustomScrollView(
-          slivers: [
-            // Header
-            SliverToBoxAdapter(
-              child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF141C2B), Color(0xFF1A2D42)],
-                  ),
-                ),
-                padding: const EdgeInsets.fromLTRB(20, 60, 20, 28),
-                child: profielAsync.when(
-                  data: (profiel) => Column(
-                    children: [
-                      ProfileAvatar(
-                        profiel: profiel,
-                        onTap: profiel == null
-                            ? null
-                            : () => _kiesProfielfoto(context, ref, profiel),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        profiel?.volledigeNaam ?? '',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      if (profiel?.email?.isNotEmpty == true) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          profiel!.email!,
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.84),
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                      const SizedBox(height: 12),
-                      if (profiel != null)
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-=======
+      backgroundColor: _ProfileDesign.background,
       body: Column(
         children: [
           const MainTabHeader(
@@ -106,657 +77,431 @@ class ProfielScreen extends ConsumerWidget {
             actions: [MainHeaderNotificatieKnop()],
           ),
           Expanded(
-            child: RefreshIndicator(
-              color: AppColors.primary,
-              onRefresh: () async {
-                ref.invalidate(mijnProfielProvider);
-                ref.invalidate(_instructeurProvider);
-              },
-              child: CustomScrollView(
-                slivers: [
-                  // Identiteitskaart (avatar/naam/pakket) -- ongewijzigde
-                  // content, alleen de bovenste padding aangepast: die
-                  // compenseerde voorheen zelf voor de statusbalk (geen
-                  // eigen header/SafeArea erboven); nu staat de
-                  // MainTabHeader daarboven, dus normale symmetrische
-                  // padding i.p.v. de hardcoded 60.
-                  SliverToBoxAdapter(
-                    child: Container(
-                      color: AppColors.dark,
-                      padding: const EdgeInsets.fromLTRB(20, 28, 20, 28),
-                      child: profielAsync.when(
-                        data: (profiel) => Column(
->>>>>>> Stashed changes
-                          children: [
-                            ProfileAvatar(
-                              profiel: profiel,
-                              onTap: profiel == null
-                                  ? null
-                                  : () =>
-                                      _kiesProfielfoto(context, ref, profiel),
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              profiel?.volledigeNaam ?? '',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            if (profiel?.email?.isNotEmpty == true) ...[
-                              const SizedBox(height: 4),
-                              Text(
-                                profiel!.email!,
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.84),
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                            const SizedBox(height: 12),
-                            if (profiel != null)
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-<<<<<<< Updated upstream
-                                    width: 6,
-                                    height: 6,
-                                    decoration: BoxDecoration(
-                                      color: _statusColor(profiel.status),
-                                      shape: BoxShape.circle,
-=======
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 7),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primary,
-                                      borderRadius: BorderRadius.circular(99),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(Icons.school_rounded,
-                                            color: Colors.white, size: 13),
-                                        const SizedBox(width: 5),
-                                        Text(
-                                          profiel.pakket.label,
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                      ],
->>>>>>> Stashed changes
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 7),
-                                    decoration: BoxDecoration(
-                                      color: Colors.transparent,
-                                      borderRadius: BorderRadius.circular(99),
-                                      border: Border.all(
-                                          color: Colors.white
-                                              .withValues(alpha: 0.3)),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Container(
-                                          width: 6,
-                                          height: 6,
-                                          decoration: const BoxDecoration(
-                                            color: AppColors.dangerSolid,
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 5),
-                                        Text(
-                                          profiel.status.label,
-                                          style: TextStyle(
-                                              color: Colors.white
-                                                  .withValues(alpha: 0.85),
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                          ],
-                        ),
-                        loading: () => const Center(
-                          child: SizedBox(
-                            height: 80,
-                            child: CircularProgressIndicator(
-                                color: AppColors.primary, strokeWidth: 2),
-                          ),
-                        ),
-                        error: (_, __) => const SizedBox.shrink(),
-                      ),
-                    ),
-                  ),
-
-                  // Body
-                  SliverPadding(
-                    padding: const EdgeInsets.all(20),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate([
-                        // Student info
-                        profielAsync.when(
-                          data: (profiel) => profiel != null
-                              ? AppCard(
-                                  child: Column(
-                                    children: [
-                                      if (profiel.telefoon?.isNotEmpty == true)
-                                        _InfoTile(
-                                          icon: Icons.phone_outlined,
-                                          iconColor: AppColors.iconBlue,
-                                          label: 'Telefoon',
-                                          value: profiel.telefoon!,
-                                        ),
-                                      if (profiel.geboortedatum?.isNotEmpty ==
-                                          true) ...[
-                                        const Divider(height: 20),
-                                        _InfoTile(
-                                          icon: Icons.cake_outlined,
-                                          iconColor: AppColors.iconPurple,
-                                          label: 'Geboortedatum',
-                                          value: profiel.geboortedatum!,
-                                        ),
-                                      ],
-                                      const Divider(height: 20),
-                                      _InfoTile(
-                                        icon: Icons.school_outlined,
-                                        iconColor: AppColors.iconGreen,
-                                        label: 'Status',
-                                        value: profiel.status.label,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
-                          loading: () => const SkeletonCard(),
-                          error: (_, __) => const SizedBox.shrink(),
-                        ),
-
-                        const SizedBox(height: 20),
-
-<<<<<<< Updated upstream
-                  // Rijschool / instructor info
-                  const SectionHeader(title: 'Mijn rijschool'),
-                  const SizedBox(height: 12),
-                  instructeurAsync.when(
-                    data: (instructeur) => instructeur != null
-                        ? AppCard(
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    const IconBadge(
-                                      icon: Icons.directions_car_rounded,
-                                      color: AppColors.iconSlate,
-                                    ),
-                                    const SizedBox(width: 14),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-=======
-                        // Rijschool / instructor info
-                        const SectionHeader(title: 'Mijn rijschool'),
-                        const SizedBox(height: 12),
-                        instructeurAsync.when(
-                          data: (instructeur) => instructeur != null
-                              ? AppCard(
-                                  child: Column(
-                                    children: [
-                                      Row(
->>>>>>> Stashed changes
-                                        children: [
-                                          const IconBadge(
-                                            icon: Icons.directions_car_rounded,
-                                            color: AppColors.primary,
-                                          ),
-                                          const SizedBox(width: 14),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  instructeur.weergaveNaam,
-                                                  style: const TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w700,
-                                                    color:
-                                                        AppColors.textPrimary,
-                                                  ),
-                                                ),
-                                                if (instructeur
-                                                        .naam?.isNotEmpty ==
-                                                    true)
-                                                  Text(
-                                                    instructeur.naam!,
-                                                    style: const TextStyle(
-                                                        fontSize: 13,
-                                                        color: AppColors
-                                                            .textSecondary),
-                                                  ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      if (instructeur.volledigAdres !=
-                                          null) ...[
-                                        const Divider(height: 20),
-                                        _InfoTile(
-                                          icon: Icons.location_on_outlined,
-                                          iconColor: AppColors.iconSlate,
-                                          label: 'Adres',
-                                          value: instructeur.volledigAdres!,
-                                        ),
-                                      ],
-                                      if (instructeur.telefoon?.isNotEmpty ==
-                                          true) ...[
-                                        const Divider(height: 20),
-                                        _InfoTile(
-                                          icon: Icons.phone_outlined,
-                                          iconColor: AppColors.iconBlue,
-                                          label: 'Telefoon',
-                                          value: instructeur.telefoon!,
-                                        ),
-                                      ],
-                                      if (instructeur.email?.isNotEmpty ==
-                                          true) ...[
-                                        const Divider(height: 20),
-                                        _InfoTile(
-                                          icon: Icons.email_outlined,
-                                          iconColor: AppColors.iconBlue,
-                                          label: 'E-mail',
-                                          value: instructeur.email!,
-                                        ),
-                                      ],
-                                    ],
-                                  ),
-<<<<<<< Updated upstream
-                                ],
-                                if (instructeur.telefoon?.isNotEmpty ==
-                                    true) ...[
-                                  const Divider(height: 20),
-                                  _InfoTile(
-                                    icon: Icons.phone_outlined,
-                                    iconColor: AppColors.iconBlue,
-                                    label: 'Telefoon',
-                                    value: instructeur.telefoon!,
-                                  ),
-                                ],
-                                if (instructeur.email?.isNotEmpty == true) ...[
-                                  const Divider(height: 20),
-                                  _InfoTile(
-                                    icon: Icons.email_outlined,
-                                    iconColor: AppColors.iconBlue,
-                                    label: 'E-mail',
-                                    value: instructeur.email!,
-                                  ),
-                                ],
-                                if (instructeur.telefoon?.isNotEmpty == true ||
-                                    instructeur.whatsappNummer?.isNotEmpty == true ||
-                                    instructeur.volledigAdres != null) ...[
-                                  const Divider(height: 20),
-                                  _RijschoolActies(instructeur: instructeur),
-                                ],
-                              ],
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                    loading: () => const SkeletonCard(),
-                    error: (_, __) => const SizedBox.shrink(),
-                  ),
-=======
-                                )
-                              : const SizedBox.shrink(),
-                          loading: () => const SkeletonCard(),
-                          error: (_, __) => const SizedBox.shrink(),
-                        ),
->>>>>>> Stashed changes
-
-                        const SizedBox(height: 20),
-
-                        // Actions
-                        const SectionHeader(title: 'Account'),
-                        const SizedBox(height: 12),
-                        AppCard(
-                          child: Column(
-                            children: [
-                              _ActionTile(
-                                icon: Icons.schedule_outlined,
-                                iconColor: AppColors.iconPurple,
-                                label: 'Mijn beschikbaarheid',
-                                onTap: () => context.push('/beschikbaarheid'),
-                              ),
-                              const Divider(height: 20),
-                              _ActionTile(
-                                icon: Icons.notifications_outlined,
-                                iconColor: AppColors.primary,
-                                label: 'Meldingen',
-                                onTap: () => context.go('/notificaties'),
-                              ),
-                              const Divider(height: 20),
-                              _ActionTile(
-                                icon: Icons.quiz_outlined,
-                                iconColor: AppColors.iconAmber,
-                                label: 'Mijn examens',
-                                onTap: () => context.push('/examens'),
-                              ),
-                              const Divider(height: 20),
-                              _ActionTile(
-                                icon: Icons.help_outline_rounded,
-                                iconColor: AppColors.iconBlue,
-                                label: 'Help & ondersteuning',
-                                onTap: () => context.push('/help'),
-                              ),
-                              const Divider(height: 20),
-                              _ActionTile(
-                                icon: Icons.logout_rounded,
-                                iconColor: AppColors.dangerSolid,
-                                label: 'Uitloggen',
-                                labelColor: AppColors.dangerText,
-                                onTap: () => _uitloggen(context, ref),
-                              ),
-                            ],
-                          ),
-                        ),
-<<<<<<< Updated upstream
-                        const Divider(height: 20),
-                        _ActionTile(
-                          icon: Icons.notifications_outlined,
-                          iconColor: AppColors.iconSlate,
-                          label: 'Meldingen',
-                          onTap: () => context.go('/notificaties'),
-=======
-
-                        const SizedBox(height: 32),
-                        const Center(
-                          child: Text(
-                            'Instrecteur Leerling · v1.0',
-                            style: TextStyle(
-                                fontSize: 11, color: AppColors.textHint),
-                          ),
->>>>>>> Stashed changes
-                        ),
-                        const SizedBox(height: 32),
-                      ]),
-                    ),
-                  ),
-                ],
-              ),
+            child: profielAsync.when(
+              loading: () => const _ProfielShimmer(),
+              error: (e, _) =>
+                  const Center(child: Text('Kan profiel niet laden')),
+              data: (profiel) => _ProfielHub(profiel: profiel),
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Future<void> _kiesProfielfoto(
-    BuildContext context,
-    WidgetRef ref,
-    LeerlingProfiel profiel,
-  ) async {
-    final source = await showModalBottomSheet<ImageSource>(
+class _ProfielHub extends ConsumerStatefulWidget {
+  final LeerlingProfiel? profiel;
+  const _ProfielHub({required this.profiel});
+
+  @override
+  ConsumerState<_ProfielHub> createState() => _ProfielHubState();
+}
+
+class _ProfielHubState extends ConsumerState<_ProfielHub> {
+  Future<void> _wijzigWachtwoord() async {
+    final email = StudentService.currentUser?.email;
+    if (email == null) return;
+
+    final bevestig = await showDialog<bool>(
       context: context,
-      backgroundColor: AppColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-      ),
-      builder: (ctx) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 38,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.border,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-              ),
-              const SizedBox(height: 18),
-              _PhotoSourceTile(
-                icon: Icons.photo_library_outlined,
-                label: 'Kies uit galerij',
-                onTap: () => Navigator.pop(ctx, ImageSource.gallery),
-              ),
-              const Divider(height: 18),
-              _PhotoSourceTile(
-                icon: Icons.photo_camera_outlined,
-                label: 'Maak foto',
-                onTap: () => Navigator.pop(ctx, ImageSource.camera),
-              ),
-            ],
-          ),
+      builder: (ctx) => AlertDialog(
+        title: const Text('Wachtwoord wijzigen'),
+        content: Text(
+          'We sturen een resetlink naar $email. Volg de instructies in de '
+          'e-mail om een nieuw wachtwoord in te stellen.',
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Annuleren'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Verstuur'),
+          ),
+        ],
       ),
     );
-    if (source == null) return;
+    if (bevestig != true || !mounted) return;
 
     try {
-      final picker = ImagePicker();
-      final image = await picker.pickImage(
-        source: source,
-        maxWidth: 900,
-        imageQuality: 82,
-      );
-      if (image == null) return;
-
-      final bytes = await image.readAsBytes();
-      final extensie = image.name.split('.').last;
-      if (context.mounted) {
-        showAppSnackBar(context, 'Profielfoto uploaden...');
+      await StudentService.stuurWachtwoordReset(email);
+      if (mounted) {
+        showAppSnackBar(context, 'E-mail met resetlink verstuurd',
+            isSuccess: true);
       }
-      await StudentService.uploadMijnProfielfoto(
-        leerlingId: profiel.id,
-        bytes: bytes,
-        bestandExtensie: extensie,
-      );
-      ref.invalidate(mijnProfielProvider);
-      if (context.mounted) {
-        showAppSnackBar(
-          context,
-          'Profielfoto bijgewerkt',
-          isSuccess: true,
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        showAppSnackBar(
-          context,
-          e.toString().replaceFirst('Exception: ', ''),
-          isError: true,
-        );
+    } catch (_) {
+      if (mounted) {
+        showAppSnackBar(context, 'Versturen mislukt. Probeer opnieuw.',
+            isError: true);
       }
     }
   }
 
-  Future<void> _uitloggen(BuildContext context, WidgetRef ref) async {
+  Future<void> _uitloggen() async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Uitloggen',
-            style: TextStyle(fontWeight: FontWeight.w700)),
+        title: const Text('Uitloggen?'),
         content: const Text('Weet je zeker dat je wilt uitloggen?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
             child: const Text('Annuleren'),
           ),
-          ElevatedButton(
+          TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.dangerSolid),
             child: const Text('Uitloggen'),
           ),
         ],
       ),
     );
-    if (confirm != true) return;
+    if (confirm != true || !mounted) return;
     await StudentService.uitloggen();
-    if (context.mounted) context.go('/login');
+    if (mounted) context.go('/login');
   }
-}
 
-class ProfileAvatar extends StatelessWidget {
-  final LeerlingProfiel? profiel;
-  final VoidCallback? onTap;
+  void _toonOverDeApp() {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Over de app'),
+        content: const Text('Leerling App · versie 1.0.7'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Sluiten'),
+          ),
+        ],
+      ),
+    );
+  }
 
-  const ProfileAvatar({
-    super.key,
-    required this.profiel,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final avatarUrl = profiel?.avatarUrl;
-    final avatarAsset = AvatarService.assetPathFor(profiel?.avatarId);
-    final initialen = profiel == null
-        ? '?'
-        : '${profiel!.voornaam.isNotEmpty ? profiel!.voornaam[0] : ''}${profiel!.achternaam.isNotEmpty ? profiel!.achternaam[0] : ''}'
-            .toUpperCase();
-
-    Widget avatarContent;
-    if (avatarUrl?.isNotEmpty == true) {
-      avatarContent = CachedNetworkImage(
-        imageUrl: avatarUrl!,
-        fit: BoxFit.cover,
-        placeholder: (_, __) => const Center(
-          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-        ),
-        errorWidget: (_, __, ___) => _InitialsAvatar(initialen: initialen),
-      );
-    } else if (avatarAsset != null) {
-      avatarContent = Image.asset(
-        avatarAsset,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _InitialsAvatar(initialen: initialen),
-      );
-    } else {
-      avatarContent = _InitialsAvatar(initialen: initialen);
+  Future<void> _openUrl(String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri != null && await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
+  }
 
-    return Semantics(
-      button: true,
-      label: 'Profielfoto wijzigen',
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(22),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              width: 88,
-              height: 88,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(22),
-                border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.15), width: 2),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: avatarContent,
-              ),
-            ),
-            Positioned(
-              right: -4,
-              bottom: -4,
-              child: Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(9),
-                  border: Border.all(
-                      color: AppColors.dark.withValues(alpha: 0.08), width: 1),
-                ),
-                child: Icon(
-                  Icons.photo_camera_rounded,
-                  color: AppColors.dark,
-                  size: 16,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+  Future<void> _toonContactActies(Instructeur instructeur) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _ContactActiesSheet(instructeur: instructeur),
     );
   }
-}
-
-class _InitialsAvatar extends StatelessWidget {
-  final String initialen;
-
-  const _InitialsAvatar({required this.initialen});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        initialen.isEmpty ? '?' : initialen,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 28,
-          fontWeight: FontWeight.w800,
-        ),
+    final p = widget.profiel;
+    final instructeurAsync = ref.watch(mijnInstructeurProvider);
+    const sectionStyle = _ProfileDesign.sectionTitle;
+
+    return RefreshIndicator(
+      color: AppColors.primary,
+      onRefresh: () async {
+        ref.invalidate(mijnProfielProvider);
+        ref.invalidate(mijnInstructeurProvider);
+      },
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          _ProfielIdentiteitskaart(profiel: p),
+          const SizedBox(height: _ProfileDesign.sectionGap),
+
+          // ── PERSOONLIJKE GEGEVENS ─────────────────────────────────────────
+          const Padding(
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
+            child: Text('PERSOONLIJKE GEGEVENS', style: sectionStyle),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: _sectieKaart([
+              _ProfielMenuTile(
+                icon: Icons.badge_outlined,
+                label: 'Persoonlijke gegevens',
+                subtitle: 'Naam, contactgegevens & rijbewijs',
+                onTap: () => context.push('/profiel/persoonlijke-gegevens'),
+              ),
+            ]),
+          ),
+          const SizedBox(height: _ProfileDesign.sectionGap),
+
+          // ── MIJN RIJSCHOOL ─────────────────────────────────────────────────
+          const Padding(
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
+            child: Text('MIJN RIJSCHOOL', style: sectionStyle),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: _sectieKaart([
+              _ProfielMenuTile(
+                icon: Icons.school_outlined,
+                label: 'Mijn rijschool',
+                subtitle: 'Rijschool- en instructeurgegevens',
+                onTap: () => context.push('/profiel/mijn-rijschool'),
+              ),
+            ]),
+          ),
+          const SizedBox(height: _ProfileDesign.sectionGap),
+
+          // ── RIJOPLEIDING ─────────────────────────────────────────────────
+          const Padding(
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
+            child: Text('RIJOPLEIDING', style: sectionStyle),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: _sectieKaart([
+              _ProfielMenuTile(
+                icon: Icons.inventory_2_outlined,
+                label: 'Lespakket',
+                subtitle: 'Pakket & voortgangsdetails',
+                // Fallback naar het oude pakket-enum (basis/standaard/...)
+                // uitsluitend wanneer er nog geen snapshot-pakketnaam is
+                // (legacy leerling) -- deze tegel rendert synchroon en
+                // raadpleegt daarom niet de catalogus-fallback (die is
+                // async); het detailscherm (ProfielLespakketScreen) doet
+                // dat wel en toont daar het echte cataloguspakket.
+                trailingText: p?.pakketNaam ?? p?.pakket.label,
+                onTap: () => context.push('/profiel/lespakket'),
+              ),
+              const Divider(height: 1, indent: 62),
+              _ProfielMenuTile(
+                icon: Icons.trending_up_rounded,
+                label: 'Mijn voortgang',
+                subtitle: p != null
+                    ? '${p.lessenGevolgd}/${p.lessenTotaal} lessen gevolgd'
+                    : null,
+                onTap: () => context.go('/voortgang'),
+              ),
+              const Divider(height: 1, indent: 62),
+              _ProfielMenuTile(
+                icon: Icons.quiz_outlined,
+                label: 'Mijn examens',
+                subtitle: 'Examenstatus & resultaten',
+                onTap: () => context.push('/examens'),
+              ),
+            ]),
+          ),
+          const SizedBox(height: _ProfileDesign.sectionGap),
+
+          // ── COMMUNICATIE ─────────────────────────────────────────────────
+          const Padding(
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
+            child: Text('COMMUNICATIE', style: sectionStyle),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: _sectieKaart([
+              _ProfielMenuTile(
+                icon: Icons.notifications_none_rounded,
+                label: 'Meldingen',
+                subtitle: 'Bekijk je meldingen',
+                onTap: () => context.push('/notificaties'),
+              ),
+              const Divider(height: 1, indent: 62),
+              instructeurAsync.maybeWhen(
+                data: (instructeur) => _ProfielMenuTile(
+                  icon: Icons.forum_outlined,
+                  label: 'Contact met instructeur',
+                  subtitle: 'Bel of app je instructeur',
+                  onTap: instructeur == null
+                      ? null
+                      : () => _toonContactActies(instructeur),
+                ),
+                orElse: () => const _ProfielMenuTile(
+                  icon: Icons.forum_outlined,
+                  label: 'Contact met instructeur',
+                ),
+              ),
+            ]),
+          ),
+          const SizedBox(height: _ProfileDesign.sectionGap),
+
+          // ── FACTUREN ─────────────────────────────────────────────────────
+          const Padding(
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
+            child: Text('FACTUREN', style: sectionStyle),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: _sectieKaart([
+              _ProfielMenuTile(
+                icon: Icons.receipt_long_outlined,
+                label: 'Mijn facturen',
+                subtitle: 'Bekijk en betaal facturen',
+                onTap: () => context.go('/facturen'),
+              ),
+            ]),
+          ),
+          const SizedBox(height: _ProfileDesign.sectionGap),
+
+          // ── INSTELLINGEN ─────────────────────────────────────────────────
+          const Padding(
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
+            child: Text('INSTELLINGEN', style: sectionStyle),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: _sectieKaart([
+              _ProfielMenuTile(
+                icon: Icons.lock_outline_rounded,
+                label: 'Wachtwoord',
+                subtitle: 'Wijzig via e-mail',
+                onTap: StudentService.currentUser?.email == null
+                    ? null
+                    : _wijzigWachtwoord,
+              ),
+              const Divider(height: 1, indent: 62),
+              _ProfielMenuTile(
+                icon: Icons.privacy_tip_outlined,
+                label: 'Privacy',
+                subtitle: 'Hoe wij omgaan met je gegevens',
+                onTap: () => _openUrl('https://klantio.nl/privacy'),
+              ),
+            ]),
+          ),
+          const SizedBox(height: _ProfileDesign.sectionGap),
+
+          // ── HELP ─────────────────────────────────────────────────────────
+          const Padding(
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
+            child: Text('HELP', style: sectionStyle),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: _sectieKaart([
+              _ProfielMenuTile(
+                icon: Icons.headset_mic_outlined,
+                label: 'Help & Support',
+                onTap: () => context.push('/help'),
+              ),
+              const Divider(height: 1, indent: 62),
+              _ProfielMenuTile(
+                icon: Icons.info_outline_rounded,
+                label: 'Over de app',
+                onTap: _toonOverDeApp,
+              ),
+            ]),
+          ),
+          const SizedBox(height: _ProfileDesign.sectionGap),
+
+          // ── ACCOUNT ACTIES ───────────────────────────────────────────────
+          const Padding(
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
+            child: Text('ACCOUNT ACTIES', style: sectionStyle),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: _DangerRow(
+              icon: Icons.logout_rounded,
+              label: 'Uitloggen',
+              onTap: _uitloggen,
+            ),
+          ),
+
+          const SizedBox(height: 44),
+        ],
       ),
     );
   }
 }
 
-class _PhotoSourceTile extends StatelessWidget {
+Widget _sectieKaart(List<Widget> children) {
+  return DecoratedBox(
+    decoration: BoxDecoration(
+      color: _ProfileDesign.card,
+      borderRadius: BorderRadius.circular(_ProfileDesign.cardRadius),
+      border: Border.all(color: AppColors.border),
+    ),
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(_ProfileDesign.cardRadius),
+      child: Column(children: children),
+    ),
+  );
+}
+
+// ── Menu tegel ────────────────────────────────────────────────────────────────
+// 1-op-1 overgenomen visueel patroon uit de Instructeur-app (_ProfielMenuTile):
+// iconbadge 36x36, cardTitle/subtitle-typografie, pijl alleen zichtbaar als
+// de tegel navigeerbaar is (onTap != null).
+
+class _ProfielMenuTile extends StatelessWidget {
   final IconData icon;
   final String label;
-  final VoidCallback onTap;
+  final String? subtitle;
+  final String? trailingText;
+  final VoidCallback? onTap;
 
-  const _PhotoSourceTile({
+  const _ProfielMenuTile({
     required this.icon,
     required this.label,
-    required this.onTap,
+    this.subtitle,
+    this.trailingText,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      overlayColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.pressed)) {
+          return _ProfileDesign.pressed;
+        }
+        return Colors.transparent;
+      }),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         child: Row(
           children: [
-            IconBadge(icon: icon, color: AppColors.iconDark, size: 38),
-            const SizedBox(width: 12),
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0F2F5),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: _ProfileDesign.hairline),
+              ),
+              child: Icon(icon, color: const Color(0xFF475569), size: 18),
+            ),
+            const SizedBox(width: 14),
             Expanded(
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(label, style: _ProfileDesign.cardTitle),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 3),
+                    Text(subtitle!, style: _ProfileDesign.subtitle),
+                  ],
+                ],
               ),
             ),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.textMuted,
-            ),
+            if (trailingText != null) ...[
+              const SizedBox(width: 10),
+              Flexible(
+                child: Text(
+                  trailingText!,
+                  textAlign: TextAlign.right,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: _ProfileDesign.secondary,
+                  ),
+                ),
+              ),
+            ],
+            if (onTap != null) ...[
+              const SizedBox(width: 6),
+              const Icon(Icons.chevron_right_rounded,
+                  color: _ProfileDesign.arrow, size: 17),
+            ],
           ],
         ),
       ),
@@ -764,39 +509,109 @@ class _PhotoSourceTile extends StatelessWidget {
   }
 }
 
-class _InfoTile extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String label;
-  final String value;
+// ── Identiteitskaart ─────────────────────────────────────────────────────────
+// 1-op-1 overgenomen uit de Instructeur-app (_ProfielSaasHeader): witte
+// kaart met marge, afgeronde hoeken, avatar links, naam + statusbadges,
+// donkere infochips onder de naam. Alleen de inhoud is leerling-eigen.
 
-  const _InfoTile({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-    required this.value,
-  });
+class _ProfielIdentiteitskaart extends StatelessWidget {
+  final LeerlingProfiel? profiel;
+
+  const _ProfielIdentiteitskaart({required this.profiel});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    final p = profiel;
+    final naam = p?.volledigeNaam ?? 'Mijn profiel';
+    final plaats = p?.email ?? '';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        IconBadge(icon: icon, color: iconColor, size: 34),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(label,
-              style: const TextStyle(
-                  fontSize: 13, color: AppColors.textSecondary)),
-        ),
-        Flexible(
-          child: Text(
-            value,
-            style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary),
-            textAlign: TextAlign.right,
-            overflow: TextOverflow.ellipsis,
+        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: _ProfileDesign.horizontalPadding,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: _ProfileDesign.card,
+              borderRadius: BorderRadius.circular(_ProfileDesign.cardRadius),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    EditableProfielAvatar(profiel: p),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            naam,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: _ProfileDesign.text,
+                              fontSize: 21,
+                              height: 1.16,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          if (p != null)
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _StatusBadge(status: p.status),
+                                const SizedBox(width: 6),
+                                _PakketChip(pakket: p.pakket),
+                              ],
+                            ),
+                          if (plaats.isNotEmpty) ...[
+                            const SizedBox(height: 6),
+                            Text(
+                              plaats,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: _ProfileDesign.secondary,
+                                fontSize: 14,
+                                height: 1.3,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (p != null) ...[
+                  const SizedBox(height: 18),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      if (p.telefoon?.isNotEmpty == true)
+                        _DarkInfoChip(
+                          icon: Icons.phone_rounded,
+                          label: p.telefoon!,
+                        ),
+                      _DarkInfoChip(
+                        icon: Icons.school_rounded,
+                        label: '${p.lessenGevolgd}/${p.lessenTotaal} lessen',
+                      ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
           ),
         ),
       ],
@@ -804,52 +619,198 @@ class _InfoTile extends StatelessWidget {
   }
 }
 
-class _ActionTile extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String label;
-  final Color? labelColor;
-  final VoidCallback onTap;
-
-  const _ActionTile({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-    required this.onTap,
-    this.labelColor,
-  });
+class _StatusBadge extends StatelessWidget {
+  final LeerlingStatus status;
+  const _StatusBadge({required this.status});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+    final (label, bgColor, textColor) = switch (status) {
+      LeerlingStatus.actief => (
+          'ACTIEF',
+          AppColors.success,
+          Colors.white,
+        ),
+      LeerlingStatus.geslaagd => (
+          'GESLAAGD',
+          AppColors.primary,
+          Colors.white,
+        ),
+      LeerlingStatus.wachtlijst => (
+          'WACHTLIJST',
+          AppColors.warningSolid,
+          Colors.white,
+        ),
+      LeerlingStatus.gestopt => (
+          'GESTOPT',
+          _ProfileDesign.card,
+          _ProfileDesign.muted,
+        ),
+    };
+
+    return Container(
+      height: 24,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(999),
+        border: status == LeerlingStatus.gestopt
+            ? Border.all(color: _ProfileDesign.hairline)
+            : null,
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.4,
+          color: textColor,
+        ),
+      ),
+    );
+  }
+}
+
+class _PakketChip extends StatelessWidget {
+  final PakketType pakket;
+  const _PakketChip({required this.pakket});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 4, 9, 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: const Color(0xFFE2E2E7)),
+      ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          IconBadge(icon: icon, color: iconColor, size: 34),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: labelColor ?? AppColors.textPrimary,
-              ),
+          const Icon(Icons.inventory_2_rounded,
+              size: 12, color: AppColors.iconPrimary),
+          const SizedBox(width: 4),
+          Text(
+            pakket.label,
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 10.5,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          const Icon(Icons.chevron_right_rounded,
-              color: AppColors.textMuted, size: 20),
         ],
       ),
     );
   }
 }
 
-class _RijschoolActies extends StatelessWidget {
-  final Instructeur instructeur;
+class _DarkInfoChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
 
-  const _RijschoolActies({required this.instructeur});
+  const _DarkInfoChip({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 6, 11, 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF4F5F7),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: _ProfileDesign.hairline),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: AppColors.iconPrimary, size: 12),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Danger row (solid red, white text) ───────────────────────────────────────
+
+class _DangerRow extends StatefulWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _DangerRow({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  State<_DangerRow> createState() => _DangerRowState();
+}
+
+class _DangerRowState extends State<_DangerRow> {
+  bool _pressed = false;
+
+  void _setPressed(bool value) {
+    if (_pressed == value) return;
+    setState(() => _pressed = value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final background =
+        _pressed ? _ProfileDesign.danger : _ProfileDesign.card;
+    final foreground = _pressed ? Colors.white : _ProfileDesign.danger;
+
+    return Material(
+      color: background,
+      shape: RoundedRectangleBorder(
+        borderRadius:
+            const BorderRadius.all(Radius.circular(_ProfileDesign.smallRadius)),
+        side: const BorderSide(color: _ProfileDesign.hairline),
+      ),
+      child: InkWell(
+        onTap: widget.onTap,
+        onHighlightChanged: _setPressed,
+        borderRadius:
+            const BorderRadius.all(Radius.circular(_ProfileDesign.smallRadius)),
+        splashColor: _ProfileDesign.danger.withValues(alpha: 0.08),
+        highlightColor: _ProfileDesign.danger.withValues(alpha: 0.08),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 17),
+          child: Row(
+            children: [
+              Icon(widget.icon, color: foreground, size: 20),
+              const SizedBox(width: 14),
+              Text(
+                widget.label,
+                style: TextStyle(
+                  color: foreground,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Contact-acties sheet (bellen / WhatsApp / route) ─────────────────────────
+
+class _ContactActiesSheet extends StatelessWidget {
+  final Instructeur instructeur;
+  const _ContactActiesSheet({required this.instructeur});
 
   Future<void> _launch(String url) async {
     final uri = Uri.parse(url);
@@ -860,90 +821,73 @@ class _RijschoolActies extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String? tel = instructeur.telefoon?.isNotEmpty == true ? instructeur.telefoon : null;
+    final String? tel =
+        instructeur.telefoon?.isNotEmpty == true ? instructeur.telefoon : null;
     final String? wa = instructeur.whatsappNummer?.isNotEmpty == true
         ? instructeur.whatsappNummer
         : tel;
-    final String? adres = instructeur.volledigAdres;
 
-    final btns = <_ActieKnop>[
-      if (tel != null)
-        _ActieKnop(
-          icon: Icons.phone_rounded,
-          label: 'Bellen',
-          color: const Color(0xFF16A34A),
-          onTap: () => _launch('tel:$tel'),
-        ),
-      if (wa != null)
-        _ActieKnop(
-          icon: Icons.chat_rounded,
-          label: 'WhatsApp',
-          color: const Color(0xFF16A34A),
-          onTap: () {
-            final nr = wa.replaceAll(RegExp(r'\D'), '');
-            _launch('https://wa.me/$nr');
-          },
-        ),
-      if (adres != null)
-        _ActieKnop(
-          icon: Icons.directions_rounded,
-          label: 'Route',
-          color: const Color(0xFF2563EB),
-          onTap: () => _launch(
-              'https://maps.google.com/?q=${Uri.encodeComponent(adres)}'),
-        ),
-    ];
-
-    if (btns.isEmpty) return const SizedBox.shrink();
-
-    return Row(
-      children: btns.map((b) {
-        final isLast = b == btns.last;
-        return Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(right: isLast ? 0 : 8),
-            child: GestureDetector(
-              onTap: b.onTap,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF0F2F5),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFE2E2E7)),
-                ),
-                child: Column(
-                  children: [
-                    Icon(b.icon, color: AppColors.textPrimary, size: 20),
-                    const SizedBox(height: 4),
-                    Text(
-                      b.label,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 38,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(999),
               ),
             ),
-          ),
-        );
-      }).toList(),
+            const SizedBox(height: 18),
+            if (tel != null)
+              PhotoSourceTile(
+                icon: Icons.phone_outlined,
+                label: 'Bellen',
+                onTap: () {
+                  Navigator.pop(context);
+                  _launch('tel:$tel');
+                },
+              ),
+            if (wa != null) ...[
+              if (tel != null) const Divider(height: 18),
+              PhotoSourceTile(
+                icon: Icons.chat_outlined,
+                label: 'WhatsApp',
+                onTap: () {
+                  Navigator.pop(context);
+                  final nr = wa.replaceAll(RegExp(r'\D'), '');
+                  _launch('https://wa.me/$nr');
+                },
+              ),
+            ],
+            if (tel == null && wa == null)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  'Geen contactgegevens bekend voor je instructeur.',
+                  style: TextStyle(
+                      fontSize: 14, color: AppColors.textSecondary),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class _ActieKnop {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final VoidCallback onTap;
+// ── Shimmer laadstatus ────────────────────────────────────────────────────────
 
-  const _ActieKnop({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.onTap,
-  });
+class _ProfielShimmer extends StatelessWidget {
+  const _ProfielShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: CircularProgressIndicator(color: AppColors.primary),
+    );
+  }
 }

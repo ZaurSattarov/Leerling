@@ -4,11 +4,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/les.dart';
 import '../../shared/widgets/app_card.dart';
-<<<<<<< Updated upstream
-import '../../shared/widgets/gradient_header.dart';
-=======
 import '../../shared/widgets/main_detail_header.dart';
->>>>>>> Stashed changes
 import '../../shared/widgets/status_pill.dart';
 import 'lespakket_voortgang_provider.dart';
 
@@ -22,32 +18,18 @@ class LespakketDetailScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.surface,
       body: Column(
-<<<<<<< Updated upstream
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const DetailGradientHeader(title: 'Lespakket & voortgang'),
-=======
         children: [
           const MainDetailHeader(
             eyebrowText: 'VOORTGANG',
             title: 'Lespakket & voortgang',
           ),
->>>>>>> Stashed changes
           Expanded(
             child: dataAsync.when(
               data: (data) {
                 if (data == null) {
-<<<<<<< Updated upstream
-                  return const Center(
-                    child: EmptyState(
-                      icon: Icons.person_off_outlined,
-                      title: 'Geen profiel gevonden',
-                    ),
-=======
                   return const EmptyState(
                     icon: Icons.person_off_outlined,
                     title: 'Geen profiel gevonden',
->>>>>>> Stashed changes
                   );
                 }
                 return _LespakketDetailBody(data: data);
@@ -55,19 +37,10 @@ class LespakketDetailScreen extends ConsumerWidget {
               loading: () => const Center(
                 child: CircularProgressIndicator(color: AppColors.primary),
               ),
-<<<<<<< Updated upstream
-              error: (e, _) => Center(
-                child: EmptyState(
-                  icon: Icons.wifi_off_rounded,
-                  title: 'Kon lespakket niet laden',
-                  subtitle: e.toString(),
-                ),
-=======
               error: (e, _) => EmptyState(
                 icon: Icons.wifi_off_rounded,
                 title: 'Kon lespakket niet laden',
                 subtitle: e.toString(),
->>>>>>> Stashed changes
               ),
             ),
           ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/services/avatar_service.dart';
+import '../../core/utils/datum_utils.dart';
 import '../../models/leerling_profiel.dart';
 import '../../models/les.dart';
 import '../../models/factuur.dart';
@@ -180,171 +180,7 @@ class _GradientHeader extends StatelessWidget {
     final naam = profiel?.voornaam ?? '';
     final initials = naam.isNotEmpty ? naam[0].toUpperCase() : '?';
     final avatarUrl = profiel?.avatarUrl;
-    final avatarAsset = AvatarService.assetPathFor(profiel?.avatarId);
 
-    Widget avatarChild;
-    if (avatarUrl?.isNotEmpty == true) {
-      avatarChild = CachedNetworkImage(
-        imageUrl: avatarUrl!,
-        fit: BoxFit.cover,
-        width: 36,
-        height: 36,
-        placeholder: (_, __) => Center(
-          child: Text(initials,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700)),
-        ),
-        errorWidget: (_, __, ___) => Center(
-          child: Text(initials,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700)),
-        ),
-      );
-    } else if (avatarAsset != null) {
-      avatarChild = Image.asset(avatarAsset,
-          fit: BoxFit.cover,
-          width: 36,
-          height: 36,
-          errorBuilder: (_, __, ___) => Center(
-                child: Text(initials,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700)),
-              ));
-    } else {
-      avatarChild = Center(
-        child: Text(initials,
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700)),
-      );
-    }
-
-<<<<<<< Updated upstream
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF141C2B), Color(0xFF1A2D42)],
-        ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 14, 16, 18),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              ClipOval(
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  color: Colors.white.withValues(alpha: 0.15),
-                  child: avatarChild,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Dashboard',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white54,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.7,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    profielAsync.when(
-                      data: (p) => Text(
-                        naam.isNotEmpty ? 'Hoi, $naam.' : 'Welkom terug.',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.w600,
-                          height: 1.1,
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                      loading: () => const SkeletonBox(
-                          height: 28, width: 160, radius: 6),
-                      error: (_, __) => const SizedBox.shrink(),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              // Notification bell
-              GestureDetector(
-                onTap: () => context.go('/notificaties'),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.35),
-                            blurRadius: 14,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.notifications_none_rounded,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                    if ((home?.ongelezenNotificaties ?? 0) > 0)
-                      Positioned(
-                        right: -3,
-                        top: -3,
-                        child: Container(
-                          width: 16,
-                          height: 16,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                                color: AppColors.primary.withValues(alpha: 0.3)),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '${home!.ongelezenNotificaties}',
-                              style: const TextStyle(
-                                color: AppColors.dark,
-                                fontSize: 9,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-=======
     return MainTabHeader(
       leading: Container(
         width: 40,
@@ -355,7 +191,6 @@ class _GradientHeader extends StatelessWidget {
           border: Border.all(
             color: AppColors.primary.withValues(alpha: 0.5),
             width: 1.5,
->>>>>>> Stashed changes
           ),
         ),
         child: ClipOval(
@@ -467,14 +302,8 @@ class _StatsRow extends StatelessWidget {
           label: 'Facturen',
           value: '$openFacturen',
           icon: Icons.receipt_long_rounded,
-<<<<<<< Updated upstream
           iconColor: AppColors.iconDark,
           showBadge: heeftFacturen,
-=======
-          iconColor:
-              heeftFacturen ? AppColors.warningSolid : AppColors.iconDark,
-          isAlert: heeftFacturen,
->>>>>>> Stashed changes
           onTap: () => context.go('/facturen'),
         ),
       ],
@@ -1224,11 +1053,6 @@ class _FactuurRij extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isVerlopen = factuur.isVerlopen;
-<<<<<<< Updated upstream
-=======
-    final borderColor =
-        isVerlopen ? AppColors.dangerSolid : AppColors.warningSolid;
->>>>>>> Stashed changes
 
     return GestureDetector(
       onTap: () => context.push('/facturen/${factuur.id}'),
@@ -1403,7 +1227,6 @@ class _ActieCard extends StatelessWidget {
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
-<<<<<<< Updated upstream
           ],
         ),
         child: Row(
@@ -1417,25 +1240,6 @@ class _ActieCard extends StatelessWidget {
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16),
                   bottomLeft: Radius.circular(16),
-=======
-            child:
-                Icon(Icons.notifications_none_rounded, size: 18, color: _color),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  notificatie.titel,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
->>>>>>> Stashed changes
                 ),
               ),
             ),

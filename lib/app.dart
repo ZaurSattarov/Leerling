@@ -29,6 +29,9 @@ import 'features/facturen/facturen_screen.dart';
 import 'features/facturen/factuur_detail_screen.dart';
 import 'features/beschikbaarheid/beschikbaarheid_screen.dart';
 import 'features/notificaties/notificaties_screen.dart';
+import 'features/profiel/lespakket_detail_screen.dart';
+import 'features/profiel/mijn_rijschool_screen.dart';
+import 'features/profiel/persoonlijke_gegevens_screen.dart';
 import 'features/profiel/profiel_screen.dart';
 import 'shared/widgets/main_scaffold.dart';
 import 'shared/widgets/student_profile_gate.dart';
@@ -196,6 +199,24 @@ final _routerProvider = Provider<GoRouter>((ref) {
         path: '/voortgang/lespakket',
         builder: (_, __) => const StudentProfileGate(
           child: LespakketDetailScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/profiel/lespakket',
+        builder: (_, __) => const StudentProfileGate(
+          child: ProfielLespakketScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/profiel/persoonlijke-gegevens',
+        builder: (_, __) => const StudentProfileGate(
+          child: ProfielPersoonlijkeGegevensScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/profiel/mijn-rijschool',
+        builder: (_, __) => const StudentProfileGate(
+          child: MijnRijschoolScreen(),
         ),
       ),
       GoRoute(

@@ -38,66 +38,6 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
       backgroundColor: AppColors.surface,
       body: Column(
         children: [
-<<<<<<< Updated upstream
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF141C2B), Color(0xFF1A2D42)],
-              ),
-            ),
-            child: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 14, 16, 20),
-                child: Row(
-                  children: [
-                    const Expanded(
-                      child: ScreenHeader(
-                        label: 'PLANNING',
-                        title: 'Mijn lessen',
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => context.go('/notificaties'),
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.35),
-                              blurRadius: 14,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(Icons.notifications_none_rounded,
-                            color: Colors.white, size: 20),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Container(
-            color: AppColors.white,
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-            child: AnimatedBuilder(
-              animation: _tabs,
-              builder: (_, __) => _PillTabBar(
-                activeIndex: _tabs.index,
-                labels: const ['Komende lessen', 'Afgerond'],
-                onTap: (i) => _tabs.animateTo(i),
-              ),
-            ),
-          ),
-          const Divider(height: 1, thickness: 1, color: Color(0xFFE8EAF0)),
-=======
           MainTabHeader(
             eyebrowText: 'PLANNING',
             title: 'Mijn lessen',
@@ -119,7 +59,6 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
               ),
             ),
           ),
->>>>>>> Stashed changes
           Expanded(
             child: TabBarView(
               controller: _tabs,
@@ -273,15 +212,6 @@ class _NieuweLesButton extends StatelessWidget {
         onPressed: () => context.push('/beschikbaarheid'),
         icon: const Icon(Icons.add_rounded, size: 18),
         label: const Text('Nieuwe les aanvragen'),
-<<<<<<< Updated upstream
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.textPrimary,
-          side: const BorderSide(color: Color(0xFFE2E2E7), width: 1.25),
-          minimumSize: const Size.fromHeight(48),
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14)),
-=======
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
@@ -289,7 +219,6 @@ class _NieuweLesButton extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           elevation: 0,
->>>>>>> Stashed changes
           textStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,

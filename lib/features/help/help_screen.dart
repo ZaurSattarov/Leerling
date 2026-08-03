@@ -11,46 +11,11 @@ class HelpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surface,
-<<<<<<< Updated upstream
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF141C2B), Color(0xFF1A2D42)],
-                ),
-              ),
-              child: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 6, 16, 20),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-                        onPressed: () => context.pop(),
-                      ),
-                      const Expanded(
-                        child: ScreenHeader(
-                          label: 'SUPPORT',
-                          title: 'Help & ondersteuning',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-=======
       body: Column(
         children: [
           const MainDetailHeader(
             eyebrowText: 'SUPPORT',
             title: 'Help & ondersteuning',
->>>>>>> Stashed changes
           ),
           Expanded(
             child: CustomScrollView(

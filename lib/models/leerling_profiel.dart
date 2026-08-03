@@ -44,6 +44,7 @@ class LeerlingProfiel {
   final String? avatarUrl;
   final String? avatarId;
   final String? geboortedatum;
+  final String? adres;
   final PakketType pakket;
   final LeerlingStatus status;
   final int lessenTotaal;
@@ -55,6 +56,31 @@ class LeerlingProfiel {
   final String aangemaaktOp;
   final String bijgewerktOp;
 
+  // ── Lespakket (Fase 4) ──────────────────────────────────────────────────
+  // pakketId/rijbewijsSoort/transmissie/startdatum zijn "live" leerling-
+  // velden (net als pakket/status hierboven) -- de overige pakket_*-velden
+  // zijn een immutable snapshot, vastgelegd op het moment dat de instructeur
+  // dit pakket toewees. Zie StudentService.getMijnPakketCatalogusItem() en
+  // heeftPakketSnapshot hieronder voor hoe snapshot vs. catalogus wordt
+  // opgelost -- exact het patroon dat de Instructeur-app zelf gebruikt.
+  final String? pakketId;
+  final String? pakketNaam;
+  final int? pakketLessenSnapshot;
+  final int? losseLessen;
+  final int losseMinuten;
+  final String saldoEenheid;
+  final int? pakketMinutenTotaal;
+  final int pakketMinutenVerbruikt;
+  final int? pakketPrijsCents;
+  final int? pakketLosseLesPrijsCents;
+  final int? pakketLesduurMinuten;
+  final bool? pakketPraktijkexamenInbegrepen;
+  final bool? pakketTussentijdseToetsInbegrepen;
+  final String? pakketSnapshotVastgelegdOp;
+  final String? rijbewijsSoort;
+  final String? transmissie;
+  final String? startdatum;
+
   const LeerlingProfiel({
     required this.id,
     required this.instructeurId,
@@ -65,6 +91,7 @@ class LeerlingProfiel {
     this.avatarUrl,
     this.avatarId,
     this.geboortedatum,
+    this.adres,
     required this.pakket,
     required this.status,
     required this.lessenTotaal,
@@ -75,12 +102,40 @@ class LeerlingProfiel {
     this.gekoppeldOp,
     required this.aangemaaktOp,
     required this.bijgewerktOp,
+    this.pakketId,
+    this.pakketNaam,
+    this.pakketLessenSnapshot,
+    this.losseLessen,
+    this.losseMinuten = 0,
+    this.saldoEenheid = 'lessen',
+    this.pakketMinutenTotaal,
+    this.pakketMinutenVerbruikt = 0,
+    this.pakketPrijsCents,
+    this.pakketLosseLesPrijsCents,
+    this.pakketLesduurMinuten,
+    this.pakketPraktijkexamenInbegrepen,
+    this.pakketTussentijdseToetsInbegrepen,
+    this.pakketSnapshotVastgelegdOp,
+    this.rijbewijsSoort,
+    this.transmissie,
+    this.startdatum,
   });
 
   String get volledigeNaam => '$voornaam $achternaam';
 
   double get voortgangPercent =>
       lessenTotaal > 0 ? (lessenGevolgd / lessenTotaal).clamp(0.0, 1.0) : 0.0;
+
+  /// True zodra de instructeur dit pakket heeft toegewezen ná introductie
+  /// van de snapshotfunctionaliteit -- pakket_prijs/-duur/-examens komen dan
+  /// UITSLUITEND uit de snapshotvelden hierboven, nooit meer live uit de
+  /// catalogus (zodat een latere catalogusprijswijziging een al toegewezen
+  /// pakket niet met terugwerkende kracht verandert).
+  bool get heeftPakketSnapshot =>
+      pakketSnapshotVastgelegdOp != null &&
+      pakketSnapshotVastgelegdOp!.trim().isNotEmpty;
+
+  bool get gebruiktMinutenSaldo => saldoEenheid == 'minuten';
 
   factory LeerlingProfiel.fromJson(Map<String, dynamic> json) {
     return LeerlingProfiel(
@@ -96,6 +151,7 @@ class LeerlingProfiel {
           json['profile_image_url']) as String?,
       avatarId: json['avatar_id'] as String?,
       geboortedatum: json['geboortedatum'] as String?,
+      adres: json['adres'] as String?,
       pakket: PakketType.values.firstWhere(
         (e) => e.name == (json['pakket'] as String?),
         orElse: () => PakketType.standaard,
@@ -112,6 +168,28 @@ class LeerlingProfiel {
       gekoppeldOp: json['gekoppeld_op'] as String?,
       aangemaaktOp: json['aangemaakt_op'] as String? ?? '',
       bijgewerktOp: json['bijgewerkt_op'] as String? ?? '',
+      pakketId: json['pakket_id'] as String?,
+      pakketNaam: json['pakket_naam'] as String?,
+      pakketLessenSnapshot: (json['pakket_lessen'] as num?)?.toInt(),
+      losseLessen: (json['losse_lessen'] as num?)?.toInt(),
+      losseMinuten: (json['losse_minuten'] as num?)?.toInt() ?? 0,
+      saldoEenheid: (json['saldo_eenheid'] as String?) ?? 'lessen',
+      pakketMinutenTotaal: (json['pakket_minuten_totaal'] as num?)?.toInt(),
+      pakketMinutenVerbruikt:
+          (json['pakket_minuten_verbruikt'] as num?)?.toInt() ?? 0,
+      pakketPrijsCents: (json['pakket_prijs_cents'] as num?)?.toInt(),
+      pakketLosseLesPrijsCents:
+          (json['pakket_losse_les_prijs_cents'] as num?)?.toInt(),
+      pakketLesduurMinuten: (json['pakket_lesduur_minuten'] as num?)?.toInt(),
+      pakketPraktijkexamenInbegrepen:
+          json['pakket_praktijkexamen_inbegrepen'] as bool?,
+      pakketTussentijdseToetsInbegrepen:
+          json['pakket_tussentijdse_toets_inbegrepen'] as bool?,
+      pakketSnapshotVastgelegdOp:
+          json['pakket_snapshot_vastgelegd_op'] as String?,
+      rijbewijsSoort: json['rijbewijs_soort'] as String?,
+      transmissie: json['transmissie'] as String?,
+      startdatum: json['startdatum'] as String?,
     );
   }
 }

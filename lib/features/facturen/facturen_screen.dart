@@ -91,94 +91,6 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
                 icon: Icons.notifications_none_rounded,
                 onTap: () => context.go('/notificaties'),
               ),
-<<<<<<< Updated upstream
-            ),
-
-            // Tabs
-            SliverToBoxAdapter(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: AppColors.white,
-                  border: Border(
-                    bottom: BorderSide(color: Color(0xFFE4E7EC), width: 1),
-                  ),
-                ),
-                child: TabBar(
-                  controller: _tabCtrl,
-                  labelColor: AppColors.primary,
-                  unselectedLabelColor: AppColors.textSecondary,
-                  indicatorColor: AppColors.primary,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  labelStyle: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  unselectedLabelStyle: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  tabs: _tabs.map((t) => Tab(text: t)).toList(),
-                  onTap: (_) => setState(() {}),
-                ),
-              ),
-            ),
-
-            // Content
-            facturenAsync.when(
-              data: (alleFacturen) {
-                final facturen = _filterFacturen(alleFacturen, _tabCtrl.index);
-
-                if (alleFacturen.isEmpty) {
-                  return const SliverFillRemaining(
-                    child: EmptyState(
-                      icon: Icons.receipt_long_outlined,
-                      title: 'Geen facturen',
-                      subtitle: 'Je hebt nog geen facturen ontvangen.',
-                    ),
-                  );
-                }
-
-                if (facturen.isEmpty) {
-                  return SliverFillRemaining(
-                    child: EmptyState(
-                      icon: Icons.receipt_long_outlined,
-                      title: 'Geen ${_tabs[_tabCtrl.index].toLowerCase()} facturen',
-                      subtitle: 'Er zijn geen facturen in deze categorie.',
-                    ),
-                  );
-                }
-
-                final stats = _FactuurStats.van(alleFacturen);
-                WidgetsBinding.instance.addPostFrameCallback((_) => _startAnim());
-
-                return SliverPadding(
-                  padding: const EdgeInsets.all(20),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      // 1. Finance overzicht kaart (alleen op "Alle" tab)
-                      if (_tabCtrl.index == 0) ...[
-                        _FinanceOverzichtKaart(stats: stats),
-                        const SizedBox(height: 12),
-
-                        // 2. Status verdeling
-                        _DonutChartKaart(stats: stats, animation: _chartAnim),
-                        const SizedBox(height: 24),
-                      ],
-
-                      // 3. Facturenlijst
-                      SectionHeader(title: '${_tabs[_tabCtrl.index]} facturen (${facturen.length})'),
-                      const SizedBox(height: 12),
-                      ...facturen.map(
-                        (f) => Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: _FactuurCard(factuur: f),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                    ]),
-                  ),
-                );
-=======
             ],
           ),
           Expanded(
@@ -187,7 +99,6 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
               onRefresh: () async {
                 _animCtrl.reset();
                 ref.invalidate(facturenProvider);
->>>>>>> Stashed changes
               },
               child: CustomScrollView(
                 slivers: [
@@ -396,14 +307,8 @@ class _FinanceOverzichtKaart extends StatelessWidget {
                   label: 'Openstaand',
                   waarde: stats.openstaandLabel,
                   icon: Icons.schedule_rounded,
-<<<<<<< Updated upstream
-                  accentKleur: stats.openstaandCents > 0
-                      ? _oranjeWaarschuwing
-                      : null,
-=======
                   accentKleur:
                       stats.openstaandCents > 0 ? AppColors.primary : null,
->>>>>>> Stashed changes
                 ),
               ),
               const SizedBox(width: 10),

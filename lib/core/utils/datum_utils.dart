@@ -28,6 +28,20 @@ class DatumUtils {
     }
   }
 
+  /// "d MMMM yyyy" zonder weekdag -- geschikt voor geboortedatum/startdatum,
+  /// waar de weekdag geen betekenisvolle informatie toevoegt (in
+  /// tegenstelling tot [langeDatum], gebruikt voor toekomstige/geplande
+  /// data zoals lessen).
+  static String datumZonderWeekdag(String dateStr) {
+    if (dateStr.isEmpty) return '';
+    try {
+      final dt = DateTime.parse(dateStr);
+      return DateFormat('d MMMM yyyy', 'nl_NL').format(dt);
+    } catch (_) {
+      return dateStr;
+    }
+  }
+
   static String relatiefDatum(String dateStr) {
     if (dateStr.isEmpty) return '';
     try {

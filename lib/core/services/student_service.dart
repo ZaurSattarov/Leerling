@@ -10,6 +10,7 @@ import '../../models/factuur.dart';
 import '../../models/notificatie.dart';
 import '../../models/examen.dart';
 import '../../models/instructeur.dart';
+import '../../models/instructor_lesson_package.dart';
 
 class StudentService {
   static String get supabaseUrl => AppConfig.supabaseUrl;
@@ -154,10 +155,27 @@ class StudentService {
     final res = await client
         .from('instructeur_profielen')
         .select(
-            'id, rijschool_naam, naam, telefoon, email, adres, postcode, stad, logo_url, whatsapp_nummer')
+            'id, rijschool_naam, naam, telefoon, email, adres, postcode, stad, logo_url, whatsapp_nummer, website, kvk_nummer')
         .eq('id', instructeurId)
         .maybeSingle();
     return res != null ? Instructeur.fromJson(res) : null;
+  }
+
+  /// Legacy-leesfallback voor het toegewezen lespakket: uitsluitend gebruikt
+  /// wanneer de leerling nog GEEN volledige pakket-snapshot heeft
+  /// (`LeerlingProfiel.heeftPakketSnapshot == false`). Zodra die snapshot
+  /// bestaat, wordt dit nooit meer aangeroepen -- de snapshotvelden op
+  /// leerlingen blijven dan leidend, ook als de instructeur de catalogus
+  /// later wijzigt. Gerichte single-row select, geen volledige catalogus.
+  static Future<InstructorLessonPackage?> getMijnPakketCatalogusItem(
+      String pakketId) async {
+    final res = await client
+        .from('instructor_lesson_packages')
+        .select(
+            'id, naam, categorie, transmissie, saldo_eenheid, aantal_lessen, pakket_minuten_totaal, lesduur_minuten, pakketprijs, losse_lesprijs, praktijkexamen_inbegrepen, tussentijdse_toets_inbegrepen, actief')
+        .eq('id', pakketId)
+        .maybeSingle();
+    return res != null ? InstructorLessonPackage.fromJson(res) : null;
   }
 
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
