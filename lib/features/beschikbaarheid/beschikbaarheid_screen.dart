@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import '../../models/leerling_beschikbaarheid.dart';
@@ -149,8 +150,7 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
           Expanded(
             child: _laden
                 ? const Center(
-                    child:
-                        CircularProgressIndicator(color: AppColors.primary))
+                    child: CircularProgressIndicator(color: AppColors.primary))
                 : _fout != null
                     ? _FoutWeergave(fout: _fout!, onRetry: _laadData)
                     : RefreshIndicator(
@@ -159,74 +159,81 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
                         child: CustomScrollView(
                           slivers: [
                             // Info banner
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-                          child: AppCard(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 34,
-                                  height: 34,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFF0F2F5),
-                                    borderRadius: BorderRadius.circular(9),
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 20, 20, 12),
+                                child: AppCard(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: 34,
+                                        height: 34,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFF0F2F5),
+                                          borderRadius:
+                                              BorderRadius.circular(9),
+                                        ),
+                                        child: const Icon(
+                                            Icons.info_outline_rounded,
+                                            color: AppColors.iconDark,
+                                            size: 17),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      const Expanded(
+                                        child: Text(
+                                          'Geef aan wanneer je meestal rijles kunt volgen. '
+                                          'Je instructeur gebruikt deze tijden voor de weekplanning.',
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              height: 1.4,
+                                              color: AppColors.textSecondary),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  child: const Icon(
-                                      Icons.info_outline_rounded,
-                                      color: AppColors.iconDark,
-                                      size: 17),
-                                ),
-                                const SizedBox(width: 12),
-                                const Expanded(
-                                  child: Text(
-                                    'Geef aan wanneer je meestal rijles kunt volgen. '
-                                    'Je instructeur gebruikt deze tijden voor de weekplanning.',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        height: 1.4,
-                                        color: AppColors.textSecondary),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Lege staat
-                      if (_items == null || _items!.isEmpty)
-                        const SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: EmptyState(
-                            icon: Icons.schedule_outlined,
-                            title:
-                                'Je hebt nog geen beschikbaarheid toegevoegd.',
-                            subtitle:
-                                'Tik op "Tijd toevoegen" om tijdblokken in te vullen.',
-                          ),
-                        )
-                      else
-                        SliverPadding(
-                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
-                          sliver: SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (ctx, i) => Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: _BeschikbaarheidTegel(
-                                  item: _items![i],
-                                  onBewerk: () => _toonFormulier(_items![i]),
-                                  onVerwijder: () => _verwijder(_items![i]),
                                 ),
                               ),
-                              childCount: _items!.length,
                             ),
-                          ),
+
+                            // Lege staat
+                            if (_items == null || _items!.isEmpty)
+                              const SliverFillRemaining(
+                                hasScrollBody: false,
+                                child: EmptyState(
+                                  icon: Icons.schedule_outlined,
+                                  title:
+                                      'Je hebt nog geen beschikbaarheid toegevoegd.',
+                                  subtitle:
+                                      'Tik op "Tijd toevoegen" om tijdblokken in te vullen.',
+                                ),
+                              )
+                            else
+                              SliverPadding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 8, 20, 100),
+                                sliver: SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                    (ctx, i) => Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10),
+                                      child: _BeschikbaarheidTegel(
+                                        item: _items![i],
+                                        onBewerk: () =>
+                                            _toonFormulier(_items![i]),
+                                        onVerwijder: () =>
+                                            _verwijder(_items![i]),
+                                      ),
+                                    ),
+                                    childCount: _items!.length,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                    ],
-                  ),
-                ),
+                      ),
           ),
         ],
       ),
@@ -379,41 +386,17 @@ class _BeschikbaarheidFormulierState
       '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
 
   Future<void> _kiesTijd(bool isStart) async {
-    final picked = await showTimePicker(
+    final picked = await showModalBottomSheet<TimeOfDay>(
       context: context,
-      initialTime: isStart ? _startTijd : _eindTijd,
-      builder: (ctx, child) => Theme(
-        data: Theme.of(ctx).copyWith(
-          timePickerTheme: TimePickerThemeData(
-            backgroundColor: AppColors.white,
-            hourMinuteColor: const Color(0xFFF0F2F5),
-            hourMinuteTextColor: AppColors.textPrimary,
-            dialHandColor: AppColors.primary,
-            dialBackgroundColor: const Color(0xFFF0F2F5),
-            dialTextColor: AppColors.textPrimary,
-            entryModeIconColor: AppColors.textSecondary,
-            dayPeriodColor: const Color(0xFFF0F2F5),
-            dayPeriodTextColor: AppColors.textPrimary,
-            helpTextStyle: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textSecondary,
-              letterSpacing: 1.0,
-            ),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20)),
-          ),
-          colorScheme: ColorScheme.light(
-            primary: AppColors.primary,
-            onPrimary: Colors.white,
-            surface: AppColors.white,
-            onSurface: AppColors.textPrimary,
-          ),
-        ),
-        child: MediaQuery(
-          data: MediaQuery.of(ctx).copyWith(alwaysUse24HourFormat: true),
-          child: child!,
-        ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black54,
+      builder: (ctx) => _KlantioTijdPickerSheet(
+        title: isStart ? 'Starttijd kiezen' : 'Eindtijd kiezen',
+        initialTime: isStart ? _startTijd : _eindTijd,
+        startTime: _startTijd,
+        endTime: _eindTijd,
+        isStart: isStart,
       ),
     );
     if (picked == null || !mounted) return;
@@ -567,7 +550,7 @@ class _BeschikbaarheidFormulierState
                       color: AppColors.textSecondary)),
               const SizedBox(height: 4),
               const Text(
-                'Hoe sterk geef je de voorkeur aan dit tijdblok? (optioneel)',
+                'Hoe goed past dit tijdstip?',
                 style: TextStyle(fontSize: 12, color: AppColors.textHint),
               ),
               const SizedBox(height: 10),
@@ -590,6 +573,15 @@ class _BeschikbaarheidFormulierState
                       ),
                     ),
                   ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                '$_score van 5 - voorkeur',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
 
@@ -686,6 +678,315 @@ class _TijdKiezer extends StatelessWidget {
 }
 
 // ─── Fout weergave ────────────────────────────────────────────────
+
+class _KlantioTijdPickerSheet extends StatefulWidget {
+  final String title;
+  final TimeOfDay initialTime;
+  final TimeOfDay startTime;
+  final TimeOfDay endTime;
+  final bool isStart;
+
+  const _KlantioTijdPickerSheet({
+    required this.title,
+    required this.initialTime,
+    required this.startTime,
+    required this.endTime,
+    required this.isStart,
+  });
+
+  @override
+  State<_KlantioTijdPickerSheet> createState() =>
+      _KlantioTijdPickerSheetState();
+}
+
+class _KlantioTijdPickerSheetState extends State<_KlantioTijdPickerSheet> {
+  late TimeOfDay _selected;
+  late TextEditingController _controller;
+  String? _error;
+
+  static const _quickTimes = [
+    TimeOfDay(hour: 8, minute: 0),
+    TimeOfDay(hour: 9, minute: 0),
+    TimeOfDay(hour: 10, minute: 0),
+    TimeOfDay(hour: 13, minute: 0),
+    TimeOfDay(hour: 17, minute: 0),
+    TimeOfDay(hour: 19, minute: 0),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.initialTime;
+    _controller = TextEditingController(text: _format(_selected));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  String _format(TimeOfDay time) {
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+  }
+
+  int _minutes(TimeOfDay time) => time.hour * 60 + time.minute;
+
+  TimeOfDay? _parse(String raw) {
+    final match =
+        RegExp(r'^([01]?\d|2[0-3]):([0-5]\d)$').firstMatch(raw.trim());
+    if (match == null) return null;
+    return TimeOfDay(
+      hour: int.parse(match.group(1)!),
+      minute: int.parse(match.group(2)!),
+    );
+  }
+
+  void _select(TimeOfDay time) {
+    setState(() {
+      _selected = time;
+      _controller.text = _format(time);
+      _error = null;
+    });
+  }
+
+  void _confirm() {
+    final parsed = _parse(_controller.text);
+    if (parsed == null) {
+      setState(() => _error = 'Gebruik 24-uursnotatie, bijvoorbeeld 09:00.');
+      return;
+    }
+    final start = widget.isStart ? parsed : widget.startTime;
+    final end = widget.isStart ? widget.endTime : parsed;
+    if (_minutes(end) <= _minutes(start)) {
+      setState(() => _error = 'Starttijd moet voor eindtijd zijn.');
+      return;
+    }
+    Navigator.pop(context, parsed);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bottom = MediaQuery.viewInsetsOf(context).bottom;
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + bottom),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.12),
+                blurRadius: 24,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 42,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: AppColors.border,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  const Text(
+                    'Tijd kiezen',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.8,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _TimeSummary(
+                          label: 'Begin',
+                          value: _format(
+                              widget.isStart ? _selected : widget.startTime),
+                          active: widget.isStart,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _TimeSummary(
+                          label: 'Einde',
+                          value: _format(
+                              widget.isStart ? widget.endTime : _selected),
+                          active: !widget.isStart,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 18),
+                  TextField(
+                    controller: _controller,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9:]')),
+                      LengthLimitingTextInputFormatter(5),
+                    ],
+                    decoration: const InputDecoration(
+                      labelText: 'Tijd',
+                      hintText: '09:00',
+                    ),
+                    onChanged: (value) {
+                      final parsed = _parse(value);
+                      if (parsed != null) _selected = parsed;
+                      if (_error != null) setState(() => _error = null);
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Snelle keuzes',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final time in _quickTimes)
+                        ChoiceChip(
+                          label: Text(_format(time)),
+                          selected: _format(time) == _format(_selected),
+                          selectedColor: AppColors.primaryLight,
+                          labelStyle: TextStyle(
+                            color: _format(time) == _format(_selected)
+                                ? AppColors.primary
+                                : AppColors.textPrimary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          side: BorderSide(
+                            color: _format(time) == _format(_selected)
+                                ? AppColors.primary
+                                : AppColors.border,
+                          ),
+                          onSelected: (_) => _select(time),
+                        ),
+                    ],
+                  ),
+                  if (_error != null) ...[
+                    const SizedBox(height: 14),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.dangerBg,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.dangerBorder),
+                      ),
+                      child: Text(
+                        _error!,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppColors.dangerText,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Annuleren'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: _confirm,
+                          child: const Text('Tijd gebruiken'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TimeSummary extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool active;
+
+  const _TimeSummary({
+    required this.label,
+    required this.value,
+    required this.active,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: active ? AppColors.primaryLight : AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        border:
+            Border.all(color: active ? AppColors.primary : AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              color: active ? AppColors.primary : AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class _FoutWeergave extends StatelessWidget {
   final String fout;

@@ -47,7 +47,8 @@ class DatumUtils {
     try {
       final dt = DateTime.parse(dateStr);
       final today = DateTime.now();
-      final diff = dt.difference(DateTime(today.year, today.month, today.day)).inDays;
+      final diff =
+          dt.difference(DateTime(today.year, today.month, today.day)).inDays;
       if (diff == 0) return 'Vandaag';
       if (diff == 1) return 'Morgen';
       if (diff == -1) return 'Gisteren';
@@ -61,7 +62,7 @@ class DatumUtils {
     if (minuten < 60) return '$minuten min';
     final uren = minuten ~/ 60;
     final rest = minuten % 60;
-    return rest == 0 ? '$uren u' : '$uren u $rest min';
+    return rest == 0 ? '$uren uur' : '$uren uur $rest min';
   }
 
   static bool isVerlopen(String? dateStr) {

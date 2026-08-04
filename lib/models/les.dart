@@ -48,10 +48,12 @@ class Les {
   final String? lesType;
 
   // Vehicle info (from student_lessen_view if available)
+  final String? voertuigNaam;
   final String? voertuigMerk;
   final String? voertuigModel;
   final String? voertuigKenteken;
   final String? voertuigTransmissie;
+  final String? voertuigCategorie;
 
   // Student license category
   final String? rijbewijsSoort;
@@ -87,10 +89,12 @@ class Les {
     this.instructeurTelefoon,
     this.instructeurEmail,
     this.lesType,
+    this.voertuigNaam,
     this.voertuigMerk,
     this.voertuigModel,
     this.voertuigKenteken,
     this.voertuigTransmissie,
+    this.voertuigCategorie,
     this.rijbewijsSoort,
     this.focusPunten = const [],
     this.ingrepenCount,
@@ -129,14 +133,18 @@ class Les {
 
     // Vehicle data — may come from student_lessen_view join
     final voertuigData = json['voertuig'] as Map<String, dynamic>?;
-    final voertuigMerk = (voertuigData?['merk'] as String?) ??
-        json['voertuig_merk'] as String?;
+    final voertuigNaam =
+        (voertuigData?['naam'] as String?) ?? json['voertuig_naam'] as String?;
+    final voertuigMerk =
+        (voertuigData?['merk'] as String?) ?? json['voertuig_merk'] as String?;
     final voertuigModel = (voertuigData?['model'] as String?) ??
         json['voertuig_model'] as String?;
     final voertuigKenteken = (voertuigData?['kenteken'] as String?) ??
         json['voertuig_kenteken'] as String?;
     final voertuigTransmissie = (voertuigData?['transmissie'] as String?) ??
         json['voertuig_transmissie'] as String?;
+    final voertuigCategorie = (voertuigData?['categorie'] as String?) ??
+        json['voertuig_categorie'] as String?;
 
     return Les(
       id: (json['id'] as String?) ?? '',
@@ -163,10 +171,12 @@ class Les {
       instructeurNaam: instructeurNaam,
       instructeurTelefoon: instructeurTelefoon,
       lesType: lesTypeLabel,
+      voertuigNaam: voertuigNaam,
       voertuigMerk: voertuigMerk,
       voertuigModel: voertuigModel,
       voertuigKenteken: voertuigKenteken,
       voertuigTransmissie: voertuigTransmissie,
+      voertuigCategorie: voertuigCategorie,
       rijbewijsSoort: json['rijbewijs_soort'] as String?,
       focusPunten: _stringList(json['focus_punten']),
       ingrepenCount: json['ingrepen_count'] as String?,

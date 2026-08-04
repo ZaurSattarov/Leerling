@@ -7,6 +7,7 @@ import '../../models/leerling_profiel.dart';
 import '../../models/leerling_beschikbaarheid.dart';
 import '../../models/les.dart';
 import '../../models/factuur.dart';
+import '../../models/leerling_notificatie_voorkeuren.dart';
 import '../../models/notificatie.dart';
 import '../../models/examen.dart';
 import '../../models/instructeur.dart';
@@ -312,26 +313,14 @@ class StudentService {
 
   static Future<List<Notificatie>> getMijnNotificaties(
       String leerlingId) async {
-    List<dynamic> res;
-    try {
-      debugPrint(
-          '[student.notificaties] ophalen leerling=$leerlingId sort=created_at');
-      res = await client
-          .from('leerling_notificaties')
-          .select()
-          .eq('leerling_id', leerlingId)
-          .order('created_at', ascending: false)
-          .limit(50);
-    } catch (_) {
-      debugPrint(
-          '[student.notificaties] created_at niet beschikbaar, fallback sort=aangemaakt_op leerling=$leerlingId');
-      res = await client
-          .from('leerling_notificaties')
-          .select()
-          .eq('leerling_id', leerlingId)
-          .order('aangemaakt_op', ascending: false)
-          .limit(50);
-    }
+    debugPrint(
+        '[student.notificaties] ophalen leerling=$leerlingId sort=aangemaakt_op');
+    final res = await client
+        .from('leerling_notificaties')
+        .select()
+        .eq('leerling_id', leerlingId)
+        .order('aangemaakt_op', ascending: false)
+        .limit(50);
     final now = DateTime.now();
     debugPrint('[student.notificaties] raw count=${res.length}');
     final meldingen = res.map((e) => Notificatie.fromJson(e)).where(
@@ -359,6 +348,57 @@ class StudentService {
         .eq('leerling_id', leerlingId)
         .eq('gelezen', false);
     return (res as List).length;
+  }
+
+  static Future<LeerlingNotificatieVoorkeuren>
+      getMijnNotificatieVoorkeuren() async {
+    final user = currentUser;
+    if (user == null) {
+      throw StateError('Geen ingelogde leerling');
+    }
+
+    final bestaande = await client
+        .from('leerling_notificatie_voorkeuren')
+        .select()
+        .eq('user_id', user.id)
+        .maybeSingle();
+    if (bestaande != null) {
+      return LeerlingNotificatieVoorkeuren.fromJson(bestaande);
+    }
+
+    final defaults = LeerlingNotificatieVoorkeuren(userId: user.id);
+    try {
+      final inserted = await client
+          .from('leerling_notificatie_voorkeuren')
+          .insert(defaults.toJson())
+          .select()
+          .single();
+      return LeerlingNotificatieVoorkeuren.fromJson(inserted);
+    } on PostgrestException catch (e) {
+      if (e.code != '23505') rethrow;
+      final opnieuw = await client
+          .from('leerling_notificatie_voorkeuren')
+          .select()
+          .eq('user_id', user.id)
+          .single();
+      return LeerlingNotificatieVoorkeuren.fromJson(opnieuw);
+    }
+  }
+
+  static Future<LeerlingNotificatieVoorkeuren> slaMijnNotificatieVoorkeurenOp(
+    LeerlingNotificatieVoorkeuren voorkeuren,
+  ) async {
+    final user = currentUser;
+    if (user == null || voorkeuren.userId != user.id) {
+      throw StateError('Voorkeuren horen niet bij de ingelogde leerling');
+    }
+
+    final opgeslagen = await client
+        .from('leerling_notificatie_voorkeuren')
+        .upsert(voorkeuren.toJson(), onConflict: 'user_id')
+        .select()
+        .single();
+    return LeerlingNotificatieVoorkeuren.fromJson(opgeslagen);
   }
 
   static Future<void> markeerGelezen(
@@ -582,9 +622,7 @@ class StudentService {
 
   static Future<Examen?> getEerstvolgendExamen(String leerlingId) async {
     try {
-      final vandaag = DateTime.now()
-          .toIso8601String()
-          .substring(0, 10);
+      final vandaag = DateTime.now().toIso8601String().substring(0, 10);
       final res = await client
           .from('examens')
           .select()
@@ -607,10 +645,11 @@ class StudentService {
 
   static RealtimeChannel subscribeLessen(
     String leerlingId,
-    void Function() onChange,
-  ) {
+    void Function() onChange, {
+    String? channelKey,
+  }) {
     return client
-        .channel('leerling_lessen_$leerlingId')
+        .channel('leerling_lessen_${channelKey ?? leerlingId}')
         .onPostgresChanges(
           event: PostgresChangeEvent.all,
           schema: 'public',
@@ -627,10 +666,11 @@ class StudentService {
 
   static RealtimeChannel subscribeNotificaties(
     String leerlingId,
-    void Function() onChange,
-  ) {
+    void Function() onChange, {
+    String? channelKey,
+  }) {
     return client
-        .channel('leerling_notificaties_$leerlingId')
+        .channel('leerling_notificaties_${channelKey ?? leerlingId}')
         .onPostgresChanges(
           event: PostgresChangeEvent.all,
           schema: 'public',

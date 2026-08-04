@@ -101,14 +101,20 @@ class CompetentieTrend {
 class InzichtItem {
   final IconData icon;
   final Color iconColor;
-  final String tekst;
+  final String titel;
+  final String? oudeWaarde;
+  final String? nieuweWaarde;
+  final String? waarde;
   final String? delta;
   final Color? deltaColor;
 
   const InzichtItem({
     required this.icon,
     required this.iconColor,
-    required this.tekst,
+    required this.titel,
+    this.oudeWaarde,
+    this.nieuweWaarde,
+    this.waarde,
     this.delta,
     this.deltaColor,
   });
@@ -183,7 +189,8 @@ class VoortgangTrendsCalculator {
         ? chronologisch.sublist(chronologisch.length - 4)
         : chronologisch;
 
-    final competentieTrends = _competentieTrends(chronologisch).take(4).toList();
+    final competentieTrends =
+        _competentieTrends(chronologisch).take(4).toList();
     final sterke = _sterkeCompetenties(chronologisch);
     final aandacht = _aandachtspunten(chronologisch);
     final radarWaarden = _radarWaarden(profiel);
@@ -204,14 +211,11 @@ class VoortgangTrendsCalculator {
       tijdlijn: chronologisch.reversed.take(8).map(_tijdlijnItem).toList(),
       sterkeCompetenties: sterke,
       aandachtspunten: aandacht,
-      lesAdvies: _lesAdvies(aandacht, chronologisch),
-      motivatieTekst: _motivatieTekst(huidige, verschil, sterke),
+      lesAdvies: '',
+      motivatieTekst: '',
       inzichten: _inzichten(
         competentieTrends: competentieTrends,
         chronologisch: chronologisch,
-        huidige: huidige,
-        vorige: vorige,
-        verschil: verschil,
       ),
       radarWaarden: radarWaarden,
     );
@@ -258,23 +262,21 @@ class VoortgangTrendsCalculator {
 
   // ── Les advies & motivatie ────────────────────────────────────────────────
 
-  static String _lesAdvies(List<String> aandacht, List<Les> lessen) {
-    if (aandacht.isEmpty) return 'Blijf consistent oefenen en focus op je sterkste punten.';
-    if (aandacht.length == 1) return 'Focus de volgende les op ${aandacht.first.toLowerCase()}.';
-    return 'Focus de volgende les op ${aandacht.first.toLowerCase()} en ${aandacht[1].toLowerCase()}.';
+  static String lesAdvies(List<String> aandacht, List<Les> lessen) {
+    return '';
   }
 
-  static String _motivatieTekst(int huidige, int verschil, List<String> sterk) {
-    if (huidige >= 85) return 'Je bent klaar voor het examen! Blijf consistent.';
-    if (huidige >= 70) return 'Goed bezig, je bent bijna examenklaar.';
+  static String motivatieTekst(int huidige, int verschil, List<String> sterk) {
+    if (huidige >= 85) return '';
+    if (huidige >= 70) return '';
     if (verschil > 0) {
       if (sterk.isNotEmpty) {
-        return 'Mooi! Je ${sterk.first.toLowerCase()} gaat steeds beter.';
+        return '';
       }
-      return 'Je bent goed op weg, blijf zo doorgaan.';
+      return '';
     }
-    if (verschil < 0) return 'Extra oefenen loont — focus op de aandachtspunten.';
-    return 'Je voortgang is stabiel. Meer lessen helpen je verder.';
+    if (verschil < 0) return '';
+    return '';
   }
 
   // ── Dynamische inzichten ──────────────────────────────────────────────────
@@ -282,30 +284,8 @@ class VoortgangTrendsCalculator {
   static List<InzichtItem> _inzichten({
     required List<CompetentieTrend> competentieTrends,
     required List<Les> chronologisch,
-    required int huidige,
-    required int vorige,
-    required int verschil,
   }) {
     final items = <InzichtItem>[];
-
-    // Score verandering
-    if (verschil != 0) {
-      items.add(InzichtItem(
-        icon: verschil > 0
-            ? Icons.trending_up_rounded
-            : Icons.trending_down_rounded,
-        iconColor: verschil > 0
-            ? const Color(0xFF16A34A)
-            : const Color(0xFFE11D48),
-        tekst: verschil > 0
-            ? 'Je examenadvies steeg van $vorige% naar $huidige%.'
-            : 'Je examenadvies daalde van $vorige% naar $huidige%.',
-        delta: '${verschil >= 0 ? '+' : ''}$verschil%',
-        deltaColor: verschil > 0
-            ? const Color(0xFF16A34A)
-            : const Color(0xFFE11D48),
-      ));
-    }
 
     // Stijgende competentie
     final stijgend = competentieTrends.where((c) => c.verschil >= 5).toList();
@@ -313,7 +293,9 @@ class VoortgangTrendsCalculator {
       items.add(InzichtItem(
         icon: Icons.arrow_upward_rounded,
         iconColor: const Color(0xFF16A34A),
-        tekst: 'Je ${c.naam.toLowerCase()} verbeterde van ${c.vorigeScore}% naar ${c.huidigeScore}%.',
+        titel: c.naam,
+        oudeWaarde: '${c.vorigeScore}%',
+        nieuweWaarde: '${c.huidigeScore}%',
         delta: '+${c.verschil}%',
         deltaColor: const Color(0xFF16A34A),
       ));
@@ -325,7 +307,9 @@ class VoortgangTrendsCalculator {
       items.add(InzichtItem(
         icon: Icons.arrow_downward_rounded,
         iconColor: const Color(0xFFD97706),
-        tekst: '${c.naam} vraagt extra aandacht (${c.huidigeScore}%).',
+        titel: c.naam,
+        oudeWaarde: '${c.vorigeScore}%',
+        nieuweWaarde: '${c.huidigeScore}%',
         delta: '${c.verschil}%',
         deltaColor: const Color(0xFFD97706),
       ));
@@ -339,7 +323,8 @@ class VoortgangTrendsCalculator {
       items.add(InzichtItem(
         icon: Icons.remove_rounded,
         iconColor: const Color(0xFF64748B),
-        tekst: '${stabiel.first.naam} blijft stabiel op ${stabiel.first.huidigeScore}%.',
+        titel: stabiel.first.naam,
+        waarde: '${stabiel.first.huidigeScore}% stabiel',
       ));
     }
 
@@ -348,7 +333,8 @@ class VoortgangTrendsCalculator {
       items.add(InzichtItem(
         icon: Icons.calendar_month_rounded,
         iconColor: const Color(0xFF2563EB),
-        tekst: _lessenPerWeekLabel(chronologisch),
+        titel: 'Gemiddeld aantal lessen',
+        waarde: _lessenPerWeekLabel(chronologisch),
       ));
     }
 
@@ -359,7 +345,9 @@ class VoortgangTrendsCalculator {
       items.add(InzichtItem(
         icon: Icons.grade_rounded,
         iconColor: const Color(0xFFD97706),
-        tekst: 'Laatste beoordeling: ${_beoordelingLabel(laatste.beoordeling)} op ${_dagMaand(laatste.datum)}.',
+        titel: 'Laatste beoordeling',
+        waarde:
+            '${_beoordelingLabel(laatste.beoordeling)} · ${_langeDatum(laatste.datum)}',
       ));
     }
 
@@ -559,11 +547,12 @@ class VoortgangTrendsCalculator {
     final dagen = laatste.difference(eerste).inDays.abs().clamp(1, 365);
     final weken = (dagen / 7).clamp(1, 99);
     final perWeek = lessen.length / weken;
-    return 'Je rijdt gemiddeld ${perWeek.toStringAsFixed(1)} lessen per week.';
+    return '${_formatAantal(perWeek)} lessen per week';
   }
 
   static String _scoreUitleg(int vorige, int huidige, int verschil) {
-    if (verschil > 0) return 'Je examenadvies steeg van $vorige% naar $huidige%.';
+    if (verschil > 0)
+      return 'Je examenadvies steeg van $vorige% naar $huidige%.';
     if (verschil < 0) {
       return 'Je examenadvies ging van $vorige% naar $huidige%; focus op consistentie.';
     }
@@ -612,10 +601,26 @@ class VoortgangTrendsCalculator {
     final parsed = DateTime.tryParse(datum);
     if (parsed == null) return datum;
     const maanden = [
-      'jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
-      'jul', 'aug', 'sep', 'okt', 'nov', 'dec'
+      'januari',
+      'februari',
+      'maart',
+      'april',
+      'mei',
+      'juni',
+      'juli',
+      'augustus',
+      'september',
+      'oktober',
+      'november',
+      'december',
     ];
     return '${parsed.day} ${maanden[parsed.month - 1]} ${parsed.year}';
+  }
+
+  static String _formatAantal(double value) {
+    final afgerond = value.roundToDouble();
+    if ((value - afgerond).abs() < 0.05) return afgerond.toInt().toString();
+    return value.toStringAsFixed(1).replaceAll('.', ',');
   }
 
   static double _weightedAverage(List<_WeightedScore> scores) {

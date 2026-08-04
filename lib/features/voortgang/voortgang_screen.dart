@@ -15,8 +15,15 @@ import 'voortgang_trends_provider.dart';
 const _groen = Color(0xFF16A34A);
 const _oranje = Color(0xFFD97706);
 const _blauw = Color(0xFF2563EB);
-const _paars = Color(0xFF5645D4);
 const _rood = Color(0xFFE11D48);
+const _mutedSurface = Color(0xFFF0F2F5);
+const _softSurface = Color(0xFFF8F8FA);
+
+const _screenPadding = 20.0;
+const _sectionGap = 24.0;
+const _sectionTitleGap = 12.0;
+const _cardPadding = 16.0;
+const _cardRadius = 16.0;
 
 // ── Hoofd scherm ──────────────────────────────────────────────────────────────
 
@@ -74,7 +81,12 @@ class VoortgangScreen extends ConsumerWidget {
                           .toList();
 
                       return SliverPadding(
-                        padding: const EdgeInsets.all(20),
+                        padding: EdgeInsets.fromLTRB(
+                          _screenPadding,
+                          16,
+                          _screenPadding,
+                          MediaQuery.paddingOf(context).bottom + 96,
+                        ),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
                             // 1. Lespakket voortgang kaart
@@ -98,7 +110,7 @@ class VoortgangScreen extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: _sectionTitleGap),
 
                             // 2. Examen readiness + motivatie
                             trendsAsync.when(
@@ -108,11 +120,11 @@ class VoortgangScreen extends ConsumerWidget {
                                   const SkeletonBox(height: 120, radius: 18),
                               error: (_, __) => const SizedBox.shrink(),
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: _sectionGap),
 
                             // 3. CBR competenties — radar chart
                             const SectionHeader(title: 'CBR-competenties'),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: _sectionTitleGap),
                             trendsAsync.when(
                               data: (trends) => _CbrRadarCard(
                                 competentieScores: competentieScores,
@@ -125,7 +137,7 @@ class VoortgangScreen extends ConsumerWidget {
                                 radarWaarden: List.filled(6, 0.0),
                               ),
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: _sectionTitleGap),
 
                             // 4. Sterke punten + aandachtspunten
                             trendsAsync.when(
@@ -135,45 +147,46 @@ class VoortgangScreen extends ConsumerWidget {
                                   const SkeletonBox(height: 100, radius: 18),
                               error: (_, __) => const SizedBox.shrink(),
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: _sectionGap),
 
                             // 5. Wat verandert er? — dynamische inzichten
                             const SectionHeader(title: 'Wat verandert er?'),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: _sectionTitleGap),
                             trendsAsync.when(
                               data: (trends) => _InzichtenCard(trends: trends),
                               loading: () => const SkeletonCard(),
                               error: (_, __) => const SizedBox.shrink(),
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: _sectionTitleGap),
 
                             // 6. Score lijn chart + stats
                             trendsAsync.when(
-                              data: (trends) =>
-                                  trends.scoreHistorie.length >= 2
-                                      ? _ScoreChartCard(trends: trends)
-                                      : const SizedBox.shrink(),
+                              data: (trends) => _ScoreChartCard(trends: trends),
                               loading: () => const SizedBox.shrink(),
                               error: (_, __) => const SizedBox.shrink(),
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: _sectionGap),
 
                             // 7. Tijdlijn
                             const SectionHeader(title: 'Voortgang tijdlijn'),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: _sectionTitleGap),
                             trendsAsync.when(
                               data: (trends) =>
                                   _TijdlijnCard(items: trends.tijdlijn),
                               loading: () => const SkeletonCard(),
                               error: (_, __) => const _TijdlijnCard(items: []),
                             ),
-                            const SizedBox(height: 16),
                           ]),
                         ),
                       );
                     },
                     loading: () => SliverPadding(
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.fromLTRB(
+                        _screenPadding,
+                        16,
+                        _screenPadding,
+                        MediaQuery.paddingOf(context).bottom + 96,
+                      ),
                       sliver: SliverList(
                         delegate: SliverChildListDelegate([
                           const SkeletonBox(height: 200, radius: 18),
@@ -212,100 +225,124 @@ class _TotaleVoortgangCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final total = data.afgerondeLessen + data.geplandeLessen + data.nogInTePlannen;
-    return GestureDetector(
-      onTap: () => context.push('/voortgang/lespakket'),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.border, width: 0.75),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
+    final totaal = data.totaalLessen;
+    final percentage = data.percentageLabel;
+    final voortgangZin = totaal > 0
+        ? '${data.afgerondeLessen} van $totaal lessen, $percentage% afgerond'
+        : 'Geen lespakket ingesteld';
+
+    return Semantics(
+      button: true,
+      label:
+          '$voortgangZin. ${data.afgerondeLessen} afgerond, ${data.geplandeLessen} gepland, ${data.nogInTePlannen} resterend.',
+      child: AppCard(
+        onTap: () => context.push('/voortgang/lespakket'),
+        padding: const EdgeInsets.all(_cardPadding),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _CircularProgressWidget(value: data.percentageAfgerond),
-                const SizedBox(width: 20),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        data.pakketLabel.toUpperCase(),
-                        style: const TextStyle(
-                          color: AppColors.primary,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '$total' == '0'
-                            ? '${data.afgerondeLessen}'
-                            : '${data.afgerondeLessen}/$total',
+                        'Pakketvoortgang',
                         style: const TextStyle(
                           color: AppColors.textPrimary,
-                          fontSize: 28,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        totaal > 0
+                            ? '${data.afgerondeLessen} van $totaal lessen'
+                            : '${data.afgerondeLessen} lessen',
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 24,
                           fontWeight: FontWeight.w900,
                           height: 1.0,
                         ),
                       ),
-                      const Text(
-                        'lessen gevolgd',
-                        style: TextStyle(
+                      const SizedBox(height: 4),
+                      Text(
+                        '$percentage% afgerond',
+                        style: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 13,
                         ),
                       ),
+                      if (data.heeftPakket) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          data.pakketLabel,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: AppColors.textHint,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
                 const Icon(Icons.chevron_right_rounded,
-                    color: AppColors.textHint, size: 20),
+                    color: AppColors.textHint, size: 22),
               ],
             ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF0F2F5),
-                borderRadius: BorderRadius.circular(12),
+            const SizedBox(height: 14),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(999),
+              child: LinearProgressIndicator(
+                minHeight: 8,
+                value: data.percentageAfgerond.clamp(0.0, 1.0),
+                backgroundColor: AppColors.border,
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  AppColors.primary,
+                ),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _StatPill(
-                      label: 'AFGEROND',
-                      value: '${data.afgerondeLessen}',
-                      valueColor: AppColors.primary,
+            ),
+            const SizedBox(height: 14),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: _mutedSurface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _StatPill(
+                        label: 'Afgerond',
+                        value: '${data.afgerondeLessen}',
+                        valueColor: AppColors.primary,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: _StatPill(
-                      label: 'GEPLAND',
-                      value: '${data.geplandeLessen}',
-                      valueColor: AppColors.textPrimary,
+                    Expanded(
+                      child: _StatPill(
+                        label: 'Gepland',
+                        value: '${data.geplandeLessen}',
+                        valueColor: AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: _StatPill(
-                      label: 'RESTEREND',
-                      value: '${data.nogInTePlannen}',
-                      valueColor: AppColors.textPrimary,
+                    Expanded(
+                      child: _StatPill(
+                        label: 'Resterend',
+                        value: '${data.nogInTePlannen}',
+                        valueColor: AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -336,76 +373,76 @@ class _ExamenReadinessCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.border, width: 0.75),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 72,
-            height: 72,
-            child: Stack(
-              children: [
-                CustomPaint(
-                  size: const Size(72, 72),
-                  painter: _CircularProgressPainter(
-                    value: trends.huidigeScore / 100,
-                    color: _scoreColor,
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    '${trends.huidigeScore}%',
+    final trendLabel = trends.verschil == 0
+        ? 'Geen vorige meting'
+        : '${trends.verschil > 0 ? '+' : ''}${trends.verschil}% sinds vorige meting';
+
+    return Semantics(
+      label:
+          'Examenadvies ${trends.huidigeScore} procent. $_readinessLabel. $trendLabel.',
+      child: AppCard(
+        padding: const EdgeInsets.all(_cardPadding),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Examenadvies',
                     style: TextStyle(
-                      color: _scoreColor,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w900,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    _StatusChip(
-                      label: _readinessLabel,
-                      color: _scoreColor,
-                    ),
-                    const SizedBox(width: 8),
-                    if (trends.verschil != 0)
-                      _DeltaChip(verschil: trends.verschil),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  trends.motivatieTekst,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    height: 1.4,
-                    color: AppColors.textSecondary,
+                  const SizedBox(height: 6),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${trends.huidigeScore}%',
+                        style: TextStyle(
+                          color: _scoreColor,
+                          fontSize: 32,
+                          fontWeight: FontWeight.w900,
+                          height: 1,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 2),
+                          child: Text(
+                            _readinessLabel,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  trends.verschil == 0
+                      ? const _NeutralBadge(label: 'Geen vorige meting')
+                      : _DeltaChip(verschil: trends.verschil),
+                ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(width: 12),
+            _CircularProgressWidget(
+              value: trends.huidigeScore / 100,
+              color: _scoreColor,
+              size: 64,
+              showLabel: false,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -424,47 +461,135 @@ class _CbrRadarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labels = cbrCompetenties.map((c) => c.naam).toList();
+    final labels = cbrCompetenties.map(_radarLabelVoor).toList();
     final effectiefWaarden = radarWaarden.length == 6
         ? radarWaarden
         : competentieScores.map((s) => s.percentage).toList();
+    final samenvatting = competentieScores
+        .map((score) =>
+            '${score.competentie.naam} ${(score.percentage * 100).round()} procent')
+        .join(', ');
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.border, width: 0.75),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
+    return Semantics(
+      label: 'CBR competenties. $samenvatting.',
+      child: AppCard(
+        padding: const EdgeInsets.all(_cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final chartSize = min(constraints.maxWidth, 260.0);
+                return Center(
+                  child: SizedBox.square(
+                    dimension: chartSize,
+                    child: CustomPaint(
+                      painter: _RadarChartPainter(
+                        waarden: effectiefWaarden,
+                        labels: labels,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            Column(
+              children: competentieScores.asMap().entries.map((entry) {
+                return Padding(
+                  padding: EdgeInsets.only(
+                    top: entry.key == 0 ? 0 : 10,
+                  ),
+                  child: _CompetentieProgressRow(score: entry.value),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+String _radarLabelVoor(CbrCompetentie competentie) {
+  return switch (competentie.naam) {
+    'Voertuigbeheersing' => 'Voertuig',
+    'Kijkgedrag' => 'Kijkgedrag',
+    'Verkeersinzicht' => 'Inzicht',
+    'Bijzondere verrichtingen' => 'Verrichtingen',
+    'Zelfstandig rijden' => 'Zelfstandig',
+    'Examenvoorbereiding' => 'Examen',
+    _ => competentie.naam,
+  };
+}
+
+class _CompetentieProgressRow extends StatelessWidget {
+  final _CompetentieScore score;
+  const _CompetentieProgressRow({required this.score});
+
+  Color get _kleur {
+    if (score.percentage >= 0.8) return _groen;
+    if (score.percentage >= 0.5) return _oranje;
+    return _rood;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final pct = (score.percentage * 100).round();
+    return Semantics(
+      label: '${score.competentie.naam}: $pct procent.',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Radar chart
-          SizedBox(
-            height: 230,
-            width: double.infinity,
-            child: CustomPaint(
-              painter: _RadarChartPainter(
-                waarden: effectiefWaarden,
-                labels: labels,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                margin: const EdgeInsets.only(top: 6),
+                decoration: BoxDecoration(
+                  color: _kleur,
+                  shape: BoxShape.circle,
+                ),
               ),
-            ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  score.competentie.naam,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    height: 1.25,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              SizedBox(
+                width: 44,
+                child: Text(
+                  '$pct%',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
+                    color: _kleur,
+                    height: 1.25,
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          // Legenda
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: competentieScores.asMap().entries.map((entry) {
-              return _CompetentieLegendaItem(score: entry.value);
-            }).toList(),
+          const SizedBox(height: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: LinearProgressIndicator(
+              minHeight: 5,
+              value: score.percentage.clamp(0.0, 1.0),
+              backgroundColor: AppColors.border,
+              valueColor: AlwaysStoppedAnimation<Color>(_kleur),
+            ),
           ),
         ],
       ),
@@ -496,7 +621,8 @@ class _RadarChartPainter extends CustomPainter {
       final path = Path();
       for (var i = 0; i < n; i++) {
         final angle = -pi / 2 + i * 2 * pi / n;
-        final pt = Offset(center.dx + r * cos(angle), center.dy + r * sin(angle));
+        final pt =
+            Offset(center.dx + r * cos(angle), center.dy + r * sin(angle));
         if (i == 0) {
           path.moveTo(pt.dx, pt.dy);
         } else {
@@ -532,8 +658,7 @@ class _RadarChartPainter extends CustomPainter {
     for (var i = 0; i < n; i++) {
       final angle = -pi / 2 + i * 2 * pi / n;
       final r = radius * waarden[i].clamp(0.0, 1.0);
-      final pt =
-          Offset(center.dx + r * cos(angle), center.dy + r * sin(angle));
+      final pt = Offset(center.dx + r * cos(angle), center.dy + r * sin(angle));
       if (i == 0) {
         dataPath.moveTo(pt.dx, pt.dy);
       } else {
@@ -550,8 +675,7 @@ class _RadarChartPainter extends CustomPainter {
     for (var i = 0; i < n; i++) {
       final angle = -pi / 2 + i * 2 * pi / n;
       final r = radius * waarden[i].clamp(0.0, 1.0);
-      final pt =
-          Offset(center.dx + r * cos(angle), center.dy + r * sin(angle));
+      final pt = Offset(center.dx + r * cos(angle), center.dy + r * sin(angle));
       canvas.drawCircle(pt, 5, dotBgPaint);
       canvas.drawCircle(pt, 4, dotPaint);
     }
@@ -566,9 +690,7 @@ class _RadarChartPainter extends CustomPainter {
       );
 
       final pct = (waarden[i] * 100).round();
-      final competentieNaam = labels[i];
-      // Shorten label for radar display
-      final kortLabel = _kortLabel(competentieNaam);
+      final kortLabel = labels[i];
 
       final textPainter = TextPainter(
         text: TextSpan(
@@ -585,7 +707,11 @@ class _RadarChartPainter extends CustomPainter {
             TextSpan(
               text: '$pct%',
               style: TextStyle(
-                color: pct >= 100 ? _groen : pct >= 50 ? _oranje : _rood,
+                color: pct >= 100
+                    ? _groen
+                    : pct >= 50
+                        ? _oranje
+                        : _rood,
                 fontSize: 10,
                 fontWeight: FontWeight.w800,
               ),
@@ -599,24 +725,13 @@ class _RadarChartPainter extends CustomPainter {
       textPainter.paint(
         canvas,
         Offset(
-          (labelCenter.dx - textPainter.width / 2).clamp(0, size.width - textPainter.width),
+          (labelCenter.dx - textPainter.width / 2)
+              .clamp(0, size.width - textPainter.width),
           (labelCenter.dy - textPainter.height / 2)
               .clamp(0, size.height - textPainter.height),
         ),
       );
     }
-  }
-
-  String _kortLabel(String naam) {
-    return switch (naam) {
-      'Voertuigbeheersing' => 'Voertuig',
-      'Kijkgedrag' => 'Kijken',
-      'Verkeersinzicht' => 'Verkeer',
-      'Bijzondere verrichtingen' => 'Verricht.',
-      'Zelfstandig rijden' => 'Zelfst.',
-      'Examenvoorbereiding' => 'Examen',
-      _ => naam.length > 8 ? naam.substring(0, 7) : naam,
-    };
   }
 
   @override
@@ -625,61 +740,6 @@ class _RadarChartPainter extends CustomPainter {
 }
 
 // ── Competentie legenda item ──────────────────────────────────────────────────
-
-class _CompetentieLegendaItem extends StatelessWidget {
-  final _CompetentieScore score;
-  const _CompetentieLegendaItem({required this.score});
-
-  Color get _kleur {
-    if (score.percentage >= 1.0) return _groen;
-    if (score.percentage >= 0.5) return _oranje;
-    return _rood;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final pct = (score.percentage * 100).round();
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE2E2E7)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 7,
-            height: 7,
-            decoration: BoxDecoration(
-              color: _kleur,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            score.competentie.naam,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(width: 5),
-          Text(
-            '$pct%',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w800,
-              color: _kleur,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // ── Sterk / aandacht rij ──────────────────────────────────────────────────────
 
@@ -698,8 +758,8 @@ class _SterkAandachtRow extends StatelessWidget {
         if (trends.sterkeCompetenties.isNotEmpty)
           Expanded(
             child: _PuntenKaart(
-              titel: 'Sterk',
-              icoon: Icons.star_rounded,
+              titel: 'Sterke punten',
+              icoon: Icons.check_rounded,
               kleur: _groen,
               punten: trends.sterkeCompetenties,
             ),
@@ -710,7 +770,7 @@ class _SterkAandachtRow extends StatelessWidget {
         if (trends.aandachtspunten.isNotEmpty)
           Expanded(
             child: _PuntenKaart(
-              titel: 'Aandacht',
+              titel: 'Aandachtspunten',
               icoon: Icons.flag_rounded,
               kleur: _oranje,
               punten: trends.aandachtspunten,
@@ -737,10 +797,10 @@ class _PuntenKaart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(_cardRadius),
         border: Border.all(color: AppColors.border, width: 0.75),
       ),
       child: Column(
@@ -753,29 +813,27 @@ class _PuntenKaart extends StatelessWidget {
               Text(
                 titel,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: kleur,
-                  letterSpacing: 0.2,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           ...punten.map((p) => Padding(
-                padding: const EdgeInsets.only(bottom: 6),
+                padding: const EdgeInsets.only(bottom: 5),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 5,
-                      height: 5,
-                      margin: const EdgeInsets.only(top: 5, right: 7),
-                      decoration: BoxDecoration(
-                        color: kleur,
-                        shape: BoxShape.circle,
-                      ),
+                    Icon(
+                      icoon == Icons.check_rounded
+                          ? Icons.check_circle_rounded
+                          : Icons.flag_circle_rounded,
+                      color: kleur,
+                      size: 14,
                     ),
+                    const SizedBox(width: 7),
                     Expanded(
                       child: Text(
                         p,
@@ -823,16 +881,6 @@ class _InzichtenCard extends StatelessWidget {
                       bottom: entry.key < trends.inzichten.length - 1 ? 12 : 0),
                   child: _InzichtRij(item: entry.value),
                 )),
-          if (trends.lesAdvies.isNotEmpty) ...[
-            const Divider(height: 20),
-            _InzichtRij(
-              item: InzichtItem(
-                icon: Icons.lightbulb_outline_rounded,
-                iconColor: _paars,
-                tekst: trends.lesAdvies,
-              ),
-            ),
-          ],
         ],
       ),
     );
@@ -863,14 +911,37 @@ class _InzichtRij extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item.tekst,
+                item.titel,
                 style: const TextStyle(
                   fontSize: 13,
                   color: AppColors.textPrimary,
-                  height: 1.4,
-                  fontWeight: FontWeight.w500,
+                  height: 1.25,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
+              if (item.oudeWaarde != null && item.nieuweWaarde != null) ...[
+                const SizedBox(height: 3),
+                Text(
+                  '${item.oudeWaarde} → ${item.nieuweWaarde}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                    height: 1.25,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ] else if (item.waarde != null) ...[
+                const SizedBox(height: 3),
+                Text(
+                  item.waarde!,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                    height: 1.25,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -931,7 +1002,7 @@ class _ScoreChartCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Examenadvies trend',
+                      'Examenadviestrend',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w800,
@@ -940,7 +1011,9 @@ class _ScoreChartCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      trends.uitleg,
+                      trends.scoreHistorie.length >= 2
+                          ? 'Vorige, huidig en verschil'
+                          : 'Nog niet genoeg meetpunten voor een lijn',
                       style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
@@ -956,14 +1029,36 @@ class _ScoreChartCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 110,
-            width: double.infinity,
-            child: CustomPaint(
-              painter: _LineChartPainter(trends.scoreHistorie),
+          const SizedBox(height: 14),
+          if (trends.scoreHistorie.length >= 2)
+            SizedBox(
+              height: 110,
+              width: double.infinity,
+              child: CustomPaint(
+                painter: _LineChartPainter(trends.scoreHistorie),
+              ),
+            )
+          else
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+              decoration: BoxDecoration(
+                color: _mutedSurface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Text(
+                trends.scoreHistorie.isEmpty
+                    ? 'Nog geen meetpunten beschikbaar.'
+                    : 'Eén meetpunt beschikbaar: ${trends.huidigeScore}%.',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
-          ),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -973,12 +1068,14 @@ class _ScoreChartCard extends StatelessWidget {
                   value: '${trends.vorigeScore}%',
                 ),
               ),
+              const SizedBox(width: 8),
               Expanded(
                 child: _MiniStat(
                   label: 'Huidig',
                   value: '${trends.huidigeScore}%',
                 ),
               ),
+              const SizedBox(width: 8),
               Expanded(
                 child: _MiniStat(
                   label: 'Verschil',
@@ -1066,7 +1163,8 @@ class _TijdlijnRij extends StatelessWidget {
                     color: Color(0xFFF0F2F5),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(_eventIcon, color: AppColors.textPrimary, size: 14),
+                  child:
+                      Icon(_eventIcon, color: AppColors.textPrimary, size: 14),
                 ),
                 if (!isLast)
                   Expanded(
@@ -1088,24 +1186,25 @@ class _TijdlijnRij extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Event label + beoordeling badge
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        _eventLabel,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textSecondary,
-                          letterSpacing: 0.3,
+                      Expanded(
+                        child: Text(
+                          _eventLabel,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.textPrimary,
+                            height: 1.25,
+                          ),
                         ),
                       ),
-                      const Spacer(),
                       if (item.beoordelingLabel != 'Geen beoordeling')
                         _BeoordelingBadge(label: item.beoordelingLabel),
                     ],
                   ),
-                  const SizedBox(height: 3),
+                  const SizedBox(height: 4),
 
                   // Datum + tijd + lestype
                   Text(
@@ -1113,68 +1212,76 @@ class _TijdlijnRij extends StatelessWidget {
                     '${item.lesType != null ? ' · ${item.lesType}' : ''}',
                     style: const TextStyle(
                       fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textSecondary,
                     ),
                   ),
 
                   // Competentie verbeteringen
                   if (item.verbeteringen.isNotEmpty) ...[
-                    const SizedBox(height: 6),
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 4,
-                      children: item.verbeteringen.map((v) {
-                        final kleur = v.delta >= 100
-                            ? _groen
-                            : v.delta >= 50
-                                ? _oranje
-                                : _rood;
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF0F2F5),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                                color: const Color(0xFFE2E2E7), width: 0.75),
-                          ),
-                          child: Text(
-                            '${v.naam} ${v.delta}%',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: kleur,
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: _mutedSurface,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.border),
+                      ),
+                      child: Column(
+                        children:
+                            item.verbeteringen.asMap().entries.map((entry) {
+                          return Padding(
+                            padding:
+                                EdgeInsets.only(top: entry.key == 0 ? 0 : 6),
+                            child: _TijdlijnScoreRij(score: entry.value),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ],
 
                   // Geoefende onderwerpen
                   if (item.onderwerpen.isNotEmpty) ...[
-                    const SizedBox(height: 5),
-                    Text(
-                      'Geoefend: ${item.onderwerpen.join(', ')}',
-                      style: const TextStyle(
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Geoefend',
+                      style: TextStyle(
                         fontSize: 11,
+                        color: AppColors.textHint,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      item.onderwerpen.join(', '),
+                      style: const TextStyle(
+                        fontSize: 12,
                         color: AppColors.textSecondary,
-                        height: 1.3,
+                        height: 1.35,
                       ),
                     ),
                   ],
 
                   // Instructeur feedback
                   if (item.feedback.isNotEmpty) ...[
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Opmerking',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textHint,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
                     Container(
+                      width: double.infinity,
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF8F8FA),
+                        color: _softSurface,
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                            color: const Color(0xFFE2E2E7), width: 0.75),
+                        border:
+                            Border.all(color: AppColors.border, width: 0.75),
                       ),
                       child: Text(
                         item.feedback,
@@ -1182,7 +1289,7 @@ class _TijdlijnRij extends StatelessWidget {
                           fontSize: 12,
                           color: AppColors.textSecondary,
                           height: 1.4,
-                          fontStyle: FontStyle.italic,
+                          fontStyle: FontStyle.normal,
                         ),
                       ),
                     ),
@@ -1198,6 +1305,51 @@ class _TijdlijnRij extends StatelessWidget {
 }
 
 // ── Gedeelde hulpwidgets ──────────────────────────────────────────────────────
+
+class _TijdlijnScoreRij extends StatelessWidget {
+  final CompetentieDelta score;
+  const _TijdlijnScoreRij({required this.score});
+
+  Color get _kleur {
+    if (score.delta >= 80) return _groen;
+    if (score.delta >= 50) return _oranje;
+    return _rood;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Text(
+            score.naam,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+              height: 1.2,
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        SizedBox(
+          width: 44,
+          child: Text(
+            '${score.delta}%',
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+              color: _kleur,
+              height: 1.2,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class _BeoordelingBadge extends StatelessWidget {
   final String label;
@@ -1258,6 +1410,31 @@ class _StatusChip extends StatelessWidget {
   }
 }
 
+class _NeutralBadge extends StatelessWidget {
+  final String label;
+  const _NeutralBadge({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      decoration: BoxDecoration(
+        color: _mutedSurface,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          color: AppColors.textSecondary,
+        ),
+      ),
+    );
+  }
+}
+
 class _DeltaChip extends StatelessWidget {
   final int verschil;
   const _DeltaChip({required this.verschil});
@@ -1276,7 +1453,9 @@ class _DeltaChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            isPositief ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
+            isPositief
+                ? Icons.arrow_upward_rounded
+                : Icons.arrow_downward_rounded,
             size: 10,
             color: isPositief ? _groen : _rood,
           ),
@@ -1313,9 +1492,10 @@ class _StatPill extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: FontWeight.w900,
             color: valueColor,
+            height: 1,
           ),
         ),
         const SizedBox(height: 3),
@@ -1325,7 +1505,6 @@ class _StatPill extends StatelessWidget {
             fontSize: 10,
             fontWeight: FontWeight.w600,
             color: AppColors.textHint,
-            letterSpacing: 0.8,
           ),
         ),
       ],
@@ -1348,7 +1527,6 @@ class _MiniStat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
-      margin: const EdgeInsets.only(right: 8),
       decoration: BoxDecoration(
         color: const Color(0xFFF0F2F5),
         borderRadius: BorderRadius.circular(12),
@@ -1377,29 +1555,39 @@ class _MiniStat extends StatelessWidget {
 
 class _CircularProgressWidget extends StatelessWidget {
   final double value;
-  const _CircularProgressWidget({required this.value});
+  final Color color;
+  final double size;
+  final bool showLabel;
+
+  const _CircularProgressWidget({
+    required this.value,
+    this.color = AppColors.primary,
+    this.size = 90,
+    this.showLabel = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 90,
-      height: 90,
+      width: size,
+      height: size,
       child: Stack(
         children: [
           CustomPaint(
-            size: const Size(90, 90),
-            painter: _CircularProgressPainter(value: value),
+            size: Size(size, size),
+            painter: _CircularProgressPainter(value: value, color: color),
           ),
-          Center(
-            child: Text(
-              '${(value * 100).round()}%',
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 19,
-                fontWeight: FontWeight.w900,
+          if (showLabel)
+            Center(
+              child: Text(
+                '${(value * 100).round()}%',
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 19,
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -1454,6 +1642,12 @@ class _LineChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    const left = 12.0;
+    const right = 12.0;
+    const top = 16.0;
+    const bottom = 22.0;
+    final chartWidth = size.width - left - right;
+    final chartHeight = size.height - top - bottom;
     final axisPaint = Paint()
       ..color = AppColors.border
       ..strokeWidth = 1;
@@ -1467,22 +1661,22 @@ class _LineChartPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
     final dotPaint = Paint()..color = AppColors.primary;
 
-    canvas.drawLine(Offset(0, size.height - 18),
-        Offset(size.width, size.height - 18), axisPaint);
+    canvas.drawLine(Offset(left, size.height - bottom),
+        Offset(size.width - right, size.height - bottom), axisPaint);
     if (points.isEmpty) return;
 
-    final minScore =
-        points.map((p) => p.score).reduce((a, b) => a < b ? a : b);
-    final maxScore =
-        points.map((p) => p.score).reduce((a, b) => a > b ? a : b);
+    final minScore = points.map((p) => p.score).reduce((a, b) => a < b ? a : b);
+    final maxScore = points.map((p) => p.score).reduce((a, b) => a > b ? a : b);
     final range = (maxScore - minScore).abs() < 8 ? 8 : maxScore - minScore;
-    final usableHeight = size.height - 32;
-    final stepX = points.length == 1 ? 0.0 : size.width / (points.length - 1);
+    final stepX = points.length == 1 ? 0.0 : chartWidth / (points.length - 1);
 
     Offset offsetFor(int index) {
       final score = points[index].score;
       final normalized = (score - minScore) / range;
-      return Offset(index * stepX, usableHeight - normalized * usableHeight);
+      return Offset(
+        left + index * stepX,
+        top + chartHeight - normalized * chartHeight,
+      );
     }
 
     final path = Path()..moveTo(offsetFor(0).dx, offsetFor(0).dy);
@@ -1494,8 +1688,8 @@ class _LineChartPainter extends CustomPainter {
     }
 
     final fillPath = Path.from(path)
-      ..lineTo(offsetFor(points.length - 1).dx, size.height - 18)
-      ..lineTo(offsetFor(0).dx, size.height - 18)
+      ..lineTo(offsetFor(points.length - 1).dx, size.height - bottom)
+      ..lineTo(offsetFor(0).dx, size.height - bottom)
       ..close();
     canvas.drawPath(fillPath, fillPaint);
     canvas.drawPath(path, linePaint);
@@ -1526,8 +1720,7 @@ class _LineChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _LineChartPainter old) =>
-      old.points != points;
+  bool shouldRepaint(covariant _LineChartPainter old) => old.points != points;
 }
 
 // ── CompetentieScore helper ───────────────────────────────────────────────────

@@ -49,50 +49,56 @@ class NotificatiesScreen extends ConsumerWidget {
               child: CustomScrollView(
                 slivers: [
                   notificatiesAsync.when(
-              data: (notificaties) {
-                if (notificaties.isEmpty) {
-                  return const SliverFillRemaining(
-                    child: EmptyState(
-                      icon: Icons.notifications_off_outlined,
-                      title: 'Geen meldingen',
-                      subtitle: 'Je hebt nog geen meldingen ontvangen.',
-                    ),
-                  );
-                }
-                return SliverPadding(
-                  padding: const EdgeInsets.all(20),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, i) => Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: _NotificatieCard(
-                            notificatie: notificaties[i], ref: ref),
+                    data: (notificaties) {
+                      if (notificaties.isEmpty) {
+                        return const SliverFillRemaining(
+                          child: EmptyState(
+                            icon: Icons.notifications_off_outlined,
+                            title: 'Geen meldingen',
+                            subtitle: 'Je hebt nog geen meldingen ontvangen.',
+                          ),
+                        );
+                      }
+                      final groepen = _groepeerNotificaties(notificaties);
+                      return SliverPadding(
+                        padding: const EdgeInsets.all(20),
+                        sliver: SliverList(
+                          delegate: SliverChildListDelegate([
+                            for (final groep in groepen) ...[
+                              SectionHeader(title: groep.label),
+                              const SizedBox(height: 12),
+                              for (final notificatie in groep.items)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: _NotificatieCard(
+                                      notificatie: notificatie, ref: ref),
+                                ),
+                              const SizedBox(height: 12),
+                            ],
+                          ]),
+                        ),
+                      );
+                    },
+                    loading: () => SliverPadding(
+                      padding: const EdgeInsets.all(20),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (_, __) => const Padding(
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: SkeletonCard(),
+                          ),
+                          childCount: 5,
+                        ),
                       ),
-                      childCount: notificaties.length,
+                    ),
+                    error: (e, _) => SliverFillRemaining(
+                      child: EmptyState(
+                        icon: Icons.wifi_off_rounded,
+                        title: 'Kon meldingen niet laden',
+                        subtitle: e.toString(),
+                      ),
                     ),
                   ),
-                );
-              },
-              loading: () => SliverPadding(
-                padding: const EdgeInsets.all(20),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (_, __) => const Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: SkeletonCard(),
-                    ),
-                    childCount: 5,
-                  ),
-                ),
-              ),
-              error: (e, _) => SliverFillRemaining(
-                child: EmptyState(
-                  icon: Icons.wifi_off_rounded,
-                  title: 'Kon meldingen niet laden',
-                  subtitle: e.toString(),
-                ),
-              ),
-            ),
                 ],
               ),
             ),
@@ -115,6 +121,44 @@ class NotificatiesScreen extends ConsumerWidget {
           isSuccess: true);
     }
   }
+}
+
+class _NotificatieGroep {
+  final String label;
+  final List<Notificatie> items;
+
+  const _NotificatieGroep(this.label, this.items);
+}
+
+List<_NotificatieGroep> _groepeerNotificaties(List<Notificatie> notificaties) {
+  final vandaag = <Notificatie>[];
+  final dezeWeek = <Notificatie>[];
+  final eerder = <Notificatie>[];
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+
+  for (final notificatie in notificaties) {
+    final created = DateTime.tryParse(notificatie.createdAt)?.toLocal();
+    if (created == null) {
+      eerder.add(notificatie);
+      continue;
+    }
+    final day = DateTime(created.year, created.month, created.day);
+    final diff = today.difference(day).inDays;
+    if (diff == 0) {
+      vandaag.add(notificatie);
+    } else if (diff < 7) {
+      dezeWeek.add(notificatie);
+    } else {
+      eerder.add(notificatie);
+    }
+  }
+
+  return [
+    if (vandaag.isNotEmpty) _NotificatieGroep('Vandaag', vandaag),
+    if (dezeWeek.isNotEmpty) _NotificatieGroep('Deze week', dezeWeek),
+    if (eerder.isNotEmpty) _NotificatieGroep('Eerder', eerder),
+  ];
 }
 
 class _NotificatieCard extends ConsumerWidget {
@@ -177,7 +221,8 @@ class _NotificatieCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppCard(
-      backgroundColor: AppColors.white,
+      backgroundColor:
+          notificatie.gelezen ? AppColors.white : AppColors.primaryLight,
       onTap: () async {
         if (!notificatie.gelezen && !notificatie.isMock) {
           final profiel = await ref.read(mijnProfielProvider.future);
@@ -213,8 +258,8 @@ class _NotificatieCard extends ConsumerWidget {
                     ),
                     if (!notificatie.gelezen)
                       Container(
-                        width: 8,
-                        height: 8,
+                        width: 9,
+                        height: 9,
                         margin: const EdgeInsets.only(left: 8, top: 4),
                         decoration: const BoxDecoration(
                           color: AppColors.primary,
@@ -234,10 +279,27 @@ class _NotificatieCard extends ConsumerWidget {
                   ),
                 ],
                 const SizedBox(height: 6),
-                Text(
-                  _tijdGeleden(notificatie.aangemaaktOp),
-                  style:
-                      const TextStyle(fontSize: 11, color: AppColors.textHint),
+                Row(
+                  children: [
+                    Text(
+                      _tijdGeleden(notificatie.aangemaaktOp),
+                      style: const TextStyle(
+                          fontSize: 11, color: AppColors.textHint),
+                    ),
+                    if (_absoluteDatum(notificatie.aangemaaktOp)
+                        .isNotEmpty) ...[
+                      const SizedBox(width: 6),
+                      const Text('·',
+                          style: TextStyle(
+                              fontSize: 11, color: AppColors.textHint)),
+                      const SizedBox(width: 6),
+                      Text(
+                        _absoluteDatum(notificatie.aangemaaktOp),
+                        style: const TextStyle(
+                            fontSize: 11, color: AppColors.textHint),
+                      ),
+                    ],
+                  ],
                 ),
               ],
             ),
@@ -256,6 +318,15 @@ class _NotificatieCard extends ConsumerWidget {
       if (diff.inHours < 24) return '${diff.inHours} uur geleden';
       if (diff.inDays == 1) return 'Gisteren';
       return '${diff.inDays} dagen geleden';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  String _absoluteDatum(String ts) {
+    try {
+      final dt = DateTime.parse(ts).toLocal();
+      return '${dt.day.toString().padLeft(2, '0')}-${dt.month.toString().padLeft(2, '0')}-${dt.year}';
     } catch (_) {
       return '';
     }

@@ -4,13 +4,17 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
+import '../../core/utils/contact_uri.dart';
 import '../../models/instructeur.dart';
 import '../../models/leerling_profiel.dart';
+import '../../features/notificaties/notificatie_instellingen_provider.dart';
 import '../../shared/providers/auth_provider.dart';
+import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_tab_header.dart';
 import '../../shared/widgets/snackbar.dart';
 import 'profielfoto_editor.dart';
 import 'rijschool_provider.dart';
+import 'widgets/profiel_menu_widgets.dart';
 
 // ── Design tokens ────────────────────────────────────────────────────────────
 // 1-op-1 overgenomen uit de Instructeur-app (rijschool-planner-flutter,
@@ -99,46 +103,6 @@ class _ProfielHub extends ConsumerStatefulWidget {
 }
 
 class _ProfielHubState extends ConsumerState<_ProfielHub> {
-  Future<void> _wijzigWachtwoord() async {
-    final email = StudentService.currentUser?.email;
-    if (email == null) return;
-
-    final bevestig = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Wachtwoord wijzigen'),
-        content: Text(
-          'We sturen een resetlink naar $email. Volg de instructies in de '
-          'e-mail om een nieuw wachtwoord in te stellen.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Annuleren'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Verstuur'),
-          ),
-        ],
-      ),
-    );
-    if (bevestig != true || !mounted) return;
-
-    try {
-      await StudentService.stuurWachtwoordReset(email);
-      if (mounted) {
-        showAppSnackBar(context, 'E-mail met resetlink verstuurd',
-            isSuccess: true);
-      }
-    } catch (_) {
-      if (mounted) {
-        showAppSnackBar(context, 'Versturen mislukt. Probeer opnieuw.',
-            isError: true);
-      }
-    }
-  }
-
   Future<void> _uitloggen() async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -159,6 +123,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
     );
     if (confirm != true || !mounted) return;
     await StudentService.uitloggen();
+    ref.invalidate(notificatieInstellingenProvider);
     if (mounted) context.go('/login');
   }
 
@@ -178,17 +143,12 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
     );
   }
 
-  Future<void> _openUrl(String url) async {
-    final uri = Uri.tryParse(url);
-    if (uri != null && await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
-  }
-
   Future<void> _toonContactActies(Instructeur instructeur) async {
     await showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
+      barrierColor: Colors.black54,
+      isScrollControlled: true,
       builder: (ctx) => _ContactActiesSheet(instructeur: instructeur),
     );
   }
@@ -218,8 +178,8 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: _sectieKaart([
-              _ProfielMenuTile(
+            child: ProfielMenuCard(children: [
+              ProfielMenuTile(
                 icon: Icons.badge_outlined,
                 label: 'Persoonlijke gegevens',
                 subtitle: 'Naam, contactgegevens & rijbewijs',
@@ -236,8 +196,8 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: _sectieKaart([
-              _ProfielMenuTile(
+            child: ProfielMenuCard(children: [
+              ProfielMenuTile(
                 icon: Icons.school_outlined,
                 label: 'Mijn rijschool',
                 subtitle: 'Rijschool- en instructeurgegevens',
@@ -254,22 +214,21 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: _sectieKaart([
-              _ProfielMenuTile(
+            child: ProfielMenuCard(children: [
+              ProfielMenuTile(
                 icon: Icons.inventory_2_outlined,
                 label: 'Lespakket',
-                subtitle: 'Pakket & voortgangsdetails',
+                subtitle: _lespakketSubtitle(p),
                 // Fallback naar het oude pakket-enum (basis/standaard/...)
                 // uitsluitend wanneer er nog geen snapshot-pakketnaam is
                 // (legacy leerling) -- deze tegel rendert synchroon en
                 // raadpleegt daarom niet de catalogus-fallback (die is
                 // async); het detailscherm (ProfielLespakketScreen) doet
                 // dat wel en toont daar het echte cataloguspakket.
-                trailingText: p?.pakketNaam ?? p?.pakket.label,
                 onTap: () => context.push('/profiel/lespakket'),
               ),
               const Divider(height: 1, indent: 62),
-              _ProfielMenuTile(
+              ProfielMenuTile(
                 icon: Icons.trending_up_rounded,
                 label: 'Mijn voortgang',
                 subtitle: p != null
@@ -278,7 +237,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
                 onTap: () => context.go('/voortgang'),
               ),
               const Divider(height: 1, indent: 62),
-              _ProfielMenuTile(
+              ProfielMenuTile(
                 icon: Icons.quiz_outlined,
                 label: 'Mijn examens',
                 subtitle: 'Examenstatus & resultaten',
@@ -295,16 +254,9 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: _sectieKaart([
-              _ProfielMenuTile(
-                icon: Icons.notifications_none_rounded,
-                label: 'Meldingen',
-                subtitle: 'Bekijk je meldingen',
-                onTap: () => context.push('/notificaties'),
-              ),
-              const Divider(height: 1, indent: 62),
+            child: ProfielMenuCard(children: [
               instructeurAsync.maybeWhen(
-                data: (instructeur) => _ProfielMenuTile(
+                data: (instructeur) => ProfielMenuTile(
                   icon: Icons.forum_outlined,
                   label: 'Contact met instructeur',
                   subtitle: 'Bel of app je instructeur',
@@ -312,7 +264,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
                       ? null
                       : () => _toonContactActies(instructeur),
                 ),
-                orElse: () => const _ProfielMenuTile(
+                orElse: () => const ProfielMenuTile(
                   icon: Icons.forum_outlined,
                   label: 'Contact met instructeur',
                 ),
@@ -328,8 +280,8 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: _sectieKaart([
-              _ProfielMenuTile(
+            child: ProfielMenuCard(children: [
+              ProfielMenuTile(
                 icon: Icons.receipt_long_outlined,
                 label: 'Mijn facturen',
                 subtitle: 'Bekijk en betaal facturen',
@@ -346,21 +298,19 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: _sectieKaart([
-              _ProfielMenuTile(
-                icon: Icons.lock_outline_rounded,
-                label: 'Wachtwoord',
-                subtitle: 'Wijzig via e-mail',
-                onTap: StudentService.currentUser?.email == null
-                    ? null
-                    : _wijzigWachtwoord,
+            child: ProfielMenuCard(children: [
+              ProfielMenuTile(
+                icon: Icons.settings_outlined,
+                label: 'App-instellingen',
+                subtitle: 'Meldingen, machtigingen en beveiliging',
+                onTap: () => context.push('/profiel/app-instellingen'),
               ),
               const Divider(height: 1, indent: 62),
-              _ProfielMenuTile(
+              ProfielMenuTile(
                 icon: Icons.privacy_tip_outlined,
                 label: 'Privacy',
                 subtitle: 'Hoe wij omgaan met je gegevens',
-                onTap: () => _openUrl('https://klantio.nl/privacy'),
+                onTap: () => context.push('/profiel/privacy'),
               ),
             ]),
           ),
@@ -373,14 +323,14 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: _sectieKaart([
-              _ProfielMenuTile(
+            child: ProfielMenuCard(children: [
+              ProfielMenuTile(
                 icon: Icons.headset_mic_outlined,
                 label: 'Help & Support',
                 onTap: () => context.push('/help'),
               ),
               const Divider(height: 1, indent: 62),
-              _ProfielMenuTile(
+              ProfielMenuTile(
                 icon: Icons.info_outline_rounded,
                 label: 'Over de app',
                 onTap: _toonOverDeApp,
@@ -408,106 +358,22 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
       ),
     );
   }
-}
 
-Widget _sectieKaart(List<Widget> children) {
-  return DecoratedBox(
-    decoration: BoxDecoration(
-      color: _ProfileDesign.card,
-      borderRadius: BorderRadius.circular(_ProfileDesign.cardRadius),
-      border: Border.all(color: AppColors.border),
-    ),
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(_ProfileDesign.cardRadius),
-      child: Column(children: children),
-    ),
-  );
+  String _lespakketSubtitle(LeerlingProfiel? profiel) {
+    if (profiel == null) return 'Pakket- en voortgangsdetails';
+    final pakketNaam = profiel.pakketNaam?.trim().isNotEmpty == true
+        ? profiel.pakketNaam!.trim()
+        : profiel.pakket.label;
+    final resterend =
+        (profiel.lessenTotaal - profiel.lessenGevolgd).clamp(0, 999);
+    return '$pakketNaam · $resterend lessen resterend';
+  }
 }
 
 // ── Menu tegel ────────────────────────────────────────────────────────────────
 // 1-op-1 overgenomen visueel patroon uit de Instructeur-app (_ProfielMenuTile):
 // iconbadge 36x36, cardTitle/subtitle-typografie, pijl alleen zichtbaar als
 // de tegel navigeerbaar is (onTap != null).
-
-class _ProfielMenuTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String? subtitle;
-  final String? trailingText;
-  final VoidCallback? onTap;
-
-  const _ProfielMenuTile({
-    required this.icon,
-    required this.label,
-    this.subtitle,
-    this.trailingText,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      overlayColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.pressed)) {
-          return _ProfileDesign.pressed;
-        }
-        return Colors.transparent;
-      }),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-        child: Row(
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF0F2F5),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: _ProfileDesign.hairline),
-              ),
-              child: Icon(icon, color: const Color(0xFF475569), size: 18),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(label, style: _ProfileDesign.cardTitle),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 3),
-                    Text(subtitle!, style: _ProfileDesign.subtitle),
-                  ],
-                ],
-              ),
-            ),
-            if (trailingText != null) ...[
-              const SizedBox(width: 10),
-              Flexible(
-                child: Text(
-                  trailingText!,
-                  textAlign: TextAlign.right,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: _ProfileDesign.secondary,
-                  ),
-                ),
-              ),
-            ],
-            if (onTap != null) ...[
-              const SizedBox(width: 6),
-              const Icon(Icons.chevron_right_rounded,
-                  color: _ProfileDesign.arrow, size: 17),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ── Identiteitskaart ─────────────────────────────────────────────────────────
 // 1-op-1 overgenomen uit de Instructeur-app (_ProfielSaasHeader): witte
@@ -766,8 +632,7 @@ class _DangerRowState extends State<_DangerRow> {
 
   @override
   Widget build(BuildContext context) {
-    final background =
-        _pressed ? _ProfileDesign.danger : _ProfileDesign.card;
+    final background = _pressed ? _ProfileDesign.danger : _ProfileDesign.card;
     final foreground = _pressed ? Colors.white : _ProfileDesign.danger;
 
     return Material(
@@ -812,66 +677,197 @@ class _ContactActiesSheet extends StatelessWidget {
   final Instructeur instructeur;
   const _ContactActiesSheet({required this.instructeur});
 
-  Future<void> _launch(String url) async {
-    final uri = Uri.parse(url);
+  Future<void> _launch(BuildContext context, Uri uri) async {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
+      return;
+    }
+    if (context.mounted) {
+      showAppSnackBar(context, 'Openen lukt niet op dit toestel.',
+          isError: true);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final String? tel =
-        instructeur.telefoon?.isNotEmpty == true ? instructeur.telefoon : null;
-    final String? wa = instructeur.whatsappNummer?.isNotEmpty == true
-        ? instructeur.whatsappNummer
-        : tel;
+    final telUri = ContactUri.tel(instructeur.telefoon);
+    final whatsappUri =
+        ContactUri.whatsapp(instructeur.whatsappNummer ?? instructeur.telefoon);
+    final emailUri = ContactUri.email(
+      instructeur.email,
+      subject: 'Vraag via Klantio Leerlingen-app',
+    );
+    final heeftActies =
+        telUri != null || whatsappUri != null || emailUri != null;
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 38,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.border,
-                borderRadius: BorderRadius.circular(999),
-              ),
-            ),
-            const SizedBox(height: 18),
-            if (tel != null)
-              PhotoSourceTile(
-                icon: Icons.phone_outlined,
-                label: 'Bellen',
-                onTap: () {
-                  Navigator.pop(context);
-                  _launch('tel:$tel');
-                },
-              ),
-            if (wa != null) ...[
-              if (tel != null) const Divider(height: 18),
-              PhotoSourceTile(
-                icon: Icons.chat_outlined,
-                label: 'WhatsApp',
-                onTap: () {
-                  Navigator.pop(context);
-                  final nr = wa.replaceAll(RegExp(r'\D'), '');
-                  _launch('https://wa.me/$nr');
-                },
+        padding: EdgeInsets.fromLTRB(
+          16,
+          0,
+          16,
+          16 + MediaQuery.viewInsetsOf(context).bottom,
+        ),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.12),
+                blurRadius: 24,
+                offset: const Offset(0, 8),
               ),
             ],
-            if (tel == null && wa == null)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  'Geen contactgegevens bekend voor je instructeur.',
-                  style: TextStyle(
-                      fontSize: 14, color: AppColors.textSecondary),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 42,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.border,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
                 ),
+                const SizedBox(height: 18),
+                const Text(
+                  'Contact met je instructeur',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                if (instructeur.naam?.trim().isNotEmpty == true) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    instructeur.naam!.trim(),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 18),
+                if (telUri != null)
+                  _ContactSheetAction(
+                    icon: Icons.phone_outlined,
+                    iconColor: AppColors.successSolid,
+                    label: 'Bellen',
+                    value: instructeur.telefoon!.trim(),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      await _launch(context, telUri);
+                    },
+                  ),
+                if (telUri != null && (whatsappUri != null || emailUri != null))
+                  const Divider(height: 18),
+                if (whatsappUri != null)
+                  _ContactSheetAction(
+                    icon: Icons.chat_outlined,
+                    iconColor: AppColors.whatsapp,
+                    label: 'WhatsApp',
+                    value: (instructeur.whatsappNummer ?? instructeur.telefoon)!
+                        .trim(),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      await _launch(context, whatsappUri);
+                    },
+                  ),
+                if (whatsappUri != null && emailUri != null)
+                  const Divider(height: 18),
+                if (emailUri != null)
+                  _ContactSheetAction(
+                    icon: Icons.email_outlined,
+                    iconColor: AppColors.infoSolid,
+                    label: 'E-mail',
+                    value: instructeur.email!.trim(),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      await _launch(context, emailUri);
+                    },
+                  ),
+                if (!heeftActies)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    child: Text(
+                      'Geen geldige contactgegevens bekend voor je instructeur.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        height: 1.4,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ContactSheetAction extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String label;
+  final String value;
+  final Future<void> Function() onTap;
+
+  const _ContactSheetAction({
+    required this.icon,
+    required this.iconColor,
+    required this.label,
+    required this.value,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            IconBadge(icon: icon, color: iconColor, size: 42),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
               ),
+            ),
+            const Icon(Icons.chevron_right_rounded,
+                color: AppColors.textMuted, size: 20),
           ],
         ),
       ),

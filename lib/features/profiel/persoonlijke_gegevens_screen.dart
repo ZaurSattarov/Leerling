@@ -7,6 +7,7 @@ import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'profielfoto_editor.dart';
+import 'widgets/profile_info_row.dart';
 
 /// Profiel -> Persoonlijke gegevens (Fase 5). Alle getoonde velden komen
 /// rechtstreeks uit `leerlingen` (via het al bestaande mijnProfielProvider /
@@ -104,29 +105,32 @@ class _PersoonlijkeGegevensBody extends StatelessWidget {
         AppCard(
           child: Column(
             children: [
-              _GegevensRij(
+              ProfileInfoRow(
                 icon: Icons.badge_outlined,
                 iconColor: AppColors.iconBlue,
                 label: 'Naam',
-                waarde: profiel.volledigeNaam,
+                value: profiel.volledigeNaam,
               ),
               const Divider(height: 20),
-              _GegevensRij(
+              ProfileInfoRow(
                 icon: Icons.phone_outlined,
                 iconColor: AppColors.iconGreen,
                 label: 'Telefoon',
-                waarde: profiel.telefoon?.trim().isNotEmpty == true
+                value: profiel.telefoon?.trim().isNotEmpty == true
                     ? profiel.telefoon!
                     : _leeg,
+                isEmpty: profiel.telefoon?.trim().isNotEmpty != true,
               ),
               const Divider(height: 20),
-              _GegevensRij(
+              ProfileInfoRow(
                 icon: Icons.email_outlined,
                 iconColor: AppColors.iconPurple,
                 label: 'E-mailadres',
-                waarde: profiel.email?.trim().isNotEmpty == true
+                value: profiel.email?.trim().isNotEmpty == true
                     ? profiel.email!
                     : _leeg,
+                isEmpty: profiel.email?.trim().isNotEmpty != true,
+                maxValueLines: 2,
               ),
             ],
           ),
@@ -137,29 +141,33 @@ class _PersoonlijkeGegevensBody extends StatelessWidget {
         AppCard(
           child: Column(
             children: [
-              _GegevensRij(
+              ProfileInfoRow(
                 icon: Icons.cake_outlined,
                 iconColor: AppColors.iconAmber,
                 label: 'Geboortedatum',
-                waarde: geboortedatum ?? _leeg,
+                value: geboortedatum ?? _leeg,
+                isEmpty: geboortedatum == null,
               ),
               const Divider(height: 20),
-              _GegevensRij(
+              ProfileInfoRow(
                 icon: Icons.location_on_outlined,
                 iconColor: AppColors.iconSlate,
                 label: 'Adres',
-                waarde: profiel.adres?.trim().isNotEmpty == true
+                value: profiel.adres?.trim().isNotEmpty == true
                     ? profiel.adres!
                     : _leeg,
+                isEmpty: profiel.adres?.trim().isNotEmpty != true,
+                maxValueLines: 3,
               ),
               const Divider(height: 20),
-              _GegevensRij(
+              ProfileInfoRow(
                 icon: Icons.directions_car_outlined,
                 iconColor: AppColors.iconDark,
                 label: 'Rijbewijscategorie',
-                waarde: profiel.rijbewijsSoort?.trim().isNotEmpty == true
+                value: profiel.rijbewijsSoort?.trim().isNotEmpty == true
                     ? profiel.rijbewijsSoort!.toUpperCase()
                     : _leeg,
+                isEmpty: profiel.rijbewijsSoort?.trim().isNotEmpty != true,
               ),
             ],
           ),
@@ -174,14 +182,18 @@ class _PersoonlijkeGegevensBody extends StatelessWidget {
           ),
           child: const Row(
             children: [
-              Icon(Icons.info_outline_rounded, color: AppColors.iconDark, size: 18),
+              Icon(Icons.info_outline_rounded,
+                  color: AppColors.iconDark, size: 18),
               SizedBox(width: 10),
               Expanded(
                 child: Text(
                   'Deze gegevens worden beheerd door je rijschool. Klopt er iets '
                   'niet? Neem contact op met je instructeur om het te laten '
                   'aanpassen.',
-                  style: TextStyle(fontSize: 12, height: 1.4, color: AppColors.textSecondary),
+                  style: TextStyle(
+                      fontSize: 12,
+                      height: 1.4,
+                      color: AppColors.textSecondary),
                 ),
               ),
             ],
@@ -221,56 +233,14 @@ class _FotoKaart extends StatelessWidget {
                 const SizedBox(height: 4),
                 const Text(
                   'Tik op de foto om je profielfoto te wijzigen',
-                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                  style:
+                      TextStyle(fontSize: 12, color: AppColors.textSecondary),
                 ),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _GegevensRij extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String label;
-  final String waarde;
-
-  const _GegevensRij({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-    required this.waarde,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isLeeg = waarde == ProfielPersoonlijkeGegevensScreen._leeg;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        IconBadge(icon: icon, color: iconColor, size: 34),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(label,
-              style:
-                  const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
-        ),
-        Flexible(
-          child: Text(
-            waarde,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: isLeeg ? AppColors.textHint : AppColors.textPrimary,
-              fontStyle: isLeeg ? FontStyle.italic : FontStyle.normal,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

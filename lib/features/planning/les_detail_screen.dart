@@ -10,8 +10,8 @@ import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import '../../shared/widgets/snackbar.dart';
-import '../../shared/widgets/status_pill.dart';
 import 'planning_provider.dart';
+import 'widgets/lesson_status_badge.dart';
 
 class LesDetailScreen extends ConsumerWidget {
   final String id;
@@ -28,11 +28,11 @@ class LesDetailScreen extends ConsumerWidget {
         children: [
           MainDetailHeader(
             eyebrowText: 'PLANNING',
-            title: 'Les detail',
+            title: 'Lesdetails',
             actions: [
               lesAsync.when(
                 data: (les) => les != null
-                    ? StatusPill.les(les.status)
+                    ? LessonStatusBadge(status: les.status)
                     : const SizedBox.shrink(),
                 loading: () => const SizedBox.shrink(),
                 error: (_, __) => const SizedBox.shrink(),
@@ -85,11 +85,12 @@ class _LesDetailBody extends ConsumerWidget {
         ? ref.watch(
             lesEvaluatieProvider((lesId: les.id, leerlingId: leerlingId!)))
         : null;
+    final bottomPadding = MediaQuery.paddingOf(context).bottom + 96;
 
     return CustomScrollView(
       slivers: [
         SliverPadding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+          padding: EdgeInsets.fromLTRB(20, 20, 20, bottomPadding),
           sliver: SliverList(
             delegate: SliverChildListDelegate([
               // 1. Datum & Tijd
@@ -97,15 +98,16 @@ class _LesDetailBody extends ConsumerWidget {
               const SizedBox(height: 12),
 
               // 2. Status tijdlijn
-              if (les.status != LesStatus.geannuleerd) ...[
-                _StatusTijdlijn(status: les.status),
-                const SizedBox(height: 12),
-              ],
+              _StatusTijdlijn(status: les.status),
+              const SizedBox(height: 12),
 
               // 3. Instructeur + contact
               if (les.instructeurNaam?.isNotEmpty == true ||
-                  les.instructeurTelefoon?.isNotEmpty == true) ...[
+                  les.instructeurTelefoon?.isNotEmpty == true ||
+                  les.instructeurEmail?.isNotEmpty == true) ...[
                 _InstructeurCard(les: les),
+                const SizedBox(height: 12),
+                _ContactActiesCard(les: les),
                 const SizedBox(height: 12),
               ],
 
@@ -132,7 +134,7 @@ class _LesDetailBody extends ConsumerWidget {
               if (les.geoefendeOnderwerpen.isNotEmpty) ...[
                 _OnderwerpCard(
                   titel: les.status == LesStatus.gepland
-                      ? 'Wat we gaan oefenen'
+                      ? 'Geplande onderwerpen'
                       : 'Geoefende onderwerpen',
                   onderwerpen: les.geoefendeOnderwerpen,
                   iconColor: const Color(0xFF5645D4),
@@ -168,19 +170,21 @@ class _LesDetailBody extends ConsumerWidget {
                 evalAsync.when(
                   data: (eval) => eval != null
                       ? _EvaluatieSection(eval: eval)
-                      : const SizedBox.shrink(),
+                      : const _EvaluatieNietBeschikbaar(),
                   loading: () => const _EvaluatieLoadingSkeleton(),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (_, __) => const _EvaluatieNietBeschikbaar(),
                 ),
               ] else if (les.status == LesStatus.afgerond &&
                   les.zichtbaarVoorLeerling &&
                   (les.focusPunten.isNotEmpty ||
                       les.volgendeLesAdvies?.isNotEmpty == true)) ...[
                 _EvaluatieFallback(les: les),
+              ] else if (les.status == LesStatus.afgerond) ...[
+                const _EvaluatieNietBeschikbaar(),
               ],
 
-              // 11. Volgende les CTA (alleen bij gepland)
-              if (les.status == LesStatus.gepland) ...[
+              // 11. Nieuwe les aanvragen (alleen na afgeronde les)
+              if (les.status == LesStatus.afgerond) ...[
                 const SizedBox(height: 4),
                 _VolgendeLesCTA(les: les),
               ],
@@ -192,10 +196,12 @@ class _LesDetailBody extends ConsumerWidget {
   }
 
   bool _heeftVoertuig(Les les) =>
+      les.voertuigNaam?.isNotEmpty == true ||
       les.voertuigMerk?.isNotEmpty == true ||
       les.voertuigModel?.isNotEmpty == true ||
       les.voertuigKenteken?.isNotEmpty == true ||
-      les.voertuigTransmissie?.isNotEmpty == true;
+      les.voertuigTransmissie?.isNotEmpty == true ||
+      les.voertuigCategorie?.isNotEmpty == true;
 }
 
 // ── Datum & Tijd card ─────────────────────────────────────────────────────────
@@ -209,46 +215,7 @@ class _DatumTijdCard extends StatelessWidget {
     return AppCard(
       child: Row(
         children: [
-          Container(
-            width: 58,
-            height: 70,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F2F5),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE2E2E7), width: 0.75),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  _dagAfk(les.datum),
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.6,
-                  ),
-                ),
-                Text(
-                  _dagNummer(les.datum),
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w900,
-                    height: 1.05,
-                  ),
-                ),
-                Text(
-                  _maandAfk(les.datum),
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _DetailDateBlock(datum: les.datum),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -258,36 +225,88 @@ class _DatumTijdCard extends StatelessWidget {
                   DatumUtils.langeDatum(les.datum),
                   style: const TextStyle(
                     fontSize: 15,
-                    fontWeight: FontWeight.w700,
+                    height: 1.2,
+                    fontWeight: FontWeight.w800,
                     color: AppColors.textPrimary,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Row(
                   children: [
                     const Icon(Icons.access_time_rounded,
-                        size: 14, color: AppColors.textSecondary),
+                        size: 15, color: AppColors.textSecondary),
                     const SizedBox(width: 5),
-                    Text(
-                      '${les.starttijd} – ${les.eindtijd}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary,
+                    Expanded(
+                      child: Text(
+                        '${les.starttijd} - ${les.eindtijd} · ${DatumUtils.duurLabel(les.duurMinuten)}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          height: 1.2,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  DatumUtils.duurLabel(les.duurMinuten),
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textHint,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailDateBlock extends StatelessWidget {
+  final String datum;
+
+  const _DetailDateBlock({required this.datum});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 58,
+      height: 70,
+      decoration: BoxDecoration(
+        color: const Color(0xFFF0F2F5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE2E2E7), width: 0.75),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            _dagAfk(datum),
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 10,
+              height: 1,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            _dagNummer(datum),
+            style: const TextStyle(
+              color: AppColors.primary,
+              fontSize: 25,
+              height: 1,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            _maandAfk(datum),
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 10,
+              height: 1,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
@@ -315,8 +334,18 @@ class _DatumTijdCard extends StatelessWidget {
   String _maandAfk(String datum) {
     try {
       const months = [
-        'jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
-        'jul', 'aug', 'sep', 'okt', 'nov', 'dec'
+        'jan',
+        'feb',
+        'mrt',
+        'apr',
+        'mei',
+        'jun',
+        'jul',
+        'aug',
+        'sep',
+        'okt',
+        'nov',
+        'dec',
       ];
       return months[DateTime.parse(datum).month - 1];
     } catch (_) {
@@ -331,13 +360,24 @@ class _StatusTijdlijn extends StatelessWidget {
   final LesStatus status;
   const _StatusTijdlijn({required this.status});
 
-  static const _stappen = ['Gepland', 'Onderweg', 'Gestart', 'Afgerond'];
+  List<LesStatus> get _stappen {
+    return switch (status) {
+      LesStatus.afgerond => const [LesStatus.gepland, LesStatus.afgerond],
+      LesStatus.geannuleerd => const [LesStatus.gepland, LesStatus.geannuleerd],
+      LesStatus.verzet => const [LesStatus.gepland, LesStatus.verzet],
+      LesStatus.geen_toon => const [LesStatus.gepland, LesStatus.geen_toon],
+      LesStatus.gepland => const [LesStatus.gepland, LesStatus.afgerond],
+    };
+  }
 
   int get _activeIndex {
     return switch (status) {
       LesStatus.gepland => 0,
-      LesStatus.afgerond => 3,
-      _ => 0,
+      LesStatus.afgerond ||
+      LesStatus.geannuleerd ||
+      LesStatus.verzet ||
+      LesStatus.geen_toon =>
+        1,
     };
   }
 
@@ -352,12 +392,11 @@ class _StatusTijdlijn extends StatelessWidget {
             'Lesstatus',
             style: TextStyle(
               fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
               color: AppColors.textSecondary,
-              letterSpacing: 0.3,
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 16),
           Row(
             children: List.generate(_stappen.length * 2 - 1, (i) {
               if (i.isOdd) {
@@ -368,55 +407,56 @@ class _StatusTijdlijn extends StatelessWidget {
                     height: 2,
                     color: isCompleted
                         ? AppColors.primary
-                        : const Color(0xFFE2E2E7),
+                        : const Color(0xFFD5DAE1),
                   ),
                 );
               }
               final stepIndex = i ~/ 2;
               final isActive = stepIndex == active;
               final isCompleted = stepIndex < active;
-              return Column(
-                children: [
-                  Container(
-                    width: 28,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isCompleted
-                          ? AppColors.primary
+              return SizedBox(
+                width: 82,
+                child: Column(
+                  children: [
+                    Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isCompleted || isActive
+                            ? AppColors.primary
+                            : const Color(0xFFF0F2F5),
+                        border: isCompleted || isActive
+                            ? null
+                            : Border.all(color: const Color(0xFFD5DAE1)),
+                      ),
+                      child: isCompleted
+                          ? const Icon(Icons.check_rounded,
+                              color: Colors.white, size: 14)
                           : isActive
-                              ? AppColors.primary
-                              : const Color(0xFFF0F2F5),
-                      border: isActive
-                          ? null
-                          : Border.all(
-                              color: isCompleted
-                                  ? AppColors.primary
-                                  : const Color(0xFFE2E2E7),
-                            ),
+                              ? const Icon(Icons.circle,
+                                  color: Colors.white, size: 8)
+                              : null,
                     ),
-                    child: isCompleted
-                        ? const Icon(Icons.check_rounded,
-                            color: Colors.white, size: 14)
-                        : isActive
-                            ? const Icon(Icons.circle,
-                                color: Colors.white, size: 8)
-                            : null,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    _stappen[stepIndex],
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: isActive || isCompleted
-                          ? FontWeight.w600
-                          : FontWeight.w400,
-                      color: isActive || isCompleted
-                          ? AppColors.textPrimary
-                          : AppColors.textHint,
+                    const SizedBox(height: 8),
+                    Text(
+                      _stappen[stepIndex].label,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        height: 1.15,
+                        fontWeight: isActive || isCompleted
+                            ? FontWeight.w700
+                            : FontWeight.w600,
+                        color: isActive || isCompleted
+                            ? AppColors.textPrimary
+                            : AppColors.textSecondary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             }),
           ),
@@ -426,79 +466,207 @@ class _StatusTijdlijn extends StatelessWidget {
   }
 }
 
-// ── Instructeur card ───────────────────────────────────────────────────────────
-
 class _InstructeurCard extends StatelessWidget {
   final Les les;
   const _InstructeurCard({required this.les});
 
   @override
   Widget build(BuildContext context) {
+    final naam = les.instructeurNaam?.trim();
+    final toonNaam = naam != null && naam.isNotEmpty && !naam.contains('@');
+    final telefoon = les.instructeurTelefoon?.trim();
+    final email = les.instructeurEmail?.trim();
+    final heeftTelefoon = telefoon != null && telefoon.isNotEmpty;
+    final heeftEmail = email != null && _isValidEmail(email);
+
     return AppCard(
-      child: Column(
+      padding: const EdgeInsets.all(14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (les.instructeurNaam?.isNotEmpty == true &&
-              !les.instructeurNaam!.contains('@'))
-            _InfoRow(
-              icon: Icons.person_rounded,
-              iconColor: const Color(0xFF2563EB),
-              label: 'Instructeur',
-              value: les.instructeurNaam!,
-            ),
-          if (les.instructeurTelefoon?.isNotEmpty == true) ...[
-            if (les.instructeurNaam?.isNotEmpty == true)
-              const Divider(height: 20),
-            _InfoRow(
-              icon: Icons.phone_rounded,
-              iconColor: const Color(0xFF16A34A),
-              label: 'Telefoon',
-              value: les.instructeurTelefoon!,
-            ),
-            const SizedBox(height: 14),
-            Row(
+          const IconBadge(
+            icon: Icons.person_rounded,
+            color: AppColors.textPrimary,
+            size: 38,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _ContactButton(
-                    icon: Icons.call_rounded,
-                    label: 'Bellen',
-                    iconColor: const Color(0xFF16A34A),
-                    onTap: () => _bel(context, les.instructeurTelefoon!),
+                const Text(
+                  'Jouw instructeur',
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textSecondary,
                   ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _ContactButton(
-                    icon: Icons.chat_rounded,
-                    label: 'WhatsApp',
-                    iconColor: const Color(0xFF25D366),
-                    onTap: () => _whatsapp(context, les.instructeurTelefoon!),
+                if (toonNaam) ...[
+                  const SizedBox(height: 7),
+                  Text(
+                    naam,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      height: 1.15,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.textPrimary,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
+                ],
+                if (heeftTelefoon) ...[
+                  const SizedBox(height: 6),
+                  _InlineContactValue(
+                    icon: Icons.phone_rounded,
+                    value: telefoon,
+                  ),
+                ],
+                if (heeftEmail) ...[
+                  const SizedBox(height: 5),
+                  _InlineContactValue(
+                    icon: Icons.mail_outline_rounded,
+                    value: email,
+                    maxLines: 2,
+                  ),
+                ],
               ],
             ),
-          ],
+          ),
         ],
       ),
     );
   }
+}
+
+// ── Locatie card ───────────────────────────────────────────────────────────────
+
+class _ContactActiesCard extends StatelessWidget {
+  final Les les;
+  const _ContactActiesCard({required this.les});
+
+  @override
+  Widget build(BuildContext context) {
+    final telefoon = les.instructeurTelefoon?.trim();
+    final email = les.instructeurEmail?.trim();
+    final heeftTelefoon = telefoon != null && telefoon.isNotEmpty;
+    final heeftEmail = email != null && _isValidEmail(email);
+
+    final acties = <Widget>[
+      if (heeftTelefoon)
+        _ContactButton(
+          icon: Icons.phone_rounded,
+          label: 'Bellen',
+          iconColor: const Color(0xFF16A34A),
+          onTap: () => _bel(context, telefoon),
+        ),
+      if (heeftTelefoon)
+        _ContactButton(
+          icon: Icons.chat_rounded,
+          label: 'WhatsApp',
+          iconColor: const Color(0xFF22C55E),
+          onTap: () => _whatsapp(context, telefoon),
+        ),
+      if (heeftEmail)
+        _ContactButton(
+          icon: Icons.mail_outline_rounded,
+          label: 'E-mail',
+          iconColor: const Color(0xFF2563EB),
+          onTap: () => _mail(context, email),
+        ),
+    ];
+
+    if (acties.isEmpty) return const SizedBox.shrink();
+
+    return AppCard(
+      padding: const EdgeInsets.all(12),
+      child: _ContactActions(actions: acties),
+    );
+  }
 
   Future<void> _bel(BuildContext context, String telefoon) async {
-    final uri = Uri.parse('tel:$telefoon');
+    final normalized = _normaliseerTelefoon(telefoon);
+    if (normalized.isEmpty) {
+      showAppSnackBar(context, 'Geen geldig telefoonnummer', isError: true);
+      return;
+    }
+
+    final uri = Uri(scheme: 'tel', path: normalized);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+      await launchUrl(uri);
+    } else if (context.mounted) {
+      showAppSnackBar(context, 'Kan telefoon-app niet openen', isError: true);
     }
   }
 
   Future<void> _whatsapp(BuildContext context, String telefoon) async {
-    final nr = telefoon.replaceAll(RegExp(r'[^0-9+]'), '');
-    final uri = Uri.parse('https://wa.me/$nr');
+    final digits = telefoon.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digits.isEmpty) {
+      showAppSnackBar(context, 'Geen geldig telefoonnummer', isError: true);
+      return;
+    }
+
+    final uri = Uri.https('wa.me', '/$digits');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else if (context.mounted) {
+      showAppSnackBar(context, 'Kan WhatsApp niet openen', isError: true);
+    }
+  }
+
+  Future<void> _mail(BuildContext context, String email) async {
+    final uri = Uri(
+      scheme: 'mailto',
+      path: email,
+      queryParameters: const {'subject': 'Vraag over mijn rijles'},
+    );
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else if (context.mounted) {
+      showAppSnackBar(context, 'Kan e-mail-app niet openen', isError: true);
     }
   }
 }
 
-// ── Locatie card ───────────────────────────────────────────────────────────────
+class _InlineContactValue extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final int maxLines;
+
+  const _InlineContactValue({
+    required this.icon,
+    required this.value,
+    this.maxLines = 1,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 1),
+          child: Icon(icon, size: 14, color: AppColors.textSecondary),
+        ),
+        const SizedBox(width: 7),
+        Expanded(
+          child: SelectableText(
+            value,
+            maxLines: maxLines,
+            style: const TextStyle(
+              fontSize: 13,
+              height: 1.25,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class _LocatieCard extends StatelessWidget {
   final Les les;
@@ -506,25 +674,32 @@ class _LocatieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locatie = les.locatie!.trim();
+
     return AppCard(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _InfoRow(
             icon: Icons.location_on_rounded,
             iconColor: const Color(0xFFE11D48),
             label: 'Ophaallocatie',
-            value: les.locatie!,
+            value: _formatLocatie(locatie),
           ),
           const SizedBox(height: 14),
           _ContactButton(
             icon: Icons.navigation_rounded,
             label: 'Navigeer naar locatie',
             iconColor: const Color(0xFF2563EB),
-            onTap: () => _openNavigation(context, les.locatie!),
+            onTap: () => _openNavigation(context, locatie),
           ),
         ],
       ),
     );
+  }
+
+  String _formatLocatie(String locatie) {
+    return locatie.replaceAll(RegExp(r',\s*'), '\n');
   }
 
   Future<void> _openNavigation(BuildContext context, String locatie) async {
@@ -540,59 +715,99 @@ class _LocatieCard extends StatelessWidget {
   }
 }
 
-// ── Voertuig card ──────────────────────────────────────────────────────────────
-
 class _VoertuigCard extends StatelessWidget {
   final Les les;
   const _VoertuigCard({required this.les});
 
-  String get _voertuigLabel {
-    final parts = <String>[];
-    if (les.voertuigMerk?.isNotEmpty == true) parts.add(les.voertuigMerk!);
-    if (les.voertuigModel?.isNotEmpty == true) parts.add(les.voertuigModel!);
-    if (les.voertuigKenteken?.isNotEmpty == true) {
-      parts.add('(${les.voertuigKenteken!})');
+  String? get _naam {
+    final parts = [
+      les.voertuigMerk?.trim(),
+      les.voertuigModel?.trim(),
+    ].where((part) => part != null && part.isNotEmpty).cast<String>().toList();
+    if (parts.isEmpty) {
+      final naam = les.voertuigNaam?.trim();
+      return naam != null && naam.isNotEmpty ? naam : null;
     }
     return parts.join(' ');
   }
 
   @override
   Widget build(BuildContext context) {
+    final naam = _naam;
+    final meta = [
+      if (les.voertuigTransmissie?.trim().isNotEmpty == true)
+        _transmissieLabel(les.voertuigTransmissie!.trim()),
+      if (les.voertuigCategorie?.trim().isNotEmpty == true)
+        'Categorie ${les.voertuigCategorie!.trim().toUpperCase()}',
+    ].join(' - ');
+    final details = <String>[
+      if (les.voertuigKenteken?.trim().isNotEmpty == true)
+        les.voertuigKenteken!.trim(),
+      if (meta.isNotEmpty) meta,
+    ];
+
     return AppCard(
-      child: Column(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (_voertuigLabel.isNotEmpty)
-            _InfoRow(
-              icon: Icons.directions_car_rounded,
-              iconColor: const Color(0xFF5645D4),
-              label: 'Voertuig',
-              value: _voertuigLabel,
+          const IconBadge(
+            icon: Icons.directions_car_rounded,
+            color: AppColors.textPrimary,
+            size: 36,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Lesvoertuig',
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                if (naam != null) ...[
+                  const SizedBox(height: 5),
+                  Text(
+                    naam,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      height: 1.2,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ],
+                if (details.isNotEmpty) ...[
+                  const SizedBox(height: 5),
+                  Text(
+                    details.join('\n'),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      height: 1.35,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ],
             ),
-          if (les.voertuigTransmissie?.isNotEmpty == true) ...[
-            if (_voertuigLabel.isNotEmpty) const Divider(height: 20),
-            _InfoRow(
-              icon: Icons.settings_rounded,
-              iconColor: const Color(0xFF64748B),
-              label: 'Transmissie',
-              value: _capitalize(les.voertuigTransmissie!),
-            ),
-          ],
-          if (les.rijbewijsSoort?.isNotEmpty == true) ...[
-            const Divider(height: 20),
-            _InfoRow(
-              icon: Icons.badge_rounded,
-              iconColor: const Color(0xFFD97706),
-              label: 'Rijbewijs',
-              value: les.rijbewijsSoort!.toUpperCase(),
-            ),
-          ],
+          ),
         ],
       ),
     );
   }
 
-  String _capitalize(String s) =>
-      s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
+  String _transmissieLabel(String value) {
+    return switch (value.toLowerCase()) {
+      'automatic' || 'automaat' => 'Automaat',
+      'manual' || 'schakel' || 'schakelauto' => 'Schakel',
+      _ => value.isEmpty ? value : value[0].toUpperCase() + value.substring(1),
+    };
+  }
 }
 
 // ── Les info card ──────────────────────────────────────────────────────────────
@@ -639,7 +854,8 @@ class _OnderwerpCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              IconBadge(icon: Icons.checklist_rounded, color: iconColor, size: 36),
+              IconBadge(
+                  icon: Icons.checklist_rounded, color: iconColor, size: 36),
               const SizedBox(width: 10),
               Text(
                 titel,
@@ -655,9 +871,7 @@ class _OnderwerpCard extends StatelessWidget {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: onderwerpen
-                .map((o) => _OnderwerpChip(label: o))
-                .toList(),
+            children: onderwerpen.map((o) => _OnderwerpChip(label: o)).toList(),
           ),
         ],
       ),
@@ -752,13 +966,13 @@ class _VolgendeLesCTA extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: () => context.push('/beschikbaarheid'),
         icon: const Icon(Icons.add_circle_outline_rounded, size: 18),
-        label: const Text('Volgende les aanvragen'),
+        label: const Text('Nieuwe les aanvragen'),
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.dark,
+          backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(52),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           elevation: 0,
           textStyle: const TextStyle(
             fontSize: 14,
@@ -788,6 +1002,7 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
           width: 36,
@@ -804,22 +1019,62 @@ class _InfoRow extends StatelessWidget {
             label,
             style: const TextStyle(
               fontSize: 13,
+              height: 1.2,
+              fontWeight: FontWeight.w600,
               color: AppColors.textSecondary,
             ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
+        const SizedBox(width: 10),
         Flexible(
           child: Text(
             value,
             style: const TextStyle(
               fontSize: 14,
+              height: 1.25,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
             textAlign: TextAlign.right,
+            softWrap: true,
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ContactActions extends StatelessWidget {
+  final List<Widget> actions;
+
+  const _ContactActions({required this.actions});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= 320 && actions.length > 1) {
+          return Row(
+            children: [
+              for (var index = 0; index < actions.length; index++) ...[
+                if (index > 0) const SizedBox(width: 8),
+                Expanded(child: actions[index]),
+              ],
+            ],
+          );
+        }
+
+        return Column(
+          children: [
+            for (var index = 0; index < actions.length; index++) ...[
+              if (index > 0) const SizedBox(height: 8),
+              SizedBox(width: double.infinity, child: actions[index]),
+            ],
+          ],
+        );
+      },
     );
   }
 }
@@ -845,37 +1100,40 @@ class _ContactButton extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE2E2E7)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF0F2F5),
-                  borderRadius: BorderRadius.circular(8),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 58),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFE2E2E7)),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0F2F5),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, color: iconColor, size: 16),
                 ),
-                child: Icon(icon, color: iconColor, size: 15),
-              ),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
+                const SizedBox(height: 5),
+                Text(
                   label,
                   style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w600,
-                    fontSize: 13,
+                    fontSize: 12,
+                    height: 1.1,
                   ),
                   overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -884,6 +1142,16 @@ class _ContactButton extends StatelessWidget {
 }
 
 // ── Les Evaluatie sectie ──────────────────────────────────────────────────────
+
+bool _isValidEmail(String value) =>
+    RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value.trim());
+
+String _normaliseerTelefoon(String value) {
+  final trimmed = value.trim();
+  final digits = trimmed.replaceAll(RegExp(r'[^0-9]'), '');
+  if (digits.isEmpty) return '';
+  return trimmed.startsWith('+') ? '+$digits' : digits;
+}
 
 const _skillLabels = {
   'spiegels': 'Spiegels',
@@ -1075,15 +1343,12 @@ class _RatingChip extends StatelessWidget {
           width: 7,
           height: 7,
           margin: const EdgeInsets.only(top: 2, right: 4),
-          decoration: BoxDecoration(
-              color: kleur, shape: BoxShape.circle),
+          decoration: BoxDecoration(color: kleur, shape: BoxShape.circle),
         ),
         Text(
           label,
           style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: kleur),
+              fontSize: 12, fontWeight: FontWeight.w600, color: kleur),
         ),
       ],
     );
@@ -1233,9 +1498,7 @@ class _ScoreRij extends StatelessWidget {
         Text(
           '${score.score}/5',
           style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: kleur),
+              fontSize: 11, fontWeight: FontWeight.w700, color: kleur),
         ),
       ],
     );
@@ -1267,6 +1530,53 @@ class _EvaluatieFallback extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+class _EvaluatieNietBeschikbaar extends StatelessWidget {
+  const _EvaluatieNietBeschikbaar();
+
+  @override
+  Widget build(BuildContext context) {
+    return const AppCard(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          IconBadge(
+            icon: Icons.rate_review_outlined,
+            color: AppColors.textPrimary,
+            size: 36,
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Evaluatie nog niet beschikbaar',
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.2,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: 5),
+                Text(
+                  'Je instructeur heeft deze les nog niet beoordeeld.',
+                  style: TextStyle(
+                    fontSize: 13,
+                    height: 1.35,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

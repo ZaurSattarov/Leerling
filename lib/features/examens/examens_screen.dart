@@ -29,73 +29,75 @@ class ExamensScreen extends ConsumerWidget {
               child: CustomScrollView(
                 slivers: [
                   examensAsync.when(
-              data: (examens) {
-                if (examens.isEmpty) {
-                  return const SliverFillRemaining(
-                    child: EmptyState(
-                      icon: Icons.quiz_outlined,
-                      title: 'Geen examens',
-                      subtitle:
-                          'Je instructeur heeft nog geen examens ingepland.',
+                    data: (examens) {
+                      if (examens.isEmpty) {
+                        return const SliverFillRemaining(
+                          child: EmptyState(
+                            icon: Icons.quiz_outlined,
+                            title: 'Geen examens',
+                            subtitle:
+                                'Je instructeur heeft nog geen examens ingepland.',
+                          ),
+                        );
+                      }
+
+                      final gepland = examens
+                          .where((e) => e.status == ExamenStatus.gepland)
+                          .toList();
+                      final afgerond = examens
+                          .where((e) => e.status != ExamenStatus.gepland)
+                          .toList();
+
+                      return SliverPadding(
+                        padding: const EdgeInsets.all(20),
+                        sliver: SliverList(
+                          delegate: SliverChildListDelegate([
+                            if (gepland.isNotEmpty) ...[
+                              const SectionHeader(title: 'Gepland'),
+                              const SizedBox(height: 12),
+                              ...gepland.map(
+                                (examen) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: _ExamenCard(examen: examen),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+                            if (afgerond.isNotEmpty) ...[
+                              const SectionHeader(title: 'Resultaten'),
+                              const SizedBox(height: 12),
+                              ...afgerond.map(
+                                (examen) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: _ExamenCard(examen: examen),
+                                ),
+                              ),
+                            ],
+                            const SizedBox(height: 16),
+                          ]),
+                        ),
+                      );
+                    },
+                    loading: () => SliverPadding(
+                      padding: const EdgeInsets.all(20),
+                      sliver: SliverList(
+                        delegate: SliverChildListDelegate([
+                          const SkeletonCard(),
+                          const SizedBox(height: 10),
+                          const SkeletonCard(),
+                          const SizedBox(height: 10),
+                          const SkeletonCard(),
+                        ]),
+                      ),
                     ),
-                  );
-                }
-
-                final gepland =
-                    examens.where((e) => e.status == ExamenStatus.gepland).toList();
-                final afgerond =
-                    examens.where((e) => e.status != ExamenStatus.gepland).toList();
-
-                return SliverPadding(
-                  padding: const EdgeInsets.all(20),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      if (gepland.isNotEmpty) ...[
-                        const SectionHeader(title: 'Gepland'),
-                        const SizedBox(height: 12),
-                        ...gepland.map(
-                          (examen) => Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: _ExamenCard(examen: examen),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                      if (afgerond.isNotEmpty) ...[
-                        const SectionHeader(title: 'Resultaten'),
-                        const SizedBox(height: 12),
-                        ...afgerond.map(
-                          (examen) => Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: _ExamenCard(examen: examen),
-                          ),
-                        ),
-                      ],
-                      const SizedBox(height: 16),
-                    ]),
+                    error: (e, _) => SliverFillRemaining(
+                      child: EmptyState(
+                        icon: Icons.wifi_off_rounded,
+                        title: 'Kon examens niet laden',
+                        subtitle: e.toString(),
+                      ),
+                    ),
                   ),
-                );
-              },
-              loading: () => SliverPadding(
-                padding: const EdgeInsets.all(20),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    const SkeletonCard(),
-                    const SizedBox(height: 10),
-                    const SkeletonCard(),
-                    const SizedBox(height: 10),
-                    const SkeletonCard(),
-                  ]),
-                ),
-              ),
-              error: (e, _) => SliverFillRemaining(
-                child: EmptyState(
-                  icon: Icons.wifi_off_rounded,
-                  title: 'Kon examens niet laden',
-                  subtitle: e.toString(),
-                ),
-              ),
-            ),
                 ],
               ),
             ),
@@ -245,25 +247,34 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color backgroundColor;
+    final Color borderColor;
     final Color textColor;
     switch (status) {
       case ExamenStatus.geslaagd:
+        backgroundColor = AppColors.successBg;
+        borderColor = AppColors.successBorder;
         textColor = AppColors.successSolid;
         break;
       case ExamenStatus.gezakt:
+        backgroundColor = AppColors.dangerBg;
+        borderColor = AppColors.dangerBorder;
         textColor = AppColors.dangerSolid;
         break;
       case ExamenStatus.gepland:
-        textColor = AppColors.textSecondary;
+        backgroundColor = AppColors.infoBg;
+        borderColor = AppColors.infoBorder;
+        textColor = AppColors.infoText;
         break;
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      constraints: const BoxConstraints(minHeight: 28),
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE2E2E7), width: 0.75),
+        border: Border.all(color: borderColor, width: 0.75),
       ),
       child: Text(
         status.label,

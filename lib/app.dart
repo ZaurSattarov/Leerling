@@ -21,6 +21,9 @@ import 'features/planning/les_detail_screen.dart';
 import 'features/les_logboek/les_logboek_screen.dart';
 import 'features/examenadvies/examenadvies_screen.dart';
 import 'features/help/help_screen.dart';
+import 'features/legal/content/privacy_policy_nl.dart';
+import 'features/legal/content/terms_conditions_nl.dart';
+import 'features/legal/legal_document_screen.dart';
 import 'features/examens/examens_screen.dart';
 import 'features/lesvoorbereiding/lesvoorbereiding_screen.dart';
 import 'features/voortgang/lespakket_detail_screen.dart';
@@ -28,7 +31,11 @@ import 'features/voortgang/voortgang_screen.dart';
 import 'features/facturen/facturen_screen.dart';
 import 'features/facturen/factuur_detail_screen.dart';
 import 'features/beschikbaarheid/beschikbaarheid_screen.dart';
+import 'features/notificaties/notificatie_instellingen_screen.dart';
 import 'features/notificaties/notificaties_screen.dart';
+import 'features/profiel/app_machtigingen_screen.dart';
+import 'features/profiel/app_instellingen_screen.dart';
+import 'features/profiel/beveiliging_screen.dart';
 import 'features/profiel/lespakket_detail_screen.dart';
 import 'features/profiel/mijn_rijschool_screen.dart';
 import 'features/profiel/persoonlijke_gegevens_screen.dart';
@@ -85,8 +92,7 @@ final _routerProvider = Provider<GoRouter>((ref) {
 
       if (isLoggedIn) {
         final user = Supabase.instance.client.auth.currentUser;
-        if (user?.emailConfirmedAt == null &&
-            loc != '/verificatie') {
+        if (user?.emailConfirmedAt == null && loc != '/verificatie') {
           return '/verificatie';
         }
         if (isAuthRoute) return '/splash';
@@ -150,6 +156,31 @@ final _routerProvider = Provider<GoRouter>((ref) {
       ),
 
       // Beschikbaarheid — full screen, outside bottom nav
+      GoRoute(
+        path: '/profiel/notificatie-instellingen',
+        builder: (_, __) => const StudentProfileGate(
+          child: NotificatieInstellingenScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/profiel/app-instellingen',
+        builder: (_, __) => const StudentProfileGate(
+          child: AppInstellingenScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/profiel/app-machtigingen',
+        builder: (_, __) => const StudentProfileGate(
+          child: AppMachtigingenScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/profiel/beveiliging',
+        builder: (_, __) => const StudentProfileGate(
+          child: BeveiligingScreen(),
+        ),
+      ),
+
       GoRoute(
         path: '/beschikbaarheid',
         builder: (_, __) => const StudentProfileGate(
@@ -217,6 +248,18 @@ final _routerProvider = Provider<GoRouter>((ref) {
         path: '/profiel/mijn-rijschool',
         builder: (_, __) => const StudentProfileGate(
           child: MijnRijschoolScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/profiel/privacy',
+        builder: (_, __) => const StudentProfileGate(
+          child: LegalDocumentScreen(document: privacyPolicyNl),
+        ),
+      ),
+      GoRoute(
+        path: '/profiel/algemene-voorwaarden',
+        builder: (_, __) => const StudentProfileGate(
+          child: LegalDocumentScreen(document: termsConditionsNl),
         ),
       ),
       GoRoute(
@@ -299,7 +342,8 @@ class LeerlingApp extends ConsumerWidget {
             borderRadius: BorderRadius.circular(28),
           ),
           dayStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          todayBorder: BorderSide(color: AppColors.primary.withValues(alpha: 0.55)),
+          todayBorder:
+              BorderSide(color: AppColors.primary.withValues(alpha: 0.55)),
           todayForegroundColor: WidgetStateProperty.all(AppColors.primary),
         ),
         timePickerTheme: TimePickerThemeData(
@@ -307,8 +351,10 @@ class LeerlingApp extends ConsumerWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
           ),
-          hourMinuteTextStyle: const TextStyle(fontSize: 44, fontWeight: FontWeight.w700),
-          dayPeriodTextStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          hourMinuteTextStyle:
+              const TextStyle(fontSize: 44, fontWeight: FontWeight.w700),
+          dayPeriodTextStyle:
+              const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           dialHandColor: AppColors.primary,
           dialBackgroundColor: AppColors.surface,
           hourMinuteColor: AppColors.surface,
@@ -427,8 +473,7 @@ class LeerlingApp extends ConsumerWidget {
               const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           labelStyle:
               GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 14),
-          hintStyle:
-              GoogleFonts.inter(color: AppColors.textHint, fontSize: 14),
+          hintStyle: GoogleFonts.inter(color: AppColors.textHint, fontSize: 14),
           floatingLabelStyle: GoogleFonts.inter(
               color: AppColors.primary,
               fontSize: 13,

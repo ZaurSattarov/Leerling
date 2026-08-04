@@ -4,8 +4,8 @@ set "FLUTTER=C:\flutter\bin\flutter.bat"
 set "FLUTTER_LOCAL=%USERPROFILE%\Documents\flutter\bin\flutter.bat"
 set "ADB=%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe"
 set "EMULATOR=%LOCALAPPDATA%\Android\Sdk\emulator\emulator.exe"
-set "APP_ID=nl.rijschool.leerling_app"
-set "MAIN_ACTIVITY=nl.rijschool.leerling_app.MainActivity"
+set "APP_ID=com.klantio.leerling"
+set "MAIN_ACTIVITY=com.klantio.leerling.MainActivity"
 
 if not exist "%PROJECT_DIR%pubspec.yaml" (
     echo PROJECTMAP NIET GEVONDEN: %PROJECT_DIR%

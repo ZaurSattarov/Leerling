@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/contact_uri.dart';
 import '../../models/instructeur.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'rijschool_provider.dart';
+import 'widgets/profile_info_row.dart';
 
 /// Profiel -> Mijn rijschool (Fase 6). Volledig read-only: alle velden komen
 /// uit `instructeur_profielen` via de al bestaande `mijnInstructeurProvider`
@@ -92,7 +94,7 @@ class _MijnRijschoolBody extends StatelessWidget {
   bool get _heeftGeldigeWebsite => _isValidHttpsUrl(instructeur.website);
 
   bool get _heeftGeldigTelefoonnummer =>
-      _normalizedTelUri(instructeur.telefoon) != null;
+      ContactUri.tel(instructeur.telefoon) != null;
 
   bool get _heeftGeldigEmail => _isValidEmail(instructeur.email);
 
@@ -119,35 +121,38 @@ class _MijnRijschoolBody extends StatelessWidget {
         AppCard(
           child: Column(
             children: [
-              _GegevensRij(
+              ProfileInfoRow(
                 icon: Icons.store_outlined,
                 iconColor: AppColors.iconBlue,
-                label: 'Naam',
-                waarde: instructeur.weergaveNaam,
+                label: 'Rijschoolnaam',
+                value: instructeur.weergaveNaam,
               ),
               const Divider(height: 20),
-              _GegevensRij(
+              ProfileInfoRow(
                 icon: Icons.location_on_outlined,
                 iconColor: AppColors.iconSlate,
                 label: 'Adres',
-                waarde: instructeur.volledigAdres ?? _leeg,
+                value: _formatAdres(instructeur) ?? _leeg,
+                isEmpty: _formatAdres(instructeur) == null,
+                maxValueLines: 3,
               ),
               if (instructeur.website?.trim().isNotEmpty == true) ...[
                 const Divider(height: 20),
-                _GegevensRij(
+                ProfileInfoRow(
                   icon: Icons.language_outlined,
                   iconColor: AppColors.iconPurple,
                   label: 'Website',
-                  waarde: instructeur.website!.trim(),
+                  value: instructeur.website!.trim(),
+                  maxValueLines: 2,
                 ),
               ],
               if (instructeur.kvkNummer?.trim().isNotEmpty == true) ...[
                 const Divider(height: 20),
-                _GegevensRij(
+                ProfileInfoRow(
                   icon: Icons.badge_outlined,
                   iconColor: AppColors.iconDark,
                   label: 'KvK-nummer',
-                  waarde: instructeur.kvkNummer!.trim(),
+                  value: instructeur.kvkNummer!.trim(),
                 ),
               ],
             ],
@@ -160,30 +165,32 @@ class _MijnRijschoolBody extends StatelessWidget {
           AppCard(
             child: Column(
               children: [
-                _GegevensRij(
+                ProfileInfoRow(
                   icon: Icons.person_outline,
                   iconColor: AppColors.iconGreen,
-                  label: 'Naam',
-                  waarde: instructeur.naam?.trim().isNotEmpty == true
+                  label: 'Naam instructeur',
+                  value: instructeur.naam?.trim().isNotEmpty == true
                       ? instructeur.naam!.trim()
                       : _leeg,
+                  isEmpty: instructeur.naam?.trim().isNotEmpty != true,
                 ),
                 if (instructeur.telefoon?.trim().isNotEmpty == true) ...[
                   const Divider(height: 20),
-                  _GegevensRij(
+                  ProfileInfoRow(
                     icon: Icons.phone_outlined,
                     iconColor: AppColors.iconAmber,
                     label: 'Telefoon',
-                    waarde: instructeur.telefoon!.trim(),
+                    value: instructeur.telefoon!.trim(),
                   ),
                 ],
                 if (instructeur.email?.trim().isNotEmpty == true) ...[
                   const Divider(height: 20),
-                  _GegevensRij(
+                  ProfileInfoRow(
                     icon: Icons.email_outlined,
                     iconColor: AppColors.iconPurple,
                     label: 'E-mail',
-                    waarde: instructeur.email!.trim(),
+                    value: instructeur.email!.trim(),
+                    maxValueLines: 2,
                   ),
                 ],
               ],
@@ -204,7 +211,7 @@ class _MijnRijschoolBody extends StatelessWidget {
                     label: 'Bellen',
                     waarde: instructeur.telefoon!.trim(),
                     onTap: () => _openUri(
-                        context, _normalizedTelUri(instructeur.telefoon)!),
+                        context, ContactUri.tel(instructeur.telefoon)!),
                   ),
                 if (_heeftGeldigTelefoonnummer &&
                     (_heeftGeldigEmail || instructeur.volledigAdres != null))
@@ -215,8 +222,8 @@ class _MijnRijschoolBody extends StatelessWidget {
                     iconColor: AppColors.iconPurple,
                     label: 'E-mailen',
                     waarde: instructeur.email!.trim(),
-                    onTap: () => _openUri(
-                        context, 'mailto:${instructeur.email!.trim()}'),
+                    onTap: () =>
+                        _openUri(context, ContactUri.email(instructeur.email)!),
                   ),
                 if (_heeftGeldigEmail &&
                     (_heeftGeldigeWebsite || instructeur.volledigAdres != null))
@@ -227,7 +234,8 @@ class _MijnRijschoolBody extends StatelessWidget {
                     iconColor: AppColors.iconPurple,
                     label: 'Website openen',
                     waarde: instructeur.website!.trim(),
-                    onTap: () => _openUri(context, instructeur.website!.trim()),
+                    onTap: () => _openUri(
+                        context, Uri.parse(instructeur.website!.trim())),
                   ),
                 if (_heeftGeldigeWebsite && instructeur.volledigAdres != null)
                   const Divider(height: 20),
@@ -236,10 +244,12 @@ class _MijnRijschoolBody extends StatelessWidget {
                     icon: Icons.directions_outlined,
                     iconColor: AppColors.iconBlue,
                     label: 'Route openen',
-                    waarde: instructeur.volledigAdres!,
+                    waarde: _formatAdres(instructeur)!,
                     onTap: () => _openUri(
                       context,
-                      'https://maps.google.com/?q=${Uri.encodeComponent(instructeur.volledigAdres!)}',
+                      Uri.parse(
+                        'https://maps.google.com/?q=${Uri.encodeComponent(_formatAdres(instructeur)!)}',
+                      ),
                     ),
                   ),
               ],
@@ -304,7 +314,8 @@ class _RijschoolLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initiaal = naam.trim().isNotEmpty ? naam.trim()[0].toUpperCase() : '?';
+    final initiaal =
+        naam.trim().isNotEmpty ? naam.trim()[0].toUpperCase() : '?';
     Widget content;
     if (logoUrl?.isNotEmpty == true) {
       content = CachedNetworkImage(
@@ -346,49 +357,6 @@ class _RijschoolLogo extends StatelessWidget {
         borderRadius: BorderRadius.circular(13),
         child: content,
       ),
-    );
-  }
-}
-
-class _GegevensRij extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String label;
-  final String waarde;
-
-  const _GegevensRij({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-    required this.waarde,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isLeeg = waarde == MijnRijschoolScreen._leeg;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        IconBadge(icon: icon, color: iconColor, size: 34),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(label,
-              style:
-                  const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
-        ),
-        Flexible(
-          child: Text(
-            waarde,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: isLeeg ? AppColors.textHint : AppColors.textPrimary,
-              fontStyle: isLeeg ? FontStyle.italic : FontStyle.normal,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
@@ -450,12 +418,30 @@ class _ContactActieRij extends StatelessWidget {
 // profiel_screen.dart) -- geen gedeelde url-service, wel met expliciete
 // validatie vóór openen, specifiek voor Fase 6.
 
+String? _formatAdres(Instructeur instructeur) {
+  final straat = instructeur.adres?.trim();
+  final postcode = instructeur.postcode?.trim();
+  final stad = instructeur.stad?.trim();
+  if (straat?.isNotEmpty != true && stad?.isNotEmpty != true) return null;
+  final tweedeRegel = [postcode, stad]
+      .where((value) => value?.isNotEmpty == true)
+      .map((value) => value!)
+      .join(' ');
+  if (straat?.isNotEmpty == true && tweedeRegel.isNotEmpty) {
+    return '$straat\n$tweedeRegel';
+  }
+  return straat?.isNotEmpty == true ? straat : tweedeRegel;
+}
+
 bool _isValidHttpsUrl(String? url) {
   if (url == null) return false;
   final trimmed = url.trim();
   if (!trimmed.startsWith('https://')) return false;
   final uri = Uri.tryParse(trimmed);
-  return uri != null && uri.hasScheme && uri.scheme == 'https' && uri.host.isNotEmpty;
+  return uri != null &&
+      uri.hasScheme &&
+      uri.scheme == 'https' &&
+      uri.host.isNotEmpty;
 }
 
 bool _isValidEmail(String? email) {
@@ -467,16 +453,7 @@ bool _isValidEmail(String? email) {
 
 /// Normaliseert naar een veilige `tel:`-URI, of null als er geen bruikbaar
 /// nummer is. Strip alles behalve cijfers en een optioneel leidend '+'.
-String? _normalizedTelUri(String? telefoon) {
-  if (telefoon == null) return null;
-  final digits = telefoon.replaceAll(RegExp(r'[^\d+]'), '');
-  if (digits.isEmpty) return null;
-  return 'tel:$digits';
-}
-
-Future<void> _openUri(BuildContext context, String uriString) async {
-  final uri = Uri.tryParse(uriString);
-  if (uri == null) return;
+Future<void> _openUri(BuildContext context, Uri uri) async {
   if (await canLaunchUrl(uri)) {
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
