@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/nav_shell_tokens.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/factuur.dart';
 import '../../shared/widgets/app_card.dart';
@@ -120,7 +121,8 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
                           .addPostFrameCallback((_) => _startAnim());
 
                       return SliverPadding(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.fromLTRB(
+                            20, 20, 20, NavShellTokens.contentBottomClearance),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
                             // 1. Finance overzicht kaart
@@ -147,7 +149,8 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
                       );
                     },
                     loading: () => SliverPadding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.fromLTRB(
+                          20, 20, 20, NavShellTokens.contentBottomClearance),
                       sliver: SliverList(
                         delegate: SliverChildListDelegate([
                           const SkeletonBox(height: 148, radius: 18),

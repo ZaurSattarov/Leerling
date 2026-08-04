@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/nav_shell_tokens.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/leerling_profiel.dart';
 import '../../models/les.dart';
@@ -49,7 +50,8 @@ class HomeScreen extends ConsumerWidget {
             // ── Body content ─────────────────────────────────────────────────
             homeAsync.when(
               data: (home) => SliverPadding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+                padding: const EdgeInsets.fromLTRB(
+                    20, 20, 20, NavShellTokens.contentBottomClearance),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     // Stats bento
@@ -136,7 +138,8 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               loading: () => SliverPadding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.fromLTRB(
+                    20, 20, 20, NavShellTokens.contentBottomClearance),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     const _SkeletonHero(),

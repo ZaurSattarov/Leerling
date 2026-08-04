@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/nav_shell_tokens.dart';
 import '../../core/services/student_service.dart';
 import '../../core/utils/contact_uri.dart';
 import '../../models/instructeur.dart';
@@ -353,7 +354,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             ),
           ),
 
-          const SizedBox(height: 44),
+          const SizedBox(height: NavShellTokens.contentBottomClearance),
         ],
       ),
     );

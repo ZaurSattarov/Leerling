@@ -68,6 +68,17 @@ class MainScaffold extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
+      // Laat de body onder de gereserveerde navbar-hoogte doorlopen. Zonder
+      // extendBody stopt Scaffold.body vóór de bottomNavigationBar-zone
+      // begint: de BackdropFilter in PremiumBottomNavBar heeft dan geen
+      // paginacontent meer om te vervagen en toont in plaats daarvan de
+      // vlakke Scaffold.backgroundColor als zichtbare grijze laag achter de
+      // witte pil -- precies de bug die hiermee wordt opgelost. De
+      // hoofdschermen reserveren zelf al bottom-padding via
+      // NavShellTokens.contentBottomClearance zodat scrollcontent nooit
+      // achter de balk verdwijnt -- 1-op-1 overgenomen uit de
+      // Instructeur-app (main_scaffold.dart).
+      extendBody: true,
       body: child,
       // Bewust GEEN SafeArea hier (die past `max(devicePadding.bottom,
       // minimum)` toe -- op een toestel met Dynamic Island/home-indicator

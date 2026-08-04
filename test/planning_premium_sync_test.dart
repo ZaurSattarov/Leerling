@@ -91,10 +91,14 @@ void main() {
     test('locatie en contact blijven leerlingvriendelijk en brongetrouw', () {
       final detail = read('lib/features/planning/les_detail_screen.dart');
 
-      expect(detail, contains("label: 'Ophaallocatie'"));
-      expect(detail, contains(r"locatie.replaceAll(RegExp(r',\s*'), '\n')"));
-      expect(detail, contains("Uri.encodeComponent(locatie)"));
+      // Ophaallocatie: sinds het herontwerp één tikbare kaart met
+      // kaartpreview, badge en gedeelde MapsUri-helper i.p.v. een losse
+      // infolabel-rij + inline Uri.encodeComponent-aanroep.
+      expect(detail, contains("'OPHAALLOCATIE'"));
+      expect(detail, contains('MapsUri.open(context, locatie)'));
+      expect(detail, contains('_weergaveRegels'));
       expect(detail, isNot(contains('Exact ophaaladres')));
+      expect(detail, isNot(contains("label: 'Navigeer naar locatie'")));
       expect(detail, contains("label: 'Bellen'"));
       expect(detail, contains("label: 'WhatsApp'"));
       expect(detail, contains("label: 'E-mail'"));
