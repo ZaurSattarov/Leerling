@@ -1,0 +1,9 @@
+# Graphify scope: lib (Dart-code) + supabase + docs/test - geen platform-boilerplate.
+/assets/
+/ios/
+/android/
+/windows/
+/macos/
+/linux/
+/web/
+/BACKUP/

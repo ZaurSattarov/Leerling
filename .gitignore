@@ -43,3 +43,24 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Graphify - lokale cache/tmp/kosten, NIET de graph zelf.
+# graph.json, GRAPH_REPORT.md en manifest.json blijven getrackt.
+graphify-out/cache/
+graphify-out/cost.json
+graphify-out/.needs_update
+graphify-out/.graphify_chunk_*.json
+graphify-out/.graphify_chunklist_*.txt
+graphify-out/*.tmp
+graphify-out/chunks/
+graphify-out/tmp/
+graphify-out/logs/
+# .graphify_root bevat een machine-specifiek absoluut pad (fallback voor
+# 'graphify update' zonder pad-argument) - niet gelezen door MCP, niet nodig
+# op een andere pc/gebruiker. tools\update_graphify.cmd geeft altijd expliciet
+# het pad mee, dus dit bestand is niet vereist.
+graphify-out/.graphify_root
+
+# Lokale back-upbestanden (nooit in Git)
+*.bak
+*.bak-*
