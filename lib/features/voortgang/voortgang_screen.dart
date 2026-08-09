@@ -41,7 +41,6 @@ class VoortgangScreen extends ConsumerWidget {
       body: Column(
         children: [
           MainTabHeader(
-            eyebrowText: 'VOORTGANG',
             title: 'Mijn voortgang',
             actions: [
               MainHeaderIconKnop(

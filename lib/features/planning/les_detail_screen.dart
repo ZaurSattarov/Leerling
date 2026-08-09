@@ -29,7 +29,6 @@ class LesDetailScreen extends ConsumerWidget {
       body: Column(
         children: [
           MainDetailHeader(
-            eyebrowText: 'PLANNING',
             title: 'Lesdetails',
             actions: [
               lesAsync.when(
@@ -104,7 +103,10 @@ class _LesDetailBody extends ConsumerWidget {
               _DatumTijdCard(les: les),
               const SizedBox(height: 12),
 
-              // 2. Lesinformatie: status + lescontext (rijschool, instructeur, voertuig)
+              // 2. Lesinformatie: status + lescontext (rijschool, instructeur,
+              // lestype). Voertuig staat hier bewust NIET meer bij -- die
+              // heeft nu precies één plek, de LesvoertuigCard hieronder
+              // (was eerder dubbel: hier én als losse kaart).
               _LesInformatieCard(les: les, rijschoolNaam: rijschoolNaam),
               const SizedBox(height: 10),
 
@@ -115,26 +117,21 @@ class _LesDetailBody extends ConsumerWidget {
                 const SizedBox(height: 12),
               ],
 
-              // 4. Locatie + Kaart
-              if (les.locatie?.isNotEmpty == true) ...[
-                _LocatieCard(les: les),
-                const SizedBox(height: 12),
-              ],
-
-              // 5. Voertuig
+              // 4. Lesvoertuig -- de ENIGE plek waar voertuiggegevens staan.
+              // Staat vóór Locatie: het voertuig is kerninformatie van de
+              // afspraak, de ophaallocatie is de praktische vervolgstap.
               if (_heeftVoertuig(les)) ...[
                 _VoertuigCard(les: les),
                 const SizedBox(height: 12),
               ],
 
-              // 6. Lestype + rijbewijs
-              if (les.lesType?.isNotEmpty == true ||
-                  les.rijbewijsSoort?.isNotEmpty == true) ...[
-                _LesInfoCard(les: les),
+              // 5. Locatie + Kaart
+              if (les.locatie?.isNotEmpty == true) ...[
+                _LocatieCard(les: les),
                 const SizedBox(height: 12),
               ],
 
-              // 7. Geoefende onderwerpen / voorbereiding
+              // 6. Geoefende onderwerpen / voorbereiding
               if (les.geoefendeOnderwerpen.isNotEmpty) ...[
                 _OnderwerpCard(
                   titel: les.status == LesStatus.gepland
@@ -146,7 +143,7 @@ class _LesDetailBody extends ConsumerWidget {
                 const SizedBox(height: 12),
               ],
 
-              // 8. Feedback van instructeur
+              // 7. Feedback van instructeur
               if (les.zichtbaarVoorLeerling &&
                   les.instructeurFeedback?.trim().isNotEmpty == true) ...[
                 _TekstCard(
@@ -158,7 +155,7 @@ class _LesDetailBody extends ConsumerWidget {
                 const SizedBox(height: 12),
               ],
 
-              // 9. Mijn notitie
+              // 8. Mijn notitie
               if (les.leerlingNotitie?.trim().isNotEmpty == true) ...[
                 _TekstCard(
                   icoon: Icons.edit_note_rounded,
@@ -169,7 +166,7 @@ class _LesDetailBody extends ConsumerWidget {
                 const SizedBox(height: 12),
               ],
 
-              // 10. Evaluatie van instructeur (alleen afgerond + zichtbaar)
+              // 9. Evaluatie van instructeur (alleen afgerond + zichtbaar)
               if (evalAsync != null) ...[
                 evalAsync.when(
                   data: (eval) => eval != null
@@ -187,7 +184,7 @@ class _LesDetailBody extends ConsumerWidget {
                 const _EvaluatieNietBeschikbaar(),
               ],
 
-              // 11. Nieuwe les aanvragen (alleen na afgeronde les)
+              // 10. Nieuwe les aanvragen (alleen na afgeronde les)
               if (les.status == LesStatus.afgerond) ...[
                 const SizedBox(height: 4),
                 _VolgendeLesCTA(les: les),
@@ -285,7 +282,7 @@ class _DetailDateBlock extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            _dagAfk(datum),
+            DatumUtils.dagAfkorting(datum),
             style: const TextStyle(
               color: AppColors.textSecondary,
               fontSize: 10,
@@ -295,7 +292,7 @@ class _DetailDateBlock extends StatelessWidget {
           ),
           const SizedBox(height: 3),
           Text(
-            _dagNummer(datum),
+            DatumUtils.dagNummer(datum),
             style: const TextStyle(
               color: AppColors.primary,
               fontSize: 25,
@@ -305,7 +302,7 @@ class _DetailDateBlock extends StatelessWidget {
           ),
           const SizedBox(height: 3),
           Text(
-            _maandAfk(datum),
+            DatumUtils.maandAfkorting(datum),
             style: const TextStyle(
               color: AppColors.textSecondary,
               fontSize: 10,
@@ -318,44 +315,6 @@ class _DetailDateBlock extends StatelessWidget {
     );
   }
 
-  String _dagAfk(String datum) {
-    try {
-      const days = ['MAA', 'DIN', 'WOE', 'DON', 'VRI', 'ZAT', 'ZON'];
-      return days[DateTime.parse(datum).weekday - 1];
-    } catch (_) {
-      return '';
-    }
-  }
-
-  String _dagNummer(String datum) {
-    try {
-      return DateTime.parse(datum).day.toString();
-    } catch (_) {
-      return '?';
-    }
-  }
-
-  String _maandAfk(String datum) {
-    try {
-      const months = [
-        'jan',
-        'feb',
-        'mrt',
-        'apr',
-        'mei',
-        'jun',
-        'jul',
-        'aug',
-        'sep',
-        'okt',
-        'nov',
-        'dec',
-      ];
-      return months[DateTime.parse(datum).month - 1];
-    } catch (_) {
-      return '';
-    }
-  }
 }
 
 // ── Lesinformatie: status + instructeur (samengevoegde kaart) ──────────────────
@@ -377,10 +336,8 @@ class _LesInformatieCard extends StatelessWidget {
         instructeurNaam.isNotEmpty &&
         !instructeurNaam.contains('@');
     final toonRijschool = rijschoolNaam != null && rijschoolNaam!.isNotEmpty;
-
-    final voertuigPrimair = _voertuigPrimair(les);
-    final voertuigSecundair = _voertuigSecundair(les);
-    final toonVoertuig = voertuigPrimair != null || voertuigSecundair != null;
+    final lesType = les.lesType?.trim();
+    final toonLesType = lesType != null && lesType.isNotEmpty;
 
     final lesContextRijen = <Widget>[
       if (toonRijschool)
@@ -415,42 +372,25 @@ class _LesInformatieCard extends StatelessWidget {
             ),
           ),
         ),
-      if (toonVoertuig)
+      if (toonLesType)
         _LesContextRij(
-          icon: Icons.directions_car_rounded,
-          label: 'Lesvoertuig',
-          inhoud: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (voertuigPrimair != null)
-                Text(
-                  voertuigPrimair,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    height: 1.25,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              if (voertuigSecundair != null) ...[
-                if (voertuigPrimair != null) const SizedBox(height: 2),
-                Text(
-                  voertuigSecundair,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 12.5,
-                    height: 1.2,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ],
+          icon: Icons.school_rounded,
+          label: 'Lestype',
+          inhoud: Text(
+            lesType,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 14,
+              height: 1.25,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
           ),
         ),
+      // Voertuiggegevens staan bewust NIET hier -- die hebben nu precies één
+      // plek, de LesvoertuigCard verderop (zie _LesDetailBody), i.p.v. hier
+      // én in een aparte kaart (was dubbel).
     ];
 
     return AppCard(
@@ -484,47 +424,9 @@ class _LesInformatieCard extends StatelessWidget {
   }
 }
 
-/// Merk + model, uitsluitend uit de exact gekoppelde lesvoertuigvelden.
-/// Nooit een fallback op `voertuigNaam` (dat zou een heuristische/
-/// mogelijk onjuiste voertuigkeuze zijn) en nooit een standaardwaarde.
-String? _voertuigPrimair(Les les) {
-  final delen = [les.voertuigMerk?.trim(), les.voertuigModel?.trim()]
-      .where((d) => d != null && d.isNotEmpty)
-      .cast<String>()
-      .toList();
-  if (delen.isEmpty) return null;
-  return delen.join(' ');
-}
-
-/// Kenteken · transmissie · (optioneel) categorie -- elk onderdeel wordt
-/// individueel verborgen wanneer het ontbreekt.
-String? _voertuigSecundair(Les les) {
-  final kenteken = les.voertuigKenteken?.trim();
-  final transmissie = les.voertuigTransmissie?.trim();
-  final categorie = les.voertuigCategorie?.trim();
-
-  final delen = <String>[
-    if (kenteken != null && kenteken.isNotEmpty) kenteken,
-    if (transmissie != null && transmissie.isNotEmpty)
-      _lesInfoTransmissieLabel(transmissie),
-    if (categorie != null && categorie.isNotEmpty)
-      'Categorie ${categorie.toUpperCase()}',
-  ];
-  if (delen.isEmpty) return null;
-  return delen.join(' · ');
-}
-
-String _lesInfoTransmissieLabel(String value) {
-  return switch (value.toLowerCase()) {
-    'automatic' || 'automaat' => 'Automaat',
-    'manual' || 'schakel' || 'schakelauto' => 'Schakel',
-    _ => value.isEmpty ? value : value[0].toUpperCase() + value.substring(1),
-  };
-}
-
 /// Compacte informatierij met vaste iconkolom: subtiel label, duidelijke
 /// donkere waarde eronder. Gedeeld door de rijschool-, instructeur- en
-/// voertuigregel in de Lesinformatie-kaart.
+/// lestyperegel in de Lesinformatie-kaart.
 class _LesContextRij extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -1151,6 +1053,12 @@ class _KaartPatroonPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
+/// De ENIGE plek in Lesdetails waar voertuiggegevens staan (voorheen ook
+/// nog eens samengevat in _LesInformatieCard -- die dubbeling is verwijderd).
+/// Elk gegeven (kenteken/transmissie/categorie) krijgt een eigen label/
+/// waarde-rij i.p.v. één samengestelde "54-XT-RA - Automaat - Categorie B"
+/// string, en wordt individueel verborgen wanneer het ontbreekt. Nooit
+/// "null" en nooit een verzonnen waarde.
 class _VoertuigCard extends StatelessWidget {
   final Les les;
   const _VoertuigCard({required this.les});
@@ -1170,45 +1078,49 @@ class _VoertuigCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final naam = _naam;
-    final meta = [
-      if (les.voertuigTransmissie?.trim().isNotEmpty == true)
-        _transmissieLabel(les.voertuigTransmissie!.trim()),
-      if (les.voertuigCategorie?.trim().isNotEmpty == true)
-        'Categorie ${les.voertuigCategorie!.trim().toUpperCase()}',
-    ].join(' - ');
-    final details = <String>[
-      if (les.voertuigKenteken?.trim().isNotEmpty == true)
-        les.voertuigKenteken!.trim(),
-      if (meta.isNotEmpty) meta,
+    final kenteken = les.voertuigKenteken?.trim();
+    final transmissie = les.voertuigTransmissie?.trim();
+    final categorie = les.voertuigCategorie?.trim();
+
+    final velden = <Widget>[
+      if (kenteken != null && kenteken.isNotEmpty)
+        _VoertuigVeldRij(label: 'Kenteken', waarde: kenteken),
+      if (transmissie != null && transmissie.isNotEmpty)
+        _VoertuigVeldRij(
+            label: 'Transmissie', waarde: _transmissieLabel(transmissie)),
+      if (categorie != null && categorie.isNotEmpty)
+        _VoertuigVeldRij(label: 'Categorie', waarde: categorie.toUpperCase()),
     ];
 
     return AppCard(
-      child: Row(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const IconBadge(
-            icon: Icons.directions_car_rounded,
-            color: AppColors.textPrimary,
-            size: 36,
+          const Text(
+            'LESVOERTUIG',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textSecondary,
+              letterSpacing: 0.8,
+            ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: 12),
+          if (naam != null) ...[
+            Row(
               children: [
-                const Text(
-                  'Lesvoertuig',
-                  style: TextStyle(
-                    fontSize: 12,
-                    height: 1,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textSecondary,
-                  ),
+                const IconBadge(
+                  icon: Icons.directions_car_rounded,
+                  color: AppColors.textPrimary,
+                  size: 36,
                 ),
-                if (naam != null) ...[
-                  const SizedBox(height: 5),
-                  Text(
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
                     naam,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontSize: 15,
                       height: 1.2,
@@ -1216,22 +1128,21 @@ class _VoertuigCard extends StatelessWidget {
                       color: AppColors.textPrimary,
                     ),
                   ),
-                ],
-                if (details.isNotEmpty) ...[
-                  const SizedBox(height: 5),
-                  Text(
-                    details.join('\n'),
-                    style: const TextStyle(
-                      fontSize: 13,
-                      height: 1.35,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
+                ),
               ],
             ),
-          ),
+          ],
+          if (velden.isNotEmpty) ...[
+            if (naam != null) ...[
+              const SizedBox(height: 14),
+              const Divider(height: 1, color: AppColors.borderLight),
+              const SizedBox(height: 14),
+            ],
+            for (var i = 0; i < velden.length; i++) ...[
+              if (i > 0) const SizedBox(height: 10),
+              velden[i],
+            ],
+          ],
         ],
       ),
     );
@@ -1246,26 +1157,47 @@ class _VoertuigCard extends StatelessWidget {
   }
 }
 
-// ── Les info card ──────────────────────────────────────────────────────────────
-
-class _LesInfoCard extends StatelessWidget {
-  final Les les;
-  const _LesInfoCard({required this.les});
+/// Compacte label/waarde-rij zonder icoon (label links, waarde rechts) --
+/// gebruikt voor Kenteken/Transmissie/Categorie in _VoertuigCard. Bewust
+/// géén los icoon per rij (dat zou voor drie herhaalde kleine gegevens
+/// zwaarder ogen dan de informatie rechtvaardigt).
+class _VoertuigVeldRij extends StatelessWidget {
+  final String label;
+  final String waarde;
+  const _VoertuigVeldRij({required this.label, required this.waarde});
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      child: Column(
-        children: [
-          if (les.lesType?.isNotEmpty == true)
-            _InfoRow(
-              icon: Icons.school_rounded,
-              iconColor: const Color(0xFF5645D4),
-              label: 'Lestype',
-              value: les.lesType!,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              height: 1.2,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary,
             ),
-        ],
-      ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Flexible(
+          child: Text(
+            waarde,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.right,
+            style: const TextStyle(
+              fontSize: 14,
+              height: 1.25,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -1421,66 +1353,6 @@ class _VolgendeLesCTA extends StatelessWidget {
 }
 
 // ── Gedeelde hulpwidgets ──────────────────────────────────────────────────────
-
-class _InfoRow extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String label;
-  final String value;
-
-  const _InfoRow({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF0F2F5),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(icon, color: iconColor, size: 18),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontSize: 13,
-              height: 1.2,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        const SizedBox(width: 10),
-        Flexible(
-          child: Text(
-            value,
-            style: const TextStyle(
-              fontSize: 14,
-              height: 1.25,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-            textAlign: TextAlign.right,
-            softWrap: true,
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class _ContactActions extends StatelessWidget {
   final List<Widget> actions;

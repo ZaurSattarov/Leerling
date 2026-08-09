@@ -24,7 +24,6 @@ class ProfielLespakketScreen extends ConsumerWidget {
       body: Column(
         children: [
           const MainDetailHeader(
-            eyebrowText: 'RIJOPLEIDING',
             title: 'Lespakket',
           ),
           Expanded(

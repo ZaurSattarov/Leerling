@@ -20,7 +20,6 @@ class LegalDocumentScreen extends StatelessWidget {
       body: Column(
         children: [
           MainDetailHeader(
-            eyebrowText: document.eyebrow,
             title: document.title,
           ),
           Expanded(

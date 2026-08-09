@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="launcher_icon_background">#222936</color>
+    <!-- Zelfde rol als Instructeur's colors.xml: expliciete, ondubbelzinnige
+         achtergrondkleur voor NormalTheme (de fase net na de systeem-
+         iconsplash, vóór Flutter's eerste eigen frame). Zonder deze
+         expliciete referentie viel NormalTheme terug op het ambigue
+         ?android:colorBackground, wat een kort wit/leeg frame liet zien
+         tussen het KLANTIO-icoon en de echte Flutter-splash. -->
+    <color name="launch_background">#F4F5F7</color>
 </resources>

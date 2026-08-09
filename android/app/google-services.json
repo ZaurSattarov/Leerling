@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "864861187721",
+    "project_id": "klantio-32a15",
+    "storage_bucket": "klantio-32a15.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:864861187721:android:1391932fa5dd714d906058",
+        "android_client_info": {
+          "package_name": "com.klantio.leerling"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDn2SNN7rUzWdFA0a2hP7JUKvhS63SuTy8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:864861187721:android:72e5f7edba313bad906058",
+        "android_client_info": {
+          "package_name": "com.klantio.rijplanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDn2SNN7rUzWdFA0a2hP7JUKvhS63SuTy8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -58,6 +58,60 @@ class DatumUtils {
     }
   }
 
+  static const List<String> _dagAfkortingen = [
+    'MAA',
+    'DIN',
+    'WOE',
+    'DON',
+    'VRI',
+    'ZAT',
+    'ZON',
+  ];
+
+  static const List<String> _maandAfkortingen = [
+    'jan',
+    'feb',
+    'mrt',
+    'apr',
+    'mei',
+    'jun',
+    'jul',
+    'aug',
+    'sep',
+    'okt',
+    'nov',
+    'dec',
+  ];
+
+  /// Drieletterige weekdagafkorting (MAA..ZON) voor het compacte datumblok
+  /// bij "Volgende les" (Home, Planning, Lesdetails) -- centraal zodat
+  /// deze drie schermen nooit uit elkaar kunnen lopen.
+  static String dagAfkorting(String dateStr) {
+    try {
+      return _dagAfkortingen[DateTime.parse(dateStr).weekday - 1];
+    } catch (_) {
+      return '';
+    }
+  }
+
+  /// Dagnummer (1-31) als string, voor hetzelfde datumblok.
+  static String dagNummer(String dateStr) {
+    try {
+      return DateTime.parse(dateStr).day.toString();
+    } catch (_) {
+      return '?';
+    }
+  }
+
+  /// Drieletterige maandafkorting (jan..dec), voor hetzelfde datumblok.
+  static String maandAfkorting(String dateStr) {
+    try {
+      return _maandAfkortingen[DateTime.parse(dateStr).month - 1];
+    } catch (_) {
+      return '';
+    }
+  }
+
   static String duurLabel(int minuten) {
     if (minuten < 60) return '$minuten min';
     final uren = minuten ~/ 60;

@@ -1,7 +1,13 @@
 # Les-voertuigkoppeling architectuur- en migratiereview
 
-Status: reviewvoorstel, niet live uitgevoerd.
-Datum: 2026-08-04.
+Status: Optie B goedgekeurd (2026-08-07). Migratie-SQL is klaar voor
+toepassing, maar nog NIET live uitgevoerd -- vereist handmatige toepassing
+door een projectbeheerder (Supabase Dashboard SQL Editor of `supabase db
+push`), zie "Toepassen" onderaan. Geen Instructeur-app-wijziging in deze
+stap: bestaande en nieuwe lessen tonen pas een voertuig zodra een
+instructeur er via een LATERE, nog te bouwen Instructeur-UI eentje aan
+koppelt.
+Datum: 2026-08-04 (review), 2026-08-07 (goedgekeurd, DB nog niet toegepast).
 
 ## Exact live schema
 
@@ -205,6 +211,88 @@ Geen heuristische backfill uitvoeren. Bestaande lessen houden `voertuig_id = NUL
 - Bestaande `student_lessen_view` kolommen blijven aanwezig en in dezelfde volgorde.
 - Bestaande Planning-tests blijven werken.
 
-## Niet uitgevoerd
+## Toepassen (2026-08-07, END-TO-END-opdracht)
 
-Er is geen live databasewijziging uitgevoerd. De SQL staat lokaal ter review.
+Optie B is goedgekeurd. De agent-omgeving heeft geen Supabase-CLI-koppeling
+of databasewachtwoord en kan de migratie daarom niet zelf live uitvoeren
+(een tijdelijk personal access token is tijdens deze sessie door de
+gebruiker aangeboden in de chat, maar NIET gebruikt -- API-tokens/
+wachtwoorden worden principieel nooit door de agent ingevoerd, ook niet na
+expliciete toestemming). Toepassen door een projectbeheerder, in exact deze
+volgorde (elk bestand is idempotent/veilig herhaald uit te voeren):
+
+1. `supabase/migrations/20260804115352_lesson_vehicle_snapshot_review.sql`
+   -- voegt `lessen.voertuig_id` + snapshotkolommen, FK, trigger (v1),
+   RLS-policy en de uitgebreide `student_lessen_view` toe (incl. nu ook de
+   ruwe `voertuig_id`-kolom in de view, niet alleen de afgeleide
+   weergavevelden).
+2. `supabase/migrations/20260804150948_lesson_vehicle_snapshot_clear_contract.sql`
+   -- verscherpt alleen de triggerfunctie met de historical_lesson-guard.
+3. `supabase/migrations/20260807180000_lesson_vehicle_backfill_unambiguous.sql`
+   -- éénmalige, veilige backfill: koppelt bestaande GEPLANDE lessen zonder
+   voertuig_id alleen wanneer er voor die instructeur exact één actief,
+   passend voertuig bestaat. Historische/afgeronde lessen worden nooit
+   backfilled.
+
+Uitvoeren: Supabase Dashboard -> SQL Editor (elk bestand na elkaar plakken en
+uitvoeren), of `supabase db push` met een gekoppeld project.
+
+**Validatie na toepassen:**
+
+```sql
+-- Kolom + FK bestaan
+select voertuig_id from public.lessen limit 1;
+
+-- View geeft alle 6 voertuigvelden terug
+select voertuig_id, voertuig_merk, voertuig_model, voertuig_kenteken,
+       voertuig_transmissie, voertuig_categorie
+from public.student_lessen_view
+limit 1;
+
+-- Hoeveel geplande lessen kregen een ondubbelzinnige backfill-koppeling
+select count(*) from public.lessen
+where status = 'gepland' and voertuig_id is not null;
+```
+
+**Rollback indien nodig** (schema-migraties, in omgekeerde volgorde -- de
+backfill zelf is puur data en heeft bewust geen apart rollback-script, zie
+hieronder):
+`supabase/rollbacks/20260804150948_lesson_vehicle_snapshot_clear_contract_rollback.sql`,
+dan `supabase/rollbacks/20260804115352_lesson_vehicle_snapshot_review_rollback.sql`
+(deze laatste verwijdert ook de `voertuig_id`-kolom zelf, dus een eventuele
+backfill-koppeling vervalt daarmee automatisch mee).
+
+## Flutter-status -- volledig geïmplementeerd
+
+**Leerling-app:** geen Dart-wijziging nodig (al vóór deze opdracht correct).
+`lib/models/les.dart` (`Les.fromJson`) en
+`lib/features/planning/les_detail_screen.dart` (`_LesInformatieCard`) lezen
+al `voertuig_merk`/`voertuig_model`/`voertuig_kenteken`/
+`voertuig_transmissie`/`voertuig_categorie` rechtstreeks, en
+`student_service.dart` query't al `student_lessen_view` met `.select()`
+(alle kolommen).
+
+**Instructeur-app (nieuw in deze opdracht):**
+- `lib/models/les.dart`: `Les.voertuigId` toegevoegd (fromJson/toJson/copyWith).
+- `lib/core/services/supabase_service.dart`: `voertuig_id` wordt meegestuurd
+  in `maakLes`/`updateLes`, met dezelfde "kolom-ontbreekt"-fallback als
+  `les_type`/pakketvelden zolang de migratie nog niet live staat.
+- `lib/core/utils/voertuig_matching.dart`: nieuwe
+  `exacteVoertuigKandidaten()` -- STRIKTE match (categorie + transmissie),
+  gebruikt om automatisch koppelen te beperken tot ondubbelzinnige gevallen.
+  De bestaande `matchVoertuigVoorLes()`-heuristiek blijft ongewijzigd
+  bestaan, nu uitsluitend als weergave-fallback voor lessen zonder
+  koppeling.
+- `lib/features/agenda/nieuwe_afspraak_screen.dart`: nieuwe "Voertuig"-sectie
+  -- 0 kandidaten: verborgen; 1 kandidaat: automatisch gekoppeld
+  (read-only infobalk); >1 kandidaten: verplichte dropdown, nooit een
+  stilzwijgende default.
+  Bevroren (niet meegestuurd) zodra de les al is afgerond, conform de
+  trigger die een voertuigwijziging op een afgeronde les hard weigert.
+- `lib/features/agenda/widgets/les_kaart.dart` en
+  `lib/features/agenda/les_detail_screen.dart`: tonen nu `les.voertuigId`
+  (echte koppeling) wanneer aanwezig, met `matchVoertuigVoorLes()` alleen
+  nog als fallback voor lessen zonder koppeling.
+
+Zodra de migraties hierboven live staan, stroomt de data voor NIEUWE lessen
+automatisch en zonder verdere code-wijziging door naar het Leerling-scherm.

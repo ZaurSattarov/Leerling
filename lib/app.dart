@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/constants/app_colors.dart';
+import 'core/services/push_service.dart';
 import 'features/splash/splash_screen.dart';
 import 'features/auth/login_screen.dart';
 import 'features/auth/registreer_screen.dart';
@@ -43,10 +44,18 @@ import 'features/profiel/profiel_screen.dart';
 import 'shared/widgets/main_scaffold.dart';
 import 'shared/widgets/student_profile_gate.dart';
 
+// Push notificaties (Fase 5): nodig om vanuit een achtergrond-/cold-start-
+// tik te kunnen navigeren zonder een widget-BuildContext bij de hand te
+// hebben. Dit bestond nog niet in deze app (anders dan de Instructeur-app).
+final rootNavigatorKey = GlobalKey<NavigatorState>();
+
 class _AuthNotifier extends ChangeNotifier {
   _AuthNotifier() {
     _sub = Supabase.instance.client.auth.onAuthStateChange.listen((data) {
       _event = data.event;
+      if (data.event == AuthChangeEvent.signedIn) {
+        PushService.requestPermissionAndRegister();
+      }
       notifyListeners();
     });
   }
@@ -67,6 +76,7 @@ final _routerProvider = Provider<GoRouter>((ref) {
   ref.onDispose(authNotifier.dispose);
 
   return GoRouter(
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/splash',
     refreshListenable: authNotifier,
     redirect: (context, state) {

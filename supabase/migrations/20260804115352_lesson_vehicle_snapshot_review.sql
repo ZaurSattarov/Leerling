@@ -1,5 +1,10 @@
--- Review migration only. Do not apply until approved.
+-- Goedgekeurd 2026-08-07: Optie B uit docs/lesson_vehicle_architecture_review.md.
 -- Purpose: exact lesson -> vehicle relation plus historical snapshot fields.
+-- Alle wijzigingen zijn additief/idempotent (if not exists / create or replace /
+-- drop ... if exists) en veilig herhaald uit te voeren. Rollback:
+-- supabase/rollbacks/20260804115352_lesson_vehicle_snapshot_review_rollback.sql
+
+begin;
 
 alter table public.lessen
   add column if not exists voertuig_id uuid,
@@ -265,7 +270,13 @@ select
     when l.status = 'afgerond'::text and l.zichtbaar_voor_leerling
     then l.voertuig_categorie_snapshot
     else null::text
-  end as voertuig_categorie
+  end as voertuig_categorie,
+  case
+    when l.status = 'gepland'::text then l.voertuig_id
+    when l.status = 'afgerond'::text and l.zichtbaar_voor_leerling
+    then l.voertuig_id
+    else null::uuid
+  end as voertuig_id
 from public.lessen l
 join public.leerlingen leerling on leerling.id = l.leerling_id
 left join public.instructeur_profielen i on i.id = l.instructeur_id
@@ -285,3 +296,5 @@ where leerling.user_id = (select auth.uid())
 
 revoke all on public.student_lessen_view from anon, authenticated, service_role;
 grant select on public.student_lessen_view to anon, authenticated, service_role;
+
+commit;

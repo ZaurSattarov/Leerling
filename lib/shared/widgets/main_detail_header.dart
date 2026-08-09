@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-// Visueel identiek aan MainTabHeader (main_tab_header.dart) -- zelfde
-// donkerblauwe gradient, volledige schermbreedte, SafeArea-gedrag,
-// padding, titeltypografie en eyebrow-stijl, geen afgeronde onderhoeken,
-// geen boxShadow. Het enige verschil: links een terugknop i.p.v. een
-// optionele avatar, en gebruikt door detail-/subschermen i.p.v. de vijf
-// hoofdtabs.
+import 'klantio_header.dart';
 
 /// Centrale terug-actie voor alle detailschermen: `pop()` als de
 /// navigatiestack dat toelaat (normale flow, ook via deep link binnen een
@@ -24,8 +18,15 @@ void handleDetailBack(BuildContext context, {String fallbackRoute = '/home'}) {
   }
 }
 
+/// Enige gedeelde header voor detail-/subschermen (Lesdetails,
+/// Lesvoorbereiding, Examenadvies, en alle vergelijkbare schermen). Bouwt
+/// op [KlantioHeaderShell]/[KlantioCenteredTitleRow] -- exact dezelfde
+/// hoogte, padding en titelstijl als [MainTabHeader] (main_tab_header.dart),
+/// alleen met een vaste terugknop in de leading-zone i.p.v. geen leading of
+/// een avatar.
+///
+/// Geen eyebrow-label meer (voorheen bv. "PLANNING" boven "Lesdetails").
 class MainDetailHeader extends StatelessWidget {
-  final String eyebrowText;
   final String title;
   final List<Widget> actions;
   final String fallbackRoute;
@@ -33,7 +34,6 @@ class MainDetailHeader extends StatelessWidget {
 
   const MainDetailHeader({
     super.key,
-    required this.eyebrowText,
     required this.title,
     this.actions = const [],
     this.fallbackRoute = '/home',
@@ -42,76 +42,45 @@ class MainDetailHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF141C2B), Color(0xFF1A2D42)],
-        ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 14, 16, 18),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              IconButton(
-                key: const Key('main_detail_header_back'),
-                onPressed: onBack ??
-                    () => handleDetailBack(context, fallbackRoute: fallbackRoute),
-                icon: const Icon(
-                  Icons.arrow_back_rounded,
-                  color: Colors.white,
-                  size: 24,
-                ),
-                padding: EdgeInsets.zero,
-                constraints:
-                    const BoxConstraints(minWidth: 40, minHeight: 40),
-                splashRadius: 22,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      eyebrowText,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.inter(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white54,
-                        letterSpacing: 0.7,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.inter(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        height: 1.1,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              for (var i = 0; i < actions.length; i++) ...[
-                actions[i],
-                if (i != actions.length - 1) const SizedBox(width: 8),
-              ],
-            ],
+    return KlantioHeaderShell(
+      child: KlantioCenteredTitleRow(
+        leading: IconButton(
+          key: const Key('main_detail_header_back'),
+          onPressed:
+              onBack ?? () => handleDetailBack(context, fallbackRoute: fallbackRoute),
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.white,
+            size: 22,
           ),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(
+            minWidth: kKlantioHeaderZoneWidth,
+            minHeight: kKlantioHeaderZoneWidth,
+          ),
+          splashRadius: 22,
         ),
+        title: title,
+        trailing: actions.isEmpty ? null : _ActionsRow(actions: actions),
       ),
+    );
+  }
+}
+
+class _ActionsRow extends StatelessWidget {
+  final List<Widget> actions;
+  const _ActionsRow({required this.actions});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < actions.length; i++) ...[
+          actions[i],
+          if (i != actions.length - 1) const SizedBox(width: 8),
+        ],
+      ],
     );
   }
 }

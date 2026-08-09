@@ -276,13 +276,17 @@ void main() {
       expect(blok, isNot(contains('_ContactButton(')));
     });
 
-    test('sibling-kaarten (Lestype/Voertuig/Evaluatie) blijven ongewijzigd '
-        'aanwezig -- geen regressie', () {
-      expect(bron, contains('class _LesInfoCard'));
+    test(
+        'sibling-kaarten (Voertuig/Evaluatie) blijven aanwezig; Lestype is '
+        'sinds de Impeccable-redesign geïntegreerd in _LesInformatieCard '
+        'i.p.v. een eigen losse _LesInfoCard (bewuste verwijdering, geen '
+        'regressie)', () {
       expect(bron, contains('class _VoertuigCard'));
       expect(bron, contains('class _EvaluatieSection'));
       expect(bron, contains('class _EvaluatieFallback'));
       expect(bron, contains('class _EvaluatieNietBeschikbaar'));
+      expect(bron, isNot(contains('class _LesInfoCard')));
+      expect(bron, contains('class _LesInformatieCard'));
     });
 
     test('geen database/route/navbar-wijziging: LesDetailScreen gebruikt '

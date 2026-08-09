@@ -19,7 +19,6 @@ class ExamensScreen extends ConsumerWidget {
       body: Column(
         children: [
           const MainDetailHeader(
-            eyebrowText: 'EXAMENS',
             title: 'Mijn examens',
           ),
           Expanded(

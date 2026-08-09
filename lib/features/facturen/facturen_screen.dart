@@ -85,7 +85,6 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
       body: Column(
         children: [
           MainTabHeader(
-            eyebrowText: 'FACTUREN',
             title: 'Mijn facturen',
             actions: [
               MainHeaderIconKnop(

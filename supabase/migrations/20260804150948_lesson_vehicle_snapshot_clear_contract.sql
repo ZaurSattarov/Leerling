@@ -1,5 +1,10 @@
--- Review only. Do not apply until approved.
--- Scope: trigger function only. No data, view, policy, or grant changes.
+-- Goedgekeurd 2026-08-07: verscherpt de trigger uit
+-- 20260804115352_lesson_vehicle_snapshot_review.sql met een expliciete
+-- historical_lesson-guard (voorkomt dat de voertuigkoppeling van een
+-- afgeronde les wordt losgekoppeld of gewijzigd). Toepassen NA de migratie
+-- hierboven. Scope: trigger function only. No data, view, policy, or grant
+-- changes. Rollback:
+-- supabase/rollbacks/20260804150948_lesson_vehicle_snapshot_clear_contract_rollback.sql
 
 create or replace function public.validate_and_snapshot_lesson_vehicle()
 returns trigger

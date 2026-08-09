@@ -155,7 +155,6 @@ class _BeveiligingScreenState extends ConsumerState<BeveiligingScreen> {
       body: Column(
         children: [
           const MainDetailHeader(
-            eyebrowText: 'APP-INSTELLINGEN',
             title: 'Beveiliging',
             fallbackRoute: '/profiel/app-instellingen',
           ),

@@ -22,7 +22,6 @@ class NotificatiesScreen extends ConsumerWidget {
       body: Column(
         children: [
           MainDetailHeader(
-            eyebrowText: 'MELDINGEN',
             title: 'Mijn meldingen',
             actions: [
               notificatiesAsync.when(

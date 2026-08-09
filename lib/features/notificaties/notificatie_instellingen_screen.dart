@@ -21,7 +21,6 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
       body: Column(
         children: [
           const MainDetailHeader(
-            eyebrowText: 'PROFIEL',
             title: 'Meldingen',
             fallbackRoute: '/profiel',
           ),

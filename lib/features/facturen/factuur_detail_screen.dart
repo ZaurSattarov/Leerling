@@ -28,7 +28,6 @@ class FactuurDetailScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           MainDetailHeader(
-            eyebrowText: 'FACTUUR',
             title: 'Factuur',
             actions: [
               if (factuur != null) StatusPill.factuur(factuur.status),

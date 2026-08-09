@@ -77,7 +77,6 @@ class ProfielScreen extends ConsumerWidget {
       body: Column(
         children: [
           const MainTabHeader(
-            eyebrowText: 'LEERLING',
             title: 'Profiel',
             actions: [MainHeaderNotificatieKnop()],
           ),

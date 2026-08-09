@@ -22,7 +22,6 @@ class HelpScreen extends StatelessWidget {
       body: Column(
         children: [
           const MainDetailHeader(
-            eyebrowText: 'SUPPORT',
             title: 'Help & ondersteuning',
           ),
           Expanded(

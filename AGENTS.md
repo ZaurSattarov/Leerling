@@ -133,3 +133,58 @@ Wanneer geen graph-update nodig was:
 
 Zie `tools\update_graphify.cmd` in dit project — draait `/graphify --update` (de officiële
 incrementele-update-modus van de geïnstalleerde graphify-versie) vanuit de projectroot.
+
+---
+
+## Graphify MCP — Verplichte Zichtbare Status en Eindcontrole (aangescherpt)
+
+> Dit is de strengere, verplichte versie van de statusmeldingen hierboven. Bij afwijking
+> tussen deze sectie en de eerdere Graphify-secties in dit bestand, geldt deze sectie.
+
+### Verplichte zichtbare Graphify-status — bij iedere programmeeropdracht, zonder uitzondering
+
+1. VOORDAT bronbestanden worden geopend, geanalyseerd of gewijzigd, moet als eerste
+   zichtbare statusmelding exact worden getoond:
+
+   🔎 GRAPHIFY: Ik gebruik Graphify MCP om eerst de relevante code en verbindingen te bepalen.
+
+2. Daarna moet daadwerkelijk de juiste Graphify MCP-server worden aangeroepen: **`graphify-leerling`**.
+3. Alleen nadat Graphify daadwerkelijk is geraadpleegd mogen de minimaal noodzakelijke
+   bronbestanden worden geopend.
+4. De beginmelding mag NOOIT worden getoond als Graphify niet daadwerkelijk wordt gebruikt.
+5. Als Graphify MCP niet bereikbaar is, meld dan exact:
+
+   ⚠️ GRAPHIFY: MCP is niet beschikbaar. Ik ga niet verder met de programmeeropdracht totdat dit is opgelost.
+
+   Ga in dat geval niet stilzwijgend verder met een brede repositoryscan.
+
+### Verplichte eindcontrole — na iedere programmeeropdracht
+
+Bepaal na iedere programmeeropdracht of de codegraph structureel is gewijzigd (zie de
+lijst met structurele wijzigingen hierboven).
+
+**Als er een structurele wijziging is:**
+
+1. Voer de bestaande incrementele Graphify-update uit via `tools\update_graphify.cmd`.
+2. Voer GEEN volledige semantische Graphify-heranalyse uit.
+3. Valideer graph.json.
+4. Controleer indien mogelijk via MCP of de nieuwe nodes/verbindingen zichtbaar zijn.
+5. Als MCP nog de oude graph in het geheugen heeft, meld expliciet dat een MCP/Claude-herstart nodig is.
+6. Toon als LAATSTE zichtbare regel exact:
+
+   ✅ GRAPHIFY: graph.json is bijgewerkt met de nieuwste codeverbindingen.
+
+**Als er geen structurele wijziging is:**
+
+Voer geen onnodige Graphify-update uit. Toon als LAATSTE zichtbare regel exact:
+
+✅ GRAPHIFY: Graphify is gebruikt; graph.json hoefde niet bijgewerkt te worden.
+
+### Belangrijk
+
+- Deze begin- en eindmeldingen zijn VERPLICHT.
+- Een programmeeropdracht geldt niet als volledig afgerond wanneer de Graphify-eindcontrole ontbreekt.
+- GRAPH_REPORT.md hoeft NIET na iedere opdracht opnieuw gegenereerd te worden.
+- graph.json is de actuele machineleesbare graph die via MCP wordt gebruikt.
+- Beperk tokengebruik: gerichte queries, minimale relevante nodes, minimale bronbestanden,
+  geen volledige graph in context laden, geen volledige GRAPH_REPORT.md lezen tenzij noodzakelijk.

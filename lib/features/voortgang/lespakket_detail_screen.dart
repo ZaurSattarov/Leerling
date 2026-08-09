@@ -20,7 +20,6 @@ class LespakketDetailScreen extends ConsumerWidget {
       body: Column(
         children: [
           const MainDetailHeader(
-            eyebrowText: 'VOORTGANG',
             title: 'Lespakket & voortgang',
           ),
           Expanded(

@@ -17,7 +17,6 @@ class AppInstellingenScreen extends StatelessWidget {
       body: Column(
         children: [
           const MainDetailHeader(
-            eyebrowText: 'PROFIEL',
             title: 'App-instellingen',
             fallbackRoute: '/profiel',
           ),

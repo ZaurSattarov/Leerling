@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,8 +9,7 @@ import '../../models/les.dart';
 import '../../models/factuur.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/main_tab_header.dart';
-import '../../shared/widgets/status_pill.dart';
+import '../../shared/widgets/home_header.dart';
 import '../lesvoorbereiding/lesvoorbereiding_provider.dart';
 import 'home_coach_provider.dart';
 import 'home_provider.dart';
@@ -48,95 +46,89 @@ class HomeScreen extends ConsumerWidget {
             ),
 
             // ── Body content ─────────────────────────────────────────────────
+            // Vaste hiërarchie: kerncijfers → volgende les → voorbereiding
+            // → voortgang → examenadvies → (optioneel) urgente factuuractie.
+            // Facturen krijgen hier bewust geen volledige lijst meer -- die
+            // hoort in de Facturen-tab.
             homeAsync.when(
-              data: (home) => SliverPadding(
-                padding: const EdgeInsets.fromLTRB(
-                    20, 20, 20, NavShellTokens.contentBottomClearance),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    // Stats bento
-                    _StatsRow(
-                      profielAsync: profielAsync,
-                      homeAsync: homeAsync,
-                    ),
-                    const SizedBox(height: 16),
+              data: (home) {
+                final urgenteActie =
+                    _bepaalUrgenteFactuurActie(home.openFacturen);
 
-                    // Next Action card
-                    _VolgendeActieCard(home: home),
-                    const SizedBox(height: 24),
-
-                    // Volgende les
-                    _SectionLabel(
-                      title: 'Volgende les',
-                      action: 'Alle lessen',
-                      onAction: () => context.go('/planning'),
-                    ),
-                    const SizedBox(height: 10),
-                    home.heeftVolgendeLes
-                        ? _VolgendeLesHero(
-                            les: home.volgendeLes!,
-                            onTap: () => context.go('/planning'),
-                          )
-                        : _GeenLesCard(),
-
-                    const SizedBox(height: 24),
-
-                    // Examenadvies
-                    homeCoachAsync.when(
-                      data: (coach) => _ExamenadviesHero(
-                        data: coach,
-                        onTap: () => context.push('/examenadvies'),
+                return SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(
+                      20, 20, 20, NavShellTokens.contentBottomClearance),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      // Kerncijfers
+                      _StatsRow(
+                        profielAsync: profielAsync,
+                        homeAsync: homeAsync,
                       ),
-                      loading: () => const _SkeletonHero(),
-                      error: (_, __) => const SizedBox.shrink(),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Mijn voortgang
-                    profielAsync.when(
-                      data: (profiel) => profiel != null
-                          ? _VoortgangCard(
-                              profiel: profiel,
-                              onTap: () => context.go('/voortgang'),
-                            )
-                          : const SizedBox.shrink(),
-                      loading: () => const SkeletonCard(),
-                      error: (_, __) => const SizedBox.shrink(),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Lesvoorbereiding
-                    lesvoorbereidingAsync.when(
-                      data: (data) => _LesvoorbereidingCard(
-                        data: data,
-                        onTap: () => context.push('/lesvoorbereiding'),
-                      ),
-                      loading: () => const SkeletonCard(),
-                      error: (_, __) => const SizedBox.shrink(),
-                    ),
-
-                    // Open facturen
-                    if (home.heeftOpenFacturen) ...[
                       const SizedBox(height: 24),
-                      _SectionLabel(
-                        title: 'Openstaande facturen',
-                        action: 'Alle facturen',
-                        onAction: () => context.go('/facturen'),
+
+                      // Volgende les
+                      SectionHeader(
+                        title: 'Volgende les',
+                        action: 'Alle lessen',
+                        onAction: () => context.go('/planning'),
                       ),
                       const SizedBox(height: 10),
-                      ...home.openFacturen.take(2).map(
-                            (f) => Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: _FactuurRij(factuur: f),
-                            ),
-                          ),
-                    ],
+                      home.heeftVolgendeLes
+                          ? _VolgendeLesHero(
+                              les: home.volgendeLes!,
+                              onTap: () => context.go('/planning'),
+                            )
+                          : _GeenLesCard(),
+                      const SizedBox(height: 24),
 
-                  ]),
-                ),
-              ),
+                      // Voorbereiding volgende les (zelfde workflow als
+                      // hierboven -- daarom direct eronder)
+                      lesvoorbereidingAsync.when(
+                        data: (data) => _LesvoorbereidingCard(
+                          data: data,
+                          onTap: () => context.push('/lesvoorbereiding'),
+                        ),
+                        loading: () => const SkeletonCard(),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Mijn voortgang (lespakket/lesvoortgang)
+                      profielAsync.when(
+                        data: (profiel) => profiel != null
+                            ? _VoortgangCard(
+                                profiel: profiel,
+                                onTap: () => context.go('/voortgang'),
+                              )
+                            : const SizedBox.shrink(),
+                        loading: () => const SkeletonCard(),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Examenadvies (semantisch iets anders dan
+                      // lesvoortgang -- eigen kaart, eigen scherm)
+                      homeCoachAsync.when(
+                        data: (coach) => _ExamenadviesHero(
+                          data: coach,
+                          onTap: () => context.push('/examenadvies'),
+                        ),
+                        loading: () => const _SkeletonHero(),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
+
+                      // Urgente factuuractie -- alleen wanneer een factuur
+                      // echt actie vereist (verlopen, of vervalt binnen
+                      // enkele dagen). Geen enkele kaart wanneer niet nodig.
+                      if (urgenteActie != null) ...[
+                        const SizedBox(height: 24),
+                        _UrgenteFactuurCard(actie: urgenteActie),
+                      ],
+                    ]),
+                  ),
+                );
+              },
               loading: () => SliverPadding(
                 padding: const EdgeInsets.fromLTRB(
                     20, 20, 20, NavShellTokens.contentBottomClearance),
@@ -166,6 +158,11 @@ class HomeScreen extends ConsumerWidget {
 }
 
 // ── Gradient header ───────────────────────────────────────────────────────────
+//
+// HomeHeader zelf staat in shared/widgets/home_header.dart (herbruikbaar,
+// zelfde bouwpatroon als de andere gedeelde headers in shared/widgets/).
+// Deze kleine wrapper leest alleen de twee providers uit en geeft de losse
+// waarden door -- HomeHeader kent zelf geen Riverpod-afhankelijkheid.
 
 class _GradientHeader extends StatelessWidget {
   final AsyncValue<LeerlingProfiel?> profielAsync;
@@ -180,72 +177,11 @@ class _GradientHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final profiel = profielAsync.valueOrNull;
     final home = homeAsync.valueOrNull;
-    final naam = profiel?.voornaam ?? '';
-    final initials = naam.isNotEmpty ? naam[0].toUpperCase() : '?';
-    final avatarUrl = profiel?.avatarUrl;
 
-    return MainTabHeader(
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: AppColors.primary.withValues(alpha: 0.25),
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: AppColors.primary.withValues(alpha: 0.5),
-            width: 1.5,
-          ),
-        ),
-        child: ClipOval(
-          child: avatarUrl?.isNotEmpty == true
-              ? CachedNetworkImage(
-                  imageUrl: avatarUrl!,
-                  fit: BoxFit.cover,
-                  width: 40,
-                  height: 40,
-                  placeholder: (_, __) => Center(
-                    child: Text(
-                      initials,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  errorWidget: (_, __, ___) => Center(
-                    child: Text(
-                      initials,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                )
-              : Center(
-                  child: Text(
-                    initials,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-        ),
-      ),
-      eyebrowText:
-          DatumUtils.langeDatum(DatumUtils.vandaagString()).toUpperCase(),
-      title: naam.isNotEmpty ? 'Hoi, $naam.' : 'Welkom terug.',
-      actions: [
-        MainHeaderIconKnop(
-          icon: Icons.notifications_none_rounded,
-          badgeCount: home?.ongelezenNotificaties,
-          onTap: () => context.go('/notificaties'),
-        ),
-      ],
+    return HomeHeader(
+      avatarUrl: profiel?.avatarUrl,
+      naam: profiel?.voornaam ?? '',
+      ongelezenNotificaties: home?.ongelezenNotificaties,
     );
   }
 }
@@ -408,55 +344,6 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-// ── Section label ─────────────────────────────────────────────────────────────
-
-class _SectionLabel extends StatelessWidget {
-  final String title;
-  final String? action;
-  final VoidCallback? onAction;
-
-  const _SectionLabel({required this.title, this.action, this.onAction});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            title.toUpperCase(),
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textSecondary,
-              letterSpacing: 1.2,
-            ),
-          ),
-        ),
-        if (action != null && onAction != null)
-          GestureDetector(
-            onTap: onAction,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  action!,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(width: 2),
-                const Icon(Icons.arrow_forward_rounded,
-                    size: 14, color: AppColors.textPrimary),
-              ],
-            ),
-          ),
-      ],
-    );
-  }
-}
-
 // ── Volgende les hero card ────────────────────────────────────────────────────
 
 class _VolgendeLesHero extends StatelessWidget {
@@ -464,45 +351,6 @@ class _VolgendeLesHero extends StatelessWidget {
   final VoidCallback onTap;
 
   const _VolgendeLesHero({required this.les, required this.onTap});
-
-  String _dagAfk(String datum) {
-    try {
-      const days = ['MAA', 'DIN', 'WOE', 'DON', 'VRI', 'ZAT', 'ZON'];
-      return days[DateTime.parse(datum).weekday - 1];
-    } catch (_) {
-      return '';
-    }
-  }
-
-  String _dagNr(String datum) {
-    try {
-      return DateTime.parse(datum).day.toString();
-    } catch (_) {
-      return '?';
-    }
-  }
-
-  String _maandAfk(String datum) {
-    try {
-      const m = [
-        'jan',
-        'feb',
-        'mrt',
-        'apr',
-        'mei',
-        'jun',
-        'jul',
-        'aug',
-        'sep',
-        'okt',
-        'nov',
-        'dec',
-      ];
-      return m[DateTime.parse(datum).month - 1];
-    } catch (_) {
-      return '';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -524,10 +372,12 @@ class _VolgendeLesHero extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Date block — flat, clean
+            // Date block — flat, clean. Geen vaste hoogte: schaalt mee met
+            // tekstschaal zonder ooit te overflowen (Impeccable: text moet
+            // nooit zijn container overflowen).
             Container(
               width: 58,
-              height: 70,
+              padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
                 color: const Color(0xFFF0F2F5),
                 borderRadius: BorderRadius.circular(12),
@@ -535,10 +385,11 @@ class _VolgendeLesHero extends StatelessWidget {
                     color: const Color(0xFFE2E2E7), width: 0.75),
               ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    _dagAfk(les.datum),
+                    DatumUtils.dagAfkorting(les.datum),
                     style: const TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 10,
@@ -547,7 +398,7 @@ class _VolgendeLesHero extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    _dagNr(les.datum),
+                    DatumUtils.dagNummer(les.datum),
                     style: const TextStyle(
                       color: AppColors.primary,
                       fontSize: 24,
@@ -556,7 +407,7 @@ class _VolgendeLesHero extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    _maandAfk(les.datum),
+                    DatumUtils.maandAfkorting(les.datum),
                     style: const TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 10,
@@ -710,32 +561,38 @@ class _GeenLesCard extends StatelessWidget {
   }
 }
 
-// ── Examenadvies hero ─────────────────────────────────────────────────────────
+// ── Lesvoorbereiding card ─────────────────────────────────────────────────────
 
-class _ExamenadviesHero extends StatelessWidget {
-  final HomeCoachData data;
+class _LesvoorbereidingCard extends StatelessWidget {
+  final PreparationViewModel? data;
   final VoidCallback onTap;
 
-  const _ExamenadviesHero({required this.data, required this.onTap});
+  const _LesvoorbereidingCard({required this.data, required this.onTap});
+
+  // Kort, letterlijk-afgeleid onderschrift -- zelfde prioriteitsvolgorde
+  // als het Lesvoorbereiding-scherm zelf (focus > aandacht > sterk >
+  // feedback), puur ter identificatie welke voorbereiding klaarstaat.
+  String _subtitel(PreparationViewModel vm) {
+    if (vm.focusItems.isNotEmpty) return vm.focusItems.first;
+    if (vm.attentionItems.isNotEmpty) return vm.attentionItems.first.label;
+    if (vm.strongItems.isNotEmpty) return vm.strongItems.first.label;
+    if (vm.studentFeedback?.isNotEmpty ?? false) return vm.studentFeedback!;
+    return 'Bekijk wat er wordt geoefend';
+  }
 
   @override
   Widget build(BuildContext context) {
-    final score = data.readinessScore;
-    final label = score >= 85
-        ? 'Examenklaar!'
-        : score >= 60
-            ? 'Bijna examenklaar'
-            : 'In ontwikkeling';
-    final labelColor = score >= 85
-        ? AppColors.successSolid
-        : score >= 60
-            ? AppColors.warningSolid
-            : AppColors.infoSolid;
+    final vm = data;
+    // Geen kaart wanneer er geen komende les is -- geen link naar een
+    // scherm dat alsnog "geen volgende les" moet gaan melden.
+    if (vm == null || vm.emptyState == PreparationEmptyState.geenVolgendeLes) {
+      return const SizedBox.shrink();
+    }
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(20),
@@ -750,106 +607,52 @@ class _ExamenadviesHero extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Circular progress
-            SizedBox(
-              width: 72,
-              height: 72,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                    width: 72,
-                    height: 72,
-                    child: CircularProgressIndicator(
-                      value: score / 100,
-                      strokeWidth: 6,
-                      backgroundColor: const Color(0xFFF0F2F5),
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        score >= 85
-                            ? AppColors.successSolid
-                            : score >= 60
-                                ? AppColors.warningSolid
-                                : AppColors.infoSolid,
-                      ),
-                      strokeCap: StrokeCap.round,
-                    ),
-                  ),
-                  Text(
-                    '$score%',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.textPrimary,
-                      height: 1,
-                    ),
-                  ),
-                ],
-              ),
+            const IconBadge(
+              icon: Icons.checklist_rounded,
+              color: AppColors.iconPurple,
+              size: 44,
             ),
-            const SizedBox(width: 18),
+            const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF0F2F5),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                          color: const Color(0xFFE2E2E7), width: 0.75),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: labelColor,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          label,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
                   const Text(
-                    'Examenadvies',
+                    'Voorbereiding volgende les',
                     style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  const SizedBox(height: 3),
+                  const SizedBox(height: 2),
                   Text(
-                    data.advies.isNotEmpty
-                        ? data.advies
-                        : 'Bekijk je examengereedheid',
+                    _subtitel(vm),
                     style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                    ),
-                    maxLines: 2,
+                        fontSize: 12, color: AppColors.textSecondary),
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.chevron_right_rounded,
-                color: AppColors.textHint, size: 20),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Bekijk',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(width: 2),
+                const Icon(Icons.arrow_forward_rounded,
+                    size: 14, color: AppColors.textPrimary),
+              ],
+            ),
           ],
         ),
       ),
@@ -962,20 +765,246 @@ class _VoortgangCard extends StatelessWidget {
   }
 }
 
-// ── Lesvoorbereiding card ─────────────────────────────────────────────────────
+// ── Examenadvies hero ─────────────────────────────────────────────────────────
+// Semantisch los van "Mijn voortgang" hierboven: dit is een examengereedheid-
+// inschatting, geen lespakketvoortgang.
 
-class _LesvoorbereidingCard extends StatelessWidget {
-  final LesvoorbereidingData? data;
+class _ExamenadviesHero extends StatelessWidget {
+  final HomeCoachData data;
   final VoidCallback onTap;
 
-  const _LesvoorbereidingCard({required this.data, required this.onTap});
+  const _ExamenadviesHero({required this.data, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    if (data == null) return const SizedBox.shrink();
+    final score = data.readinessScore;
+    final label = score >= 85
+        ? 'Examenklaar!'
+        : score >= 60
+            ? 'Bijna examenklaar'
+            : 'In ontwikkeling';
+    final labelColor = score >= 85
+        ? AppColors.successSolid
+        : score >= 60
+            ? AppColors.warningSolid
+            : AppColors.infoSolid;
 
     return GestureDetector(
       onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.border, width: 0.75),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Circular progress
+            SizedBox(
+              width: 72,
+              height: 72,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    width: 72,
+                    height: 72,
+                    child: CircularProgressIndicator(
+                      value: score / 100,
+                      strokeWidth: 6,
+                      backgroundColor: const Color(0xFFF0F2F5),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        score >= 85
+                            ? AppColors.successSolid
+                            : score >= 60
+                                ? AppColors.warningSolid
+                                : AppColors.infoSolid,
+                      ),
+                      strokeCap: StrokeCap.round,
+                    ),
+                  ),
+                  Text(
+                    '$score%',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.textPrimary,
+                      height: 1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 18),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF0F2F5),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                          color: const Color(0xFFE2E2E7), width: 0.75),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: labelColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Flexible(
+                          child: Text(
+                            label,
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Examenadvies',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    data.advies.isNotEmpty
+                        ? data.advies
+                        : 'Bekijk je examengereedheid',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Icon(Icons.chevron_right_rounded,
+                color: AppColors.textHint, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Urgente factuuractie ──────────────────────────────────────────────────────
+// Verschijnt bewust ALLEEN wanneer een bestaande factuur echt actie vereist
+// (verlopen, of vervalt binnen enkele dagen). Geen permanente factuursectie,
+// geen nieuwe databron -- puur afgeleid van HomeData.openFacturen.
+
+class _FactuurActie {
+  final Factuur factuur;
+  final bool isVerlopen;
+  final int? dagenTotVervaldatum;
+  final int aantalVerlopen;
+
+  const _FactuurActie({
+    required this.factuur,
+    required this.isVerlopen,
+    this.dagenTotVervaldatum,
+    this.aantalVerlopen = 1,
+  });
+}
+
+const _kUrgentieDrempelDagen = 3;
+
+int? _dagenTotVervaldatum(String? vervaldatum) {
+  if (vervaldatum == null || vervaldatum.trim().isEmpty) return null;
+  try {
+    final datum = DateTime.parse(vervaldatum);
+    final vandaag = DateTime.now();
+    final vandaagZonderTijd =
+        DateTime(vandaag.year, vandaag.month, vandaag.day);
+    final datumZonderTijd = DateTime(datum.year, datum.month, datum.day);
+    return datumZonderTijd.difference(vandaagZonderTijd).inDays;
+  } catch (_) {
+    return null;
+  }
+}
+
+_FactuurActie? _bepaalUrgenteFactuurActie(List<Factuur> facturen) {
+  final verlopen = facturen.where((f) => f.isVerlopen).toList();
+  if (verlopen.isNotEmpty) {
+    return _FactuurActie(
+      factuur: verlopen.first,
+      isVerlopen: true,
+      aantalVerlopen: verlopen.length,
+    );
+  }
+
+  for (final f in facturen.where((f) => f.isOpen)) {
+    final dagen = _dagenTotVervaldatum(f.vervaldatum);
+    if (dagen != null && dagen >= 0 && dagen <= _kUrgentieDrempelDagen) {
+      return _FactuurActie(
+        factuur: f,
+        isVerlopen: false,
+        dagenTotVervaldatum: dagen,
+      );
+    }
+  }
+
+  return null;
+}
+
+class _UrgenteFactuurCard extends StatelessWidget {
+  final _FactuurActie actie;
+
+  const _UrgenteFactuurCard({required this.actie});
+
+  @override
+  Widget build(BuildContext context) {
+    final f = actie.factuur;
+    final kleur =
+        actie.isVerlopen ? AppColors.dangerSolid : AppColors.warningSolid;
+
+    final String titel;
+    if (actie.isVerlopen) {
+      titel = actie.aantalVerlopen > 1
+          ? '${actie.aantalVerlopen} facturen verlopen'
+          : 'Factuur is verlopen';
+    } else {
+      final dagen = actie.dagenTotVervaldatum ?? 0;
+      titel = dagen == 0
+          ? 'Factuur verloopt vandaag'
+          : 'Factuur verloopt over $dagen dag${dagen == 1 ? '' : 'en'}';
+    }
+    final actieLabel = actie.isVerlopen ? 'Bekijk factuur' : 'Betaal factuur';
+
+    return GestureDetector(
+      onTap: () => actie.isVerlopen && actie.aantalVerlopen > 1
+          ? context.go('/facturen')
+          : context.push('/facturen/${f.id}'),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -992,9 +1021,11 @@ class _LesvoorbereidingCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const IconBadge(
-              icon: Icons.checklist_rounded,
-              color: AppColors.iconPurple,
+            IconBadge(
+              icon: actie.isVerlopen
+                  ? Icons.warning_rounded
+                  : Icons.receipt_long_rounded,
+              color: kleur,
               size: 44,
             ),
             const SizedBox(width: 14),
@@ -1002,19 +1033,19 @@ class _LesvoorbereidingCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Voorbereiding volgende les',
-                    style: TextStyle(
+                  Text(
+                    titel,
+                    style: const TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    data!.focus.isNotEmpty
-                        ? data!.focus
-                        : 'Bekijk wat er wordt geoefend',
+                    f.beschrijving.isNotEmpty
+                        ? f.beschrijving
+                        : f.factuurnummer,
                     style: const TextStyle(
                         fontSize: 12, color: AppColors.textSecondary),
                     maxLines: 1,
@@ -1024,279 +1055,30 @@ class _LesvoorbereidingCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Bekijk',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(width: 2),
-                const Icon(Icons.arrow_forward_rounded,
-                    size: 14, color: AppColors.textPrimary),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Factuur rij ───────────────────────────────────────────────────────────────
-
-class _FactuurRij extends StatelessWidget {
-  final Factuur factuur;
-  const _FactuurRij({required this.factuur});
-
-  @override
-  Widget build(BuildContext context) {
-    final isVerlopen = factuur.isVerlopen;
-
-    return GestureDetector(
-      onTap: () => context.push('/facturen/${factuur.id}'),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border, width: 0.75),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF0F2F5),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                Icons.receipt_long_rounded,
-                size: 17,
-                color: isVerlopen
-                    ? AppColors.dangerSolid
-                    : AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            // Flexible i.p.v. een vast formaat: garandeert dat de actielabel
+            // nooit de kaart doet overflowen op smalle schermen/grote
+            // tekstschaal -- de content links (Expanded) blijft leidend.
+            Flexible(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    factuur.beschrijving.isNotEmpty
-                        ? factuur.beschrijving
-                        : factuur.factuurnummer,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    factuur.factuurnummer,
-                    style: const TextStyle(
-                        fontSize: 11, color: AppColors.textHint),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  factuur.bedragEuro,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                StatusPill.factuur(factuur.status),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
-// ── Volgende actie card ───────────────────────────────────────────────────────
-
-class _VolgendeActieCard extends StatelessWidget {
-  final HomeData home;
-  const _VolgendeActieCard({required this.home});
-
-  @override
-  Widget build(BuildContext context) {
-    // Priority: 1. Verlopen factuur, 2. Open factuur, 3. Upcoming lesson
-    final verlopenFacturen = home.openFacturen.where((f) => f.isVerlopen).toList();
-    final openFacturen = home.openFacturen.where((f) => !f.isVerlopen).toList();
-
-    if (verlopenFacturen.isNotEmpty) {
-      return _ActieCard(
-        icon: Icons.warning_rounded,
-        iconColor: const Color(0xFFDC2626),
-        label: 'Actie vereist',
-        title: '${verlopenFacturen.length} factuur${verlopenFacturen.length > 1 ? 'en' : ''} verlopen',
-        subtitle: 'Bekijk je openstaande facturen',
-        onTap: () => context.go('/facturen'),
-      );
-    }
-
-    if (openFacturen.isNotEmpty) {
-      final f = openFacturen.first;
-      return _ActieCard(
-        icon: Icons.receipt_long_rounded,
-        iconColor: AppColors.primary,
-        label: 'Openstaande factuur',
-        title: f.bedragEuro,
-        subtitle: f.beschrijving.isNotEmpty ? f.beschrijving : f.factuurnummer,
-        onTap: () => context.push('/facturen/${f.id}'),
-      );
-    }
-
-    if (home.heeftVolgendeLes) {
-      final les = home.volgendeLes!;
-      try {
-        final datum = DateTime.parse(les.datum);
-        final diff = datum.difference(DateTime.now()).inDays;
-        final dagLabel = diff == 0
-            ? 'Vandaag'
-            : diff == 1
-                ? 'Morgen'
-                : 'Over $diff dagen';
-        return _ActieCard(
-          icon: Icons.directions_car_rounded,
-          iconColor: const Color(0xFF2563EB),
-          label: 'Volgende les',
-          title: '$dagLabel · ${les.starttijd}',
-          subtitle: les.instructeurNaam ?? 'Rijles',
-          onTap: () => context.go('/planning'),
-        );
-      } catch (_) {}
-    }
-
-    return const SizedBox.shrink();
-  }
-}
-
-class _ActieCard extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String label;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  const _ActieCard({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border, width: 0.75),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // Left accent bar
-            Container(
-              width: 4,
-              height: 64,
-              decoration: BoxDecoration(
-                color: iconColor,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  bottomLeft: Radius.circular(16),
-                ),
-              ),
-            ),
-            const SizedBox(width: 14),
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF0F2F5),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(icon, color: AppColors.textPrimary, size: 18),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
+                  Flexible(
+                    child: Text(
+                      actieLabel,
                       style: const TextStyle(
-                        fontSize: 10,
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
                         color: AppColors.textPrimary,
                       ),
-                    ),
-                    Text(
-                      subtitle,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textSecondary,
-                      ),
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 2),
+                  const Icon(Icons.arrow_forward_rounded,
+                      size: 14, color: AppColors.textPrimary),
+                ],
               ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(right: 14),
-              child: Icon(Icons.chevron_right_rounded,
-                  color: AppColors.textHint, size: 18),
             ),
           ],
         ),

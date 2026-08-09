@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/app_config.dart';
+import '../utils/komende_les_filter.dart';
 import '../../models/leerling_profiel.dart';
 import '../../models/leerling_beschikbaarheid.dart';
 import '../../models/les.dart';
@@ -12,6 +13,7 @@ import '../../models/notificatie.dart';
 import '../../models/examen.dart';
 import '../../models/instructeur.dart';
 import '../../models/instructor_lesson_package.dart';
+import 'push_service.dart';
 
 class StudentService {
   static String get supabaseUrl => AppConfig.supabaseUrl;
@@ -65,7 +67,12 @@ class StudentService {
     }
   }
 
-  static Future<void> uitloggen() => client.auth.signOut();
+  static Future<void> uitloggen() async {
+    // Push (Fase 5): dit apparaat deactiveren VOORDAT de sessie sluit --
+    // deactivate_push_token heeft auth.uid() nodig.
+    await PushService.deactivateForLogout();
+    await client.auth.signOut();
+  }
 
   static Future<void> stuurWachtwoordReset(String email) {
     return client.auth.resetPasswordForEmail(
@@ -204,16 +211,26 @@ class StudentService {
     return (res as List).map((e) => Les.fromJson(e)).toList();
   }
 
+  // "Komende lessen" (Planning) EN "Volgende les" (Home) gebruiken deze ene
+  // methode als bron -- zie getHomeDashboard(), die er bewust geen eigen
+  // aparte query voor uitvoert. Zo kan "zelfde les, andere datum op een
+  // ander scherm" niet meer ontstaan.
+  //
+  // Root cause van de eerder gemelde "verkeerde datum bij de volgende les":
+  // de query filterde alleen op `datum >= vandaag`, zonder ook de starttijd
+  // van vandaag te toetsen. Bij twee lessen op dezelfde dag (of gewoon een
+  // les die vandaag al begonnen is maar door de instructeur nog niet als
+  // "afgerond" is gemarkeerd) won altijd de VROEGSTE starttijd van vandaag
+  // -- ook als die al voorbij was. Voor "vandaag" wordt nu ook getoetst dat
+  // de starttijd nog niet is gepasseerd; voor toekomstige datums (datum >
+  // vandaag) verandert er niets.
   static Future<List<Les>> getMijnKomendeLessen(String leerlingId) async {
-    final vandaag = DateTime.now();
-    final vandaagStr =
-        '${vandaag.year}-${vandaag.month.toString().padLeft(2, '0')}-${vandaag.day.toString().padLeft(2, '0')}';
     final res = await client
         .from(_studentLessenView)
         .select()
         .eq('leerling_id', leerlingId)
         .eq('status', 'gepland')
-        .gte('datum', vandaagStr)
+        .or(komendeLesPostgrestFilter(DateTime.now()))
         .order('datum')
         .order('starttijd')
         .limit(50);
@@ -224,9 +241,7 @@ class StudentService {
     String leerlingId, {
     bool alleenZichtbaarLogboek = false,
   }) async {
-    final vandaag = DateTime.now();
-    final vandaagStr =
-        '${vandaag.year}-${vandaag.month.toString().padLeft(2, '0')}-${vandaag.day.toString().padLeft(2, '0')}';
+    final vandaagStr = vandaagString(DateTime.now());
     final query =
         client.from(_studentLessenView).select().eq('leerling_id', leerlingId);
 
@@ -480,21 +495,15 @@ class StudentService {
 
   static Future<Map<String, dynamic>> getHomeDashboard(
       String leerlingId, String instructeurId) async {
-    final vandaag = DateTime.now();
-    final vandaagStr =
-        '${vandaag.year}-${vandaag.month.toString().padLeft(2, '0')}-${vandaag.day.toString().padLeft(2, '0')}';
-
-    final results = await Future.wait([
-      // 0: volgende les
-      client
-          .from('lessen')
-          .select('*, instructeur_profielen(naam, telefoon)')
-          .eq('leerling_id', leerlingId)
-          .eq('status', 'gepland')
-          .gte('datum', vandaagStr)
-          .order('datum')
-          .order('starttijd')
-          .limit(1),
+    final results = await Future.wait<dynamic>([
+      // 0: volgende les -- BEWUST dezelfde bron/query als "Mijn lessen ->
+      // Komende lessen" (getMijnKomendeLessen hierboven), i.p.v. een eigen
+      // losse query op `lessen`. Dat was de root cause van de eerder
+      // gemelde "verkeerde datum bij de volgende les": Home deed een eigen
+      // query rechtstreeks op de tabel (met dezelfde -- inmiddels
+      // gecorrigeerde -- onvolledige datumfilter), los van Planning. Eén
+      // bron van waarheid: zelfde les → zelfde datum → zelfde tijd, altijd.
+      getMijnKomendeLessen(leerlingId),
       // 1: open facturen
       client
           .from('facturen')
@@ -518,9 +527,8 @@ class StudentService {
           .limit(3),
     ]);
 
-    final lessenRaw = results[0] as List;
-    final volgendeLes =
-        lessenRaw.isNotEmpty ? Les.fromJson(lessenRaw.first) : null;
+    final komendeLessen = results[0] as List<Les>;
+    final volgendeLes = komendeLessen.isNotEmpty ? komendeLessen.first : null;
     final openFacturen =
         (results[1] as List).map((e) => Factuur.fromJson(e)).toList();
     final ongelezen = (results[2] as List).length;
@@ -550,23 +558,6 @@ class StudentService {
       return row != null ? Map<String, dynamic>.from(row) : null;
     } catch (e) {
       debugPrint('[student.examReadiness] ophalen mislukt: $e');
-      return null;
-    }
-  }
-
-  static Future<Map<String, dynamic>?> getLaatsteEvaluatie(
-      String leerlingId) async {
-    try {
-      final row = await client
-          .from('lesson_evaluations')
-          .select()
-          .eq('student_id', leerlingId)
-          .order('created_at', ascending: false)
-          .limit(1)
-          .maybeSingle();
-      return row != null ? Map<String, dynamic>.from(row) : null;
-    } catch (e) {
-      debugPrint('[student.evaluatie] ophalen mislukt: $e');
       return null;
     }
   }

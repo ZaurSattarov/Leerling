@@ -21,7 +21,6 @@ class LesLogboekScreen extends ConsumerWidget {
       body: Column(
         children: [
           const MainDetailHeader(
-            eyebrowText: 'LOGBOEK',
             title: 'Les-logboek',
           ),
           Expanded(

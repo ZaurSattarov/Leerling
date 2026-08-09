@@ -32,7 +32,6 @@ class ProfielPersoonlijkeGegevensScreen extends ConsumerWidget {
       body: Column(
         children: [
           const MainDetailHeader(
-            eyebrowText: 'PROFIEL',
             title: 'Persoonlijke gegevens',
           ),
           Expanded(

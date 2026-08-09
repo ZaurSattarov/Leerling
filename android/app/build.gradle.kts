@@ -6,6 +6,9 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    // Firebase Cloud Messaging (push notificaties, Fase 5) -- moet na de
+    // Android/Kotlin-plugins staan, leest android/app/google-services.json.
+    id("com.google.gms.google-services")
 }
 
 val keyPropertiesFile = rootProject.file("key.properties")

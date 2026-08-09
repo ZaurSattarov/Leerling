@@ -16,7 +16,6 @@ class AppMachtigingenScreen extends StatelessWidget {
       body: Column(
         children: [
           const MainDetailHeader(
-            eyebrowText: 'APP-INSTELLINGEN',
             title: 'Machtigingen',
             fallbackRoute: '/profiel',
           ),

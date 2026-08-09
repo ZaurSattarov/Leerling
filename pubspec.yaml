@@ -1,7 +1,7 @@
 name: leerling_app
 description: Rijschool Leerling App – student app voor rijschool leerlingen
 publish_to: 'none'
-version: 1.0.7+7
+version: 1.0.8+8
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -12,6 +12,12 @@ dependencies:
 
   # Backend
   supabase_flutter: ^2.3.0
+
+  # Push notificaties (Fase 5) -- gebruikt de bestaande push-dispatch
+  # Edge Function + register_push_token/deactivate_push_token RPC's,
+  # geen tweede backend.
+  firebase_core: ^3.6.0
+  firebase_messaging: ^15.1.3
 
   # State management
   flutter_riverpod: ^2.4.10
@@ -50,6 +56,15 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
 
+  # Build-time generator voor de native Android launch-achtergrond (zelfde
+  # architectuur/gebruik als de Instructeur-app: genereert eenmalig, via
+  # `dart run flutter_native_splash:create`, de echte native
+  # windowBackground/Android-12-splash-resources met het bestaande KLANTIO-
+  # merk erin. Geen runtime-dependency, geen preserve/remove-lifecycle in
+  # code -- Flutter's eigen automatische verwijdering bij het eerste frame
+  # (standaardgedrag, zelfde als de werkende Instructeur-app) doet de rest.
+  flutter_native_splash: ^2.4.3
+
 flutter:
   uses-material-design: true
 
@@ -74,3 +89,30 @@ flutter:
           weight: 800
         - asset: assets/fonts/Inter-Black.ttf
           weight: 900
+
+# Native Android launch-achtergrond -- op uitdrukkelijk verzoek toont de
+# verplichte native fase (Android 12+ kan het systeem-splashscherm zelf niet
+# uitschakelen) GEEN eigen statisch KLANTIO-beeld meer: alleen de effen
+# achtergrondkleur (AppColors.surface). Het KLANTIO-woordmerk (met de
+# "LEERLINGENPORTAAL"-animatie) verschijnt daardoor voor het eerst in de
+# echte, geanimeerde Flutter-splash (lib/features/splash/splash_screen.dart)
+# -- geen aparte, statische "logo-only"-tussenstap meer.
+#
+# BELANGRIJK: het android_12-icoon wordt hierna (in
+# values-v31/values-night-v31/styles.xml) handmatig expliciet naar een
+# TRANSPARANTE drawable gezet (@drawable/splash_icon_transparent), NIET
+# leeggelaten. Android 12+ vereist altijd een windowSplashScreenAnimatedIcon
+# -- zonder expliciete override valt het systeem terug op het generieke
+# @mipmap/ic_launcher (dat was eerder de oorzaak van het grote losse
+# rijschool/app-icoon). Met een transparant icoon toont de verplichte
+# systeem-splash alsnog niets dan de effen kleur, zonder ooit op het
+# launcher-icoon terug te vallen.
+#
+# ios: false, net als bij Instructeur -- geen native iOS-wijzigingen.
+flutter_native_splash:
+  color: "#F4F5F7"
+  android: true
+  ios: false
+  web: false
+  android_12:
+    color: "#F4F5F7"

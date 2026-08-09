@@ -1,16 +1,16 @@
-# Graph Report - Leerling  (2026-08-05)
+# Graph Report - Leerling  (2026-08-09)
 
 ## Corpus Check
-- 135 files · ~88,912 words
+- 152 files · ~102,310 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1698 nodes · 2063 edges · 166 communities (101 shown, 65 thin omitted)
+- 1890 nodes · 2328 edges · 178 communities (113 shown, 65 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 45 edges (avg confidence: 0.82)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d4cf58f5`
+- Built from commit: `957daf8a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -173,32 +173,44 @@
 - [[_COMMUNITY_Community 155|Community 155]]
 - [[_COMMUNITY_Community 156|Community 156]]
 - [[_COMMUNITY_Community 157|Community 157]]
+- [[_COMMUNITY_Community 158|Community 158]]
 - [[_COMMUNITY_Community 159|Community 159]]
+- [[_COMMUNITY_Community 160|Community 160]]
+- [[_COMMUNITY_Community 161|Community 161]]
 - [[_COMMUNITY_Community 162|Community 162]]
+- [[_COMMUNITY_Community 163|Community 163]]
+- [[_COMMUNITY_Community 164|Community 164]]
+- [[_COMMUNITY_Community 165|Community 165]]
+- [[_COMMUNITY_Community 166|Community 166]]
+- [[_COMMUNITY_Community 167|Community 167]]
+- [[_COMMUNITY_Community 168|Community 168]]
+- [[_COMMUNITY_Community 169|Community 169]]
+- [[_COMMUNITY_Community 171|Community 171]]
+- [[_COMMUNITY_Community 174|Community 174]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `package:flutter/material.dart` - 60 edges
-2. `../../core/constants/app_colors.dart` - 45 edges
-3. `package:flutter_riverpod/flutter_riverpod.dart` - 43 edges
-4. `../../core/services/student_service.dart` - 29 edges
-5. `StudentService (external)` - 28 edges
-6. `package:go_router/go_router.dart` - 26 edges
-7. `../../shared/widgets/app_card.dart` - 23 edges
-8. `mijnProfielProvider` - 23 edges
-9. `../../shared/providers/auth_provider.dart` - 20 edges
-10. `../../shared/widgets/main_detail_header.dart` - 18 edges
+1. `package:flutter/material.dart` - 70 edges
+2. `package:flutter_riverpod/flutter_riverpod.dart` - 51 edges
+3. `../../core/constants/app_colors.dart` - 46 edges
+4. `package:go_router/go_router.dart` - 29 edges
+5. `../../core/services/student_service.dart` - 29 edges
+6. `StudentService (external)` - 28 edges
+7. `package:google_fonts/google_fonts.dart` - 26 edges
+8. `../../shared/widgets/app_card.dart` - 23 edges
+9. `package:flutter_test/flutter_test.dart` - 23 edges
+10. `mijnProfielProvider` - 23 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Semantische icoonkleuren design pattern` --references--> `app_colors.dart (AppColors constants)`  [INFERRED]
   docs/superpowers/plans/2026-06-08-leerling-app-redesign.md → lib/core/constants/app_colors.dart
-- `Profiel Fase 6 — Mijn rijschool (oplevering)` --references--> `app.dart`  [EXTRACTED]
-  docs/PROFIEL_FASE6_MIJN_RIJSCHOOL.md → lib/main.dart
 - `StudentProfileGate` --semantically_similar_to--> `koppel_leerling_met_code()`  [INFERRED] [semantically similar]
   lib/shared/widgets/student_profile_gate.dart → supabase/migrations/20260521111145_student_onboarding_profile_rls.sql
 - `Profiel Fase 6 — Mijn rijschool (oplevering)` --references--> `Instructeur model (instructeur.dart)`  [EXTRACTED]
   docs/PROFIEL_FASE6_MIJN_RIJSCHOOL.md → lib/models/instructeur.dart
 - `Profiel Fase 1 / Stap 2 — Databasebeveiliging leerlingen` --references--> `Migratie: leerling_kolombeveiliging_leerlingen.sql`  [EXTRACTED]
   docs/PROFIEL_STAP2_BEVEILIGING.md → supabase/migrations/20260803134500_leerling_kolombeveiliging_leerlingen.sql
+- `Voorstel — gecontroleerde snapshot-backfill` --references--> `berekenPakketToewijzing() functie`  [EXTRACTED]
+  docs/VOORSTEL_PAKKET_SNAPSHOT_BACKFILL.md → core/utils/leerling_pakket_snapshot.dart
 
 ## Hyperedges (group relationships)
 - **OTP Code Verification Pattern** — verificatie_screen_verificatiescreen, wachtwoord_reset_code_screen_wachtwoordresetcodescreen, verificatie_screen_otpveld, wachtwoord_reset_code_screen_otpveld, student_service_studentservice [INFERRED 0.85]
@@ -223,183 +235,183 @@
 - **Semantische icoonkleuren implementatie over schermen** — app_colors_dart, home_screen_dart, facturen_screen_dart, voortgang_screen_dart, profiel_screen_dart, semantische_icoonkleuren_pattern [EXTRACTED 0.90]
 - **Leerling data-beschermingsketen (RLS + trigger + RPC)** — leerlingen_table, leerling_kolombeveiliging_trigger, leerlingen_migratie_sql, koppel_leerling_met_code_rpc [EXTRACTED 0.85]
 
-## Communities (166 total, 65 thin omitted)
+## Communities (178 total, 65 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.03
-Nodes (71): _AfwijkendeStatusRij, Align, AppCard, build, Center, Color, Column, _CompactStatusVoortgang (+63 more)
+Nodes (72): _AfwijkendeStatusRij, Align, AppCard, build, Center, Color, Column, _CompactStatusVoortgang (+64 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.04
-Nodes (48): AppCard, _BeoordelingBadge, build, _CbrRadarCard, Center, _CircularProgressPainter, _CircularProgressWidget, Column (+40 more)
+Cohesion: 0.05
+Nodes (42): app_card.dart (AppCard, SectionHeader, IconBadge), app_colors.dart (AppColors constants), ../../app.dart, berekenPakketToewijzing() functie, CommunicationService, sendEmail, ensureInitialized, _onForegroundMessage (+34 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.04
-Nodes (44): Bestanden die worden gewijzigd, code:dart (// In AppCard.build() — vervang BoxDecoration:), code:dart (// In _LaatsteLesLogboekCard.build():), code:dart (// In _LesvoorbereidingCard.build():), code:dart (// In HomeScreen.build() — zoek de voortgang IconBadge:), code:dart (// In _VolgendeLesCard.build() — vervang de leading Containe), code:dart (// _color getter in _NotificatieCard — voortgang/examenadvie), code:dart (// In _CoachReadinessCard — vervang de outer Container decor) (+36 more)
+Nodes (48): AppCard, _BeoordelingBadge, build, _CbrRadarCard, Center, _CircularProgressPainter, _CircularProgressWidget, Column (+40 more)
 
 ### Community 3 - "Community 3"
+Cohesion: 0.04
+Nodes (44): Bestanden die worden gewijzigd, code:dart (// In AppCard.build() — vervang BoxDecoration:), code:dart (// In _LaatsteLesLogboekCard.build():), code:dart (// In _LesvoorbereidingCard.build():), code:dart (// In HomeScreen.build() — zoek de voortgang IconBadge:), code:dart (// In _VolgendeLesCard.build() — vervang de leading Containe), code:dart (// _color getter in _NotificatieCard — voortgang/examenadvie), code:dart (// In _CoachReadinessCard — vervang de outer Container decor) (+36 more)
+
+### Community 4 - "Community 4"
+Cohesion: 0.04
+Nodes (44): dagAfkorting, dagNummer, DateFormat, DatumUtils, datumZonderWeekdag, duurLabel, isVerlopen, korteDatum (+36 more)
+
+### Community 5 - "Community 5"
 Cohesion: 0.05
 Nodes (42): _AuthNotifier, BorderSide, build, dispose, GoRouter, LeerlingApp, TextStyle, features/auth/login_screen.dart (+34 more)
 
-### Community 4 - "Community 4"
-Cohesion: 0.05
-Nodes (36): AppCard, build, _ContactActieRij, Container, Divider, Icon, InkWell, _isValidEmail (+28 more)
-
-### Community 5 - "Community 5"
-Cohesion: 0.07
-Nodes (32): app_card.dart (AppCard, SectionHeader, IconBadge), app_colors.dart (AppColors constants), app.dart, berekenPakketToewijzing() functie, CommunicationService, sendEmail, coach_widgets.dart (InlineCtaLink), dart:convert (+24 more)
-
 ### Community 6 - "Community 6"
-Cohesion: 0.06
-Nodes (35): _ActieCard, build, Container, _dagAfk, _dagNr, _ExamenadviesHero, Expanded, _FactuurRij (+27 more)
+Cohesion: 0.05
+Nodes (41): _ActieCard, build, Container, _dagAfk, _dagNr, _ExamenadviesHero, Expanded, _FactuurActie (+33 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.06
-Nodes (33): AppCard, _BeschikbaarheidFormulier, _BeschikbaarheidFormulierState, BeschikbaarheidScreen, _BeschikbaarheidScreenState, _BeschikbaarheidTegel, build, Center (+25 more)
+Cohesion: 0.05
+Nodes (40): AppCard, _BeschikbaarheidFormulier, _BeschikbaarheidFormulierState, BeschikbaarheidScreen, _BeschikbaarheidScreenState, _BeschikbaarheidTegel, build, Center (+32 more)
 
 ### Community 8 - "Community 8"
+Cohesion: 0.05
+Nodes (38): AppCard, _BasedOnCard, build, _BulletListCard, Column, ExamenadviesScreen, Expanded, IconBadge (+30 more)
+
+### Community 9 - "Community 9"
 Cohesion: 0.06
 Nodes (33): build, Center, Column, _ContactActiesSheet, _ContactSheetAction, Container, _DangerRow, _DangerRowState (+25 more)
 
-### Community 9 - "Community 9"
+### Community 10 - "Community 10"
 Cohesion: 0.08
 Nodes (27): avatars-bucket storage RLS gat (padsegment 2 niet gecontroleerd), Instrecteur Supabase Edge Functions (Mollie betaalflow), 1. Edge Function `create-factuur-payment` opnieuw gedeployed, 2. Database gecheckt, 3. Supabase Secrets gecheckt, 4. Debug logging toegevoegd aan edge function, 5. Debug logging toegevoegd aan Leerling app (NOG NIET GEBOUWD), code:dart (// WAS:) (+19 more)
 
-### Community 10 - "Community 10"
-Cohesion: 0.06
-Nodes (31): AppCard, bedragLabel, build, Container, dispose, _DonutChartKaart, _DonutPainter, _DonutSegment (+23 more)
-
 ### Community 11 - "Community 11"
 Cohesion: 0.06
-Nodes (31): AppCard, build, ConstrainedBox, Container, _dagAfk, _dagNummer, dispose, Expanded (+23 more)
+Nodes (32): AppCard, build, ConstrainedBox, Container, _dagAfk, _dagNummer, dispose, Expanded (+24 more)
 
 ### Community 12 - "Community 12"
+Cohesion: 0.06
+Nodes (30): AppCard, bedragLabel, build, Container, dispose, _DonutChartKaart, _DonutPainter, _DonutSegment (+22 more)
+
+### Community 13 - "Community 13"
 Cohesion: 0.07
 Nodes (28): leerling_detail_screen.dart (Instructeur-app, rijschool-planner-flutter), instructeur_notificaties_all policy (recreated), student_notificaties_select policy (recreated), student_notificaties_update policy (recreated), leerlingen koppel_code columns, enforce_leerling_zelf_update_kolommen() trigger fn, Trigger i.p.v. column GRANT: één 'authenticated' rol voor instructeur+leerling maakt GRANT te grofmazig, trg_leerlingen_zelf_update_kolommen (+20 more)
 
-### Community 13 - "Community 13"
-Cohesion: 0.12
-Nodes (29): mijnProfielProvider, examensProvider, ExamensScreen, facturenProvider, factuurDetailProvider, FacturenScreen, FactuurDetailScreen, FactuurStatus (+21 more)
-
 ### Community 14 - "Community 14"
+Cohesion: 0.08
+Nodes (25): _afgerondeLes, main, _nextLesson, _bouwLes, _bouwScherm, Les, main, ProviderScope (+17 more)
+
+### Community 15 - "Community 15"
 Cohesion: 0.07
 Nodes (27): _average, _beoordelingLabel, _beoordelingTrend, bereken, _besteCompetentie, CompetentieDelta, _competentieNaam, CompetentieTrend (+19 more)
 
-### Community 15 - "Community 15"
+### Community 16 - "Community 16"
+Cohesion: 0.07
+Nodes (25): build, Center, Divider, EditableProfielAvatar, _EditableProfielAvatarState, Icon, _InitialsAvatar, InkWell (+17 more)
+
+### Community 17 - "Community 17"
 Cohesion: 0.08
 Nodes (25): AppCard, _Badge, build, Container, Divider, IconBadge, _InbegrepenKaart, _InbegrepenRij (+17 more)
 
-### Community 16 - "Community 16"
+### Community 18 - "Community 18"
 Cohesion: 0.08
 Nodes (24): _ActionHint, build, Center, _DetailRow, didChangeAppLifecycleState, dispose, Divider, _FactuurDetailBody (+16 more)
 
-### Community 17 - "Community 17"
+### Community 19 - "Community 19"
 Cohesion: 0.09
 Nodes (17): Do's and Don'ts, HTML-mails, Invoervelden en selectie, Kleurenpalet (`AppColors`), Knoppen, Permanente UI-regels, Accessibility & Inclusion, Anti-references (+9 more)
 
-### Community 18 - "Community 18"
+### Community 20 - "Community 20"
 Cohesion: 0.15
 Nodes (25): _AuthNotifier, AppColors, AppConfig, LeerlingApp, _routerProvider (GoRouter config), AuthDesign, BeschikbaarheidScreen, BeveiligingScreen (beveiliging_screen.dart) (+17 more)
 
-### Community 19 - "Community 19"
+### Community 21 - "Community 21"
+Cohesion: 0.1
+Nodes (21): _bouwScherm, main, _profiel, ProviderScope, _bouwScherm, FakeViewPadding, main, _openTijdSheet (+13 more)
+
+### Community 22 - "Community 22"
 Cohesion: 0.08
 Nodes (23): 10. Onderdelen al volledig gesynchroniseerd, 11. Onderdelen die nog ontbreken of risico's bevatten, 1. Widgets van de Profiel-tab, 2. Services gebruikt, 3. Repositories, 4. Supabase-queries die de Profiel-tab (indirect) uitvoert, 5. Tabellen gebruikt, 6. Kolommen gelezen (+15 more)
 
-### Community 20 - "Community 20"
-Cohesion: 0.16
-Nodes (14): HomeData, LesvoorbereidingData, ../../core/services/student_service.dart, ../../core/utils/lespakket_detail.dart, les_logboek_item.dart, les_logboek_mapper.dart, ../../models/examen.dart, ../../models/factuur.dart (+6 more)
-
-### Community 21 - "Community 21"
-Cohesion: 0.11
-Nodes (22): Dual lespakket providers kept separate to avoid regressing existing Voortgang tab, InstructorLessonPackage, Legacy catalog fallback superseded once pakket snapshot exists, LespakketDetail (external), autoDispose avoids manual refresh for lespakket detail, lespakketDetailProvider, _KopKaart, _LespakketDetailBody (+14 more)
-
-### Community 22 - "Community 22"
-Cohesion: 0.1
-Nodes (20): AppCard, _AssessmentPill, BorderSide, build, Container, dispose, IconBadge, initState (+12 more)
-
 ### Community 23 - "Community 23"
-Cohesion: 0.12
-Nodes (16): _euroLabel, formatMinutenSaldo, LespakketDetail, LespakketVoortgang, _beoordelingVoorStatus, _datumLabel, fromLes, LesLogboekItem (+8 more)
+Cohesion: 0.09
+Nodes (21): Beveiligingsmodel, code:sql (-- Kolom + FK bestaan), Exact live schema, Exacte oorzaak, Flutter-status -- volledig geïmplementeerd, Historische impact en backfill, Instructeur-app codeplan, Instructeur-app flow (+13 more)
 
 ### Community 24 - "Community 24"
 Cohesion: 0.11
-Nodes (18): AppCard, build, Container, EmptyState, IconBadge, _InlineNotice, _LespakketDetailBody, LespakketDetailScreen (+10 more)
+Nodes (21): Dual lespakket providers kept separate to avoid regressing existing Voortgang tab, InstructorLessonPackage, Legacy catalog fallback superseded once pakket snapshot exists, LespakketDetail (external), autoDispose avoids manual refresh for lespakket detail, lespakketDetailProvider, _KopKaart, _LespakketDetailBody (+13 more)
 
 ### Community 25 - "Community 25"
-Cohesion: 0.11
-Nodes (18): build, didUpdateWidget, dispose, GestureDetector, _handleCodeChanged, initState, _onFocusChanged, _OtpVeld (+10 more)
+Cohesion: 0.1
+Nodes (20): AppCard, build, _ContactActieRij, Container, Divider, Icon, InkWell, _isValidEmail (+12 more)
 
 ### Community 26 - "Community 26"
 Cohesion: 0.11
-Nodes (18): build, didUpdateWidget, dispose, GestureDetector, _handleCodeChanged, initState, _onFocusChanged, _OtpVeld (+10 more)
+Nodes (18): launchUrl, MapsUri, AppCard, build, Divider, _FaqCard, _FaqCardState, HelpScreen (+10 more)
 
 ### Community 27 - "Community 27"
 Cohesion: 0.11
-Nodes (18): AppCard, _BasedOnCard, build, _BulletListCard, Column, ExamenadviesScreen, Expanded, IconBadge (+10 more)
+Nodes (18): AppCard, build, Container, EmptyState, IconBadge, _InlineNotice, _LespakketDetailBody, LespakketDetailScreen (+10 more)
 
 ### Community 28 - "Community 28"
 Cohesion: 0.11
-Nodes (18): _activeIndex, _berekenLabelFontSize, build, Container, Expanded, Function, MainScaffold, NavBarItem (+10 more)
+Nodes (18): build, didUpdateWidget, dispose, GestureDetector, _handleCodeChanged, initState, _onFocusChanged, _OtpVeld (+10 more)
 
 ### Community 29 - "Community 29"
-Cohesion: 0.11
-Nodes (18): Beveiligingsmodel, Exact live schema, Exacte oorzaak, Historische impact en backfill, Instructeur-app codeplan, Instructeur-app flow, Leerlingen-app codeplan, Les-voertuigkoppeling architectuur- en migratiereview (+10 more)
+Cohesion: 0.18
+Nodes (19): mijnProfielProvider, examensProvider, ExamensScreen, KoppelcodeScreen, laatsteLesLogboekItemProvider, lesLogboekProvider, LesLogboekScreen, notificatiesProvider (+11 more)
 
 ### Community 30 - "Community 30"
-Cohesion: 0.11
-Nodes (17): AnimatedBuilder, AppCard, build, Center, Container, dispose, EmptyState, Icon (+9 more)
+Cohesion: 0.13
+Nodes (19): ExamenadviesCalculator, ExamenadviesData, ScoreOnderdeel, emptyExamenadvies constant, examenadviesProvider, ExamenadviesScreen, HomeData, LeerlingProfiel (+11 more)
 
 ### Community 31 - "Community 31"
 Cohesion: 0.11
-Nodes (17): 10. Account (uitloggen, sessie), 11. Overzichtstabel (compact), 12. Dependency-overzicht (conceptuele mapping, geen code-import), 13. Afwijkingen — data die nog niet uit de juiste bron komt, 1. Persoonlijke gegevens, 2. Profielfoto, 3. Mijn rijschool, 4. Rijopleiding (overzicht: pakket, voortgang, examenstatus) (+9 more)
+Nodes (17): build, didUpdateWidget, dispose, GestureDetector, _handleCodeChanged, initState, _onFocusChanged, _OtpVeld (+9 more)
 
 ### Community 32 - "Community 32"
-Cohesion: 0.14
-Nodes (18): ExamenadviesCalculator, ExamenadviesData, ScoreOnderdeel, emptyExamenadvies constant, examenadviesProvider, ExamenadviesScreen, HomeData, LeerlingProfiel (+10 more)
+Cohesion: 0.12
+Nodes (16): build, Container, LegalDocumentScreen, _MetaPill, Scaffold, SizedBox, AppMachtigingenScreen, build (+8 more)
 
 ### Community 33 - "Community 33"
-Cohesion: 0.12
-Nodes (14): build, dispose, initState, Opacity, Scaffold, SizedBox, SplashScreen, _SplashScreenState (+6 more)
+Cohesion: 0.2
+Nodes (11): HomeData, ../../core/services/student_service.dart, ../../core/utils/lespakket_detail.dart, les_logboek_item.dart, les_logboek_mapper.dart, ../../models/examen.dart, ../../models/factuur.dart, ../../models/instructeur.dart (+3 more)
 
 ### Community 34 - "Community 34"
-Cohesion: 0.12
-Nodes (14): build, Container, DetailGradientHeader, BoxConstraints, build, Container, handleDetailBack, MainDetailHeader (+6 more)
+Cohesion: 0.11
+Nodes (17): AnimatedBuilder, AppCard, build, Center, Container, dispose, EmptyState, Icon (+9 more)
 
 ### Community 35 - "Community 35"
-Cohesion: 0.12
-Nodes (15): _average, bereken, ExamenadviesCalculator, ExamenadviesData, _resterendeLessen, _statusVoor, _uitleg, _weightedAverage (+7 more)
+Cohesion: 0.11
+Nodes (17): 10. Account (uitloggen, sessie), 11. Overzichtstabel (compact), 12. Dependency-overzicht (conceptuele mapping, geen code-import), 13. Afwijkingen — data die nog niet uit de juiste bron komt, 1. Persoonlijke gegevens, 2. Profielfoto, 3. Mijn rijschool, 4. Rijopleiding (overzicht: pakket, voortgang, examenstatus) (+9 more)
 
 ### Community 36 - "Community 36"
-Cohesion: 0.15
-Nodes (17): AppInstellingenScreen, AppMachtigingenScreen, BeveiligingScreen, _PasswordCard, MijnRijschoolScreen, notificatieInstellingenProvider, _LockedRow, NotificatieInstellingenScreen (+9 more)
+Cohesion: 0.12
+Nodes (14): Exception, Function, StateError, StudentService, subscribeFacturen, subscribeLessen, subscribeNotificaties, ../config/app_config.dart (+6 more)
 
 ### Community 37 - "Community 37"
 Cohesion: 0.12
-Nodes (15): AppCard, BeveiligingScreen, _BeveiligingScreenState, build, Divider, IconBadge, MainDetailHeader, Padding (+7 more)
+Nodes (16): _activeIndex, _berekenLabelFontSize, build, Container, Expanded, Function, MainScaffold, NavBarItem (+8 more)
 
 ### Community 38 - "Community 38"
 Cohesion: 0.12
-Nodes (15): AppCard, build, Container, _ExamenCard, ExamensScreen, Icon, MainDetailHeader, Scaffold (+7 more)
+Nodes (15): AppCard, build, Divider, _LoadingState, _LockedRow, MainDetailHeader, NotificatieInstellingenScreen, _notificationSwitchTheme (+7 more)
 
 ### Community 39 - "Community 39"
 Cohesion: 0.12
-Nodes (15): AppCard, build, Divider, _LoadingState, _LockedRow, MainDetailHeader, NotificatieInstellingenScreen, _notificationSwitchTheme (+7 more)
+Nodes (15): AppCard, BeveiligingScreen, _BeveiligingScreenState, build, Divider, IconBadge, MainDetailHeader, Padding (+7 more)
 
 ### Community 40 - "Community 40"
-Cohesion: 0.13
-Nodes (14): AppCard, build, Divider, _FaqCard, _FaqCardState, HelpScreen, _HelpTile, InkWell (+6 more)
+Cohesion: 0.12
+Nodes (15): AppCard, build, Container, _ExamenCard, ExamensScreen, Icon, MainDetailHeader, Scaffold (+7 more)
 
 ### Community 41 - "Community 41"
-Cohesion: 0.13
-Nodes (14): _bewaarOnthoudenEmail, build, dispose, GestureDetector, initState, LoginScreen, _LoginScreenState, SizedBox (+6 more)
+Cohesion: 0.12
+Nodes (15): _bouwFactuur, _bouwHomeScherm, _bouwLes, _bouwProfiel, Factuur, gebruikRuimeViewport, LeerlingProfiel, Les (+7 more)
 
 ### Community 42 - "Community 42"
 Cohesion: 0.13
-Nodes (14): build, dispose, GestureDetector, _isBestaandOnbevestigdAccount, RegistreerScreen, _RegistreerScreenState, SizedBox, _stuurSignupCodeOpnieuw (+6 more)
+Nodes (16): _AfwijkendeStatusRij, _CompactStatusVoortgang, _EvaluatieSection, _LesDetailBody, LesDetailScreen, _LesInformatieCard, _RatingChip, _SkillScoreBar (+8 more)
 
 ### Community 43 - "Community 43"
 Cohesion: 0.13
-Nodes (13): Exception, Function, StateError, StudentService, subscribeFacturen, subscribeLessen, subscribeNotificaties, NotificatieInstellingenNotifier (+5 more)
+Nodes (14): build, dispose, GestureDetector, _isBestaandOnbevestigdAccount, RegistreerScreen, _RegistreerScreenState, SizedBox, _stuurSignupCodeOpnieuw (+6 more)
 
 ### Community 44 - "Community 44"
 Cohesion: 0.13
@@ -410,198 +422,246 @@ Cohesion: 0.13
 Nodes (14): _absoluteDatum, AppCard, build, _NotificatieCard, _NotificatieGroep, NotificatiesScreen, Scaffold, SizedBox (+6 more)
 
 ### Community 46 - "Community 46"
-Cohesion: 0.14
-Nodes (10): AppColors, FactuurStatusUi, AppLogo, build, Container, build, Column, ScreenHeader (+2 more)
+Cohesion: 0.13
+Nodes (14): Aan het begin van iedere programmeeropdracht, Belangrijk, Bij het starten van een programmeersessie, CLAUDE.md — Leerling App, Graphify MCP — Verplicht Raadplegen Bij Code-taken, Graphify MCP — verplichte workflow, Graphify MCP — Verplichte Zichtbare Status en Eindcontrole (aangescherpt), Incrementele update-opdracht (gevalideerd) (+6 more)
 
 ### Community 47 - "Community 47"
-Cohesion: 0.14
-Nodes (13): 10. Openstaande beslispunten, 1. Bron van waarheid per veld, 2. Read-only velden en waarom, 3. Modelwijzigingen, 4. Service/query/provider, 5. E-mailbron opgelost, 6. Profielfoto-upload (veiligheid), 7. Gewijzigde/nieuwe bestanden (Fase 5) (+5 more)
+Cohesion: 0.17
+Nodes (15): AppInstellingenScreen, AppMachtigingenScreen, BeveiligingScreen, _PasswordCard, notificatieInstellingenProvider, _LockedRow, NotificatieInstellingenScreen, _SwitchRow (+7 more)
 
 ### Community 48 - "Community 48"
 Cohesion: 0.14
-Nodes (13): 1. Welke 33 leerlingen worden geraakt, 2. Welke catalogusvelden naar welke snapshotkolommen, 3. Conflictcontrole, 4. Ontbrekende of verwijderde cataloguspakketten, 5. Preview / dry-run, 6. Auditlog, 7. Rollbackstrategie, 8. Expliciete bevestiging vóór uitvoering (+5 more)
+Nodes (13): _bewaarOnthoudenEmail, build, dispose, GestureDetector, initState, LoginScreen, _LoginScreenState, SizedBox (+5 more)
 
 ### Community 49 - "Community 49"
-Cohesion: 0.15
-Nodes (12): DateFormat, DatumUtils, datumZonderWeekdag, duurLabel, isVerlopen, korteDatum, kortTijd, langeDatum (+4 more)
+Cohesion: 0.14
+Nodes (10): AppColors, FactuurStatusUi, AppLogo, build, Container, build, Column, ScreenHeader (+2 more)
 
 ### Community 50 - "Community 50"
-Cohesion: 0.15
-Nodes (12): AppCard, build, _FocusCard, IconBadge, LesvoorbereidingScreen, _ListCard, MainDetailHeader, Scaffold (+4 more)
+Cohesion: 0.14
+Nodes (13): Aan het begin van iedere programmeeropdracht, Belangrijk, Bij het starten van een programmeersessie, Graphify MCP — Verplicht Raadplegen Bij Code-taken, Graphify MCP — verplichte workflow, Graphify MCP — Verplichte Zichtbare Status en Eindcontrole (aangescherpt), Incrementele update-opdracht (gevalideerd), Na iedere programmeeropdracht (+5 more)
 
 ### Community 51 - "Community 51"
+Cohesion: 0.14
+Nodes (13): 10. Openstaande beslispunten, 1. Bron van waarheid per veld, 2. Read-only velden en waarom, 3. Modelwijzigingen, 4. Service/query/provider, 5. E-mailbron opgelost, 6. Profielfoto-upload (veiligheid), 7. Gewijzigde/nieuwe bestanden (Fase 5) (+5 more)
+
+### Community 52 - "Community 52"
+Cohesion: 0.14
+Nodes (13): 1. Welke 33 leerlingen worden geraakt, 2. Welke catalogusvelden naar welke snapshotkolommen, 3. Conflictcontrole, 4. Ontbrekende of verwijderde cataloguspakketten, 5. Preview / dry-run, 6. Auditlog, 7. Rollbackstrategie, 8. Expliciete bevestiging vóór uitvoering (+5 more)
+
+### Community 53 - "Community 53"
+Cohesion: 0.18
+Nodes (14): facturenProvider, factuurDetailProvider, FacturenScreen, FactuurDetailScreen, FactuurStatus, HomeCoachData, homeCoachProvider, homeProvider (+6 more)
+
+### Community 54 - "Community 54"
+Cohesion: 0.14
+Nodes (14): ContactUri, AndroidManifest.xml <queries> block, _KaartPatroonPainter, _LocatieCard, MapsUri, _ContactActieRij, _MijnRijschoolBody, MijnRijschoolScreen (+6 more)
+
+### Community 55 - "Community 55"
+Cohesion: 0.15
+Nodes (11): build, dispose, ResetPasswordScreen, _ResetPasswordScreenState, Scaffold, SizedBox, Text, _toonFout (+3 more)
+
+### Community 56 - "Community 56"
+Cohesion: 0.15
+Nodes (9): main, main, main, main, package:flutter_test/flutter_test.dart, package:leerling_app/app.dart, package:leerling_app/core/utils/contact_uri.dart, package:leerling_app/core/utils/datum_utils.dart (+1 more)
+
+### Community 57 - "Community 57"
 Cohesion: 0.15
 Nodes (12): 10. Risico's en aandachtspunten, 1. Welke brede rechten het probleem veroorzaakten, 2. Kolommen die de leerling nu wél mag wijzigen, 3. Kolommen die nu expliciet beschermd zijn, 4. Gewijzigde RLS-policies en grants, 5. Toegevoegde migratie, 6. Hoe de instructeur-app blijft werken, 7. Uitgevoerde tests (+4 more)
 
-### Community 52 - "Community 52"
-Cohesion: 0.15
-Nodes (13): ContactUri, AndroidManifest.xml <queries> block, _KaartPatroonPainter, _LocatieCard, MapsUri, _ContactActieRij, _MijnRijschoolBody, _RijschoolKaart (+5 more)
+### Community 58 - "Community 58"
+Cohesion: 0.17
+Nodes (11): _ActionsRow, build, Container, GestureDetector, _HeaderBadgePil, KlantioHeaderShell, MainHeaderIconKnop, MainHeaderNotificatieKnop (+3 more)
 
-### Community 53 - "Community 53"
+### Community 59 - "Community 59"
 Cohesion: 0.17
 Nodes (11): _defaults, Exception, expectLater, _FakeVoorkeurenRepository, LeerlingNotificatieVoorkeuren, main, ProviderScope, _screen (+3 more)
 
-### Community 54 - "Community 54"
+### Community 60 - "Community 60"
 Cohesion: 0.17
 Nodes (11): 10. Eindconclusie, 1. Definitieve migratie, 2. Rollback-script, 3. WITH CHECK op UPDATE — keuze en reden, 4/5. Verwijderde en nieuwe policies, 6. Testresultaten (13 scenario's), 7. Bewijs dat cleanup volledig is, 8. Bestaande avatar-URL's (+3 more)
 
-### Community 55 - "Community 55"
+### Community 61 - "Community 61"
 Cohesion: 0.17
 Nodes (11): 10. Beslispunten, 1. Bron van waarheid per rijschoolveld, 2. Bron van waarheid per instructeurveld, 3. Aangepaste modellen/query/provider, 4. Afhandeling ontbrekende relaties, 5. Veilige contactacties, 6. RLS-controle (live database, rollback-only), 7. Aangepaste/nieuwe bestanden (+3 more)
 
-### Community 56 - "Community 56"
+### Community 62 - "Community 62"
 Cohesion: 0.21
 Nodes (11): lessen.beoordeling check constraint (1..5), student_lessen_view (v1), lessen.voertuig_id + voertuig snapshot columns, student_lessen_view (v2, incl. voertuig), trg_validate_and_snapshot_lesson_vehicle, validate_and_snapshot_lesson_vehicle() trigger fn (v1), Leerlingen lezen gekoppelde lesvoertuigen policy, validate_and_snapshot_lesson_vehicle() trigger fn (v2, historical_lesson guard) (+3 more)
 
-### Community 57 - "Community 57"
+### Community 63 - "Community 63"
+Cohesion: 0.18
+Nodes (10): _average, bereken, ExamenadviesCalculator, ExamenadviesData, _resterendeLessen, _statusVoor, _uitleg, _weightedAverage (+2 more)
+
+### Community 64 - "Community 64"
 Cohesion: 0.18
 Nodes (10): auth_design.dart, build, dispose, Icon, Scaffold, SizedBox, Text, _vriendelijkeFout (+2 more)
 
-### Community 58 - "Community 58"
+### Community 65 - "Community 65"
 Cohesion: 0.18
-Nodes (10): build, dispose, ResetPasswordScreen, _ResetPasswordScreenState, Scaffold, SizedBox, Text, _toonFout (+2 more)
+Nodes (10): _ActionsRow, BoxConstraints, build, Container, handleDetailBack, KlantioHeaderShell, MainDetailHeader, Row (+2 more)
 
-### Community 59 - "Community 59"
+### Community 66 - "Community 66"
 Cohesion: 0.18
 Nodes (10): build, Color, DecoratedBox, Icon, InkWell, Padding, ProfielMenuCard, ProfielMenuTile (+2 more)
 
-### Community 60 - "Community 60"
-Cohesion: 0.18
-Nodes (10): _bouwLes, _bouwScherm, Les, main, ProviderScope, package:leerling_app/core/utils/maps_uri.dart, package:leerling_app/features/planning/les_detail_screen.dart, package:leerling_app/features/planning/planning_provider.dart (+2 more)
-
-### Community 61 - "Community 61"
-Cohesion: 0.18
-Nodes (10): Aan het begin van iedere programmeeropdracht, Bij het starten van een programmeersessie, CLAUDE.md — Leerling App, Graphify MCP — Verplicht Raadplegen Bij Code-taken, Graphify MCP — verplichte workflow, Incrementele update-opdracht (gevalideerd), Na iedere programmeeropdracht, Project (+2 more)
-
-### Community 62 - "Community 62"
+### Community 67 - "Community 67"
 Cohesion: 0.18
 Nodes (11): AvatarService, NotificatieInstellingenNotifier, NotificatieVoorkeurenRepository, StudentNotificatieVoorkeurenRepository, notificatieVoorkeurenRepositoryProvider, _PakketChip, _ProfielIdentiteitskaart, _StatusBadge (+3 more)
 
-### Community 63 - "Community 63"
+### Community 68 - "Community 68"
+Cohesion: 0.22
+Nodes (8): _euroLabel, formatMinutenSaldo, LespakketDetail, LespakketVoortgang, datum_utils.dart, ../../models/instructor_lesson_package.dart, ../../models/leerling_profiel.dart, ../../models/les.dart
+
+### Community 69 - "Community 69"
 Cohesion: 0.2
 Nodes (9): build, Center, dispose, Icon, KoppelcodeScreen, _KoppelcodeScreenState, Scaffold, SizedBox (+1 more)
 
-### Community 64 - "Community 64"
+### Community 70 - "Community 70"
 Cohesion: 0.2
-Nodes (9): build, Container, GestureDetector, _HeaderBadgePil, MainHeaderIconKnop, MainHeaderNotificatieKnop, MainTabHeader, SizedBox (+1 more)
+Nodes (8): _beoordelingVoorStatus, _datumLabel, fromLes, LesLogboekItem, LesLogboekMapper, LespakketVoortgangData, ../../core/utils/datum_utils.dart, ../../core/utils/lespakket_voortgang.dart
 
-### Community 65 - "Community 65"
+### Community 71 - "Community 71"
+Cohesion: 0.2
+Nodes (7): main, main, read, main, providerSource, screenSource, dart:io
+
+### Community 72 - "Community 72"
 Cohesion: 0.2
 Nodes (8): main, _pompNavBar, main, MaterialApp, read, package:leerling_app/core/constants/app_colors.dart, package:leerling_app/features/profiel/widgets/profile_info_row.dart, package:leerling_app/shared/widgets/main_scaffold.dart
 
-### Community 66 - "Community 66"
+### Community 73 - "Community 73"
 Cohesion: 0.2
-Nodes (9): Aan het begin van iedere programmeeropdracht, Bij het starten van een programmeersessie, Graphify MCP — Verplicht Raadplegen Bij Code-taken, Graphify MCP — verplichte workflow, Incrementele update-opdracht (gevalideerd), Na iedere programmeeropdracht, Project Richtlijn Voor Codex — Leerling App, Tijdens de uitvoering (+1 more)
+Nodes (9): HomeHeader, main, MainDetailHeader, MainTabHeader, _pomp, package:leerling_app/shared/widgets/home_header.dart, package:leerling_app/shared/widgets/klantio_header.dart, package:leerling_app/shared/widgets/main_detail_header.dart (+1 more)
 
-### Community 67 - "Community 67"
+### Community 74 - "Community 74"
 Cohesion: 0.2
 Nodes (9): 1. Single Source of Truth per veld, 2. Snapshot-strategie, 3. RLS-review (herhaald, met extra tests), 4. Architectuurcontrole — schaal en race conditions, 5. Toekomstvisie — examens, producten, abonnementen, cadeaubonnen, theorieproducten, 6. Bevestiging, code:sql (CREATE POLICY leerling_eigen_toegewezen_pakket_lezen), code:block2 (leerling_toewijzingen) (+1 more)
 
-### Community 68 - "Community 68"
+### Community 75 - "Community 75"
 Cohesion: 0.22
-Nodes (10): LesDetailScreen, _BadgeSpec, LessonStatusBadge, komendeLessenProvider, lesDetailProvider, vorigeLessenProvider, _LessenTab, _LessonCard (+2 more)
+Nodes (8): buildPreparationViewModel, PreparationSkillItem, PreparationViewModel, ratingLabel, scoreLabel, skillLabel, stabieleVolgorde, toString
 
-### Community 69 - "Community 69"
+### Community 76 - "Community 76"
 Cohesion: 0.22
-Nodes (8): build, Container, LegalDocumentScreen, _MetaPill, Scaffold, SizedBox, content/legal_document_content.dart, ../../shared/widgets/app_card.dart
+Nodes (8): initializeDateFormatting, main, ProviderScope, core/services/push_service.dart, dart:async, package:firebase_core/firebase_core.dart, package:flutter_native_splash/flutter_native_splash.dart, package:intl/date_symbol_data_local.dart
 
-### Community 70 - "Community 70"
+### Community 77 - "Community 77"
 Cohesion: 0.22
-Nodes (8): AppMachtigingenScreen, build, Column, _InfoText, MainDetailHeader, Scaffold, SizedBox, ../../shared/widgets/main_detail_header.dart
+Nodes (8): build, dispose, initState, Opacity, Scaffold, SizedBox, SplashScreen, _SplashScreenState
 
-### Community 71 - "Community 71"
+### Community 78 - "Community 78"
 Cohesion: 0.22
 Nodes (8): build, ConstrainedBox, _Label, LayoutBuilder, ProfileInfoRow, SizedBox, Text, _ValueText
 
-### Community 72 - "Community 72"
+### Community 79 - "Community 79"
 Cohesion: 0.22
 Nodes (7): showAppSnackBar, SizedBox, build, Container, StatusPill, ../../core/constants/app_colors.dart, ../../core/utils/factuur_status.dart
 
-### Community 73 - "Community 73"
+### Community 80 - "Community 80"
 Cohesion: 0.22
 Nodes (8): _bouwShellRouter, build, GoRouter, _LangeTestPagina, ListView, main, Offset, Text
 
-### Community 74 - "Community 74"
-Cohesion: 0.22
-Nodes (6): main, main, main, package:flutter_test/flutter_test.dart, package:leerling_app/app.dart, package:leerling_app/core/utils/contact_uri.dart
+### Community 81 - "Community 81"
+Cohesion: 0.25
+Nodes (7): build, Container, KlantioCenteredTitleRow, KlantioHeaderShell, klantioHeaderTitleStyle, Stack, package:google_fonts/google_fonts.dart
 
-### Community 75 - "Community 75"
-Cohesion: 0.22
-Nodes (9): _AfwijkendeStatusRij, _CompactStatusVoortgang, _EvaluatieSection, _LesDetailBody, _LesInformatieCard, _RatingChip, _SkillScoreBar, _AssessmentPill (+1 more)
+### Community 82 - "Community 82"
+Cohesion: 0.25
+Nodes (6): build, Container, DetailGradientHeader, main, _wrapMetRouter, package:go_router/go_router.dart
 
-### Community 76 - "Community 76"
+### Community 83 - "Community 83"
 Cohesion: 0.25
 Nodes (7): AccentProgressBar, Align, build, ClipRRect, Container, InlineCtaLink, NeutralChip
 
-### Community 77 - "Community 77"
+### Community 84 - "Community 84"
 Cohesion: 0.25
 Nodes (7): AppInstellingenScreen, build, MainDetailHeader, ProfielSectionTitle, Scaffold, SizedBox, widgets/profiel_menu_widgets.dart
 
-### Community 78 - "Community 78"
+### Community 85 - "Community 85"
 Cohesion: 0.25
-Nodes (6): main, read, main, providerSource, screenSource, dart:io
+Nodes (7): _bouwScherm, main, _nextLesson, PreparationViewModel, ProviderScope, package:leerling_app/features/lesvoorbereiding/lesvoorbereiding_provider.dart, package:leerling_app/features/lesvoorbereiding/lesvoorbereiding_screen.dart
 
-### Community 79 - "Community 79"
+### Community 86 - "Community 86"
 Cohesion: 0.29
 Nodes (6): build, _goToKoppelcode, _ProfileGateLoading, Scaffold, StudentProfileGate, ../providers/auth_provider.dart
 
-### Community 80 - "Community 80"
+### Community 87 - "Community 87"
 Cohesion: 0.29
 Nodes (6): Instructeur-app als bron van waarheid voor gedeelde UI/migratiepatronen, MainDetailHeader, MainScaffold, NavBarItem, PremiumBottomNavBar, MainTabHeader
 
-### Community 81 - "Community 81"
+### Community 88 - "Community 88"
 Cohesion: 0.33
-Nodes (5): build, Icon, Semantics, SettingsActionRow, SizedBox
+Nodes (5): ExamenadviesData, _resterendeVoorScore, _uitlegVoorScore, examenadvies_calculator.dart, examenadvies_data.dart
 
-### Community 82 - "Community 82"
+### Community 89 - "Community 89"
 Cohesion: 0.33
 Nodes (5): AuthDesign, borderFor, inputDecoration, OutlineInputBorder, primaryButtonStyle
 
-### Community 83 - "Community 83"
+### Community 90 - "Community 90"
+Cohesion: 0.33
+Nodes (5): build, Icon, Semantics, SettingsActionRow, SizedBox
+
+### Community 91 - "Community 91"
+Cohesion: 0.33
+Nodes (5): _digitsOf, formatEditUpdate, TextEditingValue, TimeInputFormatter, package:flutter/services.dart
+
+### Community 92 - "Community 92"
+Cohesion: 0.33
+Nodes (5): _backspace, _eind, main, _type, package:leerling_app/core/utils/tijd_invoer_formatter.dart
+
+### Community 93 - "Community 93"
 Cohesion: 0.4
 Nodes (4): AvatarOption, AvatarService, fallbackForName, isValid
 
-### Community 84 - "Community 84"
+### Community 94 - "Community 94"
 Cohesion: 0.4
 Nodes (4): ContactUri, _isValidEmail, RegExp, Uri
 
-### Community 85 - "Community 85"
+### Community 95 - "Community 95"
 Cohesion: 0.4
-Nodes (4): launchUrl, MapsUri, package:url_launcher/url_launcher.dart, ../../shared/widgets/snackbar.dart
+Nodes (4): isKomendeLes, komendeLesPostgrestFilter, nuTijdString, vandaagString
 
-### Community 86 - "Community 86"
+### Community 96 - "Community 96"
+Cohesion: 0.4
+Nodes (4): NotificatieInstellingenNotifier, NotificatieVoorkeurenRepository, StudentNotificatieVoorkeurenRepository, ../../models/leerling_notificatie_voorkeuren.dart
+
+### Community 97 - "Community 97"
+Cohesion: 0.4
+Nodes (4): buildPreparationViewModel, LesvoorbereidingData, ../planning/planning_provider.dart, preparation_mapper.dart
+
+### Community 98 - "Community 98"
 Cohesion: 0.4
 Nodes (4): _BadgeSpec, build, ConstrainedBox, LessonStatusBadge
 
-### Community 87 - "Community 87"
+### Community 99 - "Community 99"
 Cohesion: 0.5
 Nodes (5): Server trigger fn_lesson_balance_sync, Instructeur-app: leerling_detail_screen.dart ("Fase F"), LespakketDetail, Rationale: aparte klasse i.p.v. LespakketVoortgang hergebruiken, LespakketVoortgang
 
-### Community 88 - "Community 88"
+### Community 100 - "Community 100"
 Cohesion: 0.4
 Nodes (5): LegalDocumentContent, LegalSectionContent, LegalDocumentScreen, privacyPolicyNl (Privacybeleid concept-tekst), termsConditionsNl (Algemene voorwaarden concept-tekst)
 
-### Community 89 - "Community 89"
+### Community 101 - "Community 101"
 Cohesion: 0.4
 Nodes (5): CbrCompetentie, vaardighedenCategorieen, _CbrRadarCard, _CompetentieScore, CompetentieTrend
 
-### Community 90 - "Community 90"
+### Community 102 - "Community 102"
 Cohesion: 0.5
 Nodes (3): HomeCoachData, ../examenadvies/examenadvies_provider.dart, ../les_logboek/les_logboek_provider.dart
 
-### Community 91 - "Community 91"
+### Community 103 - "Community 103"
 Cohesion: 0.5
 Nodes (3): CbrCompetentie, statusVoor, uitlegVoor
 
-### Community 92 - "Community 92"
+### Community 104 - "Community 104"
 Cohesion: 0.5
 Nodes (3): Notificatie, routeVoorType, _veiligeRoute
 
-### Community 93 - "Community 93"
+### Community 105 - "Community 105"
 Cohesion: 0.5
 Nodes (3): mijnProfielProvider, koppel_leerling_met_code(), StudentProfileGate
 
-### Community 102 - "Community 102"
+### Community 114 - "Community 114"
 Cohesion: 0.67
 Nodes (3): MainHeaderIconKnop, MainHeaderNotificatieKnop, ongelezenNotificatiesProvider
 
@@ -616,7 +676,7 @@ Nodes (3): MainHeaderIconKnop, MainHeaderNotificatieKnop, ongelezenNotificatiesP
   lib/features/voortgang/lespakket_detail_provider.dart · relation: calls
 
 ## Knowledge Gaps
-- **1278 isolated node(s):** `_AuthNotifier`, `LeerlingApp`, `dispose`, `GoRouter`, `build` (+1273 more)
+- **1433 isolated node(s):** `_AuthNotifier`, `LeerlingApp`, `dispose`, `GoRouter`, `build` (+1428 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **65 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -631,9 +691,9 @@ _Questions this graph is uniquely positioned to answer:_
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **What is the exact relationship between `lespakketDetailProvider` and `InstructorLessonPackage`?**
   _Edge tagged AMBIGUOUS (relation: calls) - confidence is low._
-- **Why does `package:flutter/material.dart` connect `Community 46` to `Community 0`, `Community 1`, `Community 3`, `Community 4`, `Community 6`, `Community 7`, `Community 8`, `Community 10`, `Community 11`, `Community 14`, `Community 15`, `Community 16`, `Community 22`, `Community 24`, `Community 25`, `Community 26`, `Community 27`, `Community 28`, `Community 30`, `Community 33`, `Community 34`, `Community 37`, `Community 38`, `Community 39`, `Community 40`, `Community 41`, `Community 42`, `Community 44`, `Community 45`, `Community 50`, `Community 53`, `Community 57`, `Community 58`, `Community 59`, `Community 60`, `Community 63`, `Community 64`, `Community 65`, `Community 69`, `Community 70`, `Community 71`, `Community 72`, `Community 73`, `Community 76`, `Community 77`, `Community 79`, `Community 81`, `Community 82`, `Community 85`, `Community 86`?**
-  _High betweenness centrality (0.141) - this node is a cross-community bridge._
-- **Why does `Profiel Fase 6 — Mijn rijschool (oplevering)` connect `Community 5` to `Community 21`?**
-  _High betweenness centrality (0.109) - this node is a cross-community bridge._
-- **Why does `InstructorLessonPackage` connect `Community 21` to `Community 13`?**
-  _High betweenness centrality (0.101) - this node is a cross-community bridge._
+- **Why does `package:flutter/material.dart` connect `Community 49` to `Community 0`, `Community 2`, `Community 4`, `Community 5`, `Community 6`, `Community 7`, `Community 8`, `Community 9`, `Community 11`, `Community 12`, `Community 14`, `Community 15`, `Community 16`, `Community 17`, `Community 18`, `Community 21`, `Community 25`, `Community 26`, `Community 27`, `Community 28`, `Community 31`, `Community 32`, `Community 34`, `Community 37`, `Community 38`, `Community 39`, `Community 40`, `Community 41`, `Community 43`, `Community 44`, `Community 45`, `Community 48`, `Community 55`, `Community 58`, `Community 59`, `Community 64`, `Community 65`, `Community 66`, `Community 69`, `Community 72`, `Community 73`, `Community 76`, `Community 77`, `Community 78`, `Community 79`, `Community 80`, `Community 81`, `Community 82`, `Community 83`, `Community 84`, `Community 85`, `Community 86`, `Community 89`, `Community 90`, `Community 98`?**
+  _High betweenness centrality (0.174) - this node is a cross-community bridge._
+- **Why does `package:flutter_riverpod/flutter_riverpod.dart` connect `Community 33` to `Community 0`, `Community 1`, `Community 2`, `Community 4`, `Community 5`, `Community 6`, `Community 7`, `Community 8`, `Community 9`, `Community 11`, `Community 12`, `Community 14`, `Community 15`, `Community 16`, `Community 17`, `Community 18`, `Community 21`, `Community 25`, `Community 27`, `Community 36`, `Community 38`, `Community 39`, `Community 40`, `Community 41`, `Community 44`, `Community 45`, `Community 55`, `Community 58`, `Community 59`, `Community 69`, `Community 70`, `Community 76`, `Community 77`, `Community 85`, `Community 86`, `Community 88`, `Community 96`, `Community 97`, `Community 102`?**
+  _High betweenness centrality (0.094) - this node is a cross-community bridge._
+- **Why does `Profiel Fase 6 — Mijn rijschool (oplevering)` connect `Community 1` to `Community 24`?**
+  _High betweenness centrality (0.086) - this node is a cross-community bridge._

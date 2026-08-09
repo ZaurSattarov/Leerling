@@ -38,20 +38,28 @@ Widget _wrapMetRouter({
 
 void main() {
   group('MainDetailHeader -- widget-rendering', () {
-    testWidgets('toont eyebrow, titel en terugpijl', (tester) async {
+    testWidgets(
+        'toont titel en terugpijl, geometrisch gecentreerd -- geen eyebrow '
+        'meer', (tester) async {
       GoogleFonts.config.allowRuntimeFetching = false;
       await tester.pumpWidget(_wrapMetRouter(
         detailScherm: const MainDetailHeader(
-          eyebrowText: 'ADVIES',
           title: 'Examenadvies',
         ),
       ));
       await tester.pumpAndSettle();
 
-      expect(find.text('ADVIES'), findsOneWidget);
       expect(find.text('Examenadvies'), findsOneWidget);
       expect(find.byKey(const Key('main_detail_header_back')), findsOneWidget);
       expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
+
+      // Geometrisch gecentreerd: het midden van de titel valt samen met het
+      // horizontale midden van het SCHERM, niet alleen het midden van de
+      // ruimte die na de terugpijl overblijft.
+      final schermMidden =
+          tester.getSize(find.byType(MaterialApp)).width / 2;
+      final titelMidden = tester.getCenter(find.text('Examenadvies')).dx;
+      expect(titelMidden, closeTo(schermMidden, 1.0));
     });
 
     testWidgets('geen dubbele header -- precies één terugpijl-knop',
@@ -59,7 +67,6 @@ void main() {
       GoogleFonts.config.allowRuntimeFetching = false;
       await tester.pumpWidget(_wrapMetRouter(
         detailScherm: const MainDetailHeader(
-          eyebrowText: 'ADVIES',
           title: 'Examenadvies',
         ),
       ));
@@ -74,7 +81,6 @@ void main() {
       GoogleFonts.config.allowRuntimeFetching = false;
       await tester.pumpWidget(_wrapMetRouter(
         detailScherm: const MainDetailHeader(
-          eyebrowText: 'FACTUUR',
           title: 'Factuur',
         ),
       ));
@@ -102,7 +108,6 @@ void main() {
       GoogleFonts.config.allowRuntimeFetching = false;
       await tester.pumpWidget(_wrapMetRouter(
         detailScherm: const MainDetailHeader(
-          eyebrowText: 'FACTUUR',
           title: 'Factuur',
           actions: [Chip(label: Text('Betaald'))],
         ),
@@ -123,7 +128,6 @@ void main() {
 
         await tester.pumpWidget(_wrapMetRouter(
           detailScherm: const MainDetailHeader(
-            eyebrowText: 'VOORTGANG',
             title: 'Lespakket & voortgang',
           ),
         ));
@@ -147,7 +151,6 @@ void main() {
             ),
             child: const Scaffold(
               body: MainDetailHeader(
-                eyebrowText: 'VOORTGANG',
                 title: 'Lespakket & voortgang',
               ),
             ),
@@ -181,7 +184,6 @@ void main() {
             path: '/detail',
             builder: (_, __) => const Scaffold(
               body: MainDetailHeader(
-                eyebrowText: 'ADVIES',
                 title: 'Examenadvies',
               ),
             ),
@@ -216,7 +218,6 @@ void main() {
             path: '/detail',
             builder: (_, __) => const Scaffold(
               body: MainDetailHeader(
-                eyebrowText: 'ADVIES',
                 title: 'Examenadvies',
                 fallbackRoute: '/home-fallback',
               ),
@@ -249,7 +250,6 @@ void main() {
             path: '/detail',
             builder: (_, __) => const Scaffold(
               body: MainDetailHeader(
-                eyebrowText: 'ADVIES',
                 title: 'Examenadvies',
               ),
             ),
@@ -385,7 +385,6 @@ void main() {
     });
 
     for (final scherm in [
-      'lib/features/home/home_screen.dart',
       'lib/features/planning/planning_screen.dart',
       'lib/features/voortgang/voortgang_screen.dart',
       'lib/features/facturen/facturen_screen.dart',
@@ -394,9 +393,21 @@ void main() {
       test('$scherm gebruikt nog steeds MainTabHeader (geen '
           'MainDetailHeader, geen terugpijl)', () {
         final bron = File(scherm).readAsStringSync();
-        expect(bron, contains('MainTabHeader'));
+        expect(bron, contains('MainTabHeader('));
         expect(bron, isNot(contains('MainDetailHeader')));
       });
     }
+
+    // Home is de bewuste uitzondering (zie klantio_header_test.dart voor de
+    // volledige HomeHeader-dekking): een persoonlijke begroeting via
+    // HomeHeader i.p.v. de gecentreerde MainTabHeader-titel, maar wel
+    // dezelfde KlantioHeaderShell (identieke hoogte/padding), dus ook geen
+    // terugpijl/MainDetailHeader.
+    test('lib/features/home/home_screen.dart gebruikt HomeHeader (de '
+        'bewuste uitzondering op MainTabHeader), geen MainDetailHeader', () {
+      final bron = File('lib/features/home/home_screen.dart').readAsStringSync();
+      expect(bron, contains('HomeHeader('));
+      expect(bron, isNot(contains('MainDetailHeader')));
+    });
   });
 }

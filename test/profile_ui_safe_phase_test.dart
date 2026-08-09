@@ -59,13 +59,19 @@ void main() {
     expect(source, isNot(contains('trailingText: p?.pakketNaam')));
   });
 
-  test('Beschikbaarheid gebruikt custom tijdkiezer en behoudt validatie', () {
+  test(
+      'Beschikbaarheid gebruikt eigen TimeInputFormatter, geïntegreerd in '
+      'één formulier, en behoudt validatie', () {
     final source =
         read('lib/features/beschikbaarheid/beschikbaarheid_screen.dart');
-    expect(source, contains('_KlantioTijdPickerSheet'));
-    expect(source, contains('showModalBottomSheet<TimeOfDay>'));
+    // Begin/Einde zijn sinds de samenvoeging rechtstreeks bewerkbare
+    // tekstvelden in "Tijdblok toevoegen" -- geen los tweede
+    // tijd-picker-sheet meer, geen platform-picker.
+    expect(source, isNot(contains('_KlantioTijdPickerSheet')));
+    expect(source, isNot(contains("Text('Tijd gebruiken')")));
+    expect(source, contains('TimeInputFormatter'));
     expect(source, isNot(contains('showTimePicker')));
-    expect(source, contains('Starttijd moet voor eindtijd zijn.'));
+    expect(source, contains('Starttijd moet vóór eindtijd zijn.'));
   });
 
   test('Examenstatussen gepland geslaagd gezakt hebben semantische badges', () {

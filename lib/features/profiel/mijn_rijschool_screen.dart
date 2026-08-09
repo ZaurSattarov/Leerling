@@ -34,7 +34,6 @@ class MijnRijschoolScreen extends ConsumerWidget {
       body: Column(
         children: [
           const MainDetailHeader(
-            eyebrowText: 'PROFIEL',
             title: 'Mijn rijschool',
           ),
           Expanded(

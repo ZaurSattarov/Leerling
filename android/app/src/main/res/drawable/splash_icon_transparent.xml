@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Volledig onzichtbaar icoon voor Android 12+'s VERPLICHTE SplashScreen
+     API (windowSplashScreenAnimatedIcon in values-v31/values-night-v31
+     styles.xml). Android 12+ vereist altijd een icoon-resource — zonder
+     deze expliciete override valt het systeem terug op het generieke
+     @mipmap/ic_launcher, wat als een los, opvallend rijschool/app-icoon
+     oogde (de eerder gemelde bug). Met dit transparante icoon toont de
+     verplichte systeem-splash alleen de effen achtergrondkleur
+     (@color/launch_background, gelijk aan AppColors.surface) — geen
+     icoon, geen apart statisch logo. Het KLANTIO-woordmerk verschijnt
+     hierdoor voor het eerst in de echte, geanimeerde Flutter-splash
+     (lib/features/splash/splash_screen.dart), zoals gewenst. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="1dp"
+    android:height="1dp"
+    android:viewportWidth="1"
+    android:viewportHeight="1">
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,0L1,0L1,1L0,1Z" />
+</vector>

@@ -10,7 +10,8 @@ void main() {
           .readAsStringSync();
 
   test('beveiligingsheader en passwordkaart gebruiken auth-data', () {
-    expect(source, contains("eyebrowText: 'APP-INSTELLINGEN'"));
+    // Sinds de header-refactor (klantio_header_test.dart) heeft
+    // MainDetailHeader geen eyebrowText-parameter meer.
     expect(source, contains("title: 'Beveiliging'"));
     expect(source, contains('StudentService.currentUser?.email'));
     expect(source, contains('maxLines: 2'));

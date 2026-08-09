@@ -115,7 +115,10 @@ void main() {
       final detail = read('lib/features/planning/les_detail_screen.dart');
       final model = read('lib/models/les.dart');
 
-      expect(detail, contains("'Lesvoertuig'"));
+      // Sinds de Impeccable-redesign staat de voertuigkaart onder de
+      // sectietitel 'LESVOERTUIG' (was 'Lesvoertuig', voorheen ook nog
+      // dubbel samengevat in _LesInformatieCard -- die dubbeling is weg).
+      expect(detail, contains("'LESVOERTUIG'"));
       expect(detail, contains('les.voertuigNaam'));
       expect(detail, contains('les.voertuigMerk'));
       expect(detail, contains('les.voertuigModel'));

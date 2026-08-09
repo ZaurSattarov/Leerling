@@ -40,7 +40,6 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
       body: Column(
         children: [
           MainTabHeader(
-            eyebrowText: 'PLANNING',
             title: 'Mijn lessen',
             actions: [
               MainHeaderIconKnop(
@@ -401,7 +400,7 @@ class _LessonDateBlock extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            _dagAfk(datum),
+            DatumUtils.dagAfkorting(datum),
             style: const TextStyle(
               color: AppColors.textSecondary,
               fontSize: 10,
@@ -411,7 +410,7 @@ class _LessonDateBlock extends StatelessWidget {
           ),
           const SizedBox(height: 3),
           Text(
-            _dagNummer(datum),
+            DatumUtils.dagNummer(datum),
             style: const TextStyle(
               color: AppColors.primary,
               fontSize: 25,
@@ -421,7 +420,7 @@ class _LessonDateBlock extends StatelessWidget {
           ),
           const SizedBox(height: 3),
           Text(
-            _maandAfk(datum),
+            DatumUtils.maandAfkorting(datum),
             style: const TextStyle(
               color: AppColors.textSecondary,
               fontSize: 10,
@@ -434,44 +433,6 @@ class _LessonDateBlock extends StatelessWidget {
     );
   }
 
-  String _dagAfk(String datum) {
-    try {
-      const days = ['MAA', 'DIN', 'WOE', 'DON', 'VRI', 'ZAT', 'ZON'];
-      return days[DateTime.parse(datum).weekday - 1];
-    } catch (_) {
-      return '';
-    }
-  }
-
-  String _dagNummer(String datum) {
-    try {
-      return DateTime.parse(datum).day.toString();
-    } catch (_) {
-      return '?';
-    }
-  }
-
-  String _maandAfk(String datum) {
-    try {
-      const months = [
-        'jan',
-        'feb',
-        'mrt',
-        'apr',
-        'mei',
-        'jun',
-        'jul',
-        'aug',
-        'sep',
-        'okt',
-        'nov',
-        'dec',
-      ];
-      return months[DateTime.parse(datum).month - 1];
-    } catch (_) {
-      return '';
-    }
-  }
 }
 
 class _LessonMetaRow extends StatelessWidget {
