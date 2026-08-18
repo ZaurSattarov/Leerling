@@ -305,12 +305,17 @@ void main() {
 
   group('Bodycontent blijft bereikbaar (brontekst, geen verwijderde '
       'functionaliteit)', () {
-    test('Factuurdetail behoudt iDEAL-betaalknop, downloadfunctie en '
+    test('Factuurdetail behoudt iDEAL-betaalknop, factuur-PDF-acties en '
         'businesslogica', () {
       final bron = File('lib/features/facturen/factuur_detail_screen.dart')
           .readAsStringSync();
       expect(bron, contains('Betaal met iDEAL'));
-      expect(bron, contains('Download factuur'));
+      // 2026-08-18: 'Download factuur' (nooit-werkende downloadUrl-knop)
+      // vervangen door echte, canonical factuur-PDF-acties (FactuurPdfUtils,
+      // 1-op-1 port van de Instructeur-app se FactuurShareUtils).
+      expect(bron, contains('Factuur bekijken'));
+      expect(bron, contains('Download PDF'));
+      expect(bron, contains('FactuurPdfUtils'));
       expect(bron, contains('requestMollieFactuurPayment'));
       expect(bron, contains('StatusPill.factuur'));
     });

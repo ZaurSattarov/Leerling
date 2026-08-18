@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -275,7 +276,15 @@ final _routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/facturen/:id',
         builder: (_, state) => StudentProfileGate(
-          child: FactuurDetailScreen(id: state.pathParameters['id']!),
+          child: FactuurDetailScreen(
+            id: state.pathParameters['id']!,
+            // Hint (GEEN bewijs van betaling): gezet door de deep-link-
+            // handler hieronder na terugkeer van de Mollie-betaalpagina.
+            // FactuurDetailScreen haalt zelf de echte status uit Supabase op
+            // en gebruikt dit alleen om kort "Betaling wordt verwerkt" te
+            // tonen + een beperkt aantal keer opnieuw te verversen.
+            verifyPayment: state.uri.queryParameters['verify'] == '1',
+          ),
         ),
       ),
 
@@ -311,11 +320,74 @@ final _routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
-class LeerlingApp extends ConsumerWidget {
+class LeerlingApp extends ConsumerStatefulWidget {
   const LeerlingApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LeerlingApp> createState() => _LeerlingAppState();
+}
+
+class _LeerlingAppState extends ConsumerState<LeerlingApp> {
+  // Mollie-factuurbetaling: return-pagina opent
+  // leerlingplanner://factuur?id=<factuurId>. Zelfde, bewust hergebruikte
+  // patroon als de Instructeur-app (rijschool-planner-flutter/lib/app.dart
+  // _initDeepLinks/_handleDeepLink): AppLinks voor zowel cold start
+  // (getInitialLink) als app-al-actief/achtergrond (uriLinkStream), met
+  // dezelfde idempotentie-check (laatst verwerkte volledige URI nooit twee
+  // keer verwerken binnen deze sessie).
+  final AppLinks _appLinks = AppLinks();
+  StreamSubscription<Uri>? _linkSubscription;
+  String? _laatstVerwerkteLink;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinks();
+  }
+
+  Future<void> _initDeepLinks() async {
+    try {
+      final initialUri = await _appLinks.getInitialLink();
+      if (initialUri != null) _handleDeepLink(initialUri);
+    } catch (e) {
+      debugPrint('[DeepLink] initial link ophalen mislukt: $e');
+    }
+
+    _linkSubscription = _appLinks.uriLinkStream.listen(
+      _handleDeepLink,
+      onError: (e) => debugPrint('[DeepLink] stream fout: $e'),
+    );
+  }
+
+  void _handleDeepLink(Uri uri) {
+    final uriString = uri.toString();
+    if (_laatstVerwerkteLink == uriString) return;
+    _laatstVerwerkteLink = uriString;
+
+    if (uri.host == 'factuur') {
+      _handleFactuurDeepLink(uri);
+    }
+    // Overige hosts (auth) lopen al via Supabase Auth's eigen deep-link-
+    // afhandeling -- niet in scope van deze fix.
+  }
+
+  void _handleFactuurDeepLink(Uri uri) {
+    final factuurId = uri.queryParameters['id'];
+    if (factuurId == null || factuurId.isEmpty) return;
+    // `verify=1`: puur een UI-hint voor FactuurDetailScreen (kort "Betaling
+    // wordt verwerkt" + beperkte refetch) -- nooit als bewijs van betaling
+    // gebruikt. De echte status komt altijd uit een verse Supabase-fetch.
+    ref.read(_routerProvider).push('/facturen/$factuurId?verify=1');
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final router = ref.watch(_routerProvider);
 
     return MaterialApp.router(

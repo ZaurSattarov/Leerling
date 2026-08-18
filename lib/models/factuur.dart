@@ -26,6 +26,35 @@ extension FactuurStatusLabel on FactuurStatus {
   }
 }
 
+/// 1-op-1 met FactuurRegel (rijschool-planner-flutter/lib/models/factuur.dart)
+/// -- zelfde JSONB-sleutels als geschreven door SupabaseService.maakFactuur/
+/// Admin Web's maakFactuur, bewust niet zelf herberekend.
+class FactuurRegel {
+  final String omschrijving;
+  final int aantal;
+  final int prijsPerStukCents;
+  final int totaalCents;
+  final int btwCents;
+
+  const FactuurRegel({
+    required this.omschrijving,
+    required this.aantal,
+    required this.prijsPerStukCents,
+    required this.totaalCents,
+    required this.btwCents,
+  });
+
+  factory FactuurRegel.fromJson(Map<String, dynamic> json) {
+    return FactuurRegel(
+      omschrijving: (json['omschrijving'] as String?) ?? '',
+      aantal: (json['aantal'] as num?)?.toInt() ?? 1,
+      prijsPerStukCents: (json['prijs_per_stuk_cents'] as num?)?.toInt() ?? 0,
+      totaalCents: (json['totaal_cents'] as num?)?.toInt() ?? 0,
+      btwCents: (json['btw_cents'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
+
 class Factuur {
   final String id;
   final String instructeurId;
@@ -33,6 +62,9 @@ class Factuur {
   final String factuurnummer;
   final String beschrijving;
   final int bedragCents;
+  final int? subtotaalCents;
+  final int? btwCents;
+  final List<FactuurRegel>? factuurregels;
   final FactuurStatus status;
   final String? betaalmethode;
   final String? betaalLinkUrl;
@@ -58,6 +90,9 @@ class Factuur {
     required this.factuurnummer,
     required this.beschrijving,
     required this.bedragCents,
+    this.subtotaalCents,
+    this.btwCents,
+    this.factuurregels,
     required this.status,
     this.betaalmethode,
     this.betaalLinkUrl,
@@ -132,6 +167,12 @@ class Factuur {
       factuurnummer: (json['factuurnummer'] as String?) ?? '',
       beschrijving: (json['beschrijving'] as String?) ?? '',
       bedragCents: (json['bedrag_cents'] as num?)?.toInt() ?? 0,
+      subtotaalCents: (json['subtotaal_cents'] as num?)?.toInt(),
+      btwCents: (json['btw_cents'] as num?)?.toInt(),
+      factuurregels: (json['factuurregels'] as List?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(FactuurRegel.fromJson)
+          .toList(),
       status: _statusFromJson(json['status'] as String?),
       betaalmethode: json['betaalmethode'] as String?,
       betaalLinkUrl: json['betaal_link_url'] as String?,

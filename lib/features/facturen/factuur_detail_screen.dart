@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
+import '../../core/utils/factuur_pdf_utils.dart';
 import '../../models/factuur.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
@@ -14,7 +17,17 @@ import '../home/home_provider.dart';
 
 class FactuurDetailScreen extends ConsumerWidget {
   final String id;
-  const FactuurDetailScreen({super.key, required this.id});
+  // Hint (GEEN bewijs van betaling) gezet door de deep-link-handler in
+  // app.dart na terugkeer van de Mollie-betaalpagina (leerlingplanner://
+  // factuur?id=...). Alleen gebruikt om kort "Betaling wordt verwerkt" te
+  // tonen en de factuur een beperkt aantal keer opnieuw te verversen — de
+  // echte status komt altijd uit een verse Supabase-fetch.
+  final bool verifyPayment;
+  const FactuurDetailScreen({
+    super.key,
+    required this.id,
+    this.verifyPayment = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,7 +57,10 @@ class FactuurDetailScreen extends ConsumerWidget {
                     ),
                   );
                 }
-                return _FactuurDetailBody(factuur: f);
+                return _FactuurDetailBody(
+                  factuur: f,
+                  verifyPayment: verifyPayment,
+                );
               },
               loading: () => const Center(
                 child: CircularProgressIndicator(color: AppColors.primary),
@@ -66,7 +82,11 @@ class FactuurDetailScreen extends ConsumerWidget {
 
 class _FactuurDetailBody extends ConsumerStatefulWidget {
   final Factuur factuur;
-  const _FactuurDetailBody({required this.factuur});
+  final bool verifyPayment;
+  const _FactuurDetailBody({
+    required this.factuur,
+    this.verifyPayment = false,
+  });
 
   @override
   ConsumerState<_FactuurDetailBody> createState() => _FactuurDetailBodyState();
@@ -76,6 +96,8 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
     with WidgetsBindingObserver {
   bool _wachtOpBetaalTerugkeer = false;
   bool _betalingAanvragen = false;
+  bool _betalingVerifieren = false;
+  bool _pdfBezig = false;
 
   Factuur get factuur => widget.factuur;
 
@@ -83,6 +105,10 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    if (widget.verifyPayment && factuur.status != FactuurStatus.betaald) {
+      _betalingVerifieren = true;
+      unawaited(_verifieerBetalingBeperkt());
+    }
   }
 
   @override
@@ -99,16 +125,96 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
     }
   }
 
+  /// Beperkte (NIET-oneindige) refetch na terugkeer via de betaal-deep-link:
+  /// een paar keer met oplopende vertraging rechtstreeks bij Supabase
+  /// checken of de authoritative webhook de factuur al op betaald heeft
+  /// gezet. Ververst bewust NIET via de provider tussentijds (dat zou de
+  /// hele detailpagina laten "flitsen" naar een laadscherm) -- pas bij een
+  /// bevestigde overgang naar betaald, of na de laatste poging, wordt de
+  /// provider/lijst/dashboard écht ververst.
+  Future<void> _verifieerBetalingBeperkt() async {
+    const vertragingen = [
+      Duration(seconds: 2),
+      Duration(seconds: 3),
+      Duration(seconds: 5),
+    ];
+    for (final vertraging in vertragingen) {
+      await Future.delayed(vertraging);
+      if (!mounted) return;
+      try {
+        final vernieuwd = await StudentService.getFactuur(factuur.id);
+        if (!mounted) return;
+        if (vernieuwd != null && vernieuwd.status == FactuurStatus.betaald) {
+          ref.invalidate(factuurDetailProvider(factuur.id));
+          ref.invalidate(facturenProvider);
+          ref.invalidate(homeProvider);
+          setState(() => _betalingVerifieren = false);
+          return;
+        }
+      } catch (e) {
+        debugPrint('[factuur_detail] betaling verifieren fout: $e');
+      }
+    }
+    if (mounted) setState(() => _betalingVerifieren = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final betaalUrl = factuur.effectieveBetaalUrl;
-    final downloadUrl = factuur.effectieveDownloadUrl;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (_betalingVerifieren &&
+              factuur.status != FactuurStatus.betaald) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: AppColors.warningBg,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.warningBorder),
+              ),
+              child: Row(
+                children: [
+                  const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.warningText,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Betaling wordt verwerkt',
+                          style: TextStyle(
+                            color: AppColors.warningText,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'We controleren je betaling. Dit duurt meestal maar enkele seconden.',
+                          style: TextStyle(
+                            color: AppColors.warningText,
+                            fontSize: 12.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -290,24 +396,41 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
             const _ActionHint(
                 text: 'Deze factuur staat niet open voor betaling.'),
           const SizedBox(height: 10),
+          // Canonical factuur-PDF -- zelfde bron/opbouw als de Instructeur-
+          // app (FactuurPdfUtils, 1-op-1 port van FactuurShareUtils), client-
+          // side gegenereerd op basis van de eigen, RLS-gescoped factuurdata.
+          // GEEN losse "downloadUrl"-kolom meer nodig (die werd nooit
+          // gevuld).
           OutlinedButton.icon(
-            onPressed: downloadUrl != null
-                ? () => _openUrl(
-                      context,
-                      downloadUrl,
-                      'Kan factuurdownload niet openen',
-                    )
-                : null,
-            icon: const Icon(Icons.download_rounded, size: 18),
-            label: const Text('Download factuur'),
+            onPressed: _pdfBezig ? null : () => _bekijkFactuurPdf(context),
+            icon: const Icon(Icons.visibility_outlined, size: 18),
+            label: const Text('Factuur bekijken'),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.dark,
               disabledForegroundColor: AppColors.textHint,
               minimumSize: const Size.fromHeight(52),
             ),
           ),
-          if (downloadUrl == null)
-            const _ActionHint(text: 'Factuurdownload nog niet beschikbaar.'),
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            onPressed: _pdfBezig ? null : () => _downloadFactuurPdf(context),
+            icon: _pdfBezig
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.dark,
+                    ),
+                  )
+                : const Icon(Icons.download_rounded, size: 18),
+            label: const Text('Download PDF'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.dark,
+              disabledForegroundColor: AppColors.textHint,
+              minimumSize: const Size.fromHeight(52),
+            ),
+          ),
           const SizedBox(height: 32),
         ],
       ),
@@ -319,18 +442,30 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
     return DatumUtils.korteDatum(date);
   }
 
-  Future<void> _openUrl(
-    BuildContext context,
-    String url,
-    String errorMessage,
-  ) async {
-    final uri = Uri.tryParse(url);
-    if (uri != null && await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-      return;
+  Future<void> _bekijkFactuurPdf(BuildContext context) async {
+    setState(() => _pdfBezig = true);
+    try {
+      await FactuurPdfUtils.openPdf(factuur);
+    } catch (e) {
+      if (context.mounted) {
+        showAppSnackBar(context, 'Kan factuur-PDF niet openen', isError: true);
+      }
+    } finally {
+      if (mounted) setState(() => _pdfBezig = false);
     }
-    if (context.mounted) {
-      showAppSnackBar(context, errorMessage, isError: true);
+  }
+
+  Future<void> _downloadFactuurPdf(BuildContext context) async {
+    setState(() => _pdfBezig = true);
+    try {
+      await FactuurPdfUtils.downloadPdf(factuur);
+    } catch (e) {
+      if (context.mounted) {
+        showAppSnackBar(context, 'Kan factuur-PDF niet downloaden',
+            isError: true);
+      }
+    } finally {
+      if (mounted) setState(() => _pdfBezig = false);
     }
   }
 

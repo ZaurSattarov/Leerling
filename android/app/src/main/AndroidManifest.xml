@@ -36,6 +36,14 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="leerlingplanner" android:host="auth"/>
             </intent-filter>
+            <!-- Mollie-factuurbetaling: return-pagina (mollie-factuur-return)
+                 opent "Open in Klantio" via leerlingplanner://factuur?id=... -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="leerlingplanner" android:host="factuur"/>
+            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
