@@ -89,29 +89,28 @@ Dashboard, Landing Page). Voor iedere structurele programmeertaak:
 2. Voer de verplichte cross-project preflight uit (zie `00 - KLANTIO/AI Werkprotocol.md`):
    bepaal of de wijziging Instructeur, Admin Dashboard en/of Landing Page raakt. Vraag bij
    mogelijke/bevestigde impact eerst compact om scope, tenzij de gebruiker die al gaf.
-3. Gebruik daarna de Graphify-workflow hierboven voor codeverbindingen.
-4. Open minimale echte broncode, implementeer en test.
-5. Voer de Graphify-eindcontrole uit.
-6. Werk alleen relevante Obsidian-kennis bij (architectuurbeslissingen, data-/API-wijzigingen,
+3. Raadpleeg daarna de relevante goedgekeurde skill(s) volgens `00 - KLANTIO/AI Skills
+   Register.md` (skill-first, implementation-second) VOORDAT zelf een oplossing wordt
+   ontworpen — bij mobiele Flutter-UI bv. `mobile-app-ui-design → impeccable →
+   flutter-claude-code`.
+4. Gebruik daarna de Graphify-workflow hierboven voor codeverbindingen.
+5. Open minimale echte broncode, implementeer en test.
+6. Voer de Graphify-eindcontrole uit.
+7. Werk alleen relevante Obsidian-kennis bij (architectuurbeslissingen, data-/API-wijzigingen,
    synchronisatieregels, businessregels, openstaande bugs, cross-project impact) — niet bij
    triviale wijzigingen.
 
-Zie ook: `00 - KLANTIO/AI Werkprotocol.md` (centraal protocol), `05 - Gedeelde Architectuur/`
-(gedeelde datamodellen), `00 - KLANTIO/Cross-Project Impact.md` (openstaande cross-project
-impact), `00 - KLANTIO/AI Omgeving.md` (lokale toolpaden, bv. Impeccable).
+Zie ook: `00 - KLANTIO/AI Werkprotocol.md` (centraal protocol), `00 - KLANTIO/AI Skills
+Register.md` (verplichte skill-router), `05 - Gedeelde Architectuur/` (gedeelde datamodellen),
+`00 - KLANTIO/Cross-Project Impact.md` (openstaande cross-project impact), `00 - KLANTIO/AI
+Omgeving.md` (lokale toolpaden/skill-root).
 
-## Impeccable — Verplicht bij UI/Design
+## Skill-router — Verplicht
 
-Bij iedere taak die UI/UX/design daadwerkelijk raakt (nieuw scherm, redesign, component,
-formulier, modal, card, navigatie, layout, spacing, typografie, responsive gedrag, visuele
-hiërarchie, UI/UX-correctie) is de Impeccable-skill VERPLICHT. Niet verplicht voor pure
-backend/database/API/businesslogica zonder visuele impact.
-
-Werkwijze: bepaal dat de taak UI/design raakt → laad/raadpleeg de Impeccable-skill (pad staat
-in `00 - KLANTIO/AI Omgeving.md`) → pas daarna UI/design aan. Toon alleen wanneer Impeccable
-daadwerkelijk succesvol geraadpleegd is exact:
-
-🎨 IMPECCABLE: Skill wordt gebruikt voor deze UI/UX-taak.
-
-Claim dit nooit wanneer de skill niet daadwerkelijk bereikbaar/gelezen is; meld dan expliciet
-dat Impeccable niet gevonden is en ga niet stilzwijgend verder.
+Voor iedere programmeeropdracht geldt `00 - KLANTIO/AI Skills Register.md`: skill-first,
+implementation-second. Voor mobiele UI is de vaste routering `mobile-app-ui-design →
+impeccable → ui-ux-pro-max`, gecombineerd met `flutter-claude-code`/`flutter-claude-skills`
+voor de technische implementatie. Toon de verplichte zichtbare skillstatus
+(`🧩 SKILL: Laden → ...`, `✅ SKILL: Gebruikt → ...`) en de eindmelding
+(`🧩 Skills gebruikt: ...`) exact zoals in dat register beschreven. Dit vervangt de losse
+Impeccable-melding van eerdere sessies.
