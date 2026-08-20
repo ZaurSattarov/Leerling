@@ -10,6 +10,34 @@
 
 ---
 
+## Klantio Mandatory Startup Preflight
+
+VOOR iedere programmeeropdracht, VOORDAT broncode wordt gewijzigd:
+
+1. Lees deze projectinstructies.
+2. Lees (niet de hele vault):
+   - `00 - KLANTIO/Product Architectuur/Solo & Team - Canonical Architectuur.md` (**leidend**)
+   - `01 - ARCHITECTUUR/Solo-vs-Team.md`
+   - `01 - ARCHITECTUUR/Productarchitectuur.md`
+3. Bepaal zelfstandig: **SCOPE = SOLO | TEAM | BEIDE**. Algemene functionaliteit → **BEIDE**.
+4. Datascope: `product_mode`, `instructeur_id`, `school_id`, assignment, effectieve permissions, RLS.
+5. Cross-project impact: **GEEN / MOGELIJK / BEVESTIGD** — zelf bepalen. MOGELIJK ≠ vragen.
+6. Skills via `00 - KLANTIO/AI Skills Register.md`.
+7. Graphify: `graphify-leerling` (hieronder).
+8. Daarna pas minimale broncode.
+
+`product_mode` ≠ abonnementsplan. Nooit cross-school. Canonical assignment: `leerlingen.instructeur_id` + `leerlingen.school_id`.
+
+Toon compact `KLANTIO PREFLIGHT`. Niet vragen of het Solo of Team is als architectuur het antwoord geeft.
+
+**ARCHITECTUURCONFLICT:** STOP en rapporteer. Geen stille nieuwe architectuur.
+
+Canonical Solo/Team-updateplicht: nieuwe goedgekeurde Solo/Team-regel → eerst de leidende Obsidian-notitie bijwerken.
+
+Codex: `AGENTS.md`. Cursor: `.cursor/rules/klantio-workflow.mdc` (`alwaysApply: true`).
+
+Canonical Supabase-migrations: Instructeur-repo. Geen tweede migration-tree hier.
+
 ## Graphify MCP — Verplichte Workflow
 
 Dit project heeft een geïndexeerde code-graph via de Graphify MCP-server **`graphify-leerling`**
@@ -87,8 +115,8 @@ Dashboard, Landing Page). Voor iedere structurele programmeertaak:
    `00 - KLANTIO/Project Status.md` bij cross-project context, en hooguit enkele direct
    relevante notities. Lees nooit automatisch de hele vault.
 2. Voer de verplichte cross-project preflight uit (zie `00 - KLANTIO/AI Werkprotocol.md`):
-   bepaal of de wijziging Instructeur, Admin Dashboard en/of Landing Page raakt. Vraag bij
-   mogelijke/bevestigde impact eerst compact om scope, tenzij de gebruiker die al gaf.
+   bepaal zelfstandig of de wijziging Instructeur, Admin Dashboard en/of Landing Page raakt.
+   Vraag de gebruiker **niet** als bestaande architectuur het antwoord geeft.
 3. Raadpleeg daarna de relevante goedgekeurde skill(s) volgens `00 - KLANTIO/AI Skills
    Register.md` (skill-first, implementation-second) VOORDAT zelf een oplossing wordt
    ontworpen — bij mobiele Flutter-UI bv. `mobile-app-ui-design → impeccable →

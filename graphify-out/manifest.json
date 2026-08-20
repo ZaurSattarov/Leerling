@@ -1,614 +1,717 @@
 {
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\app.dart": {
-    "mtime": 1785874139.3864987,
-    "hash": "b57176a8d45e86c9e90d7d832b0fbfa3"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\main.dart": {
-    "mtime": 1786227781.3026128,
-    "hash": "569cd24a1f86a700700c07545d51f4c0"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\config\\app_config.dart": {
-    "mtime": 1780596377.3839982,
-    "hash": "d733bd27517d2bab944fbb1548046528"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\constants\\app_colors.dart": {
-    "mtime": 1781127956.1473012,
-    "hash": "bcf74530229efff179396007d6a6f131"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\constants\\nav_shell_tokens.dart": {
-    "mtime": 1785874763.6986704,
-    "hash": "b8bcd7fe290367012377c90e2825b8a5"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\services\\avatar_service.dart": {
-    "mtime": 1785706314.5637517,
-    "hash": "355ff8a9876c8b63f62a0831a62dcd61"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\services\\communication_service.dart": {
-    "mtime": 1780595747.6805902,
-    "hash": "cfbadc74dc95d5a3b0128b3f530cf356"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\services\\student_service.dart": {
-    "mtime": 1786218462.804032,
-    "hash": "dd07be1d887eebf8b1ecab60b99fce80"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\utils\\contact_uri.dart": {
-    "mtime": 1785874139.3880014,
-    "hash": "797c5594a9a51696d25bea5390be9cea"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\utils\\datum_utils.dart": {
-    "mtime": 1786216958.8293276,
-    "hash": "04c458ae727976612267a90fe087eae3"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\utils\\factuur_status.dart": {
-    "mtime": 1785706314.5647514,
-    "hash": "1dbc8d08f6a024abaf2713afb1c2b7c1"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\utils\\komende_les_filter.dart": {
-    "mtime": 1786217227.383771,
-    "hash": "729538df00f668abaa710e4d82129088"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\utils\\lespakket_detail.dart": {
-    "mtime": 1785787683.056757,
-    "hash": "fb8bc969e6b90a5785bb1c7f48377d03"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\utils\\lespakket_voortgang.dart": {
-    "mtime": 1785874139.3890066,
-    "hash": "a919ab54f33bbc50837f28b03e9e3f29"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\utils\\maps_uri.dart": {
-    "mtime": 1785876729.844671,
-    "hash": "1fee024f80f9723247bd9de34e2fad38"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\utils\\tijd_invoer_formatter.dart": {
-    "mtime": 1786138693.354643,
-    "hash": "bcf4a08f18063ff2caa7b5e6a8211972"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\auth\\auth_design.dart": {
-    "mtime": 1780595747.6814938,
-    "hash": "2ce8d7ca515fc07bd03bad31fdfde67c"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\auth\\login_screen.dart": {
-    "mtime": 1785706314.5657513,
-    "hash": "34bc2da6ac91ff21555bc03cf0b2ca2e"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\auth\\registreer_screen.dart": {
-    "mtime": 1780595747.6825166,
-    "hash": "3d4c811d67fcbfc5dd3de334d94b6681"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\auth\\reset_password_screen.dart": {
-    "mtime": 1785706314.5657513,
-    "hash": "0908269621be7ce13b4b3e0dadcaeb6d"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\auth\\verificatie_screen.dart": {
-    "mtime": 1780595747.6832852,
-    "hash": "7a0a227b55d849d3e4044b21bd5fac2d"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\auth\\wachtwoord_reset_code_screen.dart": {
-    "mtime": 1780595747.6832852,
-    "hash": "39f4852be21b3ea82cb6ab859af4d35a"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\auth\\wachtwoord_vergeten_screen.dart": {
-    "mtime": 1785706314.566751,
-    "hash": "351e0224e55d3ea6d9d139e206b57e15"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\beschikbaarheid\\beschikbaarheid_screen.dart": {
-    "mtime": 1786218695.3794632,
-    "hash": "52eb165b071645f5493b30fae38cdd2d"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\examenadvies\\examenadvies_calculator.dart": {
-    "mtime": 1785874139.3910108,
-    "hash": "098be9f79f0d76899f0bea188eead551"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\examenadvies\\examenadvies_data.dart": {
-    "mtime": 1785874139.392011,
-    "hash": "c11919babbc29ad129a1fd119085e2d6"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\examenadvies\\examenadvies_provider.dart": {
-    "mtime": 1785874139.3930135,
-    "hash": "6d936acb8be9f79bbec1e6d75e971faf"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\examenadvies\\examenadvies_screen.dart": {
-    "mtime": 1786218695.405124,
-    "hash": "ef2b98690507892135c4bfe4630cfb62"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\examens\\examens_provider.dart": {
-    "mtime": 1780596473.6251118,
-    "hash": "77f6e5de31017c53461fd534fccb5828"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\examens\\examens_screen.dart": {
-    "mtime": 1786218695.4323924,
-    "hash": "87df3ae790ac8e76801787e9cfef441f"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\facturen\\facturen_provider.dart": {
-    "mtime": 1780596564.4809685,
-    "hash": "be18b403523bc7be6486ffe3370f1d0b"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\facturen\\facturen_screen.dart": {
-    "mtime": 1786218695.4613779,
-    "hash": "bdda5ed72a96336d35281441bb09ac7a"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\facturen\\factuur_detail_screen.dart": {
-    "mtime": 1786218695.4900274,
-    "hash": "87e86b02fd47cd3baa75a1aa500b03ac"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\help\\help_screen.dart": {
-    "mtime": 1786218695.5175455,
-    "hash": "7beeb9ca5bcbc44c78d3eeb449cf934c"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\home\\home_coach_provider.dart": {
-    "mtime": 1781127956.1523025,
-    "hash": "22e68008f6b93bec206c5c1544244b21"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\home\\home_provider.dart": {
-    "mtime": 1781127956.153301,
-    "hash": "5256a614500ce24d212523f19534d620"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\home\\home_screen.dart": {
-    "mtime": 1786218943.910647,
-    "hash": "fd54ce0184d88a75671c3418cd0641e5"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\koppelcode\\koppelcode_screen.dart": {
-    "mtime": 1785706314.5717685,
-    "hash": "b53bb0e3129a3d0b973e5a9c7f7d6a3b"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\legal\\legal_document_screen.dart": {
-    "mtime": 1786218695.547229,
-    "hash": "cc76deed19933782acb2c0acd618f173"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\legal\\content\\legal_document_content.dart": {
-    "mtime": 1785874139.3975208,
-    "hash": "85062af41d03e74edee7e8d7d78ae472"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\legal\\content\\privacy_policy_nl.dart": {
-    "mtime": 1785874139.3975208,
-    "hash": "426429fc26b4e668eac4a5cd0e629579"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\legal\\content\\terms_conditions_nl.dart": {
-    "mtime": 1785874139.3985283,
-    "hash": "e4a880e83b0297e846669393cebae34b"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\lesvoorbereiding\\lesvoorbereiding_provider.dart": {
-    "mtime": 1786218031.6349175,
-    "hash": "e0ee26fc9bec942b9ff1de64f0db5adb"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\lesvoorbereiding\\lesvoorbereiding_screen.dart": {
-    "mtime": 1786229024.7242062,
-    "hash": "4ce0788877545e8c29ea4f420d87faab"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\lesvoorbereiding\\preparation_mapper.dart": {
-    "mtime": 1786217942.03015,
-    "hash": "12b0749e0c1532e9955ab18b009beaaf"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\les_logboek\\les_logboek_item.dart": {
-    "mtime": 1778231574.7055657,
-    "hash": "f34542c00ce81915d5c56ae213b769ce"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\les_logboek\\les_logboek_mapper.dart": {
-    "mtime": 1785874139.4000044,
-    "hash": "2698481e324232c01e76b8a45fc569e7"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\les_logboek\\les_logboek_provider.dart": {
-    "mtime": 1780595747.6882083,
-    "hash": "4217791b6e575bdf6935346f5f07aff2"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\les_logboek\\les_logboek_screen.dart": {
-    "mtime": 1786218695.6183047,
-    "hash": "4b2be6017ff27697f616f2648634f0f7"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\notificaties\\notificaties_provider.dart": {
-    "mtime": 1780596567.7498777,
-    "hash": "d94c9e68e797cf9be1280f5822832454"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\notificaties\\notificaties_screen.dart": {
-    "mtime": 1786218695.6534965,
-    "hash": "15f2568ec9db38ae080fe971084bf2bc"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\notificaties\\notificatie_instellingen_provider.dart": {
-    "mtime": 1785874139.4000044,
-    "hash": "cdece69da5b73acf8ff012d2a643a3e8"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\notificaties\\notificatie_instellingen_screen.dart": {
-    "mtime": 1786218695.6824532,
-    "hash": "fc9e58903053b3e76fbf010190c46834"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\planning\\les_detail_screen.dart": {
-    "mtime": 1786218695.7117643,
-    "hash": "dd301bcc5bd1a9feb5ffe3b6edc01e82"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\planning\\planning_provider.dart": {
-    "mtime": 1785874139.403547,
-    "hash": "7fc8c6a5f9f11090bd1f15d909eb4368"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\planning\\planning_screen.dart": {
-    "mtime": 1786218695.7420807,
-    "hash": "9f493e244e35c72f0b8b20aa66db442a"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\planning\\widgets\\lesson_status_badge.dart": {
-    "mtime": 1785874139.4045203,
-    "hash": "5323407879f4eeb8226facdf69babe55"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\profiel\\app_instellingen_screen.dart": {
-    "mtime": 1786218695.7682683,
-    "hash": "3fcdcdde9820986475f5e5788c7b928b"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\profiel\\app_machtigingen_screen.dart": {
-    "mtime": 1786218695.7953131,
-    "hash": "fb271d97bbc17e00575f3e22cb2cb481"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\profiel\\beveiliging_screen.dart": {
-    "mtime": 1786218695.821123,
-    "hash": "06885cf6a36e2aeccce8689ce09e6472"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\profiel\\lespakket_detail_screen.dart": {
-    "mtime": 1786218695.8484402,
-    "hash": "095d5635b670aa68590c200dfd509f15"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\profiel\\mijn_rijschool_screen.dart": {
-    "mtime": 1786218695.8759482,
-    "hash": "39209cb52de18bde733412e181878f59"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\profiel\\persoonlijke_gegevens_screen.dart": {
-    "mtime": 1786218695.9061823,
-    "hash": "874954de3318229968c49bc856f0906f"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\profiel\\profielfoto_editor.dart": {
-    "mtime": 1785787683.0702603,
-    "hash": "c3e564789143df634f812169ed9c4073"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\profiel\\profiel_screen.dart": {
-    "mtime": 1786218695.941176,
-    "hash": "99c737a71468fe55efe6cd0145a79c2a"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\profiel\\rijschool_provider.dart": {
-    "mtime": 1785787683.0702603,
-    "hash": "1717f75468aca4faf3ae08dd58f258f7"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\profiel\\widgets\\profiel_menu_widgets.dart": {
-    "mtime": 1785874139.4103477,
-    "hash": "de617278947c107014fee696fb1cca9d"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\profiel\\widgets\\profile_info_row.dart": {
-    "mtime": 1785874139.4113472,
-    "hash": "e23f3cd1de28091f002f8a2b169404a6"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\profiel\\widgets\\settings_action_row.dart": {
-    "mtime": 1785874139.4113472,
-    "hash": "732ea612d300b5b543093dc2946ff0c2"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\splash\\splash_screen.dart": {
-    "mtime": 1786227769.856834,
-    "hash": "b0b099462f948d35fc7c5656b53e78ee"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\voortgang\\lespakket_detail_provider.dart": {
-    "mtime": 1785787683.0702603,
-    "hash": "fee0555ec87606db2c03a0460a995e53"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\voortgang\\lespakket_detail_screen.dart": {
-    "mtime": 1786218695.9724474,
-    "hash": "00897ad440ab96a4af3da45b6e18702b"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\voortgang\\lespakket_voortgang_provider.dart": {
-    "mtime": 1785874139.4138513,
-    "hash": "821c89f8bf7f64538be1679ac849f98e"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\voortgang\\voortgang_provider.dart": {
-    "mtime": 1778231574.715564,
-    "hash": "6a6ff46a10c642d92e38ae2bdd3f5ed5"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\voortgang\\voortgang_screen.dart": {
-    "mtime": 1786218696.0032268,
-    "hash": "d070b50b25af44781fb7f54de47a5fb9"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\voortgang\\voortgang_trends_provider.dart": {
-    "mtime": 1785874139.415859,
-    "hash": "a7bc1bb38a9a4f7abfc0e173ae527acb"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\models\\examen.dart": {
-    "mtime": 1780596672.7068288,
-    "hash": "f6d15b3fca36b91553080a44f2851f60"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\models\\factuur.dart": {
-    "mtime": 1785874139.416857,
-    "hash": "0ef2dbeee552ac1bbe70a4e86bf56eb9"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\models\\instructeur.dart": {
-    "mtime": 1785874139.4178596,
-    "hash": "928f194b655dc4181b8ef841199665d2"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\models\\instructor_lesson_package.dart": {
-    "mtime": 1785787683.0744567,
-    "hash": "7416eef063454d6cf0f68320df459619"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\models\\leerling_beschikbaarheid.dart": {
-    "mtime": 1777925640.7206852,
-    "hash": "e785b0fbf06e0ae82233ab692807d6d2"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\models\\leerling_notificatie_voorkeuren.dart": {
-    "mtime": 1785874139.4183657,
-    "hash": "65ed0609d0b986206e402416fc2d3c84"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\models\\leerling_profiel.dart": {
-    "mtime": 1785787683.0744567,
-    "hash": "e74354d3beb9774a56da8e7e073ebd43"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\models\\les.dart": {
-    "mtime": 1785874139.4188714,
-    "hash": "6ae3fbf0a331d23e1031d85c04e9ca66"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\models\\les_evaluatie.dart": {
-    "mtime": 1785706314.5802813,
-    "hash": "c1a5aa28c6003ec5eb0c12d83ec38a71"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\models\\notificatie.dart": {
-    "mtime": 1778231574.7195637,
-    "hash": "8daee30e9ef0d9e5d43c806ae46ddb76"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\providers\\auth_provider.dart": {
-    "mtime": 1777896706.8795753,
-    "hash": "f853ca7956b6a9a4365fd4edf84ea951"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\widgets\\app_card.dart": {
-    "mtime": 1781127956.1598985,
-    "hash": "f528dccb0c9e8a06b6ead52f30898bc8"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\widgets\\app_logo.dart": {
-    "mtime": 1779402908.9506953,
-    "hash": "c8676ebe085adc0e302722555f84b7ff"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\widgets\\coach_widgets.dart": {
-    "mtime": 1781127956.1608984,
-    "hash": "eac2fc6e1a205e490e89e7170dfd6e21"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\widgets\\home_header.dart": {
-    "mtime": 1786218625.8628125,
-    "hash": "59e7da3bf217d74641c60ef3c58673b9"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\widgets\\klantio_header.dart": {
-    "mtime": 1786218546.4662392,
-    "hash": "6f3ffb0e3a4424df0050dd19f15d4b0a"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\widgets\\main_detail_header.dart": {
-    "mtime": 1786218596.2624154,
-    "hash": "7cc3b12392966a795803f204002e4309"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\widgets\\main_scaffold.dart": {
-    "mtime": 1785874778.5960872,
-    "hash": "321fb76a9bd8f5171760cbfb2b8134b4"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\widgets\\main_tab_header.dart": {
-    "mtime": 1786218568.9267132,
-    "hash": "e732cffc45eb5f6a12cf87ef3d4995d8"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\widgets\\snackbar.dart": {
-    "mtime": 1777896706.8805797,
-    "hash": "aeab5100e847b1d015e7431fcc66b642"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\widgets\\status_pill.dart": {
-    "mtime": 1785706314.5812812,
-    "hash": "50d47d957d9ac7114100944da70e5d0d"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\widgets\\student_profile_gate.dart": {
-    "mtime": 1779402908.9542022,
-    "hash": "64152cd79a1bfb5a71c1f525646c6c44"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\student_migration.sql": {
-    "mtime": 1777896706.901771,
-    "hash": "9aec3d74df91fd03254c112d35744001"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\migrations\\20260506_backend_ready_leerling_notificaties.sql": {
-    "mtime": 1778231574.723565,
-    "hash": "c3f943db5fc7e28fe088a4fa1de1a506"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\migrations\\20260508_backend_privacy_hardening.sql": {
-    "mtime": 1778231574.7245648,
-    "hash": "6ccb5d5f3cc8a23fa42c5b685aa8b327"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\migrations\\20260521111145_student_onboarding_profile_rls.sql": {
-    "mtime": 1779402908.9652176,
-    "hash": "754ec246fc30f67585073539e095e63c"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\migrations\\20260803134500_leerling_kolombeveiliging_leerlingen.sql": {
-    "mtime": 1785787683.0744567,
-    "hash": "fe0958506d39c643c834856a5a6ae1f9"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\migrations\\20260803145800_leerling_eigen_pakket_lezen.sql": {
-    "mtime": 1785787683.0803719,
-    "hash": "83ed4b099da1839cf9d3e27f977bee86"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\migrations\\20260803160000_avatars_storage_eigen_map_beveiliging.sql": {
-    "mtime": 1785787683.0803719,
-    "hash": "5aa388abe970868a0bbbb2ced85b4fed"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\migrations\\20260804095206_leerling_notificatie_voorkeuren_security.sql": {
-    "mtime": 1785874139.4208782,
-    "hash": "3f8b50969a4e0668e43b50410fd36085"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\migrations\\20260804115352_lesson_vehicle_snapshot_review.sql": {
-    "mtime": 1786137492.72777,
-    "hash": "72c88b31d435b5cf08132abc427542cd"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\migrations\\20260804150948_lesson_vehicle_snapshot_clear_contract.sql": {
-    "mtime": 1786133434.289805,
-    "hash": "e5e5e7a698907446026ab12898770f86"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\migrations\\20260807180000_lesson_vehicle_backfill_unambiguous.sql": {
-    "mtime": 1786134544.2151887,
-    "hash": "991f701f16db550fd7cce388cd2dc317"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\rollbacks\\20260804095206_leerling_notificatie_voorkeuren_security_rollback.sql": {
-    "mtime": 1785874139.4228778,
-    "hash": "37b692933468729b3790922eb8981c5d"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\rollbacks\\20260804115352_lesson_vehicle_snapshot_review_rollback.sql": {
-    "mtime": 1785874139.4238758,
-    "hash": "d94ca5231b9d13eef3ee3675e69cabbb"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\supabase\\rollbacks\\20260804150948_lesson_vehicle_snapshot_clear_contract_rollback.sql": {
-    "mtime": 1785874139.4238758,
-    "hash": "29f4af2b68f7d4cc387393f0f1f402c9"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\beschikbaarheid_navigator_guard_test.dart": {
-    "mtime": 1786138539.0839677,
-    "hash": "ed0a85f433bb396712b8384908cf32d5"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\beschikbaarheid_tijdblok_formulier_test.dart": {
-    "mtime": 1786213811.7481687,
-    "hash": "f4f92adb9e58e90e577fee7e7d967c19"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\beveiliging_screen_test.dart": {
-    "mtime": 1786219291.8943691,
-    "hash": "b8e7880e8b19c44c5b1ecf43360410c4"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\contact_uri_test.dart": {
-    "mtime": 1785874139.4258785,
-    "hash": "d88caea3743f0d461b814919275ec1b9"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\home_screen_redesign_test.dart": {
-    "mtime": 1786219336.855454,
-    "hash": "1afd2ff50f0d91bff5a07f6dff78666f"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\klantio_header_test.dart": {
-    "mtime": 1786219181.6437047,
-    "hash": "b9664cd86c2290855429938cf7a79da8"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\lesvoertuig_velden_test.dart": {
-    "mtime": 1786139438.9291556,
-    "hash": "6044b7a0a6c685cdb3cce9d286ace488"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\les_detail_volgorde_test.dart": {
-    "mtime": 1786217575.6152785,
-    "hash": "a7ff9d5fb8f0a504dafff2a99e714289"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\main_detail_header_test.dart": {
-    "mtime": 1786218853.0938618,
-    "hash": "3ba88288ee652ce2d5f8323b3614d530"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\navbar_background_test.dart": {
-    "mtime": 1785875019.1352897,
-    "hash": "2902094cd26330b485183083368664b4"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\notificatie_instellingen_test.dart": {
-    "mtime": 1785874139.4258785,
-    "hash": "dc184b7e17bbf4c6270c910ffe15a3c7"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\ophaallocatie_kaart_test.dart": {
-    "mtime": 1786139287.9830387,
-    "hash": "902c03605ea92d4b727bb1893855ce42"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\planning_premium_sync_test.dart": {
-    "mtime": 1786139305.5563352,
-    "hash": "57c95af5a0a7d8a7cbf6aad075cac9ec"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\premium_bottom_nav_bar_test.dart": {
-    "mtime": 1785706315.0565057,
-    "hash": "0a3618903f7af3ffcafbf0497cb0d036"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\profile_ui_safe_phase_test.dart": {
-    "mtime": 1786138563.639632,
-    "hash": "feb9c77409b47b2c378fca46164e7091"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\voortgang_phase8c_ui_test.dart": {
-    "mtime": 1785874139.4278786,
-    "hash": "75a90282963e44326bd40e01ff024307"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\widget_test.dart": {
-    "mtime": 1777896706.9027708,
-    "hash": "34cefec4c6a4aacc76a87de083203607"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\core\\utils\\datum_utils_lesdatum_test.dart": {
-    "mtime": 1786217329.2249713,
-    "hash": "5693263a06fcf401badee91c11c5a2fd"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\core\\utils\\komende_les_filter_test.dart": {
-    "mtime": 1786217306.9069033,
-    "hash": "8fac73cdcf036467e194bc9d9a868a3b"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\core\\utils\\tijd_invoer_formatter_test.dart": {
-    "mtime": 1786138718.497965,
-    "hash": "47e6f68911d2459c75de7d6e9d1ade2e"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\features\\lesvoorbereiding\\lesvoorbereiding_screen_test.dart": {
-    "mtime": 1786218360.8972268,
-    "hash": "40a409821fd9e6527ff4411e860ee905"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\features\\lesvoorbereiding\\preparation_mapper_test.dart": {
-    "mtime": 1786218000.6472428,
-    "hash": "f5e264da24efc80ffb5333aa599f4288"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\AGENTS.md": {
-    "mtime": 1786122063.9473543,
-    "hash": "0534760ef13aefaca6f0b5e6abe887ae"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\analysis_options.yaml": {
-    "mtime": 1777896706.8208709,
-    "hash": "9e65f4b9beebb674c0dc252f70a5c177"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\CLAUDE.md": {
-    "mtime": 1786122055.8432407,
-    "hash": "ae50ce77de11464d9b2e0fc39f5aa262"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\devtools_options.yaml": {
-    "mtime": 1778013226.0895958,
-    "hash": "d1ff5187b1b67653e7357395895e8449"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\LEERLINGEN_UI_REGELS.md": {
-    "mtime": 1779402908.903904,
-    "hash": "5fcabefd56ca771edfbeaa232f5f002f"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\MOLLIE_PAYMENT_TROUBLESHOOT.md": {
-    "mtime": 1785706315.0545056,
-    "hash": "fa65823992d445f994e5490a96a386d3"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\PRODUCT.md": {
-    "mtime": 1785875451.9536786,
-    "hash": "a181ed6167aa186bfe480c83058e744e"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\pubspec.yaml": {
-    "mtime": 1786227820.2198346,
-    "hash": "93cbe1c23ac561b6b7997482cbdf103d"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\README.md": {
-    "mtime": 1777896706.8208709,
-    "hash": "e44454b78667e47a0aabe5c6ee889666"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\docs\\lesson_vehicle_architecture_review.md": {
-    "mtime": 1786134614.442357,
-    "hash": "be503bcb05fe5344fcab5a87f6cc68bb"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\docs\\PROFIEL_ARCHITECTUUR.md": {
-    "mtime": 1785787683.0455315,
-    "hash": "fe4b643d575f14a26c836291355af167"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\docs\\PROFIEL_AUDIT.md": {
-    "mtime": 1785787683.046529,
-    "hash": "7c4107fa889269e6f071f8bd28c68c8c"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\docs\\PROFIEL_FASE4_ARCHITECTUURCONTROLE.md": {
-    "mtime": 1785787683.047527,
-    "hash": "17403fc503a85594dc396d42b67ab367"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\docs\\PROFIEL_FASE5A_AVATAR_STORAGE_BEVEILIGING.md": {
-    "mtime": 1785787683.047527,
-    "hash": "a005ef6660af3e275e2e2bc0a83b045e"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\docs\\PROFIEL_FASE5_PERSOONLIJKE_GEGEVENS.md": {
-    "mtime": 1785787683.0485275,
-    "hash": "25f35a3e76c51e2f8acea28c8c973693"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\docs\\PROFIEL_FASE6_MIJN_RIJSCHOOL.md": {
-    "mtime": 1785787683.0485275,
-    "hash": "3abcf8a7cfe429da9b899d1837dd76dc"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\docs\\PROFIEL_STAP2_BEVEILIGING.md": {
-    "mtime": 1785787683.0495272,
-    "hash": "4f1cb71e9f078cf7ac780d635047c114"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\docs\\VOORSTEL_PAKKET_SNAPSHOT_BACKFILL.md": {
-    "mtime": 1785787683.0495272,
-    "hash": "1d238542fedbe61a9a612dbabade6aba"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\docs\\superpowers\\plans\\2026-06-08-leerling-app-redesign.md": {
-    "mtime": 1780943101.3695738,
-    "hash": "bd8300a22962a41a19b2193cc64bd1d6"
+  "lib/app.dart": {
+    "mtime": 1786959405.9911897,
+    "ast_hash": "b250e6714dc661efe281263ff799da1f",
+    "semantic_hash": ""
+  },
+  "lib/core/config/app_config.dart": {
+    "mtime": 1780904384.728051,
+    "ast_hash": "d733bd27517d2bab944fbb1548046528",
+    "semantic_hash": ""
+  },
+  "lib/core/constants/app_colors.dart": {
+    "mtime": 1781156277.611832,
+    "ast_hash": "bcf74530229efff179396007d6a6f131",
+    "semantic_hash": ""
+  },
+  "lib/core/constants/nav_shell_tokens.dart": {
+    "mtime": 1786361577.5661867,
+    "ast_hash": "e2f2e4ce8dd2bcb023949b8b96ee48e8",
+    "semantic_hash": ""
+  },
+  "lib/core/services/avatar_service.dart": {
+    "mtime": 1781159604.2451873,
+    "ast_hash": "35deab51bc01c09a196de787fb4dc0cc",
+    "semantic_hash": ""
+  },
+  "lib/core/services/communication_service.dart": {
+    "mtime": 1780571560.4993956,
+    "ast_hash": "11e88b91518d5a5ffd21fa4968e1e417",
+    "semantic_hash": ""
+  },
+  "lib/core/services/leerling_notificatie_router.dart": {
+    "mtime": 1786361577.5671866,
+    "ast_hash": "6db4489c8a268bd68a8a1d1cd1cd8ed7",
+    "semantic_hash": ""
+  },
+  "lib/core/services/push_service.dart": {
+    "mtime": 1786361577.5671866,
+    "ast_hash": "10fe5897ebfc86130487c68a65ae45fd",
+    "semantic_hash": ""
+  },
+  "lib/core/services/student_service.dart": {
+    "mtime": 1786361577.5681875,
+    "ast_hash": "8a288660c60282231907bb1bd18ecada",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/contact_uri.dart": {
+    "mtime": 1785856859.175361,
+    "ast_hash": "797c5594a9a51696d25bea5390be9cea",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/datum_utils.dart": {
+    "mtime": 1786361577.5691876,
+    "ast_hash": "04c458ae727976612267a90fe087eae3",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/factuur_pdf_utils.dart": {
+    "mtime": 1787046991.0904417,
+    "ast_hash": "42e4cb6a36f8cd975cf2c3bfd622f9c3",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/factuur_status.dart": {
+    "mtime": 1781509607.3987827,
+    "ast_hash": "f955b5fc7844ad2203d6ce557248725e",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/komende_les_filter.dart": {
+    "mtime": 1786361577.5691876,
+    "ast_hash": "17a8788e15822c49ba21b57c08d9ff38",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/lespakket_detail.dart": {
+    "mtime": 1785762435.7415707,
+    "ast_hash": "4e6766f8cbd024b274ae90da3bc0d14b",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/lespakket_voortgang.dart": {
+    "mtime": 1785857075.3657305,
+    "ast_hash": "a919ab54f33bbc50837f28b03e9e3f29",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/maps_uri.dart": {
+    "mtime": 1786361577.5701866,
+    "ast_hash": "fd151b8dbced292a9d7b2be439879c75",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/tijd_invoer_formatter.dart": {
+    "mtime": 1786361577.5701866,
+    "ast_hash": "c2f9c0990ac2f1393b54348a06af3575",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/auth_design.dart": {
+    "mtime": 1780571098.5638335,
+    "ast_hash": "44ce8c0f541a43d8f8abab8459f785cf",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/login_screen.dart": {
+    "mtime": 1781505642.2391226,
+    "ast_hash": "2fd771e35c46709ec6dace4e30f730cf",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/registreer_screen.dart": {
+    "mtime": 1780571565.9316854,
+    "ast_hash": "c80a724738aa00140e1ad1fe3f6dc3ce",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/reset_password_screen.dart": {
+    "mtime": 1781505724.1977353,
+    "ast_hash": "ec70a2200530fdd15113f9323b36c111",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/verificatie_screen.dart": {
+    "mtime": 1780571227.352005,
+    "ast_hash": "e46194f91b962abce0bfc0fdd1c95bdc",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/wachtwoord_reset_code_screen.dart": {
+    "mtime": 1780571277.822078,
+    "ast_hash": "7d6352b0624b882403f2e6193b668d29",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/wachtwoord_vergeten_screen.dart": {
+    "mtime": 1781509870.3422196,
+    "ast_hash": "4931a9debe48f4c01b8b8be27ec473cc",
+    "semantic_hash": ""
+  },
+  "lib/features/beschikbaarheid/beschikbaarheid_screen.dart": {
+    "mtime": 1786361577.5721874,
+    "ast_hash": "fe5ec4c2289f52983d5670491972791b",
+    "semantic_hash": ""
+  },
+  "lib/features/examenadvies/examenadvies_calculator.dart": {
+    "mtime": 1785857075.36773,
+    "ast_hash": "098be9f79f0d76899f0bea188eead551",
+    "semantic_hash": ""
+  },
+  "lib/features/examenadvies/examenadvies_data.dart": {
+    "mtime": 1785857075.3687308,
+    "ast_hash": "c11919babbc29ad129a1fd119085e2d6",
+    "semantic_hash": ""
+  },
+  "lib/features/examenadvies/examenadvies_provider.dart": {
+    "mtime": 1785857075.3687308,
+    "ast_hash": "6d936acb8be9f79bbec1e6d75e971faf",
+    "semantic_hash": ""
+  },
+  "lib/features/examenadvies/examenadvies_screen.dart": {
+    "mtime": 1786361577.5721874,
+    "ast_hash": "a4c2848d6f8e22cdc15b80f2bcdfc44a",
+    "semantic_hash": ""
+  },
+  "lib/features/examens/examens_provider.dart": {
+    "mtime": 1780904384.7310493,
+    "ast_hash": "3ef45e9b0c5cf9ef53d2e43034f88707",
+    "semantic_hash": ""
+  },
+  "lib/features/examens/examens_screen.dart": {
+    "mtime": 1786361577.5731864,
+    "ast_hash": "a12ca89c4e74a2977db51aabb31cf09d",
+    "semantic_hash": ""
+  },
+  "lib/features/facturen/facturen_provider.dart": {
+    "mtime": 1780904384.7331529,
+    "ast_hash": "37c00f93901d018a741c2bd2f26ffa79",
+    "semantic_hash": ""
+  },
+  "lib/features/facturen/facturen_screen.dart": {
+    "mtime": 1786361577.5741856,
+    "ast_hash": "b3d00f2f4c00df2e70676633060eba88",
+    "semantic_hash": ""
+  },
+  "lib/features/facturen/factuur_detail_screen.dart": {
+    "mtime": 1787047257.353967,
+    "ast_hash": "3c65628d706e5533544519bad2e7a243",
+    "semantic_hash": ""
+  },
+  "lib/features/help/help_screen.dart": {
+    "mtime": 1786361577.5755258,
+    "ast_hash": "f2291469ac7355623b7f16d75c0d30c3",
+    "semantic_hash": ""
+  },
+  "lib/features/home/home_coach_provider.dart": {
+    "mtime": 1781156277.6168258,
+    "ast_hash": "22e68008f6b93bec206c5c1544244b21",
+    "semantic_hash": ""
+  },
+  "lib/features/home/home_provider.dart": {
+    "mtime": 1781156277.6178806,
+    "ast_hash": "5256a614500ce24d212523f19534d620",
+    "semantic_hash": ""
+  },
+  "lib/features/home/home_screen.dart": {
+    "mtime": 1786361577.576524,
+    "ast_hash": "fd54ce0184d88a75671c3418cd0641e5",
+    "semantic_hash": ""
+  },
+  "lib/features/koppelcode/koppelcode_screen.dart": {
+    "mtime": 1781509893.0059125,
+    "ast_hash": "8b61b85c49d755c2affde3824639089a",
+    "semantic_hash": ""
+  },
+  "lib/features/legal/content/legal_document_content.dart": {
+    "mtime": 1785856859.1803663,
+    "ast_hash": "85062af41d03e74edee7e8d7d78ae472",
+    "semantic_hash": ""
+  },
+  "lib/features/legal/content/privacy_policy_nl.dart": {
+    "mtime": 1785856859.1803663,
+    "ast_hash": "426429fc26b4e668eac4a5cd0e629579",
+    "semantic_hash": ""
+  },
+  "lib/features/legal/content/terms_conditions_nl.dart": {
+    "mtime": 1785856859.1813657,
+    "ast_hash": "e4a880e83b0297e846669393cebae34b",
+    "semantic_hash": ""
+  },
+  "lib/features/legal/legal_document_screen.dart": {
+    "mtime": 1786361577.5775237,
+    "ast_hash": "5730cf9bdf500c4658d67ad1cb54588f",
+    "semantic_hash": ""
+  },
+  "lib/features/les_logboek/les_logboek_item.dart": {
+    "mtime": 1778071835.7409894,
+    "ast_hash": "0850403a92352c525054167426ba5034",
+    "semantic_hash": ""
+  },
+  "lib/features/les_logboek/les_logboek_mapper.dart": {
+    "mtime": 1785857075.3712335,
+    "ast_hash": "2698481e324232c01e76b8a45fc569e7",
+    "semantic_hash": ""
+  },
+  "lib/features/les_logboek/les_logboek_provider.dart": {
+    "mtime": 1780573317.5684237,
+    "ast_hash": "9acb74a58c0b0d3b7ddeb6fac573f702",
+    "semantic_hash": ""
+  },
+  "lib/features/les_logboek/les_logboek_screen.dart": {
+    "mtime": 1786361577.5785253,
+    "ast_hash": "64f26f568f26b841736edff4da7a2343",
+    "semantic_hash": ""
+  },
+  "lib/features/lesvoorbereiding/lesvoorbereiding_provider.dart": {
+    "mtime": 1786361577.5795248,
+    "ast_hash": "e9cdc89c8207f8c139041ff1f5c4d329",
+    "semantic_hash": ""
+  },
+  "lib/features/lesvoorbereiding/lesvoorbereiding_screen.dart": {
+    "mtime": 1786361577.5805247,
+    "ast_hash": "f19f52ce2077b30bb5b160f08a0b1e76",
+    "semantic_hash": ""
+  },
+  "lib/features/lesvoorbereiding/preparation_mapper.dart": {
+    "mtime": 1786361577.5805247,
+    "ast_hash": "5b4b549defa72be28a01e01e82b6cd9a",
+    "semantic_hash": ""
+  },
+  "lib/features/notificaties/notificatie_instellingen_provider.dart": {
+    "mtime": 1785856859.1823661,
+    "ast_hash": "cdece69da5b73acf8ff012d2a643a3e8",
+    "semantic_hash": ""
+  },
+  "lib/features/notificaties/notificatie_instellingen_screen.dart": {
+    "mtime": 1786361577.5815241,
+    "ast_hash": "7e31fcacb8f1f716286397a21855a147",
+    "semantic_hash": ""
+  },
+  "lib/features/notificaties/notificaties_provider.dart": {
+    "mtime": 1780904384.7351606,
+    "ast_hash": "688e0ea0f9544fcbe2d3c266692d29ce",
+    "semantic_hash": ""
+  },
+  "lib/features/notificaties/notificaties_screen.dart": {
+    "mtime": 1786361577.5815241,
+    "ast_hash": "5af1bc58eb0caab9bd48c784716bd618",
+    "semantic_hash": ""
+  },
+  "lib/features/planning/les_detail_screen.dart": {
+    "mtime": 1786361577.582524,
+    "ast_hash": "c799e10c5b0a374eb26c468d33cc44c6",
+    "semantic_hash": ""
+  },
+  "lib/features/planning/planning_provider.dart": {
+    "mtime": 1785856859.1858118,
+    "ast_hash": "7fc8c6a5f9f11090bd1f15d909eb4368",
+    "semantic_hash": ""
+  },
+  "lib/features/planning/planning_screen.dart": {
+    "mtime": 1786361577.583524,
+    "ast_hash": "972721e5fce6a44eb7e3536e11cb885a",
+    "semantic_hash": ""
+  },
+  "lib/features/planning/widgets/lesson_status_badge.dart": {
+    "mtime": 1785856859.187817,
+    "ast_hash": "5323407879f4eeb8226facdf69babe55",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/app_instellingen_screen.dart": {
+    "mtime": 1786361577.5845246,
+    "ast_hash": "6cdc834c2b8f586c84ce696c165226ac",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/app_machtigingen_screen.dart": {
+    "mtime": 1786361577.5845246,
+    "ast_hash": "4bb695d658d1371c70d307af1a289948",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/beveiliging_screen.dart": {
+    "mtime": 1786361577.5855236,
+    "ast_hash": "8f7fbd40f0e8f1d15dca904dffea9df5",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/lespakket_detail_screen.dart": {
+    "mtime": 1786361577.5865235,
+    "ast_hash": "c47a5dc1691682747591c8bbac4b52de",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/mijn_rijschool_screen.dart": {
+    "mtime": 1786361577.5865235,
+    "ast_hash": "79f3691bcb8f29ab33b83a23e3d1e5e4",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/persoonlijke_gegevens_screen.dart": {
+    "mtime": 1786361577.5875242,
+    "ast_hash": "165db979a480637d1e962f9a167b2aa6",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/profiel_screen.dart": {
+    "mtime": 1787213060.538493,
+    "ast_hash": "7c35b0c37c157bee82ab135284deadd5",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/profielfoto_editor.dart": {
+    "mtime": 1785765819.7928932,
+    "ast_hash": "05befa92b61de649de109948909238a3",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/rijschool_provider.dart": {
+    "mtime": 1785769261.8228512,
+    "ast_hash": "04a9297ecb95af6f1fa30622ecf4edb9",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/widgets/profiel_menu_widgets.dart": {
+    "mtime": 1785856859.19333,
+    "ast_hash": "de617278947c107014fee696fb1cca9d",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/widgets/profile_info_row.dart": {
+    "mtime": 1785856859.1944666,
+    "ast_hash": "e23f3cd1de28091f002f8a2b169404a6",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/widgets/settings_action_row.dart": {
+    "mtime": 1785856859.1944666,
+    "ast_hash": "732ea612d300b5b543093dc2946ff0c2",
+    "semantic_hash": ""
+  },
+  "lib/features/splash/splash_screen.dart": {
+    "mtime": 1786361577.5885248,
+    "ast_hash": "ab7fd2ea5ecf48c3a6ce2dc4d0d83829",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/lespakket_detail_provider.dart": {
+    "mtime": 1785762164.194986,
+    "ast_hash": "acf4a6ddf25aa29d35a574a23fe1b8cc",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/lespakket_detail_screen.dart": {
+    "mtime": 1786361577.5895243,
+    "ast_hash": "94a4f4bf2eb176a24340138a1ecdfea7",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/lespakket_voortgang_provider.dart": {
+    "mtime": 1785857075.3757482,
+    "ast_hash": "821c89f8bf7f64538be1679ac849f98e",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/voortgang_provider.dart": {
+    "mtime": 1778068212.416898,
+    "ast_hash": "96b39995fd1a79e902f27459719ab74b",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/voortgang_screen.dart": {
+    "mtime": 1786361577.590524,
+    "ast_hash": "7579e1197bfebee85d2321357d6154fd",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/voortgang_trends_provider.dart": {
+    "mtime": 1785857075.3777478,
+    "ast_hash": "a7bc1bb38a9a4f7abfc0e173ae527acb",
+    "semantic_hash": ""
+  },
+  "lib/main.dart": {
+    "mtime": 1786361577.5915241,
+    "ast_hash": "4ad7fe13ed2a70e72b17b4878fb643f5",
+    "semantic_hash": ""
+  },
+  "lib/models/examen.dart": {
+    "mtime": 1780904384.7371578,
+    "ast_hash": "f901bb93f0ef7aa29c049214918b3b42",
+    "semantic_hash": ""
+  },
+  "lib/models/factuur.dart": {
+    "mtime": 1787046836.887601,
+    "ast_hash": "4c878800820ef96d51f2b83600a0145d",
+    "semantic_hash": ""
+  },
+  "lib/models/instructeur.dart": {
+    "mtime": 1785857075.378749,
+    "ast_hash": "928f194b655dc4181b8ef841199665d2",
+    "semantic_hash": ""
+  },
+  "lib/models/instructor_lesson_package.dart": {
+    "mtime": 1785761966.9310274,
+    "ast_hash": "5e9f787399cf4607bc89a1487d51452f",
+    "semantic_hash": ""
+  },
+  "lib/models/leerling_beschikbaarheid.dart": {
+    "mtime": 1778051088.1827645,
+    "ast_hash": "7da3b60f6fecc6fd627bbdfd68007080",
+    "semantic_hash": ""
+  },
+  "lib/models/leerling_notificatie_voorkeuren.dart": {
+    "mtime": 1785856859.1974633,
+    "ast_hash": "65ed0609d0b986206e402416fc2d3c84",
+    "semantic_hash": ""
+  },
+  "lib/models/leerling_profiel.dart": {
+    "mtime": 1785765753.5318267,
+    "ast_hash": "e883f69fc01543d8008a5fdff06c6518",
+    "semantic_hash": ""
+  },
+  "lib/models/les.dart": {
+    "mtime": 1785856859.1984632,
+    "ast_hash": "6ae3fbf0a331d23e1031d85c04e9ca66",
+    "semantic_hash": ""
+  },
+  "lib/models/les_evaluatie.dart": {
+    "mtime": 1781508267.5408893,
+    "ast_hash": "bbb1667a37551d0952fd5c05d87fcb4d",
+    "semantic_hash": ""
+  },
+  "lib/models/notificatie.dart": {
+    "mtime": 1778152156.7704842,
+    "ast_hash": "11c280fcb8a7533450b7a73d40f616c5",
+    "semantic_hash": ""
+  },
+  "lib/shared/providers/auth_provider.dart": {
+    "mtime": 1776842697.83884,
+    "ast_hash": "3f4e9ab5323794a4ef6ecdebf0a0a204",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/app_card.dart": {
+    "mtime": 1781156277.6274903,
+    "ast_hash": "f528dccb0c9e8a06b6ead52f30898bc8",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/app_logo.dart": {
+    "mtime": 1779349500.490494,
+    "ast_hash": "39627ae06d1ed44c4a8c41079173fcdb",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/coach_widgets.dart": {
+    "mtime": 1781156277.6289923,
+    "ast_hash": "eac2fc6e1a205e490e89e7170dfd6e21",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/home_header.dart": {
+    "mtime": 1786361577.5915241,
+    "ast_hash": "66e0eaa5da3a72ecc9d582911ee7f5bb",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/klantio_header.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "ad2527562e3e0dff2bd8f150910ada89",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/main_detail_header.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "8ba234e954b44fc889338b175e92936a",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/main_scaffold.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "321fb76a9bd8f5171760cbfb2b8134b4",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/main_tab_header.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "cef74617c0ed99f2e0bdc897d722cf73",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/snackbar.dart": {
+    "mtime": 1776842745.576232,
+    "ast_hash": "39471ceb7e8b12fef724a5a9680d94f9",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/status_pill.dart": {
+    "mtime": 1781509595.9975111,
+    "ast_hash": "2dd676ce1a5df94a1dbc32ac9711c0f6",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/student_profile_gate.dart": {
+    "mtime": 1779362123.9184766,
+    "ast_hash": "b68135804392ee889b434ec50c2a75c8",
+    "semantic_hash": ""
+  },
+  "test/beschikbaarheid_navigator_guard_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "d7b843595d5de0b809327999c4732330",
+    "semantic_hash": ""
+  },
+  "test/beschikbaarheid_tijdblok_formulier_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "21c8c7e8d4060fd239aa3c133e919f37",
+    "semantic_hash": ""
+  },
+  "test/beveiliging_screen_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "b8e7880e8b19c44c5b1ecf43360410c4",
+    "semantic_hash": ""
+  },
+  "test/contact_uri_test.dart": {
+    "mtime": 1785856859.2039733,
+    "ast_hash": "d88caea3743f0d461b814919275ec1b9",
+    "semantic_hash": ""
+  },
+  "test/core/utils/datum_utils_lesdatum_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "41b21729d26367d0dbb6f18e22904cad",
+    "semantic_hash": ""
+  },
+  "test/core/utils/komende_les_filter_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "87a4808e0ab4c555161db7cbe352be94",
+    "semantic_hash": ""
+  },
+  "test/core/utils/tijd_invoer_formatter_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "52f9b3d12342c7e0d4910b308dca6729",
+    "semantic_hash": ""
+  },
+  "test/features/lesvoorbereiding/lesvoorbereiding_screen_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "273951115edc01b23f9282702d3c21fd",
+    "semantic_hash": ""
+  },
+  "test/features/lesvoorbereiding/preparation_mapper_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "2dcb27c8d7a572dc66a92886f1838114",
+    "semantic_hash": ""
+  },
+  "test/home_screen_redesign_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "2d32dd129faedc3e9e005deda38fcc63",
+    "semantic_hash": ""
+  },
+  "test/klantio_header_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "87f0fa9fb574544d63154540e0c8d53a",
+    "semantic_hash": ""
+  },
+  "test/les_detail_volgorde_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "08e08181819229550b70e26678f2c8fa",
+    "semantic_hash": ""
+  },
+  "test/lesvoertuig_velden_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "21ccedaa47b61b4ce52b2e2bbfa6252d",
+    "semantic_hash": ""
+  },
+  "test/main_detail_header_test.dart": {
+    "mtime": 1787047427.7199233,
+    "ast_hash": "7be63e4d60aea5227bfaf46288a003b8",
+    "semantic_hash": ""
+  },
+  "test/models/factuur_test.dart": {
+    "mtime": 1787047296.721232,
+    "ast_hash": "cdcc1884daaab7ce90d924d240f7c124",
+    "semantic_hash": ""
+  },
+  "test/navbar_background_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "d76d5e70066478624300d54dc957c44e",
+    "semantic_hash": ""
+  },
+  "test/notificatie_instellingen_test.dart": {
+    "mtime": 1785856859.2049737,
+    "ast_hash": "dc184b7e17bbf4c6270c910ffe15a3c7",
+    "semantic_hash": ""
+  },
+  "test/ophaallocatie_kaart_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "bf8f68406cbf9edd4f6c9d8576b2576c",
+    "semantic_hash": ""
+  },
+  "test/planning_premium_sync_test.dart": {
+    "mtime": 1786361577.5925245,
+    "ast_hash": "57c95af5a0a7d8a7cbf6aad075cac9ec",
+    "semantic_hash": ""
+  },
+  "test/premium_bottom_nav_bar_test.dart": {
+    "mtime": 1785749016.8009512,
+    "ast_hash": "0a3618903f7af3ffcafbf0497cb0d036",
+    "semantic_hash": ""
+  },
+  "test/profile_ui_safe_phase_test.dart": {
+    "mtime": 1787213376.705904,
+    "ast_hash": "2be05ef4b4222e4f1551fdc75398f409",
+    "semantic_hash": ""
+  },
+  "test/voortgang_phase8c_ui_test.dart": {
+    "mtime": 1785856859.2064786,
+    "ast_hash": "75a90282963e44326bd40e01ff024307",
+    "semantic_hash": ""
+  },
+  "test/widget_test.dart": {
+    "mtime": 1776843284.030398,
+    "ast_hash": "3b3e37b05ade213065cbd804f266ae96",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1787204774.635999,
+    "ast_hash": "60cde2697d95b1c91ab77817714b108b",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1787204769.1275506,
+    "ast_hash": "9137ff61f4e4d319d6c791a50f592dd7",
+    "semantic_hash": ""
+  },
+  "LEERLINGEN_UI_REGELS.md": {
+    "mtime": 1779373333.266567,
+    "ast_hash": "61f377b9579a016ce1ccb7e910d1a316",
+    "semantic_hash": ""
+  },
+  "MOLLIE_PAYMENT_TROUBLESHOOT.md": {
+    "mtime": 1785749016.769356,
+    "ast_hash": "fa65823992d445f994e5490a96a386d3",
+    "semantic_hash": ""
+  },
+  "PRODUCT.md": {
+    "mtime": 1786361577.5315535,
+    "ast_hash": "a1a5923622e5b986452b7bac14e08e48",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1776842451.7539241,
+    "ast_hash": "e44454b78667e47a0aabe5c6ee889666",
+    "semantic_hash": ""
+  },
+  "analysis_options.yaml": {
+    "mtime": 1776842450.7956886,
+    "ast_hash": "9e65f4b9beebb674c0dc252f70a5c177",
+    "semantic_hash": ""
+  },
+  "devtools_options.yaml": {
+    "mtime": 1778051088.1786778,
+    "ast_hash": "1b16e156b9f8b9f43ca52a78a6f72e80",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_ARCHITECTUUR.md": {
+    "mtime": 1785760319.0633335,
+    "ast_hash": "5a7fd2b2946aeb23963933d4db8048e8",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_AUDIT.md": {
+    "mtime": 1785756328.3033104,
+    "ast_hash": "cdc17007d011274498c05f1cdde3bdb7",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_FASE4_ARCHITECTUURCONTROLE.md": {
+    "mtime": 1785763920.829086,
+    "ast_hash": "b7125e088e1f762b7ce26ac1db30b181",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_FASE5A_AVATAR_STORAGE_BEVEILIGING.md": {
+    "mtime": 1785768507.5836835,
+    "ast_hash": "b05c451ea78659cdd344fc0e98971a0e",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_FASE5_PERSOONLIJKE_GEGEVENS.md": {
+    "mtime": 1785766749.169438,
+    "ast_hash": "3d2d3f8837636f170d3e020957fb31a0",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_FASE6_MIJN_RIJSCHOOL.md": {
+    "mtime": 1785769601.5547981,
+    "ast_hash": "b37708e2977efb99d4878ffaf6698adf",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_STAP2_BEVEILIGING.md": {
+    "mtime": 1785759528.9010744,
+    "ast_hash": "27c8c2b0df30702fb00a584cce76aac4",
+    "semantic_hash": ""
+  },
+  "docs/VOORSTEL_PAKKET_SNAPSHOT_BACKFILL.md": {
+    "mtime": 1785764962.3698618,
+    "ast_hash": "de8b21dd6e6e1a340f74417c331972db",
+    "semantic_hash": ""
+  },
+  "docs/lesson_vehicle_architecture_review.md": {
+    "mtime": 1786361577.547265,
+    "ast_hash": "be503bcb05fe5344fcab5a87f6cc68bb",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-06-08-leerling-app-redesign.md": {
+    "mtime": 1780984273.9765594,
+    "ast_hash": "94cb1aecdcf073e4f5cd8b2acac3d4b2",
+    "semantic_hash": ""
+  },
+  "pubspec.yaml": {
+    "mtime": 1787046745.099896,
+    "ast_hash": "e8d191c68aa031359a8c711e65950187",
+    "semantic_hash": ""
   }
 }

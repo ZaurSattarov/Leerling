@@ -64,3 +64,9 @@ graphify-out/.graphify_root
 # Lokale back-upbestanden (nooit in Git)
 *.bak
 *.bak-*
+
+# Cursor: track project rules, ignore local cache
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
+

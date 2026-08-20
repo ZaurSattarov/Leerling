@@ -13,6 +13,7 @@ import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_tab_header.dart';
 import '../../shared/widgets/snackbar.dart';
+import 'profile_hero_copy.dart';
 import 'profielfoto_editor.dart';
 import 'rijschool_provider.dart';
 import 'widgets/profiel_menu_widgets.dart';
@@ -127,6 +128,26 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
     if (mounted) context.go('/login');
   }
 
+  Future<void> _toonAccountVerwijderenGap() async {
+    if (!mounted) return;
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Nog niet beschikbaar'),
+        content: const Text(
+          'Er is nog geen veilige leerling-accountverwijderflow. '
+          'Neem contact op met support. We verwijderen geen school- of instructeurdata vanuit deze app.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Sluiten'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _toonOverDeApp() {
     showDialog<void>(
       context: context,
@@ -168,7 +189,10 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          _ProfielIdentiteitskaart(profiel: p),
+          _ProfielIdentiteitskaart(
+            profiel: p,
+            instructeur: instructeurAsync.valueOrNull,
+          ),
           const SizedBox(height: _ProfileDesign.sectionGap),
 
           // ── PERSOONLIJKE GEGEVENS ─────────────────────────────────────────
@@ -305,7 +329,17 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
                 subtitle: 'Meldingen, machtigingen en beveiliging',
                 onTap: () => context.push('/profiel/app-instellingen'),
               ),
-              const Divider(height: 1, indent: 62),
+            ]),
+          ),
+          const SizedBox(height: _ProfileDesign.sectionGap),
+
+          const Padding(
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
+            child: Text('PRIVACY', style: sectionStyle),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: ProfielMenuCard(children: [
               ProfielMenuTile(
                 icon: Icons.privacy_tip_outlined,
                 label: 'Privacy',
@@ -346,10 +380,20 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: _DangerRow(
-              icon: Icons.logout_rounded,
-              label: 'Uitloggen',
-              onTap: _uitloggen,
+            child: Column(
+              children: [
+                _DangerRow(
+                  icon: Icons.logout_rounded,
+                  label: 'Uitloggen',
+                  onTap: _uitloggen,
+                ),
+                const SizedBox(height: 14),
+                _DangerRow(
+                  icon: Icons.delete_forever_rounded,
+                  label: 'Account verwijderen',
+                  onTap: _toonAccountVerwijderenGap,
+                ),
+              ],
             ),
           ),
 
@@ -382,14 +426,20 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
 
 class _ProfielIdentiteitskaart extends StatelessWidget {
   final LeerlingProfiel? profiel;
+  final Instructeur? instructeur;
 
-  const _ProfielIdentiteitskaart({required this.profiel});
+  const _ProfielIdentiteitskaart({
+    required this.profiel,
+    required this.instructeur,
+  });
 
   @override
   Widget build(BuildContext context) {
     final p = profiel;
-    final naam = p?.volledigeNaam ?? 'Mijn profiel';
-    final plaats = p?.email ?? '';
+    final copy = buildLearnerProfileHeroCopy(
+      profiel: p,
+      instructeur: instructeur,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -400,82 +450,62 @@ class _ProfielIdentiteitskaart extends StatelessWidget {
             horizontal: _ProfileDesign.horizontalPadding,
           ),
           child: Container(
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
             decoration: BoxDecoration(
               color: _ProfileDesign.card,
               borderRadius: BorderRadius.circular(_ProfileDesign.cardRadius),
               border: Border.all(color: AppColors.border),
             ),
-            child: Column(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    EditableProfielAvatar(profiel: p),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
+                EditableProfielAvatar(profiel: p),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            naam,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: _ProfileDesign.text,
-                              fontSize: 21,
-                              height: 1.16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: -0.5,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          if (p != null)
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                _StatusBadge(status: p.status),
-                                const SizedBox(width: 6),
-                                _PakketChip(pakket: p.pakket),
-                              ],
-                            ),
-                          if (plaats.isNotEmpty) ...[
-                            const SizedBox(height: 6),
-                            Text(
-                              plaats,
-                              maxLines: 1,
+                          Expanded(
+                            child: Text(
+                              copy.primaryTitle,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                color: _ProfileDesign.secondary,
-                                fontSize: 14,
-                                height: 1.3,
-                                fontWeight: FontWeight.w500,
+                                color: _ProfileDesign.text,
+                                fontSize: 18,
+                                height: 1.2,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: -0.35,
                               ),
                             ),
-                          ],
+                          ),
+                          const SizedBox(width: 8),
+                          _HeroStatusBadge(
+                            label: copy.statusLabel,
+                            tone: copy.statusTone,
+                          ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                if (p != null) ...[
-                  const SizedBox(height: 18),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      if (p.telefoon?.isNotEmpty == true)
-                        _DarkInfoChip(
-                          icon: Icons.phone_rounded,
-                          label: p.telefoon!,
+                      if (copy.schoolLine != null) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          copy.schoolLine!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: _ProfileDesign.secondary,
+                            fontSize: 13,
+                            height: 1.3,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      _DarkInfoChip(
-                        icon: Icons.school_rounded,
-                        label: '${p.lessenGevolgd}/${p.lessenTotaal} lessen',
-                      ),
+                      ],
                     ],
                   ),
-                ],
+                ),
               ],
             ),
           ),
@@ -485,121 +515,39 @@ class _ProfielIdentiteitskaart extends StatelessWidget {
   }
 }
 
-class _StatusBadge extends StatelessWidget {
-  final LeerlingStatus status;
-  const _StatusBadge({required this.status});
+class _HeroStatusBadge extends StatelessWidget {
+  final String label;
+  final LearnerHeroBadgeTone tone;
+
+  const _HeroStatusBadge({
+    required this.label,
+    required this.tone,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final (label, bgColor, textColor) = switch (status) {
-      LeerlingStatus.actief => (
-          'ACTIEF',
-          AppColors.success,
-          Colors.white,
-        ),
-      LeerlingStatus.geslaagd => (
-          'GESLAAGD',
-          AppColors.primary,
-          Colors.white,
-        ),
-      LeerlingStatus.wachtlijst => (
-          'WACHTLIJST',
-          AppColors.warningSolid,
-          Colors.white,
-        ),
-      LeerlingStatus.gestopt => (
-          'GESTOPT',
-          _ProfileDesign.card,
-          _ProfileDesign.muted,
-        ),
+    final background = switch (tone) {
+      LearnerHeroBadgeTone.success => AppColors.success,
+      LearnerHeroBadgeTone.ink => AppColors.accent,
+      LearnerHeroBadgeTone.warning => AppColors.warningSolid,
     };
 
     return Container(
-      height: 24,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
       decoration: BoxDecoration(
-        color: bgColor,
+        color: background,
         borderRadius: BorderRadius.circular(999),
-        border: status == LeerlingStatus.gestopt
-            ? Border.all(color: _ProfileDesign.hairline)
-            : null,
       ),
-      alignment: Alignment.center,
       child: Text(
         label,
-        style: TextStyle(
-          fontSize: 10,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 11,
           fontWeight: FontWeight.w600,
-          letterSpacing: 0.4,
-          color: textColor,
+          height: 1.15,
         ),
-      ),
-    );
-  }
-}
-
-class _PakketChip extends StatelessWidget {
-  final PakketType pakket;
-  const _PakketChip({required this.pakket});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(8, 4, 9, 4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: const Color(0xFFE2E2E7)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.inventory_2_rounded,
-              size: 12, color: AppColors.iconPrimary),
-          const SizedBox(width: 4),
-          Text(
-            pakket.label,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 10.5,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DarkInfoChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _DarkInfoChip({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(8, 6, 11, 6),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF4F5F7),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: _ProfileDesign.hairline),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: AppColors.iconPrimary, size: 12),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 11.5,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
       ),
     );
   }

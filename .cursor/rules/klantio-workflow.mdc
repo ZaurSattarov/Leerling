@@ -1,0 +1,41 @@
+---
+description: Klantio mandatory architecture and development preflight
+alwaysApply: true
+---
+
+# Klantio Mandatory Preflight
+
+Before every programming task, before modifying source code:
+
+1. Read canonical Klantio architecture from Obsidian/Klantio-Knowledge (not the whole vault):
+   - `00 - KLANTIO/Product Architectuur/Solo & Team - Canonical Architectuur.md` (leading)
+   - `01 - ARCHITECTUUR/Solo-vs-Team.md`
+   - `01 - ARCHITECTUUR/Productarchitectuur.md`
+
+2. Determine independently: SCOPE = SOLO | TEAM | BEIDE
+
+3. Verify where relevant: `product_mode`, `instructeur_id`, `school_id`, assignments (`leerlingen.instructeur_id` + `leerlingen.school_id`), effective permissions, RLS.
+
+4. General Klantio functionality defaults to BEIDE.
+
+5. Never expose cross-school data.
+
+6. Solo must not receive unnecessary Team UI.
+
+7. `product_mode` is never inferred from subscription plan.
+
+8. Commercial/trial context is loaded only when relevant.
+
+9. Do not ask the user Solo/Team scope when architecture already determines it.
+
+10. On conflict between Obsidian, DB/RLS and code: STOP and report ARCHITECTUURCONFLICT.
+
+11. Follow this repository: Graphify `graphify-leerling`, Skill Router in `CLAUDE.md`. Canonical migrations live in the Instructor repo.
+
+12. Show compact `KLANTIO PREFLIGHT` (Scope / Data scope / Cross-project impact / Obsidian).
+
+13. No code modifications before this preflight.
+
+## Security
+
+Never store secrets in rules, Obsidian, CLAUDE.md, docs, or git.

@@ -118,11 +118,18 @@ void main() {
   });
 
   test('Wachtwoordreset heeft loading succes en foutstatus', () {
+    final source = read('lib/features/profiel/beveiliging_screen.dart');
+    expect(source, contains('_resetLaden'));
+    expect(source, contains('De resetlink is verstuurd'));
+    expect(source, contains('Het versturen van de resetlink is mislukt'));
+  });
+
+  test('Profiel heeft aparte PRIVACY-sectie en account-delete GAP', () {
     final source = read('lib/features/profiel/profiel_screen.dart');
-    expect(source, contains('_wachtwoordResetLaden'));
-    expect(source, contains('Resetmail wordt verstuurd'));
-    expect(source, contains('E-mail met resetlink verstuurd'));
-    expect(source, contains('Versturen mislukt. Probeer opnieuw.'));
+    expect(source, contains("Text('PRIVACY'"));
+    expect(source, contains('Account verwijderen'));
+    expect(source, contains('_toonAccountVerwijderenGap'));
+    expect(source, contains('geen veilige leerling-accountverwijderflow'));
   });
 
   test('Juridische routes openen in-app pagina met conceptcontent', () {

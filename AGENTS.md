@@ -1,3 +1,27 @@
+# Klantio Agent Instructions
+
+Before making code changes:
+
+1. Read this file and `CLAUDE.md` (Graphify `graphify-leerling`, skills).
+2. Read mandatory Klantio-Knowledge (not the whole vault):
+   - `00 - KLANTIO/Product Architectuur/Solo & Team - Canonical Architectuur.md` (leading)
+   - `01 - ARCHITECTUUR/Solo-vs-Team.md`
+   - `01 - ARCHITECTUUR/Productarchitectuur.md`
+3. Determine SOLO / TEAM / BEIDE. General Klantio features default to BEIDE, with correct per-mode data/permission scoping.
+4. Determine data scope: `product_mode`, `instructeur_id`, `school_id`, assignments, effective permissions, RLS. `product_mode` is never inferred from subscription plan.
+5. Classify cross-project impact: GEEN / MOGELIJK / BEVESTIGD. Do not ask the user when architecture already determines scope.
+6. Follow Graphify/skills workflows in this file and `CLAUDE.md`.
+7. Show compact `KLANTIO PREFLIGHT`.
+8. Only then modify code.
+
+If Obsidian, database/RLS and code conflict: STOP and report ARCHITECTUURCONFLICT.
+
+Canonical migrations live in the Instructor repo.
+
+Flutter root: `C:\PROJECTS\Leerling`.
+
+---
+
 # Project Richtlijn Voor Codex — Leerling App
 
 Werk standaard in: `C:\Users\zaurs\Documents\ZaurProject\Leerling`
