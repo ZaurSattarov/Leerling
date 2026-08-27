@@ -71,10 +71,21 @@ class Notificatie {
       'lesson_changed' =>
         '/planning',
       'voorbereiding' => '/lesvoorbereiding',
-      'feedback' || 'lesson_feedback' => '/les-logboek',
-      'factuur' || 'invoice_created' || 'invoice_paid' => '/facturen',
+      // 'les_feedback' is de legacy-alias die rpc_les_afronden tot de
+      // contractmigratie van 2026-08-28 schreef; historische rijen moeten hun
+      // deeplink houden. Canonical is 'lesson_feedback'.
+      'feedback' || 'les_feedback' || 'lesson_feedback' => '/les-logboek',
+      // Idem: 'factuur' en 'betalingsherinnering' zijn legacy-aliassen van
+      // het canonical 'invoice_reminder'.
+      'factuur' ||
+      'betalingsherinnering' ||
+      'invoice_reminder' ||
+      'invoice_created' ||
+      'invoice_paid' =>
+        '/facturen',
       'package_almost_empty' => '/voortgang/lespakket',
       'voortgang' || 'examenadvies' => '/examenadvies',
+      'admin_message' => '/notificaties',
       _ => '/home',
     };
   }
