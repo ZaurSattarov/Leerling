@@ -2,12 +2,14 @@ import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import 'ios_native_navigation_host.dart';
 
-class MainScaffold extends StatelessWidget {
+class MainScaffold extends ConsumerWidget {
   final Widget child;
   const MainScaffold({super.key, required this.child});
 
@@ -17,30 +19,35 @@ class MainScaffold extends StatelessWidget {
       icon: Icons.home_outlined,
       activeIcon: Icons.home_rounded,
       route: '/home',
+      sfSymbol: 'house.fill',
     ),
     NavBarItem(
       label: 'Planning',
       icon: Icons.calendar_today_outlined,
       activeIcon: Icons.calendar_today_rounded,
       route: '/planning',
+      sfSymbol: 'calendar',
     ),
     NavBarItem(
       label: 'Voortgang',
       icon: Icons.bar_chart_outlined,
       activeIcon: Icons.bar_chart_rounded,
       route: '/voortgang',
+      sfSymbol: 'chart.bar.fill',
     ),
     NavBarItem(
       label: 'Facturen',
       icon: Icons.receipt_long_outlined,
       activeIcon: Icons.receipt_long_rounded,
       route: '/facturen',
+      sfSymbol: 'doc.text.fill',
     ),
     NavBarItem(
       label: 'Profiel',
       icon: Icons.person_outline_rounded,
       activeIcon: Icons.person_rounded,
       route: '/profiel',
+      sfSymbol: 'person.crop.circle.fill',
     ),
   ];
 
@@ -53,9 +60,11 @@ class MainScaffold extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final location = GoRouterState.of(context).matchedLocation;
     final activeIndex = _activeIndex(location);
+
+    void onItemTap(int index) => context.go(_items[index].route);
 
     // Zie toelichting bij `bottomNavigationBar` hieronder.
     final systeemInsetOnder = MediaQuery.paddingOf(context).bottom;
@@ -88,12 +97,17 @@ class MainScaffold extends StatelessWidget {
       // toestel geschaalde marge: de helft van het systeem-inset, met een
       // ondergrens van 12px voor toestellen zonder eigen inset (iPhone SE,
       // oudere Android) -- 1-op-1 overgenomen uit de Instructeur-app.
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.fromLTRB(20, 10, 20, navBarOnderMarge),
-        child: PremiumBottomNavBar(
-          activeIndex: activeIndex,
-          items: _items,
-          onItemTap: (i) => context.go(_items[i].route),
+      bottomNavigationBar: IosNativeNavigationHost(
+        activeIndex: activeIndex,
+        items: _items,
+        onItemTap: onItemTap,
+        fallback: Padding(
+          padding: EdgeInsets.fromLTRB(20, _kBarTopPadding, 20, navBarOnderMarge),
+          child: PremiumBottomNavBar(
+            activeIndex: activeIndex,
+            items: _items,
+            onItemTap: onItemTap,
+          ),
         ),
       ),
     );
@@ -112,6 +126,7 @@ const double _kBarHeight = 56;
 // van de gevraagde 6-8px-bandbreedte -- 1-op-1 overgenomen uit de
 // Instructeur-app.
 const double _kBarLiftPixels = 7;
+const double _kBarTopPadding = 10;
 const double _kIconSize = 22;
 const double _kIconLabelGap = 3;
 const double _kLabelFontSize = 10;
@@ -319,11 +334,13 @@ class NavBarItem {
   final IconData icon;
   final IconData activeIcon;
   final String route;
+  final String sfSymbol;
 
   const NavBarItem({
     required this.label,
     required this.icon,
     required this.activeIcon,
     required this.route,
+    this.sfSymbol = 'circle.fill',
   });
 }

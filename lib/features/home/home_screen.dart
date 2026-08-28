@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/nav_shell_tokens.dart';
+import '../../core/services/push_service.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/leerling_profiel.dart';
 import '../../models/les.dart';
@@ -14,11 +15,25 @@ import '../lesvoorbereiding/lesvoorbereiding_provider.dart';
 import 'home_coach_provider.dart';
 import 'home_provider.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Push-tap kan vuren vóór home zichtbaar is; retry zodra home mount.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      PushService.onAppResumed();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final profielAsync = ref.watch(mijnProfielProvider);
     final homeAsync = ref.watch(homeProvider);
     final homeCoachAsync = ref.watch(homeCoachProvider);

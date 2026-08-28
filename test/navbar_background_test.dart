@@ -10,6 +10,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -63,7 +64,11 @@ void main() {
         'onder de zwevende navbar doorloopt', (tester) async {
       GoogleFonts.config.allowRuntimeFetching = false;
       final router = _bouwShellRouter();
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
       await tester.pumpAndSettle();
 
       final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
@@ -75,7 +80,11 @@ void main() {
         'doorschijnen', (tester) async {
       GoogleFonts.config.allowRuntimeFetching = false;
       final router = _bouwShellRouter();
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
       await tester.pumpAndSettle();
 
       // De directe Padding-ouder van PremiumBottomNavBar mag geen
@@ -117,7 +126,11 @@ void main() {
         'achtergrondkleur toe', (tester) async {
       GoogleFonts.config.allowRuntimeFetching = false;
       final router = _bouwShellRouter();
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
       await tester.pumpAndSettle();
 
       // MainScaffold gebruikt bewust GEEN SafeArea rond de navbar (zie
@@ -141,7 +154,11 @@ void main() {
         '(laatste regel niet permanent achter de capsule)', (tester) async {
       GoogleFonts.config.allowRuntimeFetching = false;
       final router = _bouwShellRouter();
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
       await tester.pumpAndSettle();
 
       await tester.dragUntilVisible(
@@ -183,7 +200,11 @@ void main() {
         '/profiel',
       ]) {
         router.go(route);
-        await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+        await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
         await tester.pumpAndSettle();
         final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
         expect(scaffold.extendBody, isTrue, reason: 'route $route');
@@ -204,8 +225,8 @@ void main() {
 
     test('de wrapper rond bottomNavigationBar bevat geen eigen '
         'achtergrondkleur (geen Container/color/ColoredBox tussen '
-        'bottomNavigationBar en PremiumBottomNavBar)', () {
-      final start = bron.indexOf('bottomNavigationBar: Padding(');
+        'IosNativeNavigationHost.fallback en PremiumBottomNavBar)', () {
+      final start = bron.indexOf('fallback: Padding(');
       final eind = bron.indexOf('PremiumBottomNavBar(', start);
       expect(start, greaterThan(-1));
       expect(eind, greaterThan(start));
@@ -218,7 +239,7 @@ void main() {
 
     test('geen donkere/zwarte achtergrondkleur toegevoegd rond de '
         'bottomNavigationBar-zone', () {
-      final start = bron.indexOf('bottomNavigationBar: Padding(');
+      final start = bron.indexOf('bottomNavigationBar: IosNativeNavigationHost(');
       final eindeMethod =
           bron.indexOf('\n}', start) == -1 ? bron.length : bron.indexOf('\n}', start);
       final zone = bron.substring(start, eindeMethod);

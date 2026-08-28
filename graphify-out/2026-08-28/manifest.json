@@ -312,9 +312,9 @@
     "semantic_hash": ""
   },
   "lib/features/notificaties/notificatie_instellingen_screen.dart": {
-    "mtime": 1787943889.0,
-    "seen": 1787943911.22463,
-    "ast_hash": "fb638d30944c5a5624142e2ff417dd78",
+    "mtime": 1787941356.0,
+    "seen": 1787941565.089001,
+    "ast_hash": "dad279efa01bfe4027596722915852b9",
     "semantic_hash": ""
   },
   "lib/features/notificaties/notificaties_provider.dart": {
@@ -354,9 +354,9 @@
     "semantic_hash": ""
   },
   "lib/features/profiel/app_instellingen_screen.dart": {
-    "mtime": 1787943879.0,
-    "seen": 1787943911.224731,
-    "ast_hash": "87b7230409e3a40286eae53a6397236a",
+    "mtime": 1787604787.0,
+    "seen": 1787788404.983614,
+    "ast_hash": "3fcdcdde9820986475f5e5788c7b928b",
     "semantic_hash": ""
   },
   "lib/features/profiel/app_machtigingen_screen.dart": {
@@ -390,9 +390,9 @@
     "semantic_hash": ""
   },
   "lib/features/profiel/profiel_screen.dart": {
-    "mtime": 1787943878.0,
-    "seen": 1787943911.2248142,
-    "ast_hash": "21d5a7a9dda60a39e583504cd5463d33",
+    "mtime": 1787604787.0,
+    "seen": 1787788404.983616,
+    "ast_hash": "a29beba8e83fbccf64cc2a18f72c5d00",
     "semantic_hash": ""
   },
   "lib/features/profiel/profielfoto_editor.dart": {
@@ -702,9 +702,9 @@
     "semantic_hash": ""
   },
   "test/notificatie_instellingen_test.dart": {
-    "mtime": 1787943892.0,
-    "seen": 1787943911.225646,
-    "ast_hash": "b7456e834d5bdc054f7309e13c3fbb1f",
+    "mtime": 1787941452.0,
+    "seen": 1787941565.090345,
+    "ast_hash": "df087c2f51eddd81d9951973711bea38",
     "semantic_hash": ""
   },
   "test/ophaallocatie_kaart_test.dart": {
@@ -915,18 +915,6 @@
     "mtime": 1787936199.0,
     "seen": 1787939965.892624,
     "ast_hash": "ace798271557ca54fd99a978197be6fc",
-    "semantic_hash": ""
-  },
-  "lib/features/notificaties/leerling_notification_preference_registry.dart": {
-    "mtime": 1787943878.0,
-    "seen": 1787943911.224611,
-    "ast_hash": "6677d123b70ab22bb36b5136e601aef5",
-    "semantic_hash": ""
-  },
-  "test/leerling_notification_preference_registry_test.dart": {
-    "mtime": 1787943891.0,
-    "seen": 1787943911.2255812,
-    "ast_hash": "58e4aefa36265b3254dd5d7af0c5ed89",
     "semantic_hash": ""
   }
 }
