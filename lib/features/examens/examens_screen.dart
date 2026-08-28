@@ -7,12 +7,44 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'examens_provider.dart';
 
-class ExamensScreen extends ConsumerWidget {
-  const ExamensScreen({super.key});
+class ExamensScreen extends ConsumerStatefulWidget {
+  final String? highlightExamId;
+
+  const ExamensScreen({super.key, this.highlightExamId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ExamensScreen> createState() => _ExamensScreenState();
+}
+
+class _ExamensScreenState extends ConsumerState<ExamensScreen> {
+  final _cardKeys = <String, GlobalKey>{};
+  var _didScrollToHighlight = false;
+
+  GlobalKey _keyForExamen(String examenId) =>
+      _cardKeys.putIfAbsent(examenId, GlobalKey.new);
+
+  void _scrollToHighlight(List<Examen> examens) {
+    final targetId = widget.highlightExamId?.trim();
+    if (targetId == null || targetId.isEmpty || _didScrollToHighlight) return;
+    if (!examens.any((e) => e.id == targetId)) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final cardContext = _cardKeys[targetId]?.currentContext;
+      if (cardContext == null) return;
+      Scrollable.ensureVisible(
+        cardContext,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOut,
+        alignment: 0.15,
+      );
+      _didScrollToHighlight = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final examensAsync = ref.watch(examensProvider);
+    final highlightId = widget.highlightExamId?.trim();
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -29,6 +61,10 @@ class ExamensScreen extends ConsumerWidget {
                 slivers: [
                   examensAsync.when(
                     data: (examens) {
+                      if (highlightId != null && highlightId.isNotEmpty) {
+                        _scrollToHighlight(examens);
+                      }
+
                       if (examens.isEmpty) {
                         return const SliverFillRemaining(
                           child: EmptyState(
@@ -57,7 +93,11 @@ class ExamensScreen extends ConsumerWidget {
                               ...gepland.map(
                                 (examen) => Padding(
                                   padding: const EdgeInsets.only(bottom: 10),
-                                  child: _ExamenCard(examen: examen),
+                                  child: _ExamenCard(
+                                    key: _keyForExamen(examen.id),
+                                    examen: examen,
+                                    highlighted: examen.id == highlightId,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 20),
@@ -68,7 +108,11 @@ class ExamensScreen extends ConsumerWidget {
                               ...afgerond.map(
                                 (examen) => Padding(
                                   padding: const EdgeInsets.only(bottom: 10),
-                                  child: _ExamenCard(examen: examen),
+                                  child: _ExamenCard(
+                                    key: _keyForExamen(examen.id),
+                                    examen: examen,
+                                    highlighted: examen.id == highlightId,
+                                  ),
                                 ),
                               ),
                             ],
@@ -109,8 +153,13 @@ class ExamensScreen extends ConsumerWidget {
 
 class _ExamenCard extends StatelessWidget {
   final Examen examen;
+  final bool highlighted;
 
-  const _ExamenCard({required this.examen});
+  const _ExamenCard({
+    super.key,
+    required this.examen,
+    this.highlighted = false,
+  });
 
   Color get _statusColor {
     switch (examen.status) {
@@ -136,7 +185,14 @@ class _ExamenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    return Container(
+      decoration: highlighted
+          ? BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.primary, width: 2),
+            )
+          : null,
+      child: AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -234,6 +290,7 @@ class _ExamenCard extends StatelessWidget {
             ),
           ],
         ],
+      ),
       ),
     );
   }

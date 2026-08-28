@@ -54,7 +54,16 @@ class _AuthNotifier extends ChangeNotifier {
   _AuthNotifier() {
     _sub = Supabase.instance.client.auth.onAuthStateChange.listen((data) {
       _event = data.event;
-      if (data.event == AuthChangeEvent.signedIn) {
+      // `signedIn` vuurt NIET bij het herstellen van een bestaande sessie op
+      // een koude start — dat is `initialSession`. Zonder die tak hangt de
+      // pushregistratie voor een AL ingelogde gebruiker volledig af van de
+      // post-frame-callback in main.dart, en die raced met het herstellen van
+      // de sessie. Zelfde structurele gat als in de Instructeur-app (Klantio
+      // iOS push-audit 2026-08-27). requestPermissionAndRegister is
+      // idempotent, dus de mogelijke dubbele aanroep is veilig.
+      if (data.event == AuthChangeEvent.signedIn ||
+          (data.event == AuthChangeEvent.initialSession &&
+              data.session?.user != null)) {
         PushService.requestPermissionAndRegister();
       }
       notifyListeners();
@@ -227,8 +236,10 @@ final _routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/examens',
-        builder: (_, __) => const StudentProfileGate(
-          child: ExamensScreen(),
+        builder: (_, state) => StudentProfileGate(
+          child: ExamensScreen(
+            highlightExamId: state.uri.queryParameters['exam'],
+          ),
         ),
       ),
       GoRoute(
