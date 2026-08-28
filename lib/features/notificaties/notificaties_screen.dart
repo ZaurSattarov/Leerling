@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/services/leerling_notificatie_router.dart';
 import '../../core/services/student_service.dart';
 import '../../models/notificatie.dart';
 import '../../shared/providers/auth_provider.dart';
@@ -172,6 +172,7 @@ class _NotificatieCard extends ConsumerWidget {
       case 'les_reminder':
       case 'lesson_planned':
       case 'lesson_changed':
+      case 'lesson_cancelled':
         return Icons.directions_car_rounded;
       case 'voorbereiding':
         return Icons.task_alt_rounded;
@@ -184,6 +185,10 @@ class _NotificatieCard extends ConsumerWidget {
         return Icons.receipt_long_rounded;
       case 'package_almost_empty':
         return Icons.inventory_2_rounded;
+      case 'exam_scheduled':
+        return Icons.event_rounded;
+      case 'exam_result':
+        return Icons.emoji_events_rounded;
       case 'voortgang':
       case 'examenadvies':
         return Icons.bar_chart_rounded;
@@ -198,6 +203,7 @@ class _NotificatieCard extends ConsumerWidget {
       case 'les_reminder':
       case 'lesson_planned':
       case 'lesson_changed':
+      case 'lesson_cancelled':
         return AppColors.infoSolid;
       case 'voorbereiding':
         return AppColors.dark3;
@@ -209,6 +215,10 @@ class _NotificatieCard extends ConsumerWidget {
       case 'invoice_created':
       case 'package_almost_empty':
         return AppColors.primary;
+      case 'exam_scheduled':
+        return const Color(0xFF5645D4);
+      case 'exam_result':
+        return AppColors.successSolid;
       case 'voortgang':
       case 'examenadvies':
         return AppColors.successSolid;
@@ -230,7 +240,9 @@ class _NotificatieCard extends ConsumerWidget {
             ref.invalidate(notificatiesProvider);
           }
         }
-        if (context.mounted) context.go(notificatie.targetRoute);
+        if (context.mounted) {
+          await openLeerlingNotificatie(notificatie, context: context);
+        }
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

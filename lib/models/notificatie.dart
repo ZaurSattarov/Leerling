@@ -32,6 +32,23 @@ class Notificatie {
   bool get isMock => id.startsWith('mock-');
   String? get tekst => bericht ?? omschrijving;
 
+  /// Valideert een ruwe push-route (canonical FCM `target_route` veld).
+  static String sanitizePushRoute(String route, String type) {
+    return _veiligeRoute(route, type);
+  }
+
+  /// Minimale notificatie uit FCM data-payload (fallback wanneer DB-fetch
+  /// faalt of nog niet klaar is). Route wordt via [_veiligeRoute] gevalideerd.
+  factory Notificatie.fromPushData(Map<String, dynamic> data) {
+    final type = (data['type'] as String?) ?? 'systeem';
+    final rawRoute = (data['target_route'] as String?) ?? '';
+    return Notificatie.fromJson({
+      'id': data['notification_id'],
+      'type': type,
+      'target_route': rawRoute.isNotEmpty ? rawRoute : routeVoorType(type),
+    });
+  }
+
   factory Notificatie.fromJson(Map<String, dynamic> json) {
     final type = (json['type'] as String?) ?? 'systeem';
     final bericht = (json['body'] as String?) ??

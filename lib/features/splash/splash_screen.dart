@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/services/push_service.dart';
 import '../../core/services/student_service.dart';
 import '../../models/leerling_profiel.dart';
 
@@ -86,6 +87,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     final profiel = await _laadProfiel();
     if (!mounted) return;
+
+    PushService.markRouterReady();
+    final deeplinkUitgevoerd = await PushService.flushPendingNavigation();
+    if (!mounted) return;
+    if (deeplinkUitgevoerd) return;
 
     context.go(profiel != null ? '/home' : '/koppelcode');
   }

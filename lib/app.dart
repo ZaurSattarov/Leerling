@@ -50,6 +50,10 @@ import 'shared/widgets/student_profile_gate.dart';
 // hebben. Dit bestond nog niet in deze app (anders dan de Instructeur-app).
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
+/// Centrale GoRouter-referentie voor push-deeplinks (zelfde patroon als
+/// factuur deep link via ref.read(_routerProvider).push in _LeerlingAppState).
+GoRouter? globalLeerlingGoRouter;
+
 class _AuthNotifier extends ChangeNotifier {
   _AuthNotifier() {
     _sub = Supabase.instance.client.auth.onAuthStateChange.listen((data) {
@@ -65,6 +69,9 @@ class _AuthNotifier extends ChangeNotifier {
           (data.event == AuthChangeEvent.initialSession &&
               data.session?.user != null)) {
         PushService.requestPermissionAndRegister();
+        // Sessie hersteld: pending push-tap opnieuw proberen (cold-start race).
+        unawaited(PushService.flushPendingNavigation());
+        PushService.schedulePendingFlush();
       }
       notifyListeners();
     });
@@ -85,7 +92,7 @@ final _routerProvider = Provider<GoRouter>((ref) {
   final authNotifier = _AuthNotifier();
   ref.onDispose(authNotifier.dispose);
 
-  return GoRouter(
+  final router = GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: '/splash',
     refreshListenable: authNotifier,
@@ -329,6 +336,13 @@ final _routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
   );
+  globalLeerlingGoRouter = router;
+  ref.onDispose(() {
+    if (globalLeerlingGoRouter == router) {
+      globalLeerlingGoRouter = null;
+    }
+  });
+  return router;
 });
 
 class LeerlingApp extends ConsumerStatefulWidget {
@@ -338,7 +352,8 @@ class LeerlingApp extends ConsumerStatefulWidget {
   ConsumerState<LeerlingApp> createState() => _LeerlingAppState();
 }
 
-class _LeerlingAppState extends ConsumerState<LeerlingApp> {
+class _LeerlingAppState extends ConsumerState<LeerlingApp>
+    with WidgetsBindingObserver {
   // Mollie-factuurbetaling: return-pagina opent
   // leerlingplanner://factuur?id=<factuurId>. Zelfde, bewust hergebruikte
   // patroon als de Instructeur-app (rijschool-planner-flutter/lib/app.dart
@@ -353,7 +368,15 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initDeepLinks();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      PushService.onAppResumed();
+    }
   }
 
   Future<void> _initDeepLinks() async {
@@ -393,6 +416,7 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _linkSubscription?.cancel();
     super.dispose();
   }

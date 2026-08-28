@@ -34,6 +34,7 @@ void main() {
     // app.dart's _AuthNotifier), niet bij eerste frame.
     try {
       await Firebase.initializeApp();
+      await PushService.ensureInitialized();
     } catch (e) {
       debugPrint('[main] Firebase.initializeApp fout: $e');
     }
@@ -44,14 +45,11 @@ void main() {
       ),
     );
 
-    // Cold start: pas ná de eerste frame + router-opbouw (voorkomt de
-    // race conditie waarbij de gebruiker alleen Home ziet).
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      PushService.ensureInitialized();
       if (Supabase.instance.client.auth.currentUser != null) {
         PushService.requestPermissionAndRegister();
       }
-      PushService.handleInitialMessageIfAny();
+      unawaited(PushService.handleInitialMessageIfAny());
     });
   }, (error, stack) {
     debugPrint('[FATAL] Uncaught error: $error');
