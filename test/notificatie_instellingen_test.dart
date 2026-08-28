@@ -127,7 +127,7 @@ void main() {
       await tester.pumpWidget(_screen(repo));
 
       expect(find.byType(CircularProgressIndicator), findsNothing);
-      expect(find.text('Meldingen'), findsOneWidget);
+      expect(find.text('Notificaties'), findsOneWidget);
       expect(find.byKey(const Key('notificatie_instellingen_lijst')),
           findsNothing);
     });
@@ -163,15 +163,18 @@ void main() {
       await tester.pumpWidget(_screen(repo));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(
-        find.text('Account- en beveiligingsmeldingen'),
+        find.text('Bericht van je instructeur'),
         320,
         scrollable: find.byType(Scrollable),
       );
 
-      expect(find.text('Account- en beveiligingsmeldingen'), findsOneWidget);
-      expect(find.text('Serviceberichten van Klantio'), findsOneWidget);
       expect(find.text('Les geannuleerd'), findsOneWidget);
-      expect(find.text('Altijd actief'), findsNWidgets(4));
+      expect(find.text('Les start binnenkort'), findsOneWidget);
+      expect(find.text('Bericht van je instructeur'), findsOneWidget);
+      expect(find.text('Altijd actief'), findsNWidgets(3));
+      expect(
+          find.text('Account- en beveiligingsmeldingen'), findsNothing);
+      expect(find.text('Serviceberichten van Klantio'), findsNothing);
       expect(
           find.textContaining('marketing', findRichText: true), findsNothing);
     });
@@ -190,26 +193,29 @@ void main() {
   });
 
   group('Profiel- en scope guards', () {
-    test('App-instellingen groepeert bestaande instellingen onder Profiel', () {
+    test('App-instellingen groepeert machtigingen onder Profiel', () {
       final profile =
           File('lib/features/profiel/profiel_screen.dart').readAsStringSync();
       final settings = File('lib/features/profiel/app_instellingen_screen.dart')
           .readAsStringSync();
       final app = File('lib/app.dart').readAsStringSync();
 
+      expect(profile, contains("label: 'Notificaties'"));
+      expect(profile, contains("'/profiel/notificatie-instellingen'"));
       expect(profile, contains("label: 'App-instellingen'"));
       expect(profile, contains("'/profiel/app-instellingen'"));
-      expect(profile, isNot(contains("label: 'Notificaties'")));
+      expect(profile, contains('Machtigingen en beveiliging'));
       expect(profile, isNot(contains("label: 'App-machtigingen'")));
       expect(profile, isNot(contains("label: 'Beveiliging'")));
-      expect(settings, contains("label: 'Notificatie-instellingen'"));
-      expect(settings, contains("'/profiel/notificatie-instellingen'"));
+      expect(settings, isNot(contains("label: 'Notificatie-instellingen'")));
+      expect(settings, isNot(contains("'/profiel/notificatie-instellingen'")));
       expect(settings, contains("'/profiel/app-machtigingen'"));
       expect(settings, contains("'/profiel/beveiliging'"));
       expect(profile, contains("label: 'Privacy'"));
       expect(app, contains("path: '/profiel/app-machtigingen'"));
       expect(app, contains("path: '/profiel/beveiliging'"));
       expect(app, contains("path: '/profiel/app-instellingen'"));
+      expect(app, contains("path: '/profiel/notificatie-instellingen'"));
     });
 
     test(

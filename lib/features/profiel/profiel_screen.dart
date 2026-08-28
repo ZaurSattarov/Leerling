@@ -324,9 +324,16 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
               ProfielMenuTile(
+                icon: Icons.notifications_none_rounded,
+                label: 'Notificaties',
+                subtitle: 'Beheer welke meldingen je ontvangt',
+                onTap: () => context.push('/profiel/notificatie-instellingen'),
+              ),
+              const Divider(height: 1, indent: 62),
+              ProfielMenuTile(
                 icon: Icons.settings_outlined,
                 label: 'App-instellingen',
-                subtitle: 'Meldingen, machtigingen en beveiliging',
+                subtitle: 'Machtigingen en beveiliging',
                 onTap: () => context.push('/profiel/app-instellingen'),
               ),
             ]),

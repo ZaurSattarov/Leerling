@@ -21,7 +21,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
       body: Column(
         children: [
           const MainDetailHeader(
-            title: 'Meldingen',
+            title: 'Notificaties',
             fallbackRoute: '/profiel',
           ),
           Expanded(
@@ -56,7 +56,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                                 'Stel per categorie in welke pushmeldingen je wilt ontvangen. '
                                 'Systeemtoestemming voor meldingen op je telefoon stel je in via '
                                 'App-machtigingen — dat is los van deze Klantio-voorkeuren. '
-                                'Belangrijke serviceberichten blijven zichtbaar in de app.',
+                                'Berichten onder Altijd actief kun je niet uitzetten.',
                                 style: TextStyle(
                                   color: AppColors.textSecondary,
                                   fontSize: 13,
@@ -141,9 +141,9 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             _SwitchRow(
                               key: const Key('toggle_betaling_ontvangen'),
                               icon: Icons.payments_outlined,
-                              title: 'Betaling ontvangen',
+                              title: 'Betaling verwerkt',
                               subtitle:
-                                  'Bevestiging na een verwerkte betaling.',
+                                  'Bevestiging wanneer je betaling is ontvangen en verwerkt.',
                               value: voorkeuren.betalingOntvangen,
                               onChanged: (value) => _save(
                                 context,
@@ -155,7 +155,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             _SwitchRow(
                               key: const Key('toggle_factuurherinnering'),
                               icon: Icons.schedule_outlined,
-                              title: 'Factuurherinnering',
+                              title: 'Factuurherinneringen',
                               subtitle:
                                   'Herinneringen rond openstaande facturen.',
                               value: voorkeuren.factuurHerinnering,
@@ -286,21 +286,14 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                               icon: Icons.timer_outlined,
                               title: 'Les start binnenkort',
                               subtitle:
-                                  'Korte herinnering vlak voor aanvang van je rijles.',
+                                  'Korte verplichte melding vlak voor aanvang van je rijles.',
                             ),
                             Divider(height: 1, indent: 72),
                             _LockedRow(
-                              icon: Icons.verified_user_outlined,
-                              title: 'Account- en beveiligingsmeldingen',
+                              icon: Icons.mail_outline_rounded,
+                              title: 'Bericht van je instructeur',
                               subtitle:
-                                  'Nodig om je account veilig en bereikbaar te houden.',
-                            ),
-                            Divider(height: 1, indent: 72),
-                            _LockedRow(
-                              icon: Icons.admin_panel_settings_outlined,
-                              title: 'Serviceberichten van Klantio',
-                              subtitle:
-                                  'Belangrijke berichten van je rijschool of Klantio.',
+                                  'Directe berichten via Klantio — niet uit te zetten.',
                             ),
                           ],
                         ),

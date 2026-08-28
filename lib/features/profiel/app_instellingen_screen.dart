@@ -24,23 +24,6 @@ class AppInstellingenScreen extends StatelessWidget {
             child: ListView(
               padding: EdgeInsets.fromLTRB(0, 20, 0, bottomPadding),
               children: [
-                const ProfielSectionTitle('MELDINGEN'),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: ProfielMenuCard(
-                    children: [
-                      ProfielMenuTile(
-                        icon: Icons.notifications_none_rounded,
-                        label: 'Notificatie-instellingen',
-                        subtitle: 'Beheer je meldingsvoorkeuren',
-                        onTap: () => context.push(
-                          '/profiel/notificatie-instellingen',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 22),
                 const ProfielSectionTitle('MACHTIGINGEN'),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
