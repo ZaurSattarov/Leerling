@@ -53,7 +53,10 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             SizedBox(width: 14),
                             Expanded(
                               child: Text(
-                                'Meldingsvoorkeuren worden opgeslagen voor je Klantio-account. Belangrijke berichten blijven altijd zichtbaar in de app. Meldingen buiten de app worden later ondersteund.',
+                                'Stel per categorie in welke pushmeldingen je wilt ontvangen. '
+                                'Systeemtoestemming voor meldingen op je telefoon stel je in via '
+                                'App-machtigingen — dat is los van deze Klantio-voorkeuren. '
+                                'Belangrijke serviceberichten blijven zichtbaar in de app.',
                                 style: TextStyle(
                                   color: AppColors.textSecondary,
                                   fontSize: 13,
@@ -96,6 +99,20 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                                 context,
                                 ref,
                                 voorkeuren.copyWith(lesVerplaatst: value),
+                              ),
+                            ),
+                            const Divider(height: 1, indent: 72),
+                            _SwitchRow(
+                              key: const Key('toggle_les_herinnering'),
+                              icon: Icons.alarm_rounded,
+                              title: 'Lesherinneringen',
+                              subtitle:
+                                  'Herinneringen 1 dag en 1 uur voor je rijles.',
+                              value: voorkeuren.lesHerinnering,
+                              onChanged: (value) => _save(
+                                context,
+                                ref,
+                                voorkeuren.copyWith(lesHerinnering: value),
                               ),
                             ),
                           ],
@@ -152,6 +169,70 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: 22),
+                      const SectionHeader(title: 'Examens'),
+                      const SizedBox(height: 10),
+                      AppCard(
+                        padding: EdgeInsets.zero,
+                        child: Column(
+                          children: [
+                            _SwitchRow(
+                              key: const Key('toggle_examen_gepland'),
+                              icon: Icons.event_outlined,
+                              title: 'Examen ingepland',
+                              subtitle:
+                                  'Als je instructeur een examen voor je plant.',
+                              value: voorkeuren.examenGepland,
+                              onChanged: (value) => _save(
+                                context,
+                                ref,
+                                voorkeuren.copyWith(examenGepland: value),
+                              ),
+                            ),
+                            const Divider(height: 1, indent: 72),
+                            _SwitchRow(
+                              key: const Key('toggle_examen_herinnering'),
+                              icon: Icons.alarm_on_rounded,
+                              title: 'Examenherinneringen',
+                              subtitle:
+                                  'Herinneringen 7 dagen en 1 dag voor je examen.',
+                              value: voorkeuren.examenHerinnering,
+                              onChanged: (value) => _save(
+                                context,
+                                ref,
+                                voorkeuren.copyWith(examenHerinnering: value),
+                              ),
+                            ),
+                            const Divider(height: 1, indent: 72),
+                            _SwitchRow(
+                              key: const Key('toggle_examen_resultaat'),
+                              icon: Icons.emoji_events_outlined,
+                              title: 'Examenresultaat',
+                              subtitle:
+                                  'Als je instructeur je examenresultaat toevoegt.',
+                              value: voorkeuren.examenResultaat,
+                              onChanged: (value) => _save(
+                                context,
+                                ref,
+                                voorkeuren.copyWith(examenResultaat: value),
+                              ),
+                            ),
+                            const Divider(height: 1, indent: 72),
+                            _SwitchRow(
+                              key: const Key('toggle_examenadvies'),
+                              icon: Icons.school_outlined,
+                              title: 'Examenadvies',
+                              subtitle: 'Updates over je examenadvies.',
+                              value: voorkeuren.examenadvies,
+                              onChanged: (value) => _save(
+                                context,
+                                ref,
+                                voorkeuren.copyWith(examenadvies: value),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 22),
                       const SectionHeader(title: 'Voortgang'),
                       const SizedBox(height: 10),
                       AppCard(
@@ -184,19 +265,6 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                                 voorkeuren.copyWith(lespakketBijnaOp: value),
                               ),
                             ),
-                            const Divider(height: 1, indent: 72),
-                            _SwitchRow(
-                              key: const Key('toggle_examenadvies'),
-                              icon: Icons.school_outlined,
-                              title: 'Examenadvies',
-                              subtitle: 'Updates over je examenadvies.',
-                              value: voorkeuren.examenadvies,
-                              onChanged: (value) => _save(
-                                context,
-                                ref,
-                                voorkeuren.copyWith(examenadvies: value),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -208,6 +276,20 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             _LockedRow(
+                              icon: Icons.event_busy_outlined,
+                              title: 'Les geannuleerd',
+                              subtitle:
+                                  'Je hoort altijd wanneer een geplande les niet doorgaat.',
+                            ),
+                            Divider(height: 1, indent: 72),
+                            _LockedRow(
+                              icon: Icons.timer_outlined,
+                              title: 'Les start binnenkort',
+                              subtitle:
+                                  'Korte herinnering vlak voor aanvang van je rijles.',
+                            ),
+                            Divider(height: 1, indent: 72),
+                            _LockedRow(
                               icon: Icons.verified_user_outlined,
                               title: 'Account- en beveiligingsmeldingen',
                               subtitle:
@@ -216,9 +298,9 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             Divider(height: 1, indent: 72),
                             _LockedRow(
                               icon: Icons.admin_panel_settings_outlined,
-                              title: 'Essentiele serviceberichten',
+                              title: 'Serviceberichten van Klantio',
                               subtitle:
-                                  'Belangrijke informatie over je lessen en account blijft zichtbaar.',
+                                  'Belangrijke berichten van je rijschool of Klantio.',
                             ),
                           ],
                         ),

@@ -169,8 +169,9 @@ void main() {
       );
 
       expect(find.text('Account- en beveiligingsmeldingen'), findsOneWidget);
-      expect(find.text('Essentiele serviceberichten'), findsOneWidget);
-      expect(find.text('Altijd actief'), findsNWidgets(2));
+      expect(find.text('Serviceberichten van Klantio'), findsOneWidget);
+      expect(find.text('Les geannuleerd'), findsOneWidget);
+      expect(find.text('Altijd actief'), findsNWidgets(4));
       expect(
           find.textContaining('marketing', findRichText: true), findsNothing);
     });
@@ -230,7 +231,7 @@ void main() {
 
       expect(source, contains('SwitchTheme('));
       expect(source, contains('_notificationSwitchTheme'));
-      expect(RegExp("Key\\('toggle_").allMatches(source), hasLength(8));
+      expect(RegExp("Key\\('toggle_").allMatches(source), hasLength(12));
       expect(source, contains('class _LockedRow'));
       expect(source, contains('return AppColors.primary;'));
       expect(source, contains('return AppColors.white;'));
