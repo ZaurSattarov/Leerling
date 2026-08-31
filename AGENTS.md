@@ -173,6 +173,11 @@ incrementele-update-modus van de geïnstalleerde graphify-versie) vanuit de proj
    🔎 GRAPHIFY: Ik gebruik Graphify MCP om eerst de relevante code en verbindingen te bepalen.
 
 2. Daarna moet daadwerkelijk de juiste Graphify MCP-server worden aangeroepen: **`graphify-leerling`**.
+2a. **HARDE REGEL (2026-08-31): Graphify ⇒ Obsidian, altijd samen, geen uitzondering.** Zodra
+    Graphify hierboven wordt gebruikt, moet in dezelfde preflight ook de relevante
+    Klantio-Knowledge Obsidian-context worden geraadpleegd via de Obsidian MCP (zie
+    `CLAUDE.md` voor welke notities — niet de hele vault). Geldt voor Codex en elke andere
+    agent hier.
 3. Alleen nadat Graphify daadwerkelijk is geraadpleegd mogen de minimaal noodzakelijke
    bronbestanden worden geopend.
 4. De beginmelding mag NOOIT worden getoond als Graphify niet daadwerkelijk wordt gebruikt.

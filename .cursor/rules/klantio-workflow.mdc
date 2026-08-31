@@ -32,6 +32,10 @@ Before every programming task, before modifying source code:
 
 11. Follow this repository: Graphify `graphify-leerling`, Skill Router in `CLAUDE.md`. Canonical migrations live in the Instructor repo.
 
+11a. **HARD RULE (2026-08-31): Graphify ⇒ Obsidian, always together, no exception.** Whenever
+Graphify is used in this repo, the relevant Klantio-Knowledge Obsidian context must be
+consulted in the same preflight via the Obsidian MCP — never one without the other.
+
 12. Show compact `KLANTIO PREFLIGHT` (Scope / Data scope / Cross-project impact / Obsidian).
 
 13. No code modifications before this preflight.

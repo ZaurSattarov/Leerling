@@ -58,6 +58,13 @@ daadwerkelijk wordt gebruikt. Als de MCP-server niet bereikbaar is, meld exact:
 
 Ga in dat geval niet stilzwijgend verder met een brede repositoryscan.
 
+**HARDE REGEL (2026-08-31): Graphify ⇒ Obsidian, altijd samen, geen uitzondering.** Zodra
+Graphify hierboven wordt gebruikt, moet in dezelfde preflight ook de relevante
+Klantio-Knowledge Obsidian-context worden geraadpleegd via de Obsidian MCP (zie
+"Klantio-Knowledge"-verwijzingen in dit bestand voor welke notities — niet de hele vault).
+Graphify = codestructuur, Obsidian = productarchitectuur/besluiten/status; nooit het één
+zonder het ander.
+
 ### Werkwijze
 
 1. Gebruik `query_graph`, `get_node`, `get_neighbors`, `get_community`, `graph_stats`, `god_nodes`
