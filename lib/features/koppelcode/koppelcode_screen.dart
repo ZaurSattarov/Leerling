@@ -35,18 +35,20 @@ class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
       await StudentService.koppelLeerlingMetCode(_codeCtrl.text.trim());
 
       ref.invalidate(mijnProfielProvider);
-      final profiel = await ref.read(mijnProfielProvider.future);
-
-      if (!mounted) return;
-      if (profiel == null) {
-        setState(() {
-          _error =
-              'Koppeling is nog niet zichtbaar. Controleer de code en probeer opnieuw.';
-          _loading = false;
-        });
-        return;
+      var profielCompleet = false;
+      try {
+        final profiel = await ref.read(mijnProfielProvider.future);
+        profielCompleet = profiel?.isProfielCompleet == true;
+      } catch (_) {
+        // RPC is al geslaagd; profiel laden wordt op het volgende scherm hervat.
       }
 
+      if (!mounted) return;
+      if (!profielCompleet) {
+        ref.invalidate(mijnProfielProvider);
+        context.go('/profiel-afronden');
+        return;
+      }
       context.go('/home');
     } catch (e) {
       if (!mounted) return;

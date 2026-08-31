@@ -121,7 +121,14 @@ class LeerlingProfiel {
     this.startdatum,
   });
 
-  String get volledigeNaam => '$voornaam $achternaam';
+  String get volledigeNaam => '$voornaam $achternaam'.trim();
+
+  bool get isProfielCompleet =>
+      achternaam.trim().isNotEmpty &&
+      geboortedatum?.trim().isNotEmpty == true &&
+      email?.trim().isNotEmpty == true &&
+      (avatarId?.trim().isNotEmpty == true ||
+          avatarUrl?.trim().isNotEmpty == true);
 
   double get voortgangPercent =>
       lessenTotaal > 0 ? (lessenGevolgd / lessenTotaal).clamp(0.0, 1.0) : 0.0;
@@ -142,7 +149,7 @@ class LeerlingProfiel {
       id: json['id'] as String,
       instructeurId: json['instructeur_id'] as String,
       voornaam: json['voornaam'] as String,
-      achternaam: json['achternaam'] as String,
+      achternaam: json['achternaam'] as String? ?? '',
       email: json['email'] as String?,
       telefoon: json['telefoon'] as String?,
       avatarUrl: (json['avatar_url'] ??

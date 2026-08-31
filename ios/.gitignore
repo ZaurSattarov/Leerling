@@ -24,6 +24,8 @@ Flutter/app.flx
 Flutter/app.zip
 Flutter/flutter_assets/
 Flutter/flutter_export_environment.sh
+# Live Aankomst (Feature 2, Fase 3): lokale Google Maps API-key, nooit committen.
+Flutter/Secrets.xcconfig
 ServiceDefinitions.json
 Runner/GeneratedPluginRegistrant.*
 

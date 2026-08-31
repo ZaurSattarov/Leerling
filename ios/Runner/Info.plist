@@ -26,6 +26,13 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+
+	<!-- Live Aankomst (Feature 2, Fase 3): Google Maps API-key. Uitsluitend
+	     een build-variable-referentie -- de echte waarde komt uit
+	     ios/Flutter/Secrets.xcconfig (lokaal, gitignored), nooit hier. -->
+	<key>GMSApiKey</key>
+	<string>$(GOOGLE_MAPS_API_KEY)</string>
+
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -4,13 +4,15 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
-import '../../core/utils/maps_uri.dart';
 import '../../models/les.dart';
 import '../../models/les_evaluatie.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import '../../shared/widgets/snackbar.dart';
+import '../arrival/arrival_provider.dart';
+import '../arrival/live_aankomst_fullscreen_screen.dart';
+import '../arrival/widgets/arrival_live_map.dart';
 import '../profiel/rijschool_provider.dart';
 import 'planning_provider.dart';
 import 'widgets/lesson_status_badge.dart';
@@ -125,9 +127,11 @@ class _LesDetailBody extends ConsumerWidget {
                 const SizedBox(height: 12),
               ],
 
-              // 5. Locatie + Kaart
+              // 5. Locatie + Kaart -- wordt automatisch Live Aankomst zodra
+              // de instructeur voor precies deze les een zichtbare sessie
+              // heeft (Feature 2, Fase 4). Zelfde kaart, geen losse feature.
               if (les.locatie?.isNotEmpty == true) ...[
-                _LocatieCard(les: les),
+                _OphaallocatieSectie(les: les),
                 const SizedBox(height: 12),
               ],
 
@@ -783,12 +787,263 @@ class _ContactActiesCard extends StatelessWidget {
   }
 }
 
+/// Beslist of de ophaallocatiekaart de normale (statische, extern-Maps)
+/// weergave toont of de Live Aankomst-variant (Feature 2, Fase 4) --
+/// afhankelijk van de al bestaande [arrivalControllerProvider]-state. Deze
+/// widget introduceert GEEN nieuwe backend-/Realtime-logica: ze stuurt
+/// alleen de bestaande controller aan (welke les er bekeken wordt) en leest
+/// diens state. Geen losse Live Aankomst-feature elders (bv. Home) meer --
+/// dit is de enige entrypoint.
+class _OphaallocatieSectie extends ConsumerStatefulWidget {
+  final Les les;
+  const _OphaallocatieSectie({required this.les});
+
+  @override
+  ConsumerState<_OphaallocatieSectie> createState() =>
+      _OphaallocatieSectieState();
+}
+
+class _OphaallocatieSectieState extends ConsumerState<_OphaallocatieSectie> {
+  // Vastgelegd in initState (waar `ref` gegarandeerd nog geldig is) i.p.v.
+  // in dispose() via ref.read() opgehaald -- Riverpod staat geen
+  // ref-gebruik meer toe op het moment dat dispose() draait ("Cannot use
+  // ref after the widget was disposed"). De controller zelf is een
+  // gewone, langlevende klasse-instantie en blijft dus prima bruikbaar.
+  late final ArrivalController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = ref.read(arrivalControllerProvider.notifier);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _controller.onLessonChanged(widget.les.id);
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant _OphaallocatieSectie oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.les.id != widget.les.id) {
+      _controller.onLessonChanged(widget.les.id);
+    }
+  }
+
+  @override
+  void dispose() {
+    // Les-detail is de enige plek die deze les laat volgen -- bij het
+    // verlaten van dit scherm stopt het volgen (geen losse achtergrond-
+    // tracking zonder zichtbaar scherm). Vereenvoudigde aanname: deze
+    // pagina pusht nooit een tweede lesdetailpagina bovenop zichzelf, dus
+    // er is geen scenario in deze app waarin dit een nog-actieve tracking
+    // van een ANDERE les zou overschrijven.
+    //
+    // Uitgesteld naar een microtask: onLessonChanged(null) kan (via
+    // _teardownSubscriptions -> _stopPolling) synchroon de controller-state
+    // muteren, en DEZE widget watcht diezelfde provider (ref.watch in
+    // build()). Riverpod's listener-afmelding voor dit element is nog niet
+    // per se voltooid zolang dispose() zelf nog loopt -- een synchrone
+    // mutatie hier kan Flutter's element-lifecycle-assert doen falen
+    // ("Cannot markNeedsBuild after widget was disposed"). Een microtask
+    // draait pas nadat deze hele unmount-cyclus is afgerond.
+    final controller = _controller;
+    Future.microtask(() => controller.onLessonChanged(null));
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(arrivalControllerProvider);
+    final session = state.session;
+    final location = state.location;
+    final stale = location?.isStale() ?? false;
+
+    final toonLiveAankomst = session != null &&
+        session.lessonId == widget.les.id &&
+        session.isActive() &&
+        session.isVisible &&
+        location != null &&
+        !stale;
+
+    if (!toonLiveAankomst) {
+      return _LocatieCard(les: widget.les);
+    }
+    return _LiveAankomstOphaalKaart(
+      les: widget.les,
+      sessionId: session.id,
+      latitude: location.latitude,
+      longitude: location.longitude,
+    );
+  }
+}
+
+/// Live Aankomst-variant van de ophaallocatiekaart -- zelfde afmeting/vorm/
+/// schaduw als [_LocatieCard], maar toont een echte, actuele Google Maps-
+/// weergave i.p.v. de statische illustratie. Tikken opent de grotere
+/// [LiveAankomstFullscreenScreen] i.p.v. extern Maps te openen (dat blijft
+/// de normale [_LocatieCard]'s gedrag).
+class _LiveAankomstOphaalKaart extends StatelessWidget {
+  final Les les;
+  final String sessionId;
+  final double latitude;
+  final double longitude;
+
+  const _LiveAankomstOphaalKaart({
+    required this.les,
+    required this.sessionId,
+    required this.latitude,
+    required this.longitude,
+  });
+
+  static const double _hoogte = 168;
+
+  @override
+  Widget build(BuildContext context) {
+    final locatie = (les.locatie ?? '').trim();
+
+    return Semantics(
+      button: true,
+      label: 'Instructeur onderweg, live locatie. Open volledige kaart.',
+      excludeSemantics: true,
+      child: Container(
+        height: _hoogte,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.successBorder, width: 0.75),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15.25),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => LiveAankomstFullscreenScreen(les: les),
+                ),
+              ),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Compacte preview: gestures uit, zodat een tik altijd de
+                  // fullscreen-weergave opent i.p.v. te pannen/zoomen.
+                  ArrivalLiveMap(
+                    key: ValueKey(sessionId),
+                    latitude: latitude,
+                    longitude: longitude,
+                    height: _hoogte,
+                    gesturesEnabled: false,
+                  ),
+                  const Positioned.fill(child: _LeesbaarheidsScrim()),
+                  const Positioned(top: 12, left: 12, child: _LiveBadge()),
+                  Positioned(
+                    left: 14,
+                    right: 14,
+                    bottom: 12,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (locatie.isNotEmpty)
+                          Text(
+                            locatie,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              height: 1.2,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                        const SizedBox(height: 4),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Bekijk live kaart',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white.withValues(alpha: 0.92),
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(
+                              Icons.arrow_forward_rounded,
+                              size: 14,
+                              color: Colors.white.withValues(alpha: 0.92),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Badge "● Instructeur onderweg · Live" -- zelfde pill-stijl als
+/// [_OphaallocatieBadge], vervangt die badge zolang Live Aankomst actief is.
+class _LiveBadge extends StatelessWidget {
+  const _LiveBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: const Color(0xFFE2E2E7)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: const BoxDecoration(
+              color: AppColors.success,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 5),
+          const Text(
+            'Instructeur onderweg · Live',
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.2,
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// Eén tikbare kaart met een decoratieve, statische kaartpreview als
-/// achtergrond -- vervangt de oude combinatie van een losse locatieregel
-/// plus een aparte "Navigeer naar locatie"-tegel. Geen Maps SDK, geen
-/// API-key: de achtergrond is een lichte, geometrische plattegrond-illustratie
-/// (`_KaartPatroonPainter`), duidelijk decoratief -- de échte navigatie
-/// opent altijd extern via [MapsUri.open].
+/// achtergrond (`_KaartPatroonPainter`) -- de preview zelf blijft
+/// decoratief, maar een tik opent sinds Feature 2/4 altijd primair de
+/// interne kaartweergave ([LiveAankomstFullscreenScreen], hier zonder
+/// actieve sessie dus de statische ophaallocatie-modus). Extern Google Maps
+/// (`MapsUri.open`) is daar alleen nog een expliciete secundaire actie
+/// ("Route"-knop), nooit meer de hoofdtik op deze kaart.
 class _LocatieCard extends StatelessWidget {
   final Les les;
   const _LocatieCard({required this.les});
@@ -807,7 +1062,7 @@ class _LocatieCard extends StatelessWidget {
     // alleen de kaartpreview/overlay-inhoud, niet de schaduw.
     return Semantics(
       button: true,
-      label: 'Open ophaallocatie in Maps: $locatie',
+      label: 'Bekijk ophaallocatie: $locatie',
       excludeSemantics: true,
       child: Container(
         height: _hoogte,
@@ -827,7 +1082,16 @@ class _LocatieCard extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => MapsUri.open(context, locatie),
+              // Opent altijd primair intern (LiveAankomstFullscreenScreen,
+              // hier zonder actieve sessie dus de statische
+              // ophaallocatie-weergave) -- extern Google Maps is alleen nog
+              // een expliciete secundaire actie ("Route"-knop) binnen dat
+              // scherm, nooit meer de hoofdtik hier.
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => LiveAankomstFullscreenScreen(les: les),
+                ),
+              ),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -876,7 +1140,7 @@ class _LocatieCard extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'Open in Maps',
+                              'Bekijk locatie',
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,

@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/constants/app_colors.dart';
 import 'core/services/push_service.dart';
+import 'features/arrival/arrival_provider.dart';
 import 'features/splash/splash_screen.dart';
 import 'features/auth/login_screen.dart';
 import 'features/auth/registreer_screen.dart';
@@ -17,6 +18,7 @@ import 'features/auth/reset_password_screen.dart';
 import 'features/auth/wachtwoord_vergeten_screen.dart';
 import 'features/auth/wachtwoord_reset_code_screen.dart';
 import 'features/koppelcode/koppelcode_screen.dart';
+import 'features/profiel/profiel_afronden_screen.dart';
 import 'features/home/home_screen.dart';
 import 'features/planning/planning_screen.dart';
 import 'features/planning/les_detail_screen.dart';
@@ -55,9 +57,15 @@ final rootNavigatorKey = GlobalKey<NavigatorState>();
 GoRouter? globalLeerlingGoRouter;
 
 class _AuthNotifier extends ChangeNotifier {
-  _AuthNotifier() {
+  _AuthNotifier(this._ref) {
     _sub = Supabase.instance.client.auth.onAuthStateChange.listen((data) {
       _event = data.event;
+      // Live Aankomst (Fase 2C): bij logout/auth-verlies geen sessie- of
+      // locatiedata van de vorige gebruiker laten staan voor een eventuele
+      // volgende gebruiker op hetzelfde toestel.
+      if (data.event == AuthChangeEvent.signedOut) {
+        _ref.read(arrivalControllerProvider.notifier).onAuthLost();
+      }
       // `signedIn` vuurt NIET bij het herstellen van een bestaande sessie op
       // een koude start — dat is `initialSession`. Zonder die tak hangt de
       // pushregistratie voor een AL ingelogde gebruiker volledig af van de
@@ -77,6 +85,7 @@ class _AuthNotifier extends ChangeNotifier {
     });
   }
 
+  final Ref _ref;
   late final StreamSubscription<AuthState> _sub;
   AuthChangeEvent? _event;
   AuthChangeEvent? get event => _event;
@@ -89,7 +98,7 @@ class _AuthNotifier extends ChangeNotifier {
 }
 
 final _routerProvider = Provider<GoRouter>((ref) {
-  final authNotifier = _AuthNotifier();
+  final authNotifier = _AuthNotifier(ref);
   ref.onDispose(authNotifier.dispose);
 
   final router = GoRouter(
@@ -164,6 +173,10 @@ final _routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/koppelcode',
         builder: (_, __) => const KoppelcodeScreen(),
+      ),
+      GoRoute(
+        path: '/profiel-afronden',
+        builder: (_, __) => const ProfielAfrondenScreen(),
       ),
 
       // Help — full screen, outside bottom nav
@@ -376,6 +389,9 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       PushService.onAppResumed();
+      ref.read(arrivalControllerProvider.notifier).onAppResumed();
+    } else if (state == AppLifecycleState.paused) {
+      ref.read(arrivalControllerProvider.notifier).onAppPaused();
     }
   }
 

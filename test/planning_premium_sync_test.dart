@@ -92,10 +92,20 @@ void main() {
       final detail = read('lib/features/planning/les_detail_screen.dart');
 
       // Ophaallocatie: sinds het herontwerp één tikbare kaart met
-      // kaartpreview, badge en gedeelde MapsUri-helper i.p.v. een losse
-      // infolabel-rij + inline Uri.encodeComponent-aanroep.
+      // kaartpreview en badge. Sinds "Fix Ophaallocatie Navigatie" opent een
+      // tik intern (LiveAankomstFullscreenScreen) i.p.v. rechtstreeks
+      // MapsUri.open aan te roepen -- externe Maps is daar nu alleen nog een
+      // secundaire "Route"-knop binnen dat interne scherm, geen directe
+      // aanroep meer vanuit _LocatieCard zelf (MapsUri.open blijft elders in
+      // dit bestand toegestaan in toelichtende commentaartekst).
       expect(detail, contains("'OPHAALLOCATIE'"));
-      expect(detail, contains('MapsUri.open(context, locatie)'));
+      expect(detail, contains('LiveAankomstFullscreenScreen'));
+      final locatieCardStart = detail.indexOf('class _LocatieCard');
+      final locatieCardEind = detail.indexOf('class _OphaallocatieBadge');
+      expect(locatieCardStart, greaterThan(-1));
+      expect(locatieCardEind, greaterThan(locatieCardStart));
+      expect(detail.substring(locatieCardStart, locatieCardEind),
+          isNot(contains('MapsUri.open')));
       expect(detail, contains('_weergaveRegels'));
       expect(detail, isNot(contains('Exact ophaaladres')));
       expect(detail, isNot(contains("label: 'Navigeer naar locatie'")));

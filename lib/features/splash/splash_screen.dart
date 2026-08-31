@@ -8,7 +8,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/push_service.dart';
 import '../../core/services/student_service.dart';
-import '../../models/leerling_profiel.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -88,20 +87,25 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final profiel = await _laadProfiel();
     if (!mounted) return;
 
+    if (profiel.isNetworkError) {
+      context.go('/home');
+      return;
+    }
+
     PushService.markRouterReady();
     final deeplinkUitgevoerd = await PushService.flushPendingNavigation();
     if (!mounted) return;
     if (deeplinkUitgevoerd) return;
 
-    context.go(profiel != null ? '/home' : '/koppelcode');
+    context.go(profiel.exists ? '/home' : '/koppelcode');
   }
 
-  Future<LeerlingProfiel?> _laadProfiel() async {
+  Future<_SplashProfileResult> _laadProfiel() async {
     try {
-      return await StudentService.getMijnProfiel();
-    } catch (e) {
-      debugPrint('[splash] profielcheck fout: $e');
-      return null;
+      final profiel = await StudentService.getMijnProfiel();
+      return _SplashProfileResult(exists: profiel != null);
+    } on ProfileLookupException {
+      return const _SplashProfileResult(isNetworkError: true);
     }
   }
 
@@ -168,6 +172,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       ),
     );
   }
+}
+
+class _SplashProfileResult {
+  const _SplashProfileResult({
+    this.exists = false,
+    this.isNetworkError = false,
+  });
+
+  final bool exists;
+  final bool isNetworkError;
 }
 
 class _SplashCanvas extends StatelessWidget {

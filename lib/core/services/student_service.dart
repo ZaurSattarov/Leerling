@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/app_config.dart';
 import '../utils/komende_les_filter.dart';
@@ -15,6 +16,19 @@ import '../../models/instructeur.dart';
 import '../../models/instructor_lesson_package.dart';
 import 'push_service.dart';
 
+class ProfileLookupException implements Exception {
+  const ProfileLookupException({
+    required this.wasKnownCoupled,
+    this.cause,
+  });
+
+  final bool wasKnownCoupled;
+  final Object? cause;
+
+  @override
+  String toString() => 'Je profiel kon tijdelijk niet worden geladen.';
+}
+
 class StudentService {
   static String get supabaseUrl => AppConfig.supabaseUrl;
   static String get supabaseAnonKey => AppConfig.supabaseAnonKey;
@@ -24,6 +38,34 @@ class StudentService {
   static String get userId => currentUser!.id;
   static const String _studentLessenView = 'student_lessen_view';
   static const Duration _profileCheckTimeout = Duration(seconds: 8);
+
+  static String _couplingEvidenceKey(String userId) =>
+      'student_coupling_confirmed_$userId';
+
+  static Future<bool> _hasCouplingEvidence(String userId) async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      return preferences.getBool(_couplingEvidenceKey(userId)) == true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<void> _setCouplingEvidence(
+    String userId,
+    bool isCoupled,
+  ) async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      if (isCoupled) {
+        await preferences.setBool(_couplingEvidenceKey(userId), true);
+      } else {
+        await preferences.remove(_couplingEvidenceKey(userId));
+      }
+    } catch (_) {
+      // Best-effort cache: de backenduitkomst blijft leidend.
+    }
+  }
 
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // AUTH
@@ -55,7 +97,7 @@ class StudentService {
         emailRedirectTo: AppConfig.authConfirmRedirectUrl,
       );
       debugPrint(
-          '[student.registreren] user=${response.user?.id ?? 'null'} session=${response.session != null}');
+          '[student.registreren] session=${response.session != null}');
       return response;
     } on AuthException catch (e) {
       debugPrint(
@@ -94,6 +136,8 @@ class StudentService {
     if (res['succes'] != true) {
       throw Exception(res['fout'] ?? 'Koppelen mislukt');
     }
+    final user = currentUser;
+    if (user != null) await _setCouplingEvidence(user.id, true);
   }
 
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -111,10 +155,40 @@ class StudentService {
           .eq('user_id', user.id)
           .maybeSingle()
           .timeout(_profileCheckTimeout);
-      return res != null ? LeerlingProfiel.fromJson(res) : null;
-    } on TimeoutException {
-      debugPrint('[student.profiel] profielcheck timeout, toon koppelcode');
-      return null;
+      if (res == null) {
+        await _setCouplingEvidence(user.id, false);
+        return null;
+      }
+      await _setCouplingEvidence(user.id, true);
+      return LeerlingProfiel.fromJson(res);
+    } catch (error) {
+      if (error is ProfileLookupException) rethrow;
+      throw ProfileLookupException(
+        wasKnownCoupled: await _hasCouplingEvidence(user.id),
+        cause: error,
+      );
+    }
+  }
+
+  static Future<void> voltooiMijnProfiel({
+    required String achternaam,
+    required DateTime geboortedatum,
+    required String avatarId,
+  }) async {
+    final date = '${geboortedatum.year.toString().padLeft(4, '0')}-'
+        '${geboortedatum.month.toString().padLeft(2, '0')}-'
+        '${geboortedatum.day.toString().padLeft(2, '0')}';
+    final raw = await client.rpc(
+      'voltooi_leerling_profiel',
+      params: {
+        'p_achternaam': achternaam.trim(),
+        'p_geboortedatum': date,
+        'p_avatar_id': avatarId,
+      },
+    );
+    final result = Map<String, dynamic>.from(raw as Map);
+    if (result['succes'] != true) {
+      throw Exception(result['fout'] ?? 'Profiel afronden mislukt');
     }
   }
 

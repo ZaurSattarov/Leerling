@@ -143,12 +143,16 @@ void main() {
   });
 
   group('les_detail_screen.dart -- brontekst bevestigt de volgorde', () {
-    test('_VoertuigCard-blok staat vóór _LocatieCard-blok in de sliver-'
-        'kinderenlijst', () {
+    test('_VoertuigCard-blok staat vóór de ophaallocatie/Live Aankomst-blok '
+        'in de sliver-kinderenlijst', () {
       final bron =
           File('lib/features/planning/les_detail_screen.dart').readAsStringSync();
       final voertuigIndex = bron.indexOf('_VoertuigCard(les: les)');
-      final locatieIndex = bron.indexOf('_LocatieCard(les: les)');
+      // Sinds Feature 2/Fase 4 (Live Aankomst) is de call site
+      // `_OphaallocatieSectie(les: les)` -- die beslist zelf tussen de
+      // normale `_LocatieCard` en de live-variant, zie
+      // ophaallocatie_kaart_test.dart voor die dekking.
+      final locatieIndex = bron.indexOf('_OphaallocatieSectie(les: les)');
       expect(voertuigIndex, greaterThan(-1));
       expect(locatieIndex, greaterThan(-1));
       expect(voertuigIndex, lessThan(locatieIndex));
