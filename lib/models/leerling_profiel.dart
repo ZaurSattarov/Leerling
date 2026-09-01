@@ -45,6 +45,9 @@ class LeerlingProfiel {
   final String? avatarId;
   final String? geboortedatum;
   final String? adres;
+  // Canonical waarden 'man'/'vrouw' — zelfde representatie als de
+  // Instructeur-app (AvatarService.genderValueForCategory daar).
+  final String? geslacht;
   final PakketType pakket;
   final LeerlingStatus status;
   final int lessenTotaal;
@@ -92,6 +95,7 @@ class LeerlingProfiel {
     this.avatarId,
     this.geboortedatum,
     this.adres,
+    this.geslacht,
     required this.pakket,
     required this.status,
     required this.lessenTotaal,
@@ -159,6 +163,7 @@ class LeerlingProfiel {
       avatarId: json['avatar_id'] as String?,
       geboortedatum: json['geboortedatum'] as String?,
       adres: json['adres'] as String?,
+      geslacht: json['geslacht'] as String?,
       pakket: PakketType.values.firstWhere(
         (e) => e.name == (json['pakket'] as String?),
         orElse: () => PakketType.standaard,

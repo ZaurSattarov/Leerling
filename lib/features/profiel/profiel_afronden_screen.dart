@@ -17,8 +17,12 @@ class ProfielAfrondenScreen extends ConsumerStatefulWidget {
 class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
   final _formKey = GlobalKey<FormState>();
   final _achternaam = TextEditingController();
+  final _adres = TextEditingController();
   DateTime? _geboortedatum;
   String? _avatarId;
+  // Probleem 7 (aanmeld herstelronde): canonical waarden 'man'/'vrouw' —
+  // optioneel, blokkeert profiel afronden niet (zie isProfielCompleet).
+  String? _geslacht;
   bool _saving = false;
   String? _error;
   bool _prefilled = false;
@@ -26,6 +30,7 @@ class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
   @override
   void dispose() {
     _achternaam.dispose();
+    _adres.dispose();
     super.dispose();
   }
 
@@ -60,6 +65,8 @@ class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
         achternaam: _achternaam.text,
         geboortedatum: _geboortedatum!,
         avatarId: _avatarId!,
+        geslacht: _geslacht,
+        adres: _adres.text,
       );
       ref.invalidate(mijnProfielProvider);
       final profile = await ref.read(mijnProfielProvider.future);
@@ -90,6 +97,8 @@ class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
       _prefilled = true;
       _achternaam.text = profile.achternaam;
       _avatarId = profile.avatarId;
+      _adres.text = profile.adres ?? '';
+      _geslacht = profile.geslacht;
       final rawDate = profile.geboortedatum;
       if (rawDate != null) _geboortedatum = DateTime.tryParse(rawDate);
     }
@@ -141,6 +150,32 @@ class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
                 label: Text(_geboortedatum == null
                     ? 'Kies geboortedatum'
                     : '${_geboortedatum!.day}-${_geboortedatum!.month}-${_geboortedatum!.year}')),
+            const SizedBox(height: 14),
+            TextFormField(
+                controller: _adres,
+                textCapitalization: TextCapitalization.words,
+                decoration: const InputDecoration(labelText: 'Adres')),
+            const SizedBox(height: 14),
+            const Text('Geslacht',
+                style: TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            Row(children: [
+              Expanded(
+                child: _GeslachtOptie(
+                  label: 'Man',
+                  selected: _geslacht == 'man',
+                  onTap: () => setState(() => _geslacht = 'man'),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _GeslachtOptie(
+                  label: 'Vrouw',
+                  selected: _geslacht == 'vrouw',
+                  onTap: () => setState(() => _geslacht = 'vrouw'),
+                ),
+              ),
+            ]),
             const SizedBox(height: 20),
             const Text('Kies een avatar',
                 style: TextStyle(fontWeight: FontWeight.w800)),
@@ -177,10 +212,61 @@ class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
               Text(_error!, style: const TextStyle(color: AppColors.dangerText))
             ],
             const SizedBox(height: 24),
-            FilledButton(
+            // Probleem 4 (aanmeld herstelronde, vervolg): ElevatedButton
+            // gebruikt het bestaande elevatedButtonTheme (AppColors.primary +
+            // witte tekst) — een ongethematiseerde FilledButton viel terug op
+            // colorScheme.primary (via ColorScheme.fromSeed niet exact
+            // AppColors.primary), vandaar de afwijkende bruin/rode kleur.
+            ElevatedButton(
                 onPressed: _saving ? null : _save,
                 child: Text(_saving ? 'Opslaan…' : 'Profiel afronden')),
           ]),
+        ),
+      ),
+    );
+  }
+}
+
+// Probleem 3 (aanmeld herstelronde, vervolg): geen Material-chip-widget meer
+// — de standaard geselecteerde chip-stijl valt terug op
+// colorScheme.secondaryContainer (een licht getinte kleur), niet op het
+// solide Klantio primary-token. Deze widget dwingt de gevraagde solid/wit-
+// op-geselecteerd, wit/donker-op-ongeselecteerd stijl expliciet af.
+class _GeslachtOptie extends StatelessWidget {
+  const _GeslachtOptie({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? AppColors.primary : AppColors.white,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          height: 48,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: selected ? AppColors.primary : AppColors.border,
+            ),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: selected ? Colors.white : AppColors.textPrimary,
+            ),
+          ),
         ),
       ),
     );

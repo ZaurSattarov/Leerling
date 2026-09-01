@@ -8,9 +8,11 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/constants/app_colors.dart';
+import 'core/services/access_gate_service.dart';
 import 'core/services/push_service.dart';
 import 'features/arrival/arrival_provider.dart';
 import 'features/splash/splash_screen.dart';
+import 'features/auth/account_geblokkeerd_screen.dart';
 import 'features/auth/login_screen.dart';
 import 'features/auth/registreer_screen.dart';
 import 'features/auth/verificatie_screen.dart';
@@ -65,6 +67,19 @@ class _AuthNotifier extends ChangeNotifier {
       // volgende gebruiker op hetzelfde toestel.
       if (data.event == AuthChangeEvent.signedOut) {
         _ref.read(arrivalControllerProvider.notifier).onAuthLost();
+        blockedAccessStatus = null;
+      }
+      // Klantio Intern Beheerplatform — accountblokkade (Optie B,
+      // 2026-09-01). Losstaande, aanvullende check naast alle bestaande
+      // logica hierboven/hieronder — raakt geen bestaande state. Draait bij
+      // zowel signedIn als een herstelde sessie (initialSession), fail-open
+      // bij netwerkfouten (zie AccessGateService). Zet enkel een vlag +
+      // notifyListeners() zodat de synchrone `redirect` hieronder alsnog
+      // naar '/account-geblokkeerd' kan sturen.
+      if (data.event == AuthChangeEvent.signedIn ||
+          (data.event == AuthChangeEvent.initialSession &&
+              data.session?.user != null)) {
+        unawaited(_checkAccessStatus());
       }
       // `signedIn` vuurt NIET bij het herstellen van een bestaande sessie op
       // een koude start — dat is `initialSession`. Zonder die tak hangt de
@@ -90,6 +105,19 @@ class _AuthNotifier extends ChangeNotifier {
   AuthChangeEvent? _event;
   AuthChangeEvent? get event => _event;
 
+  /// null = niet geblokkeerd/nog niet gecontroleerd. 'blocked'/'suspended'
+  /// zodra `_checkAccessStatus` dat vaststelt — de synchrone `redirect` in
+  /// de GoRouter hieronder leest dit veld.
+  String? blockedAccessStatus;
+
+  Future<void> _checkAccessStatus() async {
+    final status = await AccessGateService.currentAccessStatus();
+    if (status == 'active') return;
+    await Supabase.instance.client.auth.signOut();
+    blockedAccessStatus = status;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     _sub.cancel();
@@ -110,6 +138,14 @@ final _routerProvider = Provider<GoRouter>((ref) {
       final loc = state.uri.path;
 
       if (loc == '/splash') return null;
+
+      // Klantio Intern Beheerplatform — accountblokkade (Optie B,
+      // 2026-09-01). Bewust vóór alle onderstaande routing-logica — een
+      // geblokkeerde/opgeschorte gebruiker (al server-side uitgelogd, zie
+      // _checkAccessStatus) mag nooit op een andere route belanden.
+      if (authNotifier.blockedAccessStatus != null) {
+        return loc == '/account-geblokkeerd' ? null : '/account-geblokkeerd';
+      }
 
       // Password recovery deep link — redirect to reset screen
       if (authNotifier.event == AuthChangeEvent.passwordRecovery) {
@@ -139,6 +175,12 @@ final _routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/splash',
         builder: (_, __) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/account-geblokkeerd',
+        builder: (_, __) => AccountGeblokkeerdScreen(
+          accessStatus: authNotifier.blockedAccessStatus ?? 'blocked',
+        ),
       ),
       GoRoute(
         path: '/login',
@@ -478,6 +520,33 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
           todayBorder:
               BorderSide(color: AppColors.primary.withValues(alpha: 0.55)),
           todayForegroundColor: WidgetStateProperty.all(AppColors.primary),
+          // Probleem 2 (aanmeld herstelronde, vervolg): zonder deze twee
+          // overrides valt de GESELECTEERDE dag terug op
+          // colorScheme.primary — via ColorScheme.fromSeed niet exact
+          // AppColors.primary, wat als afwijkend bruin/rood oogt. Expliciet
+          // vastzetten op het officiële Klantio primary-token.
+          dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) return Colors.white;
+            return AppColors.textPrimary;
+          }),
+          dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return AppColors.primary;
+            }
+            return null;
+          }),
+          dayOverlayColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return Colors.white.withValues(alpha: 0.12);
+            }
+            return AppColors.primary.withValues(alpha: 0.10);
+          }),
+          todayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return AppColors.primary;
+            }
+            return null;
+          }),
         ),
         timePickerTheme: TimePickerThemeData(
           backgroundColor: AppColors.white,

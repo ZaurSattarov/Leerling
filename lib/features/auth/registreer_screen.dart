@@ -17,7 +17,6 @@ class RegistreerScreen extends StatefulWidget {
 
 class _RegistreerScreenState extends State<RegistreerScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _naamCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _wachtwoordCtrl = TextEditingController();
   bool _laden = false;
@@ -25,7 +24,6 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
 
   @override
   void dispose() {
-    _naamCtrl.dispose();
     _emailCtrl.dispose();
     _wachtwoordCtrl.dispose();
     super.dispose();
@@ -38,15 +36,20 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
     setState(() => _laden = true);
 
     try {
-      final naam = _naamCtrl.text.trim();
       final email = _emailCtrl.text.trim().toLowerCase();
 
+      // Registratiescherm vereenvoudigd (2026-09-01): uitsluitend
+      // e-mailadres + wachtwoord. Geen naam meer in de signup-payload --
+      // de bestaande koppel-/profielafrondflow (voltooi_leerling_profiel)
+      // blijft verantwoordelijk voor persoonsgegevens, dus geen
+      // dummy/lege naam nodig om iets te omzeilen. Geen enkele
+      // trigger/RPC in de canonical Instructeur-repo leest
+      // raw_user_meta_data voor leerlingen (geverifieerd) -- 'role'/'type'/
+      // 'account_type' blijven staan, die zijn niet naam-gerelateerd.
       final response = await StudentService.registreren(
         email: email,
         wachtwoord: _wachtwoordCtrl.text,
-        metadata: {
-          'naam': naam,
-          'full_name': naam,
+        metadata: const {
           'role': 'leerling',
           'type': 'leerling',
           'account_type': 'leerling',
@@ -56,8 +59,7 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
       final user = response.user;
       final isBevestigd = user?.emailConfirmedAt != null;
       if (isBevestigd) {
-        _toonFout(
-            'Dit e-mailadres is al bevestigd. Log in om verder te gaan.');
+        _toonFout('Dit e-mailadres is al bevestigd. Log in om verder te gaan.');
         return;
       }
 
@@ -195,19 +197,6 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      _Veld(
-                        controller: _naamCtrl,
-                        hint: 'Volledige naam',
-                        suffixIcon: Icons.person_outline,
-                        keyboardType: TextInputType.name,
-                        validator: (v) {
-                          if (v == null || v.trim().isEmpty) {
-                            return 'Vul je naam in';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 12),
                       _Veld(
                         controller: _emailCtrl,
                         hint: 'E-mailadres',

@@ -170,20 +170,38 @@ class StudentService {
     }
   }
 
+  // [geslacht]/[adres] zijn optioneel (probleem 7, aanmeld herstelronde):
+  // canonical waarden 'man'/'vrouw' voor geslacht (zelfde representatie als
+  // de Instructeur-app, zie AvatarService.genderValueForCategory daar) en de
+  // bestaande vrije-tekst adreskolom. Deze parameters worden UITSLUITEND aan
+  // de RPC-aanroep toegevoegd wanneer ze daadwerkelijk zijn ingevuld, zodat
+  // de bestaande achternaam/geboortedatum/avatar-flow exact blijft werken
+  // zolang de 5-parameter-RPC nog niet live staat (zie
+  // supabase/migrations-blocked/proposed-aanmeld-herstelronde-2026-09-01/
+  // DRAFT_voltooi_leerling_profiel_geslacht_adres.sql.txt in de
+  // Instructeur-repo — nog niet gedeployed).
   static Future<void> voltooiMijnProfiel({
     required String achternaam,
     required DateTime geboortedatum,
     required String avatarId,
+    String? geslacht,
+    String? adres,
   }) async {
     final date = '${geboortedatum.year.toString().padLeft(4, '0')}-'
         '${geboortedatum.month.toString().padLeft(2, '0')}-'
         '${geboortedatum.day.toString().padLeft(2, '0')}';
+    final schoneGeslacht = geslacht?.trim();
+    final schoonAdres = adres?.trim();
     final raw = await client.rpc(
       'voltooi_leerling_profiel',
       params: {
         'p_achternaam': achternaam.trim(),
         'p_geboortedatum': date,
         'p_avatar_id': avatarId,
+        if (schoneGeslacht != null && schoneGeslacht.isNotEmpty)
+          'p_geslacht': schoneGeslacht,
+        if (schoonAdres != null && schoonAdres.isNotEmpty)
+          'p_adres': schoonAdres,
       },
     );
     final result = Map<String, dynamic>.from(raw as Map);
