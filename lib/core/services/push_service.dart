@@ -2,11 +2,13 @@
 //
 // Orchestration rond canonical openLeerlingNotificatie(notificatie).
 import 'dart:async';
+import 'dart:io' show Platform;
 import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart' show MethodChannel, PlatformException;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +22,13 @@ const _devicePrefKey = 'klantio_push_device_id_v1';
 const apnsTokenMaxRetries = 5;
 const apnsTokenRetryDelay = Duration(seconds: 1);
 const pushTapMaxFrameRetries = 60;
+
+/// Android-only: aparte, native notificatiekanalen (klantio_lessen/financieel/algemeen)
+/// die de backend/FCM-payload via `channel_id` verwacht. Op Android 8+ toont het OS geen
+/// tray-notification als het opgegeven kanaal niet bestaat. Native kant (Application/
+/// MainActivity/ContentProvider) roept dit al aan; deze call is een extra, veilige
+/// no-op-bij-falen safeguard vanaf de Dart-kant.
+const _notificationsChannel = MethodChannel('com.klantio.leerling/notifications');
 
 abstract class PushService {
   static bool _listenersAttached = false;
@@ -48,6 +57,7 @@ abstract class PushService {
 
   /// Vóór runApp aanroepen zodat iOS-taps de listener niet missen.
   static Future<void> ensureInitialized() async {
+    await _ensureAndroidNotificationChannels();
     if (_listenersAttached) return;
     _listenersAttached = true;
     try {
@@ -62,6 +72,20 @@ abstract class PushService {
       debugPrint('[PushService] init fout: $e');
       _listenersAttached = false;
       rethrow;
+    }
+  }
+
+  /// Vraagt de native Android-kant om de notificatiekanalen te (her)garanderen.
+  /// Native heeft dit al gedaan bij process-start; dit is een extra safeguard die
+  /// nooit de app mag laten crashen als het platform-kanaal onverwacht faalt.
+  static Future<void> _ensureAndroidNotificationChannels() async {
+    if (!Platform.isAndroid) return;
+    try {
+      await _notificationsChannel.invokeMethod('ensureNotificationChannels');
+    } on PlatformException catch (e) {
+      debugPrint('[PushService] ensureNotificationChannels platformfout: $e');
+    } catch (e) {
+      debugPrint('[PushService] ensureNotificationChannels fout: $e');
     }
   }
 

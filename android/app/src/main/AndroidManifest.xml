@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <!-- Push notificaties (Fase 5) -->
@@ -6,7 +7,8 @@
 
     <application
         android:label="Klantio L"
-        android:name="${applicationName}"
+        android:name="com.klantio.leerling.KlantioLeerlingApplication"
+        tools:replace="android:name"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round">
         <activity
@@ -57,6 +59,25 @@
 <meta-data
     android:name="com.google.android.geo.API_KEY"
     android:value="${mapsApiKey}" />
+
+        <!-- Android notificatiekanalen (2026-09-01): bestaande backend/FCM-payloads
+             verwijzen expliciet naar channel_id's zoals klantio_lessen. Zonder een
+             geldige default valt Android 8+ terug op een fallback-kanaal en toont het
+             de tray-notification niet correct. Kanalen zelf worden aangemaakt door
+             NotificationChannels.ensureCreated (zie KlantioLeerlingApplication,
+             MainActivity, NotificationChannelInitProvider). -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="klantio_algemeen" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:value="@drawable/ic_stat_notify" />
+
+        <provider
+            android:name="com.klantio.leerling.NotificationChannelInitProvider"
+            android:authorities="com.klantio.leerling.notificationchannelinit"
+            android:exported="false"
+            android:initOrder="100" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

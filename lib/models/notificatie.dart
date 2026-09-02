@@ -102,6 +102,7 @@ class Notificatie {
       'invoice_paid' =>
         '/facturen',
       'package_almost_empty' => '/voortgang/lespakket',
+      'arrival_started' || 'arrival_available' => '/planning',
       'exam_scheduled' => '/examens',
       'exam_result' => '/examens',
       'voortgang' || 'examenadvies' => '/examenadvies',

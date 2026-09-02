@@ -192,6 +192,9 @@ class _NotificatieCard extends ConsumerWidget {
       case 'voortgang':
       case 'examenadvies':
         return Icons.bar_chart_rounded;
+      case 'arrival_started':
+      case 'arrival_available':
+        return Icons.near_me_rounded;
       default:
         return Icons.notifications_rounded;
     }
@@ -222,6 +225,9 @@ class _NotificatieCard extends ConsumerWidget {
       case 'voortgang':
       case 'examenadvies':
         return AppColors.successSolid;
+      case 'arrival_started':
+      case 'arrival_available':
+        return AppColors.infoSolid;
       default:
         return AppColors.dark3;
     }
