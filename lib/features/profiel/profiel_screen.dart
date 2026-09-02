@@ -13,6 +13,7 @@ import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_tab_header.dart';
 import '../../shared/widgets/snackbar.dart';
+import 'account_deletion_flow.dart';
 import 'profile_hero_copy.dart';
 import 'profielfoto_editor.dart';
 import 'rijschool_provider.dart';
@@ -128,24 +129,9 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
     if (mounted) context.go('/login');
   }
 
-  Future<void> _toonAccountVerwijderenGap() async {
+  Future<void> _toonAccountVerwijderen() async {
     if (!mounted) return;
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Nog niet beschikbaar'),
-        content: const Text(
-          'Er is nog geen veilige leerling-accountverwijderflow. '
-          'Neem contact op met support. We verwijderen geen school- of instructeurdata vanuit deze app.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Sluiten'),
-          ),
-        ],
-      ),
-    );
+    await AccountDeletionFlow.start(context);
   }
 
   void _toonOverDeApp() {
@@ -349,8 +335,8 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             child: ProfielMenuCard(children: [
               ProfielMenuTile(
                 icon: Icons.privacy_tip_outlined,
-                label: 'Privacy',
-                subtitle: 'Hoe wij omgaan met je gegevens',
+                label: 'Privacy, gegevens & juridisch',
+                subtitle: 'Documenten, gegevens en account',
                 onTap: () => context.push('/profiel/privacy'),
               ),
             ]),
@@ -398,7 +384,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
                 _DangerRow(
                   icon: Icons.delete_forever_rounded,
                   label: 'Account verwijderen',
-                  onTap: _toonAccountVerwijderenGap,
+                  onTap: _toonAccountVerwijderen,
                 ),
               ],
             ),

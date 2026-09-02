@@ -227,7 +227,7 @@ niet nu, dat valt buiten "alleen Profiel-architectuur analyseren".
 | Privacy / voorwaarden | Statische externe URL (`klantio.nl/privacy`) | — | — | — | Geen database-eigenaarschap van toepassing; bedrijfsbrede link, geen leerling-/instructeurdata |
 | Help / support | `/help`-scherm (contact + FAQ, statische content) | — | — | — | Geen database-afhankelijkheid |
 | App-versie | Hardcoded string in de UI | — | — | — | Zie afwijkingen (sectie 13) — hoort uit de build-metadata te komen, niet uit een losse string |
-| Account verwijderen | **Geen backend** | — | — | — | Niet geïmplementeerd voor leerlingen; Instructeur-app heeft wél een eigen verwijderflow (andere tabel/rol), niet herbruikbaar zonder een equivalente leerling-RPC |
+| Account verwijderen | Edge Function `delete-leerling-account` + RPC `anonimiseer_leerling` | JWT `auth.uid()` → `leerlingen.user_id` | Self-service | — | Canonical lifecycle: persoonsgegevens/leskaart/toestemmingen/tokens + leerlingen-rij weg; lessen/facturen ontkoppeld/geanonimiseerd, niet cascade-gewist. Auth-user alleen als dit account geen instructeur-/teamlid-rol heeft (`OTHER_ROLE`). Geen client-`leerling_id`. |
 | Taal | **Lokale device-instelling**, geen Supabase-kolom | — | — | — | Bevestigd: Instructeur-app's `taalProvider` gebruikt `SharedPreferences`, niet `instructeur_profielen` — als dit ooit voor leerlingen gebouwd wordt, hoort het volgens hetzelfde patroon lokaal te blijven, geen nieuwe kolom nodig |
 
 Geen van deze sub-items heeft een repository/provider in de klassieke zin — ze zijn ofwel Auth-API-calls,

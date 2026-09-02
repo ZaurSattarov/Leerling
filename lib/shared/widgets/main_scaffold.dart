@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/services/native_navigation_bridge.dart';
 import 'ios_native_navigation_host.dart';
 
 class MainScaffold extends ConsumerWidget {
@@ -102,7 +103,8 @@ class MainScaffold extends ConsumerWidget {
         items: _items,
         onItemTap: onItemTap,
         fallback: Padding(
-          padding: EdgeInsets.fromLTRB(20, _kBarTopPadding, 20, navBarOnderMarge),
+          padding:
+              EdgeInsets.fromLTRB(20, _kBarTopPadding, 20, navBarOnderMarge),
           child: PremiumBottomNavBar(
             activeIndex: activeIndex,
             items: _items,
@@ -343,4 +345,54 @@ class NavBarItem {
     required this.route,
     this.sfSymbol = 'circle.fill',
   });
+}
+
+/// Canonical navbar-safe inset voor sheets. Zelfde principe als de
+/// Instructeur-app: toetsenbord wint; anders de echte navbar-footprint,
+/// geen magic number.
+double bottomSheetSafeInset(
+  BuildContext context, {
+  double extra = 20,
+}) {
+  final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+  if (keyboardInset > 0) return keyboardInset + extra;
+
+  final container = ProviderScope.containerOf(context, listen: false);
+  final navState = container.read(nativeNavigationProvider);
+  final navFootprint = navState.available
+      ? navState.height
+      : () {
+          final systeemInsetOnder = MediaQuery.paddingOf(context).bottom;
+          final navBarOnderMarge =
+              math.max(12.0, systeemInsetOnder * 0.5) + _kBarLiftPixels;
+          return _kBarTopPadding + _kBarHeight + navBarOnderMarge;
+        }();
+  return navFootprint + extra;
+}
+
+/// Canonieke Klantio-sheet boven de zwevende navbar.
+Future<T?> showKlantioNavbarSafeSheet<T>({
+  required BuildContext context,
+  required Widget Function(BuildContext context, double bottomInset) builder,
+  bool isDismissible = true,
+  bool enableDrag = true,
+}) {
+  return showModalBottomSheet<T>(
+    context: context,
+    isScrollControlled: true,
+    isDismissible: isDismissible,
+    enableDrag: enableDrag,
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (ctx) {
+      final bottom = bottomSheetSafeInset(ctx);
+      final maxHeight = MediaQuery.sizeOf(ctx).height * 0.9;
+      return ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: maxHeight),
+        child: builder(ctx, bottom),
+      );
+    },
+  );
 }

@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/constants/app_colors.dart';
+import 'core/lifecycle/account_scoped_invalidation.dart';
 import 'core/services/access_gate_service.dart';
 import 'core/services/push_service.dart';
 import 'features/arrival/arrival_provider.dart';
@@ -45,6 +46,7 @@ import 'features/profiel/beveiliging_screen.dart';
 import 'features/profiel/lespakket_detail_screen.dart';
 import 'features/profiel/mijn_rijschool_screen.dart';
 import 'features/profiel/persoonlijke_gegevens_screen.dart';
+import 'features/profiel/privacy_juridisch_screen.dart';
 import 'features/profiel/profiel_screen.dart';
 import 'shared/widgets/main_scaffold.dart';
 import 'shared/widgets/student_profile_gate.dart';
@@ -66,7 +68,9 @@ class _AuthNotifier extends ChangeNotifier {
       // locatiedata van de vorige gebruiker laten staan voor een eventuele
       // volgende gebruiker op hetzelfde toestel.
       if (data.event == AuthChangeEvent.signedOut) {
-        _ref.read(arrivalControllerProvider.notifier).onAuthLost();
+        scheduleAccountScopedProviderInvalidation(() {
+          _ref.read(arrivalControllerProvider.notifier).onAuthLost();
+        });
         blockedAccessStatus = null;
       }
       // Klantio Intern Beheerplatform — accountblokkade (Optie B,
@@ -336,6 +340,12 @@ final _routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/profiel/privacy',
+        builder: (_, __) => const StudentProfileGate(
+          child: PrivacyJuridischScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/profiel/privacy-beleid',
         builder: (_, __) => const StudentProfileGate(
           child: LegalDocumentScreen(document: privacyPolicyNl),
         ),

@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../features/profiel/account_deletion_exception.dart';
 import '../config/app_config.dart';
 import '../utils/komende_les_filter.dart';
 import '../../models/leerling_profiel.dart';
@@ -96,8 +99,7 @@ class StudentService {
         data: metadata,
         emailRedirectTo: AppConfig.authConfirmRedirectUrl,
       );
-      debugPrint(
-          '[student.registreren] session=${response.session != null}');
+      debugPrint('[student.registreren] session=${response.session != null}');
       return response;
     } on AuthException catch (e) {
       debugPrint(
@@ -110,10 +112,47 @@ class StudentService {
   }
 
   static Future<void> uitloggen() async {
+    if (client.auth.currentSession == null) return;
     // Push (Fase 5): dit apparaat deactiveren VOORDAT de sessie sluit --
     // deactivate_push_token heeft auth.uid() nodig.
     await PushService.deactivateForLogout();
+    if (client.auth.currentSession == null) return;
     await client.auth.signOut();
+  }
+
+  /// Self-service delete. Identity komt server-side uit JWT — geen
+  /// leerling_id/user_id in de payload.
+  static Future<void> verwijderAccount() async {
+    final session = client.auth.currentSession;
+    final token = session?.accessToken;
+    if (token == null || token.isEmpty) {
+      throw Exception('Geen actieve sessie gevonden.');
+    }
+
+    final response = await http.post(
+      Uri.parse('$supabaseUrl/functions/v1/delete-leerling-account'),
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': supabaseAnonKey,
+        'Authorization': 'Bearer $token',
+        'x-client-info': 'klantio-leerling-flutter',
+      },
+    );
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      String message = 'Account verwijderen mislukt.';
+      String? code;
+      try {
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        message =
+            (body['message'] ?? body['details'] ?? body['error'] ?? message)
+                .toString();
+        code = body['code'] as String?;
+      } catch (_) {
+        if (response.body.trim().isNotEmpty) message = response.body.trim();
+      }
+      throw AccountDeletionException(message, code: code);
+    }
   }
 
   static Future<void> stuurWachtwoordReset(String email) {

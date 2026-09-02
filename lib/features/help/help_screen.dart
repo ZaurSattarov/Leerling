@@ -88,7 +88,8 @@ class HelpScreen extends StatelessWidget {
                               iconColor: AppColors.dark3,
                               title: 'Privacybeleid',
                               subtitle: 'Hoe wij omgaan met je gegevens',
-                              onTap: () => context.push('/profiel/privacy'),
+                              onTap: () =>
+                                  context.push('/profiel/privacy-beleid'),
                             ),
                             const Divider(height: 20),
                             _HelpTile(
