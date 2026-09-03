@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -111,7 +112,67 @@ class StudentService {
     }
   }
 
+  // ── GOOGLE-LOGIN (native, Android) ──────────────────────────────────────
+  // Zie AppConfig.googleServerClientId voor de vereiste configuratie. Geen
+  // Firebase Auth: dit gaat rechtstreeks via google_sign_in -> Supabase's
+  // signInWithIdToken(), op dezelfde auth.users-architectuur als
+  // wachtwoord-login hierboven. Anders dan de Instructeur-app heeft de
+  // Leerling-app géén eigen "profiel met defaults"-rij om na login te
+  // activeren -- een leerling-profiel (`leerlingen`) wordt uitsluitend door
+  // de instructeur aangemaakt en pas via `koppelLeerlingMetCode()` aan dit
+  // account gekoppeld, ongeacht de inlogmethode. Een nieuwe Google-gebruiker
+  // krijgt dus vanzelf, net als een nieuwe wachtwoord-gebruiker, geen
+  // toegang tot bestaande leerlingdata totdat die koppelcode is ingevoerd.
+  static GoogleSignIn? _googleSignIn;
+
+  static GoogleSignIn get _google {
+    return _googleSignIn ??= GoogleSignIn(
+      serverClientId: AppConfig.googleServerClientId.isNotEmpty
+          ? AppConfig.googleServerClientId
+          : null,
+      scopes: const ['email'],
+    );
+  }
+
+  /// Start de native Google-accountkiezer en logt in via Supabase's
+  /// idToken-flow. Retourneert `null` wanneer de gebruiker de accountkiezer
+  /// annuleert -- normaal gedrag, geen fout. Gooit een [StateError] bij een
+  /// echte configuratiefout (ontbrekende serverClientId of geen idToken).
+  static Future<AuthResponse?> meldAanMetGoogle() async {
+    if (AppConfig.googleServerClientId.isEmpty) {
+      throw StateError(
+        'Google-login is niet geconfigureerd (GOOGLE_SERVER_CLIENT_ID ontbreekt).',
+      );
+    }
+
+    final googleUser = await _google.signIn();
+    if (googleUser == null) return null; // gebruiker annuleerde
+
+    final googleAuth = await googleUser.authentication;
+    final idToken = googleAuth.idToken;
+    if (idToken == null) {
+      throw StateError(
+        'Google leverde geen idToken (onvolledige OAuth-configuratie).',
+      );
+    }
+
+    return client.auth.signInWithIdToken(
+      provider: OAuthProvider.google,
+      idToken: idToken,
+      accessToken: googleAuth.accessToken,
+    );
+  }
+
   static Future<void> uitloggen() async {
+    // Google-sessie lokaal loskoppelen (signOut, geen disconnect/revoke) --
+    // zodat een volgende "Doorgaan met Google" weer een accountkeuze toont
+    // i.p.v. stilzwijgend hetzelfde account te hergebruiken. Best-effort: een
+    // Google-fout mag de eigenlijke Supabase-uitlog nooit blokkeren.
+    try {
+      await _google.signOut();
+    } catch (e) {
+      debugPrint('[auth][google] signOut mislukte (genegeerd): $e');
+    }
     if (client.auth.currentSession == null) return;
     // Push (Fase 5): dit apparaat deactiveren VOORDAT de sessie sluit --
     // deactivate_push_token heeft auth.uid() nodig.
@@ -152,6 +213,15 @@ class StudentService {
         if (response.body.trim().isNotEmpty) message = response.body.trim();
       }
       throw AccountDeletionException(message, code: code);
+    }
+
+    // Geen actieve lokale Google-sessie laten hangen na een verwijderd
+    // account -- de canonical deletion-flow hierboven (Edge Function) blijft
+    // ongewijzigd de bron van waarheid; dit is uitsluitend lokale opruiming.
+    try {
+      await _google.signOut();
+    } catch (e) {
+      debugPrint('[auth][google] signOut na accountverwijdering mislukte: $e');
     }
   }
 

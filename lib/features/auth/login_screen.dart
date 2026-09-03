@@ -80,6 +80,42 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _meldAanMetGoogle() async {
+    if (_laden) return;
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _laden = true;
+      _fout = null;
+    });
+
+    try {
+      final response = await StudentService.meldAanMetGoogle();
+      if (response == null) {
+        // Gebruiker annuleerde de Google-accountkiezer -- normaal gedrag,
+        // geen foutmelding tonen.
+        return;
+      }
+      if (!mounted) return;
+      final profiel = await StudentService.getMijnProfiel();
+      if (mounted) context.go(profiel != null ? '/home' : '/koppelcode');
+    } on AuthException catch (e) {
+      if (mounted) setState(() => _fout = _vriendelijkeFout(e.message));
+    } on StateError catch (e) {
+      debugPrint('[login][google] configuratiefout: ${e.message}');
+      if (mounted) {
+        setState(() => _fout = 'Google-login is momenteel niet beschikbaar.');
+      }
+    } catch (e) {
+      debugPrint('[login][google] onbekende fout: $e');
+      if (mounted) {
+        setState(
+            () => _fout = 'Google-login mislukt. Controleer je verbinding.');
+      }
+    } finally {
+      if (mounted) setState(() => _laden = false);
+    }
+  }
+
   Future<void> _laadOnthoudenEmail() async {
     final prefs = await SharedPreferences.getInstance();
     final email = prefs.getString(_rememberEmailKey);
@@ -302,6 +338,54 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: Colors.white,
                             ),
                           ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Divider(
+                          color: AppColors.textHint.withValues(alpha: 0.3)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Text(
+                        'of',
+                        style: GoogleFonts.inter(
+                            fontSize: 13, color: AppColors.textSecondary),
+                      ),
+                    ),
+                    Expanded(
+                      child: Divider(
+                          color: AppColors.textHint.withValues(alpha: 0.3)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  height: 52,
+                  child: OutlinedButton.icon(
+                    onPressed: _laden ? null : _meldAanMetGoogle,
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      side: const BorderSide(color: Color(0xFFDADCE0)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    icon: Image.asset(
+                      'assets/icons/google_logo.png',
+                      height: 20,
+                      width: 20,
+                    ),
+                    label: Text(
+                      'Doorgaan met Google',
+                      style: GoogleFonts.inter(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF1F1F1F),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
