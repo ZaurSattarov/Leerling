@@ -2,6 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/arrival_location.dart';
 import '../../models/arrival_session.dart';
+import '../../models/arrival_settings_info.dart';
 
 /// Leerling-side data-toegang voor Live Aankomst (Feature 2, Fase 2C).
 ///
@@ -32,6 +33,16 @@ abstract class ArrivalRepository {
   /// (dus `location_visibility = 'visible'` EN sessie nog actief/geldig).
   /// `null` zolang de locatie nog verborgen is -- geen fout, geen fallback.
   Future<ArrivalLocation?> fetchLocation(String sessionId);
+
+  /// Live Aankomst-eligibility + het ingestelde venster (in minuten) voor
+  /// deze les, via de smalle `fn_leerling_arrival_settings`-RPC (migratie
+  /// `20260903090000_live_aankomst_leerling_settings_rpc.sql`) -- de enige
+  /// legale leesweg naar `instructor_arrival_settings.visible_from_minutes`
+  /// vanuit de Leerling-app (die tabel heeft uitsluitend een
+  /// instructeur-eigen SELECT-policy). Gooit door bij een echte technische
+  /// fout (netwerk/RPC) -- de aanroeper behandelt dat als "nog niet
+  /// geladen", nooit als `eligible: false`.
+  Future<ArrivalSettingsInfo> fetchArrivalSettings(String lessonId);
 
   /// Realtime-subscription op wijzigingen aan de sessie voor deze les.
   /// De callback triggert uitsluitend een VERSE SELECT (zie
@@ -73,6 +84,15 @@ class SupabaseArrivalRepository implements ArrivalRepository {
         .eq('session_id', sessionId)
         .maybeSingle();
     return ArrivalLocation.fromRow(row);
+  }
+
+  @override
+  Future<ArrivalSettingsInfo> fetchArrivalSettings(String lessonId) async {
+    final result = await _client.rpc(
+      'fn_leerling_arrival_settings',
+      params: {'p_lesson_id': lessonId},
+    );
+    return ArrivalSettingsInfo.fromRpcResult(result);
   }
 
   @override

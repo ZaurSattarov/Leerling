@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:leerling_app/core/services/arrival_repository.dart';
 import 'package:leerling_app/models/arrival_location.dart';
 import 'package:leerling_app/models/arrival_session.dart';
+import 'package:leerling_app/models/arrival_settings_info.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Test-fake voor ArrivalRepository -- laat tests de "servertoestand"
@@ -15,11 +16,16 @@ class FakeArrivalRepository implements ArrivalRepository {
   /// sessionId -> locatie die een verse fetchLocation teruggeeft.
   final Map<String, ArrivalLocation?> locationsBySession = {};
 
+  /// lessonId -> settings die een verse fetchArrivalSettings teruggeeft.
+  final Map<String, ArrivalSettingsInfo> settingsByLesson = {};
+
   Object? sessionFetchError;
   Object? locationFetchError;
+  Object? settingsFetchError;
 
   int fetchSessionCalls = 0;
   int fetchLocationCalls = 0;
+  int fetchSettingsCalls = 0;
   final List<String> subscribedSessionLessonIds = [];
   final List<String> subscribedLocationSessionIds = [];
   final List<String> removedChannelNames = [];
@@ -43,6 +49,13 @@ class FakeArrivalRepository implements ArrivalRepository {
     fetchLocationCalls++;
     if (locationFetchError != null) throw locationFetchError!;
     return locationsBySession[sessionId];
+  }
+
+  @override
+  Future<ArrivalSettingsInfo> fetchArrivalSettings(String lessonId) async {
+    fetchSettingsCalls++;
+    if (settingsFetchError != null) throw settingsFetchError!;
+    return settingsByLesson[lessonId] ?? ArrivalSettingsInfo.nietBeschikbaar;
   }
 
   @override

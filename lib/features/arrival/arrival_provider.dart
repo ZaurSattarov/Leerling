@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/services/arrival_repository.dart';
 import '../../models/arrival_location.dart';
 import '../../models/arrival_session.dart';
+import '../../models/arrival_settings_info.dart';
 
 /// Leerling-side state voor Live Aankomst (Feature 2, Fase 2C).
 ///
@@ -263,13 +264,36 @@ class ArrivalController extends StateNotifier<ArrivalState> {
   }
 }
 
+/// Aparte provider voor de repository (i.p.v. rechtstreeks inline
+/// geconstrueerd in [arrivalControllerProvider]) zodat [arrivalSettingsProvider]
+/// hieronder dezelfde instantie hergebruikt -- geen tweede losstaande
+/// `SupabaseArrivalRepository()` ergens anders in de app.
+final arrivalRepositoryProvider = Provider<ArrivalRepository>((ref) {
+  return const SupabaseArrivalRepository();
+});
+
 final arrivalControllerProvider =
     StateNotifierProvider<ArrivalController, ArrivalState>((ref) {
   final controller =
-      ArrivalController(repository: const SupabaseArrivalRepository());
+      ArrivalController(repository: ref.watch(arrivalRepositoryProvider));
   ref.onDispose(controller.dispose);
   return controller;
 });
+
+/// Live Aankomst-eligibility + venster (in minuten) voor één les, voor de
+/// altijd-zichtbare banner op Lesdetails (2026-09-03, zie
+/// live_aankomst_banner_logic.dart). Eén fetch per les-id, zelfde
+/// fail-safe-filosofie als de rest van deze feature: een fout hier
+/// propageert als `AsyncError` -- de UI behandelt dat als "nog niet
+/// geladen" (geen banner die verschijnt/verdwijnt), nooit als een
+/// foutmelding of als `eligible: false`.
+final arrivalSettingsProvider =
+    FutureProvider.autoDispose.family<ArrivalSettingsInfo, String>(
+  (ref, lessonId) {
+    final repo = ref.watch(arrivalRepositoryProvider);
+    return repo.fetchArrivalSettings(lessonId);
+  },
+);
 
 // ============================================================================
 // Fase 2C, §8 -- gekozen aanpak voor de hidden->visible Realtime/RLS-edge case

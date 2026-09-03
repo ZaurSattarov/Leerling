@@ -11,11 +11,13 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import '../../shared/widgets/snackbar.dart';
 import '../arrival/arrival_provider.dart';
+import '../arrival/live_aankomst_banner_logic.dart';
 import '../arrival/live_aankomst_fullscreen_screen.dart';
 import '../arrival/widgets/arrival_live_map.dart';
 import '../profiel/rijschool_provider.dart';
 import 'planning_provider.dart';
 import 'widgets/lesson_status_badge.dart';
+import 'widgets/live_aankomst_banner.dart';
 
 class LesDetailScreen extends ConsumerWidget {
   final String id;
@@ -126,6 +128,14 @@ class _LesDetailBody extends ConsumerWidget {
                 _VoertuigCard(les: les),
                 const SizedBox(height: 12),
               ],
+
+              // 4.5. Live Aankomst-banner -- ALTIJD gemount voor een
+              // (potentieel) eligible les, ongeacht of `locatie` is ingevuld
+              // en ongeacht of het venster al open is (2026-09-03). Render
+              // zichzelf onzichtbaar (SizedBox.shrink) wanneer er niets te
+              // tonen is. Onafhankelijk van de Locatie-sectie hieronder --
+              // zie klasse-comment bij _LiveAankomstBannerSectie.
+              _LiveAankomstBannerSectie(les: les),
 
               // 5. Locatie + Kaart -- wordt automatisch Live Aankomst zodra
               // de instructeur voor precies deze les een zichtbare sessie
@@ -787,13 +797,130 @@ class _ContactActiesCard extends StatelessWidget {
   }
 }
 
+/// Altijd-gemounte Live Aankomst-banner (2026-09-03) -- onafhankelijk van
+/// `les.locatie` (in tegenstelling tot [_OphaallocatieSectie] hieronder,
+/// die alleen mount wanneer er een adres is). Zonder deze widget zou een
+/// les zonder ingevulde ophaallocatie NOOIT de banner tonen, ook niet als
+/// Live Aankomst er verder gewoon voor beschikbaar is.
+///
+/// Roept, net als [_OphaallocatieSectieState], `onLessonChanged` aan op
+/// dezelfde [arrivalControllerProvider] -- twee onafhankelijke aanroepers
+/// van dezelfde, al bestaande, idempotente lifecycle-methode
+/// (`if (_lessonId == lessonId) return;` in ArrivalController) is bewust
+/// veilig: beide widgets sturen altijd hetzelfde les-id voor dezelfde les,
+/// dus de tweede aanroep is altijd een no-op. Geen tweede
+/// Realtime-subscription, geen dubbele fetch.
+///
+/// Toont zelf GEEN kaart/locatie (zie [LiveAankomstBanner]) -- die blijft
+/// uitsluitend [_OphaallocatieSectie]'s verantwoordelijkheid, ongewijzigd.
+class _LiveAankomstBannerSectie extends ConsumerStatefulWidget {
+  final Les les;
+  const _LiveAankomstBannerSectie({required this.les});
+
+  @override
+  ConsumerState<_LiveAankomstBannerSectie> createState() =>
+      _LiveAankomstBannerSectieState();
+}
+
+class _LiveAankomstBannerSectieState
+    extends ConsumerState<_LiveAankomstBannerSectie> {
+  late final ArrivalController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = ref.read(arrivalControllerProvider.notifier);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _controller.onLessonChanged(widget.les.id);
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant _LiveAankomstBannerSectie oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.les.id != widget.les.id) {
+      _controller.onLessonChanged(widget.les.id);
+    }
+  }
+
+  @override
+  void dispose() {
+    // Zelfde microtask-redenering als _OphaallocatieSectieState.dispose().
+    final controller = _controller;
+    Future.microtask(() => controller.onLessonChanged(null));
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final les = widget.les;
+    final arrivalState = ref.watch(arrivalControllerProvider);
+    final settingsAsync = ref.watch(arrivalSettingsProvider(les.id));
+
+    return settingsAsync.when(
+      // Nog niet geladen: geen banner tonen (geen "leeg" tussenscherm, geen
+      // spinner die de pagina laat springen) -- verschijnt zodra de fetch
+      // klaar is. Zelfde fail-safe filosofie als de rest van deze feature.
+      loading: () => const SizedBox.shrink(),
+      // Echte technische fout (netwerk/RPC): NOOIT tonen alsof Live
+      // Aankomst niet beschikbaar is (dat zou `eligible: false` impliceren
+      // terwijl we het antwoord simpelweg niet weten) -- gewoon niets
+      // tonen, geen foutmelding. Een actieve sessie kan alsnog getoond
+      // worden (die staat komt uit een aparte, al bestaande provider).
+      error: (_, __) {
+        if (arrivalState.session != null &&
+            arrivalState.session!.lessonId == les.id &&
+            arrivalState.session!.isActive()) {
+          return const LiveAankomstBanner(
+              status: LiveAankomstBannerStatus.actief);
+        }
+        return const SizedBox.shrink();
+      },
+      data: (settings) {
+        final sessieActief = arrivalState.session != null &&
+            arrivalState.session!.lessonId == les.id &&
+            arrivalState.session!.isActive();
+        final lesStart = leesLesStartMoment(les);
+        final status = bepaalLiveAankomstBannerStatus(
+          lesStatus: les.status,
+          eligible: settings.eligible,
+          visibleFromMinutes: settings.visibleFromMinutes,
+          lesStartMoment: lesStart,
+          sessieActief: sessieActief,
+        );
+        if (status == null) return const SizedBox.shrink();
+
+        final vensterOpentOp =
+            status == LiveAankomstBannerStatus.voorVenster &&
+                    lesStart != null &&
+                    settings.visibleFromMinutes != null
+                ? lesStart.subtract(
+                    Duration(minutes: settings.visibleFromMinutes!))
+                : null;
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: LiveAankomstBanner(
+            status: status,
+            vensterOpentOp: vensterOpentOp,
+          ),
+        );
+      },
+    );
+  }
+}
+
 /// Beslist of de ophaallocatiekaart de normale (statische, extern-Maps)
 /// weergave toont of de Live Aankomst-variant (Feature 2, Fase 4) --
 /// afhankelijk van de al bestaande [arrivalControllerProvider]-state. Deze
 /// widget introduceert GEEN nieuwe backend-/Realtime-logica: ze stuurt
 /// alleen de bestaande controller aan (welke les er bekeken wordt) en leest
-/// diens state. Geen losse Live Aankomst-feature elders (bv. Home) meer --
-/// dit is de enige entrypoint.
+/// diens state. Sinds 2026-09-03 is [_LiveAankomstBannerSectie] hierboven de
+/// tweede, onafhankelijke aanroeper van dezelfde `onLessonChanged`-lifecycle
+/// (zie de doc-comment daar voor waarom dat veilig is) -- deze widget blijft
+/// wél de enige plek die de kaart zelf (statisch of live) tekent.
 class _OphaallocatieSectie extends ConsumerStatefulWidget {
   final Les les;
   const _OphaallocatieSectie({required this.les});
