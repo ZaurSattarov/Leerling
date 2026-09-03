@@ -64,14 +64,20 @@ class IconBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final iconSize = size * 0.5;
     return Container(
       width: size,
       height: size,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: const Color(0xFFF0F2F5),
-        borderRadius: BorderRadius.circular(size * 0.28),
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: Icon(icon, color: color, size: size * 0.5),
+      child: SizedBox(
+        width: iconSize,
+        height: iconSize,
+        child: Icon(icon, color: color, size: iconSize),
+      ),
     );
   }
 }

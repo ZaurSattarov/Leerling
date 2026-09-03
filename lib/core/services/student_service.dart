@@ -18,6 +18,7 @@ import '../../models/notificatie.dart';
 import '../../models/examen.dart';
 import '../../models/instructeur.dart';
 import '../../models/instructor_lesson_package.dart';
+import '../../features/examenadvies/examenadvies_data.dart';
 import 'push_service.dart';
 
 class ProfileLookupException implements Exception {
@@ -426,30 +427,34 @@ class StudentService {
   // de starttijd nog niet is gepasseerd; voor toekomstige datums (datum >
   // vandaag) verandert er niets.
   static Future<List<Les>> getMijnKomendeLessen(String leerlingId) async {
+    final nu = DateTime.now();
     final res = await client
         .from(_studentLessenView)
         .select()
         .eq('leerling_id', leerlingId)
         .eq('status', 'gepland')
-        .or(komendeLesPostgrestFilter(DateTime.now()))
+        .or(komendeLesPostgrestFilter(nu))
         .order('datum')
         .order('starttijd')
         .limit(50);
-    return (res as List).map((e) => Les.fromJson(e)).toList();
+    final lessen = (res as List).map((e) => Les.fromJson(e)).toList();
+    return filterEnSorteerKomendeLessen(lessen, nu);
   }
 
   static Future<List<Les>> getMijnVorigeLessen(
     String leerlingId, {
     bool alleenZichtbaarLogboek = false,
   }) async {
-    final vandaagStr = vandaagString(DateTime.now());
+    final nu = DateTime.now();
+    final vandaagStr = vandaagString(nu);
+    final tijd = nuTijdString(nu);
     final query =
         client.from(_studentLessenView).select().eq('leerling_id', leerlingId);
 
     final filteredQuery = alleenZichtbaarLogboek
         ? query.eq('status', 'afgerond')
         : query.neq('status', 'gepland').or(
-            'datum.lt.$vandaagStr,status.eq.afgerond,status.eq.geannuleerd,status.eq.geen_toon');
+            'datum.lt.$vandaagStr,status.eq.afgerond,status.eq.geannuleerd,status.eq.geen_toon,and(datum.eq.$vandaagStr,eindtijd.lte.$tijd)');
 
     final res = await filteredQuery
         .order('datum', ascending: false)
@@ -729,7 +734,7 @@ class StudentService {
     ]);
 
     final komendeLessen = results[0] as List<Les>;
-    final volgendeLes = komendeLessen.isNotEmpty ? komendeLessen.first : null;
+    final volgendeLes = selecteerVolgendeLes(komendeLessen, DateTime.now());
     final openFacturen =
         (results[1] as List).map((e) => Factuur.fromJson(e)).toList();
     final ongelezen = (results[2] as List).length;
@@ -795,6 +800,14 @@ class StudentService {
       debugPrint('[student.lesEvaluatie] ophalen mislukt: $e');
       return null;
     }
+  }
+
+  static Future<ExamenadviesData> getExamenadvies(String leerlingId) async {
+    final res = await client.rpc(
+      'rpc_get_examenadvies',
+      params: {'p_student_id': leerlingId},
+    );
+    return ExamenadviesData.fromRpc(res);
   }
 
   static Future<List<Map<String, dynamic>>> getAllEvaluaties(

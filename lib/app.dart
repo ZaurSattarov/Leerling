@@ -21,6 +21,8 @@ import 'features/auth/reset_password_screen.dart';
 import 'features/auth/wachtwoord_vergeten_screen.dart';
 import 'features/auth/wachtwoord_reset_code_screen.dart';
 import 'features/koppelcode/koppelcode_screen.dart';
+import 'features/koppelcode/koppel_keuze_screen.dart';
+import 'features/koppelcode/qr_scan_screen.dart';
 import 'features/profiel/profiel_afronden_screen.dart';
 import 'features/home/home_screen.dart';
 import 'features/planning/planning_screen.dart';
@@ -221,9 +223,23 @@ final _routerProvider = Provider<GoRouter>((ref) {
           email: state.extra as String? ?? '',
         ),
       ),
+      // Koppel-flow. `/koppelcode` is de KEUZE-landing (QR of code); alle
+      // bestaande redirects (login/verificatie/splash/StudentProfileGate)
+      // blijven naar `/koppelcode` gaan en landen op de keuze. De
+      // handmatige invoer is verplaatst naar `/koppelcode/handmatig` --
+      // dezelfde canonical RPC, dezelfde vervolgnavigatie. De scanner
+      // staat op `/koppelcode/scan`.
       GoRoute(
         path: '/koppelcode',
-        builder: (_, __) => const KoppelcodeScreen(),
+        builder: (_, __) => const KoppelKeuzeScreen(),
+      ),
+      GoRoute(
+        path: '/koppelcode/handmatig',
+        builder: (_, __) => const KoppelcodeInvoerenScreen(),
+      ),
+      GoRoute(
+        path: '/koppelcode/scan',
+        builder: (_, __) => const QrScanScreen(),
       ),
       GoRoute(
         path: '/profiel-afronden',

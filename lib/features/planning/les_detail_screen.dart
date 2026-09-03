@@ -15,6 +15,7 @@ import '../arrival/live_aankomst_banner_logic.dart';
 import '../arrival/live_aankomst_fullscreen_screen.dart';
 import '../arrival/widgets/arrival_live_map.dart';
 import '../profiel/rijschool_provider.dart';
+import '../lesvoorbereiding/lesvoorbereiding_provider.dart';
 import 'planning_provider.dart';
 import 'widgets/lesson_status_badge.dart';
 import 'widgets/live_aankomst_banner.dart';
@@ -113,6 +114,8 @@ class _LesDetailBody extends ConsumerWidget {
               // (was eerder dubbel: hier én als losse kaart).
               _LesInformatieCard(les: les, rijschoolNaam: rijschoolNaam),
               const SizedBox(height: 10),
+              if (les.status == LesStatus.gepland)
+                _CanonicalVoorbereidingVoorKomendeLes(les: les),
 
               // 3. Contactacties
               if (les.instructeurTelefoon?.isNotEmpty == true ||
@@ -338,7 +341,6 @@ class _DetailDateBlock extends StatelessWidget {
       ),
     );
   }
-
 }
 
 // ── Lesinformatie: status + instructeur (samengevoegde kaart) ──────────────────
@@ -902,13 +904,11 @@ class _LiveAankomstBannerSectieState
         );
         if (status == null) return const SizedBox.shrink();
 
-        final vensterOpentOp =
-            status == LiveAankomstBannerStatus.voorVenster &&
-                    lesStart != null &&
-                    settings.visibleFromMinutes != null
-                ? lesStart.subtract(
-                    Duration(minutes: settings.visibleFromMinutes!))
-                : null;
+        final vensterOpentOp = status == LiveAankomstBannerStatus.voorVenster &&
+                lesStart != null &&
+                settings.visibleFromMinutes != null
+            ? lesStart.subtract(Duration(minutes: settings.visibleFromMinutes!))
+            : null;
 
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
@@ -1695,6 +1695,34 @@ class _OnderwerpChip extends StatelessWidget {
 
 // ── Tekst card (feedback / notitie) ───────────────────────────────────────────
 
+class _CanonicalVoorbereidingVoorKomendeLes extends ConsumerWidget {
+  final Les les;
+  const _CanonicalVoorbereidingVoorKomendeLes({required this.les});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final voorbereiding = ref.watch(lesvoorbereidingProvider);
+    return voorbereiding.when(
+      data: (vm) {
+        if (vm.nextLesson?.id != les.id) return const SizedBox.shrink();
+        final tekst = vm.preparationNote?.trim();
+        if (tekst == null || tekst.isEmpty) return const SizedBox.shrink();
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: _TekstCard(
+            icoon: Icons.lightbulb_rounded,
+            iconColor: const Color(0xFF5645D4),
+            titel: 'Voorbereiding volgende les',
+            tekst: tekst,
+          ),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+}
+
 class _TekstCard extends StatelessWidget {
   final IconData icoon;
   final Color iconColor;
@@ -2025,7 +2053,7 @@ class _EvaluatieSection extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Advies volgende les',
+                            'Voorbereiding volgende les',
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
@@ -2262,7 +2290,7 @@ class _EvaluatieFallback extends StatelessWidget {
           _TekstCard(
             icoon: Icons.lightbulb_rounded,
             iconColor: const Color(0xFF5645D4),
-            titel: 'Advies volgende les',
+            titel: 'Voorbereiding volgende les',
             tekst: les.volgendeLesAdvies!,
           ),
         ],

@@ -253,7 +253,7 @@ class _NotificatieCard extends ConsumerWidget {
         }
       },
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           IconBadge(icon: _icon, color: _color, size: 40),
           const SizedBox(width: 12),

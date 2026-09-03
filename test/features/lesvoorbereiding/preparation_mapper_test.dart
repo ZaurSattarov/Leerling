@@ -23,6 +23,9 @@ Les _nextLesson({String datum = '2026-08-27'}) => Les(
 Les _afgerondeLes({
   String id = 'vorige-1',
   String datum = '2026-08-20',
+  String starttijd = '20:00',
+  String eindtijd = '21:00',
+  String leerlingId = 'leerling-1',
   bool zichtbaar = true,
   Map<String, dynamic>? competentieScores,
   List<String> focusPunten = const [],
@@ -34,10 +37,10 @@ Les _afgerondeLes({
     Les(
       id: id,
       instructeurId: 'instr-1',
-      leerlingId: 'leerling-1',
+      leerlingId: leerlingId,
       datum: datum,
-      starttijd: '20:00',
-      eindtijd: '21:00',
+      starttijd: starttijd,
+      eindtijd: eindtijd,
       duurMinuten: 60,
       status: LesStatus.afgerond,
       zichtbaarVoorLeerling: zichtbaar,
@@ -83,8 +86,7 @@ void main() {
     });
   });
 
-  group('3. Parkeren=1, Spiegelen=2, Rotondes=2, Invoegen=2, Kijkgedrag=5',
-      () {
+  group('3. Parkeren=1, Spiegelen=2, Rotondes=2, Invoegen=2, Kijkgedrag=5', () {
     test('maximaal 3 attention-items, score 1 eerst, deterministisch', () {
       final vm = buildPreparationViewModel(
         nextLesson: _nextLesson(),
@@ -229,7 +231,8 @@ void main() {
   });
 
   group('12. Twee evaluaties aanwezig', () {
-    test('meest recente geldige afgeronde evaluatie vóór de komende les '
+    test(
+        'meest recente geldige afgeronde evaluatie vóór de komende les '
         'wordt gebruikt', () {
       final vm = buildPreparationViewModel(
         nextLesson: _nextLesson(datum: '2026-08-27'),
@@ -250,9 +253,34 @@ void main() {
       );
       expect(vm.studentFeedback, 'Nieuwste feedback.');
       expect(vm.sourceLessonDate, '2026-08-20');
+      expect(vm.sourceLesson?.id, 'meest-recent');
+      expect(vm.sourceLesson?.starttijd, '20:00');
+      expect(vm.sourceLesson?.eindtijd, '21:00');
+      expect(vm.nextLesson?.id, 'komend-1');
     });
 
-    test('een les NA de komende les wordt genegeerd (zou niet moeten '
+    test('wanorde in de lijst gebruikt nog steeds de nieuwste geldige les', () {
+      final vm = buildPreparationViewModel(
+        nextLesson: _nextLesson(datum: '2026-08-27'),
+        previousLessons: [
+          _afgerondeLes(
+            id: 'ouder',
+            datum: '2026-08-13',
+            advies: 'Oude voorbereiding',
+          ),
+          _afgerondeLes(
+            id: 'meest-recent',
+            datum: '2026-08-20',
+            advies: 'Oefenen met fileparkeren',
+          ),
+        ],
+      );
+      expect(vm.preparationNote, 'Oefenen met fileparkeren');
+      expect(vm.sourceLessonDate, '2026-08-20');
+    });
+
+    test(
+        'een les NA de komende les wordt genegeerd (zou niet moeten '
         'voorkomen, maar mapper is defensief)', () {
       final vm = buildPreparationViewModel(
         nextLesson: _nextLesson(datum: '2026-08-10'),
@@ -266,7 +294,8 @@ void main() {
   });
 
   group('13. Datum/timezone (komende les)', () {
-    test('nextLesson wordt ongewijzigd doorgegeven aan het viewmodel '
+    test(
+        'nextLesson wordt ongewijzigd doorgegeven aan het viewmodel '
         '(zelfde bron als Home/Planning, zie komende_les_filter_test.dart)',
         () {
       final les = _nextLesson(datum: '2026-08-27');
@@ -305,7 +334,8 @@ void main() {
       expect(vm.studentFeedback, 'echte feedback');
     });
 
-    test('een afgeronde les die niet zichtbaarVoorLeerling is, wordt '
+    test(
+        'een afgeronde les die niet zichtbaarVoorLeerling is, wordt '
         'genegeerd', () {
       final vm = buildPreparationViewModel(
         nextLesson: _nextLesson(),
@@ -320,13 +350,77 @@ void main() {
   });
 
   group('Rating / algemene beoordeling', () {
-    test('overallRating vertaalt de opgeslagen rating-code naar het label',
-        () {
+    test('overallRating vertaalt de opgeslagen rating-code naar het label', () {
       final vm = buildPreparationViewModel(
         nextLesson: _nextLesson(),
         previousLessons: [_afgerondeLes(beoordeling: 'goed')],
       );
       expect(vm.overallRating, 'Goed');
+    });
+
+    test('overallRating is de les-rating, niet een vaardigheidsscore', () {
+      final vm = buildPreparationViewModel(
+        nextLesson: _nextLesson(),
+        previousLessons: [
+          _afgerondeLes(
+            beoordeling: 'goed',
+            competentieScores: {'kijkgedrag': 1, 'spiegelen': 1},
+          ),
+        ],
+      );
+      expect(vm.overallRating, 'Goed');
+      expect(vm.attentionItems.every((s) => s.score != 5), isTrue);
+      expect(vm.attentionItems.map((s) => s.score), everyElement(1));
+    });
+  });
+
+  group('Leerling-scope', () {
+    test('evaluatie van een andere leerling wordt genegeerd', () {
+      final vm = buildPreparationViewModel(
+        nextLesson: _nextLesson(),
+        previousLessons: [
+          _afgerondeLes(
+            id: 'andere-leerling',
+            leerlingId: 'leerling-ANDERS',
+            feedback: 'Hoort niet bij deze leerling.',
+            beoordeling: 'uitstekend',
+          ),
+          _afgerondeLes(
+            id: 'eigen-les',
+            feedback: 'Wel van deze leerling.',
+          ),
+        ],
+      );
+      expect(vm.studentFeedback, 'Wel van deze leerling.');
+      expect(vm.sourceLesson?.id, 'eigen-les');
+      expect(vm.sourceLesson?.leerlingId, 'leerling-1');
+    });
+  });
+
+  group('Zelfde dag, latere starttijd wint', () {
+    test('selectie gebruikt datum + starttijd, niet lijstvolgorde', () {
+      final vm = buildPreparationViewModel(
+        nextLesson: _nextLesson(datum: '2026-08-27'),
+        previousLessons: [
+          _afgerondeLes(
+            id: 'ochtend',
+            datum: '2026-08-20',
+            starttijd: '09:00',
+            eindtijd: '10:00',
+            feedback: 'Ochtendles',
+          ),
+          _afgerondeLes(
+            id: 'avond',
+            datum: '2026-08-20',
+            starttijd: '22:30',
+            eindtijd: '23:15',
+            feedback: 'Avondles',
+          ),
+        ],
+      );
+      expect(vm.sourceLesson?.id, 'avond');
+      expect(vm.sourceLesson?.starttijd, '22:30');
+      expect(vm.studentFeedback, 'Avondles');
     });
   });
 }

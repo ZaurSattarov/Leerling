@@ -19,6 +19,7 @@
 // niet betrouwbaar op een leerling-gelezen `Les`; deze mapper raakt het
 // veld ook niet aan, zelfs niet als het toevallig gezet zou zijn.
 
+import '../../core/utils/komende_les_filter.dart';
 import '../../models/les.dart';
 
 /// Vaste, canonieke vaardigheden-set + Nederlandse labels -- identiek aan
@@ -121,12 +122,15 @@ class PreparationViewModel {
   /// letterlijk door de instructeur getypt, apart van Feedback.
   final String? preparationNote;
 
-  /// Laatste beoordeling (Moeizaam/Voldoende/Goed/Uitstekend), indien
-  /// aanwezig op de brondata.
+  /// Algemene lesbeoordeling van de instructeur (Moeizaam/Voldoende/
+  /// Goed/Uitstekend) -- dit is NIET de vaardigheidsscore 1–5.
   final String? overallRating;
 
-  /// Datum van de les waarvan deze voorbereiding is afgeleid (voor
-  /// eventuele context/debug -- niet per se getoond in de UI).
+  /// De afgeronde les waaruit deze voorbereiding is afgeleid -- dezelfde
+  /// instantie als [selecteerBronEvaluatieLes] koos, geen extra query.
+  final Les? sourceLesson;
+
+  /// Datum van [sourceLesson] (YYYY-MM-DD), voor tests en compacte UI.
   final String? sourceLessonDate;
 
   const PreparationViewModel({
@@ -139,6 +143,7 @@ class PreparationViewModel {
     this.studentFeedback,
     this.preparationNote,
     this.overallRating,
+    this.sourceLesson,
     this.sourceLessonDate,
   });
 
@@ -164,7 +169,8 @@ PreparationViewModel buildPreparationViewModel({
         emptyState: PreparationEmptyState.geenVolgendeLes);
   }
 
-  final bron = _vindBronLes(nextLesson: nextLesson, previous: previousLessons);
+  final bron = selecteerBronEvaluatieLes(
+      nextLesson: nextLesson, previous: previousLessons);
   if (bron == null) {
     return PreparationViewModel(
       emptyState: PreparationEmptyState.geenEvaluatie,
@@ -176,8 +182,7 @@ PreparationViewModel buildPreparationViewModel({
   // doet dit al via _stringList), lowercased key voor dedup-vergelijking
   // met skill_keys (zelfde schrijfwijze in beide bronnen, zie
   // _focusOpties/_vaardigheden in de Instructeur-sheet).
-  final focusKeys =
-      bron.focusPunten.map((f) => f.trim().toLowerCase()).toSet();
+  final focusKeys = bron.focusPunten.map((f) => f.trim().toLowerCase()).toSet();
 
   final scores = <PreparationSkillItem>[];
   bron.competentieScores?.forEach((key, waarde) {
@@ -202,7 +207,8 @@ PreparationViewModel buildPreparationViewModel({
     ..sort((a, b) {
       final scoreVergelijking = a.score.compareTo(b.score);
       if (scoreVergelijking != 0) return scoreVergelijking;
-      return stabieleVolgorde(a.skillKey).compareTo(stabieleVolgorde(b.skillKey));
+      return stabieleVolgorde(a.skillKey)
+          .compareTo(stabieleVolgorde(b.skillKey));
     });
 
   List<PreparationSkillItem> attentionItems;
@@ -225,7 +231,8 @@ PreparationViewModel buildPreparationViewModel({
     ..sort((a, b) {
       final scoreVergelijking = b.score.compareTo(a.score);
       if (scoreVergelijking != 0) return scoreVergelijking;
-      return stabieleVolgorde(a.skillKey).compareTo(stabieleVolgorde(b.skillKey));
+      return stabieleVolgorde(a.skillKey)
+          .compareTo(stabieleVolgorde(b.skillKey));
     });
   final strongItems = sterk.take(2).toList();
 
@@ -242,29 +249,61 @@ PreparationViewModel buildPreparationViewModel({
     strongItems: strongItems,
     studentFeedback: (feedback?.isNotEmpty ?? false) ? feedback : null,
     preparationNote: (advies?.isNotEmpty ?? false) ? advies : null,
-    overallRating: (rating != null && rating.isNotEmpty)
-        ? ratingLabel(rating)
-        : null,
+    overallRating:
+        (rating != null && rating.isNotEmpty) ? ratingLabel(rating) : null,
+    sourceLesson: bron,
     sourceLessonDate: bron.datum,
   );
 }
 
-/// Meest recente afgeronde, voor de leerling zichtbare les mét
-/// evaluatie-inhoud, op of vóór de datum van [nextLesson]. [previous] is
-/// al gesorteerd op datum/starttijd aflopend (nieuwste eerst), dus de
-/// eerste match is per definitie de meest recente.
-Les? _vindBronLes({required Les nextLesson, required List<Les> previous}) {
+bool _heeftEvaluatieInhoud(Les les) {
+  return (les.beoordeling?.isNotEmpty ?? false) ||
+      (les.competentieScores?.isNotEmpty ?? false) ||
+      les.focusPunten.isNotEmpty ||
+      (les.instructeurFeedback?.isNotEmpty ?? false) ||
+      (les.volgendeLesAdvies?.isNotEmpty ?? false);
+}
+
+/// Canonical bronles voor "Voorbereiding volgende les": de meest recente
+/// afgeronde, voor deze leerling zichtbare les mét evaluatie, waarvan de
+/// startDateTime niet ná de volgende les ligt.
+///
+/// Onafhankelijk van query-volgorde: vergelijkt echte DateTime's, geen
+/// `.first` / `created_at` / array-index.
+Les? selecteerBronEvaluatieLes({
+  required Les nextLesson,
+  required List<Les> previous,
+}) {
+  final nextStart = lesStartDateTime(nextLesson);
+  Les? gekozen;
+  DateTime? gekozenStart;
+
   for (final les in previous) {
     if (les.status != LesStatus.afgerond) continue;
     if (!les.zichtbaarVoorLeerling) continue;
-    if (les.datum.compareTo(nextLesson.datum) > 0) continue;
-    final heeftData = (les.beoordeling?.isNotEmpty ?? false) ||
-        (les.competentieScores?.isNotEmpty ?? false) ||
-        les.focusPunten.isNotEmpty ||
-        (les.instructeurFeedback?.isNotEmpty ?? false) ||
-        (les.volgendeLesAdvies?.isNotEmpty ?? false);
-    if (!heeftData) continue;
-    return les;
+    if (nextLesson.leerlingId.isNotEmpty &&
+        les.leerlingId.isNotEmpty &&
+        les.leerlingId != nextLesson.leerlingId) {
+      continue;
+    }
+    if (!_heeftEvaluatieInhoud(les)) continue;
+
+    final start = lesStartDateTime(les);
+    if (start != null && nextStart != null) {
+      if (start.isAfter(nextStart)) continue;
+    } else if (les.datum.compareTo(nextLesson.datum) > 0) {
+      continue;
+    }
+
+    if (gekozen == null) {
+      gekozen = les;
+      gekozenStart = start;
+      continue;
+    }
+    if (start != null && gekozenStart != null && start.isAfter(gekozenStart)) {
+      gekozen = les;
+      gekozenStart = start;
+    }
   }
-  return null;
+  return gekozen;
 }

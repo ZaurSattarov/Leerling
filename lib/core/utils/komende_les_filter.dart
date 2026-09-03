@@ -1,20 +1,8 @@
-// Eén centrale, zuivere bron voor "is deze les nog komend?" -- gebruikt
-// door StudentService.getMijnKomendeLessen (en dus zowel Home als Planning,
-// die beide diezelfde methode als bron gebruiken, zie student_service.dart).
-//
-// Root cause van de eerder gemelde "verkeerde datum bij de volgende les":
-// de query filterde alleen op `datum >= vandaag`, zonder de starttijd van
-// vandaag te toetsen. Bij meerdere lessen op dezelfde dag (of een les die
-// vandaag al begonnen is maar nog niet als "afgerond" is gemarkeerd) won
-// altijd de VROEGSTE starttijd van vandaag, ook als die al gepasseerd was.
-//
-// `datum`/`starttijd` komen als "YYYY-MM-DD"/"HH:MM:SS" (Postgres
-// `date`/`time without time zone`, geen tijdzone-info) uit Supabase -- zie
-// live schema-check tijdens onderzoek. Zowel hier als in de PostgREST-
-// filter wordt zuiver lexicografisch (String-)vergeleken; dat is voor deze
-// al zero-padded, vaste-breedte representaties equivalent aan chronologisch
-// vergelijken, precies zoals Postgres `date`/`time`-kolommen onderling
-// vergelijkt. Geen DateTime-rekenkunde nodig en dus geen DST-gevoeligheid.
+// Eén centrale bron voor "komende les" / "volgende les".
+// Home ("Volgende les") en Planning ("Mijn lessen") gebruiken dezelfde
+// DateTime-logica -- nooit database-volgorde, created_at of .first vóór sort.
+
+import '../../models/les.dart';
 
 /// Vandaag ("YYYY-MM-DD") volgens de lokale klok van het apparaat.
 String vandaagString(DateTime nu) {
@@ -30,26 +18,88 @@ String nuTijdString(DateTime nu) {
       '${nu.second.toString().padLeft(2, '0')}';
 }
 
-/// True wanneer een les met [datum] ("YYYY-MM-DD") en [starttijd] ("HH:MM"
-/// of "HH:MM:SS") nog "komend" is t.o.v. [nu]: op een latere datum, of
-/// vandaag met een starttijd die nog niet is gepasseerd.
+/// Combineert lesdatum + tijd tot één lokale DateTime.
+/// [tijd] mag "HH:MM" of "HH:MM:SS" zijn.
+DateTime? combineerLesDateTime(String datum, String tijd) {
+  if (datum.isEmpty) return null;
+  final dag = DateTime.tryParse(datum);
+  if (dag == null) return null;
+
+  final delen = tijd.trim().split(':');
+  final uur = delen.isNotEmpty ? int.tryParse(delen[0]) ?? 0 : 0;
+  final minuut = delen.length > 1 ? int.tryParse(delen[1]) ?? 0 : 0;
+  final seconde = delen.length > 2 ? int.tryParse(delen[2]) ?? 0 : 0;
+
+  return DateTime(dag.year, dag.month, dag.day, uur, minuut, seconde);
+}
+
+DateTime? lesStartDateTime(Les les) =>
+    combineerLesDateTime(les.datum, les.starttijd);
+
+DateTime? lesEindDateTime(Les les) {
+  final einde = les.eindtijd.trim();
+  if (einde.isNotEmpty) return combineerLesDateTime(les.datum, einde);
+  return lesStartDateTime(les);
+}
+
+/// True wanneer de les nog relevant is t.o.v. [nu]:
+/// toekomstig, of vandaag nog bezig (eindtijd nog niet verstreken).
 bool isKomendeLes({
   required String datum,
   required String starttijd,
+  String? eindtijd,
   required DateTime nu,
 }) {
-  final vandaag = vandaagString(nu);
-  final vergelijking = datum.compareTo(vandaag);
-  if (vergelijking > 0) return true;
-  if (vergelijking < 0) return false;
-  return starttijd.compareTo(nuTijdString(nu)) >= 0;
+  final grensTijd =
+      (eindtijd != null && eindtijd.trim().isNotEmpty) ? eindtijd : starttijd;
+  final einde = combineerLesDateTime(datum, grensTijd);
+  if (einde == null) return false;
+  return einde.isAfter(nu);
 }
 
-/// Bouwt de PostgREST `.or(...)`-filterstring die dezelfde logica als
-/// [isKomendeLes] server-side afdwingt: `datum > vandaag` OF (`datum ==
-/// vandaag` EN `starttijd >= nu`).
+bool isAfgelopenLes(Les les, DateTime nu) {
+  final einde = lesEindDateTime(les);
+  if (einde == null) return false;
+  return !einde.isAfter(nu);
+}
+
+int vergelijkOpStart(Les a, Les b) {
+  final sa = lesStartDateTime(a);
+  final sb = lesStartDateTime(b);
+  if (sa == null && sb == null) return 0;
+  if (sa == null) return 1;
+  if (sb == null) return -1;
+  return sa.compareTo(sb);
+}
+
+/// Filtert afgelopen lessen eruit en sorteert op startDateTime ASC.
+/// Dit is de enige volgorde die Home en Mijn lessen mogen gebruiken.
+List<Les> filterEnSorteerKomendeLessen(List<Les> lessen, DateTime nu) {
+  final komend = lessen
+      .where(
+        (les) => isKomendeLes(
+          datum: les.datum,
+          starttijd: les.starttijd,
+          eindtijd: les.eindtijd,
+          nu: nu,
+        ),
+      )
+      .toList();
+  komend.sort(vergelijkOpStart);
+  return komend;
+}
+
+/// Eerste les in de chronologische komende-lijst = echte "Volgende les".
+Les? selecteerVolgendeLes(List<Les> lessen, DateTime nu) {
+  final gesorteerd = filterEnSorteerKomendeLessen(lessen, nu);
+  if (gesorteerd.isEmpty) return null;
+  return gesorteerd.first;
+}
+
+/// Server-side benadering van dezelfde regel: toekomstige dag, of vandaag
+/// met eindtijd nog na nu (inclusief lopende les).
 String komendeLesPostgrestFilter(DateTime nu) {
   final vandaag = vandaagString(nu);
   final tijd = nuTijdString(nu);
-  return 'datum.gt.$vandaag,and(datum.eq.$vandaag,starttijd.gte.$tijd)';
+  return 'datum.gt.$vandaag,and(datum.eq.$vandaag,eindtijd.gt.$tijd)';
 }

@@ -15,6 +15,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:leerling_app/core/constants/app_colors.dart';
 import 'package:leerling_app/shared/widgets/home_header.dart';
 import 'package:leerling_app/shared/widgets/klantio_header.dart';
 import 'package:leerling_app/shared/widgets/main_detail_header.dart';
@@ -372,5 +373,57 @@ void main() {
       expect(size.width, greaterThanOrEqualTo(44));
       expect(size.height, greaterThanOrEqualTo(44));
     });
+  });
+
+  group('Notificatiebadge', () {
+    testWidgets('belknop is een cirkel van 40x40 met wit icoon in het midden',
+        (tester) async {
+      await _pomp(
+        tester,
+        MainHeaderIconKnop(
+          icon: Icons.notifications_none_rounded,
+          onTap: () {},
+        ),
+      );
+
+      final knop = tester.getSize(find.byType(MainHeaderIconKnop));
+      expect(knop.width, 40);
+      expect(knop.height, 40);
+
+      final icoon = tester.getRect(find.byIcon(Icons.notifications_none_rounded));
+      final knopRect = tester.getRect(find.byType(MainHeaderIconKnop));
+      expect(icoon.center.dx, closeTo(knopRect.center.dx, 0.5));
+      expect(icoon.center.dy, closeTo(knopRect.center.dy, 0.5));
+      expect(tester.widget<Icon>(find.byIcon(Icons.notifications_none_rounded)).color,
+          Colors.white);
+    });
+
+    for (final entry in const {1: '1', 12: '12', 100: '99+'}.entries) {
+      testWidgets('toont ${entry.value} voor teller ${entry.key}',
+          (tester) async {
+        await _pomp(
+          tester,
+          MainHeaderIconKnop(
+            icon: Icons.notifications_none_rounded,
+            badgeCount: entry.key,
+            onTap: () {},
+          ),
+        );
+
+        expect(find.text(entry.value), findsOneWidget);
+        final badge = tester.widget<Container>(
+          find.byKey(const Key('main_header_notification_badge')),
+        );
+        final decoration = badge.decoration! as BoxDecoration;
+        expect(decoration.color, AppColors.primary);
+        expect(decoration.border, isNull);
+        expect(decoration.boxShadow, isNull);
+        expect(
+          tester.widget<Text>(find.text(entry.value)).style?.color,
+          Colors.white,
+        );
+        expect(tester.takeException(), isNull);
+      });
+    }
   });
 }

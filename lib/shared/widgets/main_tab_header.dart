@@ -55,8 +55,8 @@ class _ActionsRow extends StatelessWidget {
   }
 }
 
-/// Gedeelde ronde header-actieknop -- zelfde vorm/grootte/kleur overal: een
-/// CircleAvatar van 40x40, gecentreerd in de vaste 44px-trailingzone.
+/// Gedeelde ronde header-actieknop -- 1-op-1 gelijk aan de Instructeur-app:
+/// cirkel 40x40, wit icoon exact in het midden, badge rechtsboven.
 class MainHeaderIconKnop extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
@@ -75,10 +75,16 @@ class MainHeaderIconKnop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final knop = CircleAvatar(
-      radius: 20,
-      backgroundColor:
-          actief ? AppColors.primary : Colors.white.withValues(alpha: 0.13),
+    final knop = Container(
+      width: 40,
+      height: 40,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: actief
+            ? AppColors.primary
+            : Colors.white.withValues(alpha: 0.13),
+        shape: BoxShape.circle,
+      ),
       child: Icon(icon, color: Colors.white, size: iconSize),
     );
     return GestureDetector(
@@ -108,28 +114,19 @@ class _HeaderBadgePil extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: const Key('main_header_notification_badge'),
       constraints: const BoxConstraints(minWidth: 18),
       height: 18,
       padding: const EdgeInsets.symmetric(horizontal: 5),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.24),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
       ),
       child: Text(
-        '$count',
+        count > 99 ? '99+' : '$count',
         style: GoogleFonts.inter(
-          color: AppColors.textPrimary,
+          color: Colors.white,
           fontSize: 10,
           height: 1,
           fontWeight: FontWeight.w800,

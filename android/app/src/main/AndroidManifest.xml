@@ -5,6 +5,13 @@
     <!-- Push notificaties (Fase 5) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- Camera: uitsluitend voor de QR-scanner op /koppelcode/scan.
+         Wordt runtime-aangevraagd door mobile_scanner op het moment
+         dat de scanner-scherm wordt geopend, nooit eerder. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+
     <application
         android:label="Klantio L"
         android:name="com.klantio.leerling.KlantioLeerlingApplication"

@@ -1,14 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../examenadvies/examenadvies_ontwikkeling.dart';
 import '../examenadvies/examenadvies_provider.dart';
 import '../les_logboek/les_logboek_provider.dart';
 
 class HomeCoachData {
-  final int readinessScore;
+  final int? readinessScore;
   final String status;
   final String advies;
   final String feedback;
   final List<String> laatstGeoefend;
   final bool heeftData;
+  final bool heeftBetrouwbareScore;
+  final ExamenadviesSparklineData? ontwikkeling;
 
   const HomeCoachData({
     required this.readinessScore,
@@ -17,16 +20,19 @@ class HomeCoachData {
     required this.feedback,
     required this.laatstGeoefend,
     this.heeftData = true,
+    this.heeftBetrouwbareScore = false,
+    this.ontwikkeling,
   });
 }
 
 const _emptyCoach = HomeCoachData(
-  readinessScore: 0,
+  readinessScore: null,
   status: 'Nog onvoldoende data',
-  advies: 'Volg meer lessen voor gepersonaliseerd advies.',
+  advies: 'Volg meer lessen voor een betrouwbaar examenadvies.',
   feedback: '',
   laatstGeoefend: [],
   heeftData: false,
+  heeftBetrouwbareScore: false,
 );
 
 final homeCoachProvider =
@@ -39,18 +45,24 @@ final homeCoachProvider =
 
   if (examenadvies == null && laatsteLes == null) return _emptyCoach;
 
-  final aandachtspunt =
-      (examenadvies != null && examenadvies.nogOefenen.isNotEmpty)
+  final aandachtspunt = examenadvies == null
+      ? 'Volg meer lessen voor een betrouwbaar examenadvies.'
+      : examenadvies.nogOefenen.isNotEmpty
           ? examenadvies.nogOefenen.first
-          : 'Volg meer lessen voor gepersonaliseerd advies.';
+          : examenadvies.volgendeStap;
 
   return HomeCoachData(
-    readinessScore: examenadvies?.score ?? 0,
-    status: examenadvies?.status ?? 'Nog onvoldoende data',
+    readinessScore: examenadvies?.score,
+    status: examenadvies?.statusLabel ?? 'Nog onvoldoende data',
     advies: aandachtspunt,
     feedback: laatsteLes?.feedback ?? '',
     laatstGeoefend: laatsteLes?.onderwerpen ?? const [],
-    heeftData: (examenadvies?.score ?? 0) > 0 ||
+    heeftData: (examenadvies?.heeftBetrouwbareScore ?? false) ||
+        (examenadvies?.categorieen.any((c) => c.heeftData) ?? false) ||
         (laatsteLes?.feedback.isNotEmpty ?? false),
+    heeftBetrouwbareScore: examenadvies?.heeftBetrouwbareScore ?? false,
+    ontwikkeling: examenadvies == null
+        ? null
+        : bouwOntwikkelingSparkline(examenadvies),
   );
 });

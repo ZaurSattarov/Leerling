@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import '../../shared/providers/auth_provider.dart';
+import 'koppel_flow.dart';
 
-class KoppelcodeScreen extends ConsumerStatefulWidget {
-  const KoppelcodeScreen({super.key});
+/// Handmatige koppelcode-invoer. Onderdeel van de bredere koppel-flow --
+/// zie ook [KoppelKeuzeScreen] (de keuze-landing) en [QrScanScreen] (de
+/// QR-scanner). Alledrie leiden tot dezelfde canonical RPC via
+/// [KoppelFlow.koppelEnNavigeer]; er is geen tweede koppelmechanisme.
+class KoppelcodeInvoerenScreen extends ConsumerStatefulWidget {
+  const KoppelcodeInvoerenScreen({super.key});
 
   @override
-  ConsumerState<KoppelcodeScreen> createState() => _KoppelcodeScreenState();
+  ConsumerState<KoppelcodeInvoerenScreen> createState() =>
+      _KoppelcodeInvoerenScreenState();
 }
 
-class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
+class _KoppelcodeInvoerenScreenState
+    extends ConsumerState<KoppelcodeInvoerenScreen> {
   final _formKey = GlobalKey<FormState>();
   final _codeCtrl = TextEditingController();
   bool _loading = false;
@@ -26,30 +34,25 @@ class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
 
   Future<void> _koppel() async {
     if (!_formKey.currentState!.validate()) return;
+    if (_loading) return; // dubbele submit voorkomen
     setState(() {
       _loading = true;
       _error = null;
     });
 
     try {
-      await StudentService.koppelLeerlingMetCode(_codeCtrl.text.trim());
-
-      ref.invalidate(mijnProfielProvider);
-      var profielCompleet = false;
-      try {
-        final profiel = await ref.read(mijnProfielProvider.future);
-        profielCompleet = profiel?.isProfielCompleet == true;
-      } catch (_) {
-        // RPC is al geslaagd; profiel laden wordt op het volgende scherm hervat.
-      }
-
+      await KoppelFlow.koppelEnNavigeer(
+        context: context,
+        ref: ref,
+        ruweCode: _codeCtrl.text,
+      );
+      // Navigatie is al door de flow gedaan.
+    } on KoppelException catch (e) {
       if (!mounted) return;
-      if (!profielCompleet) {
-        ref.invalidate(mijnProfielProvider);
-        context.go('/profiel-afronden');
-        return;
-      }
-      context.go('/home');
+      setState(() {
+        _error = e.boodschap;
+        _loading = false;
+      });
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -72,6 +75,13 @@ class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.surface,
         elevation: 0,
+        leading: Navigator.of(context).canPop()
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_rounded,
+                    color: AppColors.textPrimary),
+                onPressed: () => context.pop(),
+              )
+            : null,
         automaticallyImplyLeading: false,
         actions: [
           TextButton(
@@ -100,7 +110,7 @@ class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
                     color: const Color(0xFFF0F2F5),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.link_rounded,
+                  child: const Icon(Icons.keyboard_rounded,
                       color: AppColors.primary, size: 36),
                 ),
               ),
@@ -125,7 +135,6 @@ class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
               ),
               const SizedBox(height: 40),
 
-              // Foutmelding
               if (_error != null) ...[
                 Container(
                   padding: const EdgeInsets.all(14),
@@ -167,7 +176,7 @@ class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
                       ),
                       decoration: InputDecoration(
                         hintText: 'XXXXXXXX',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 6,
@@ -233,3 +242,10 @@ class _KoppelcodeScreenState extends ConsumerState<KoppelcodeScreen> {
     );
   }
 }
+
+/// Backward-compatible alias -- oudere imports (bv. tests) verwijzen nog
+/// naar `KoppelcodeScreen`. Zowel het handmatige invoerscherm zelf als de
+/// nieuwe [KoppelKeuzeScreen] blijven volledig werkend.
+@Deprecated('Gebruik KoppelcodeInvoerenScreen (/koppelcode/handmatig) of '
+    'KoppelKeuzeScreen (/koppelcode).')
+typedef KoppelcodeScreen = KoppelcodeInvoerenScreen;

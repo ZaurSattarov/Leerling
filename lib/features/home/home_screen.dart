@@ -11,6 +11,9 @@ import '../../models/factuur.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/home_header.dart';
+import '../examenadvies/examenadvies_provider.dart';
+import '../examenadvies/examenadvies_sparkline.dart';
+import '../examenadvies/examenadvies_status_style.dart';
 import '../lesvoorbereiding/lesvoorbereiding_provider.dart';
 import 'home_coach_provider.dart';
 import 'home_provider.dart';
@@ -48,6 +51,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ref.invalidate(mijnProfielProvider);
           ref.invalidate(homeProvider);
           ref.invalidate(lesvoorbereidingProvider);
+          ref.invalidate(examenadviesProvider);
           ref.invalidate(homeCoachProvider);
         },
         child: CustomScrollView(
@@ -396,8 +400,7 @@ class _VolgendeLesHero extends StatelessWidget {
               decoration: BoxDecoration(
                 color: const Color(0xFFF0F2F5),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                    color: const Color(0xFFE2E2E7), width: 0.75),
+                border: Border.all(color: const Color(0xFFE2E2E7), width: 0.75),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -587,20 +590,16 @@ class _LesvoorbereidingCard extends StatelessWidget {
   // Kort, letterlijk-afgeleid onderschrift -- zelfde prioriteitsvolgorde
   // als het Lesvoorbereiding-scherm zelf (focus > aandacht > sterk >
   // feedback), puur ter identificatie welke voorbereiding klaarstaat.
-  String _subtitel(PreparationViewModel vm) {
-    if (vm.focusItems.isNotEmpty) return vm.focusItems.first;
-    if (vm.attentionItems.isNotEmpty) return vm.attentionItems.first.label;
-    if (vm.strongItems.isNotEmpty) return vm.strongItems.first.label;
-    if (vm.studentFeedback?.isNotEmpty ?? false) return vm.studentFeedback!;
-    return 'Bekijk wat er wordt geoefend';
-  }
-
   @override
   Widget build(BuildContext context) {
     final vm = data;
-    // Geen kaart wanneer er geen komende les is -- geen link naar een
-    // scherm dat alsnog "geen volgende les" moet gaan melden.
-    if (vm == null || vm.emptyState == PreparationEmptyState.geenVolgendeLes) {
+    final voorbereiding = vm?.preparationNote?.trim();
+    // Alleen tonen als er echte canonical instructeurstekst is.
+    // Geen skill-label, geen "Goede les", geen lege kaart.
+    if (vm == null ||
+        vm.emptyState == PreparationEmptyState.geenVolgendeLes ||
+        voorbereiding == null ||
+        voorbereiding.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -642,10 +641,10 @@ class _LesvoorbereidingCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    _subtitel(vm),
+                    voorbereiding,
                     style: const TextStyle(
                         fontSize: 12, color: AppColors.textSecondary),
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -793,16 +792,11 @@ class _ExamenadviesHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final score = data.readinessScore;
-    final label = score >= 85
-        ? 'Examenklaar!'
-        : score >= 60
-            ? 'Bijna examenklaar'
-            : 'In ontwikkeling';
-    final labelColor = score >= 85
-        ? AppColors.successSolid
-        : score >= 60
-            ? AppColors.warningSolid
-            : AppColors.infoSolid;
+    final toonScore = data.heeftBetrouwbareScore && score != null;
+    final label = data.status;
+    final labelColor = examenadviesStatusAccentVanLabel(label);
+    const kaartGrijs = Color(0xFFF0F2F5);
+    const badgeBorder = Color(0xFFE2E2E7);
 
     return GestureDetector(
       onTap: onTap,
@@ -820,112 +814,115 @@ class _ExamenadviesHero extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Circular progress
-            SizedBox(
-              width: 72,
-              height: 72,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                    width: 72,
-                    height: 72,
-                    child: CircularProgressIndicator(
-                      value: score / 100,
-                      strokeWidth: 6,
-                      backgroundColor: const Color(0xFFF0F2F5),
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        score >= 85
-                            ? AppColors.successSolid
-                            : score >= 60
-                                ? AppColors.warningSolid
-                                : AppColors.infoSolid,
+            Row(
+              children: [
+                SizedBox(
+                  width: 72,
+                  height: 72,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SizedBox(
+                        width: 72,
+                        height: 72,
+                        child: CircularProgressIndicator(
+                          value: toonScore ? score / 100 : 0,
+                          strokeWidth: 6,
+                          backgroundColor: kaartGrijs,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(labelColor),
+                          strokeCap: StrokeCap.round,
+                        ),
                       ),
-                      strokeCap: StrokeCap.round,
-                    ),
-                  ),
-                  Text(
-                    '$score%',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.textPrimary,
-                      height: 1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 18),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF0F2F5),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                          color: const Color(0xFFE2E2E7), width: 0.75),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: labelColor,
-                            shape: BoxShape.circle,
-                          ),
+                      Text(
+                        toonScore ? '$score%' : '—',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.textPrimary,
+                          height: 1,
                         ),
-                        const SizedBox(width: 5),
-                        Flexible(
-                          child: Text(
-                            label,
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 18),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 9, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: kaartGrijs,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: badgeBorder, width: 0.75),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                color: labelColor,
+                                shape: BoxShape.circle,
+                              ),
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                            const SizedBox(width: 5),
+                            Flexible(
+                              child: Text(
+                                label,
+                                style: const TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Examenadvies',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        data.advies.isNotEmpty
+                            ? data.advies
+                            : 'Bekijk je examengereedheid',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Examenadvies',
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    data.advies.isNotEmpty
-                        ? data.advies
-                        : 'Bekijk je examengereedheid',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 8),
+                const Icon(Icons.chevron_right_rounded,
+                    color: AppColors.textHint, size: 20),
+              ],
             ),
-            const SizedBox(width: 8),
-            const Icon(Icons.chevron_right_rounded,
-                color: AppColors.textHint, size: 20),
+            if (data.ontwikkeling != null &&
+                data.ontwikkeling!.heeftChart) ...[
+              const SizedBox(height: 12),
+              ExamenadviesSparkline(data: data.ontwikkeling),
+            ],
           ],
         ),
       ),

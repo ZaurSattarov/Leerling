@@ -5,9 +5,8 @@
 // geen gigantische kaarten, geen dashboard-KPI's -- witte kaarten met
 // semantische tekst-/icoonaccenten, zoals de rest van de app.
 //
-// UI-polish (2026-08-09, zie werkopdracht): uitsluitend presentatie
-// aangepast -- geen enkele databron, mapper-regel of provider gewijzigd.
-// Zie preparation_mapper.dart voor de (ongewijzigde) businesslogica.
+// UI-polish (2026-09-03): herkomst vorige les expliciet maken. Geen nieuwe
+// databron. Mapper-selectie ongewijzigd; sourceLesson alleen doorgegeven.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -86,7 +85,12 @@ class _LesvoorbereidingSliver extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         sliver: SliverList(
           delegate: SliverChildListDelegate([
-            _VolgendeLesContext(les: nextLesson),
+            _LesMomentKop(
+              titel: 'VOLGENDE LES',
+              les: nextLesson,
+              icon: Icons.event_outlined,
+              accent: AppColors.primary,
+            ),
             const SizedBox(height: 24),
             const EmptyState(
               icon: Icons.checklist_rounded,
@@ -102,27 +106,49 @@ class _LesvoorbereidingSliver extends StatelessWidget {
     // B/C/D/E: (gedeeltelijke) inhoud -- elke sectie verschijnt alleen als
     // er echt iets voor is, geen lege kaarten.
     //
-    // "Laatste beoordeling" hoort inhoudelijk bij de evaluatie (Extra
-    // aandacht/Sterk), niet los onderaan de pagina -- daarom wordt hij hier
-    // aangesloten op de LAATSTE van die twee kaarten die daadwerkelijk
-    // rendert (Sterk heeft voorrang op Extra aandacht, want die staat
-    // visueel het dichtst bij de beoordeling). Alleen als geen van beide
-    // aanwezig is (instructeur gaf wel een eindbeoordeling maar geen losse
-    // scores) krijgt de beoordeling een eigen compacte kaart -- nooit een
-    // kale losstaande regel.
+    // "Algemene beoordeling" is het instructeursoordeel over de vorige les
+    // (rating-code), niet de 1–5 vaardigheidsscores. Hij sluit aan op Extra
+    // aandacht/Sterk wanneer die kaarten er zijn; anders een eigen kaart.
     final beoordeling = vm.overallRating;
     final toonInSterk = beoordeling != null && vm.strongItems.isNotEmpty;
     final toonInAandacht =
         beoordeling != null && !toonInSterk && vm.attentionItems.isNotEmpty;
     final toonStandalone =
         beoordeling != null && !toonInSterk && !toonInAandacht;
+    final bronLes = vm.sourceLesson;
+    final heeftVorigeLesContext = bronLes != null ||
+        (vm.sourceLessonDate != null && vm.sourceLessonDate!.isNotEmpty);
 
     return SliverPadding(
       padding: const EdgeInsets.all(20),
       sliver: SliverList(
         delegate: SliverChildListDelegate([
-          _VolgendeLesContext(les: nextLesson),
-          const SizedBox(height: 20),
+          _LesMomentKop(
+            titel: 'VOLGENDE LES',
+            les: nextLesson,
+            icon: Icons.event_outlined,
+            accent: AppColors.primary,
+          ),
+          if (heeftVorigeLesContext) ...[
+            const SizedBox(height: 22),
+            _LesMomentKop(
+              titel: 'DIT NAM JE MEE UIT JE VORIGE LES',
+              les: bronLes,
+              fallbackDatum: vm.sourceLessonDate,
+              icon: Icons.history_rounded,
+              accent: AppColors.textSecondary,
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Op basis van je beoordeling uit deze les',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+          const SizedBox(height: 18),
           if (vm.focusItems.isNotEmpty) ...[
             _FocusSectie(items: vm.focusItems),
             const SizedBox(height: 20),
@@ -175,36 +201,46 @@ class _LesvoorbereidingSliver extends StatelessWidget {
   }
 }
 
-// ── Compacte volgende-les context ─────────────────────────────────────────
-//
-// Eén regel context bovenaan de vaste micro-label "Volgende les" zodat
-// meteen duidelijk is waar de rest van de pagina zich op richt -- geen
-// aparte kaart, geen extra ruimte-inname.
-
-class _VolgendeLesContext extends StatelessWidget {
-  final Les les;
-  const _VolgendeLesContext({required this.les});
-
-  static String _datumLabel(String datum) {
-    try {
-      final tekst =
-          DateFormat('EEEE d MMMM', 'nl_NL').format(DateTime.parse(datum));
-      return tekst.isEmpty
-          ? tekst
-          : tekst[0].toUpperCase() + tekst.substring(1);
-    } catch (_) {
-      return datum;
-    }
+String _lesDatumLabel(String datum) {
+  try {
+    final tekst =
+        DateFormat('EEEE d MMMM', 'nl_NL').format(DateTime.parse(datum));
+    return tekst.isEmpty ? tekst : tekst[0].toUpperCase() + tekst.substring(1);
+  } catch (_) {
+    return datum;
   }
+}
+
+class _LesMomentKop extends StatelessWidget {
+  final String titel;
+  final Les? les;
+  final String? fallbackDatum;
+  final IconData icon;
+  final Color accent;
+
+  const _LesMomentKop({
+    required this.titel,
+    required this.icon,
+    required this.accent,
+    this.les,
+    this.fallbackDatum,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final datum = les?.datum ?? fallbackDatum;
+    final tijdRegel = (les != null &&
+            les!.starttijd.isNotEmpty &&
+            les!.eindtijd.isNotEmpty)
+        ? '${les!.starttijd} – ${les!.eindtijd}'
+        : null;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const IconBadge(
-          icon: Icons.event_outlined,
-          color: AppColors.primary,
+        IconBadge(
+          icon: icon,
+          color: accent,
           size: 40,
         ),
         const SizedBox(width: 12),
@@ -212,37 +248,43 @@ class _VolgendeLesContext extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'VOLGENDE LES',
-                style: TextStyle(
+              Text(
+                titel,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textSecondary,
                   letterSpacing: 1.0,
                 ),
               ),
-              const SizedBox(height: 3),
-              Text(
-                _datumLabel(les.datum),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
+              if (datum != null && datum.isNotEmpty) ...[
+                const SizedBox(height: 3),
+                Text(
+                  _lesDatumLabel(datum),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                '${les.starttijd} – ${les.eindtijd}',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
+              ],
+              if (tijdRegel != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  tijdRegel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),
@@ -301,7 +343,7 @@ class _FocusSectie extends StatelessWidget {
 // Ongewijzigd t.o.v. de vorige versie op inhoud/gedrag -- alleen labels
 // nu met vaste maxLines/ellipsis (score blijft altijd rechts uitgelijnd,
 // ook bij een lange vaardigheidsnaam op een smal scherm), en een optionele
-// "beoordelingLabel"-footer zodat "Laatste beoordeling" niet meer los
+// "beoordelingLabel"-footer zodat de algemene lesbeoordeling niet meer los
 // hoeft te zweven maar rechtstreeks aansluit op de evaluatie-inhoud.
 
 class _SkillLijstKaart extends StatelessWidget {
@@ -379,7 +421,7 @@ class _SkillLijstKaart extends StatelessWidget {
   }
 }
 
-// ── Laatste beoordeling: rij (binnen een evaluatiekaart) ──────────────────
+// ── Algemene beoordeling: rij (binnen een evaluatiekaart) ─────────────────
 
 class _BeoordelingRij extends StatelessWidget {
   final String label;
@@ -391,7 +433,7 @@ class _BeoordelingRij extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            'LAATSTE BEOORDELING',
+            'ALGEMENE BEOORDELING',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
@@ -425,7 +467,7 @@ class _BeoordelingRij extends StatelessWidget {
   }
 }
 
-// ── Laatste beoordeling: eigen compacte kaart (fallback zonder Extra ──────
+// ── Algemene beoordeling: eigen compacte kaart (fallback zonder Extra ─────
 // ── aandacht/Sterk om op aan te sluiten) ───────────────────────────────────
 
 class _BeoordelingKaart extends StatelessWidget {

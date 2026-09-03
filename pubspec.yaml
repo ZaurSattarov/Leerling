@@ -79,6 +79,18 @@ dependencies:
   pdf: ^3.11.1
   path_provider: ^2.1.5
 
+  # QR-scanner voor de koppel-flow. De QR-code wordt gegenereerd in de
+  # Instructeur-app (snelle_leerling_screen.dart, package qr_flutter) en
+  # bevat exact de bestaande 8-tekens KOPPELCODE (zie
+  # quick_student_flow.dart::StudentCouplingShareData.qrPayload => code).
+  # De scanner leest die string en voedt hem aan dezelfde canonical RPC
+  # 'koppel_leerling_met_code' die de handmatige koppelcode-flow ook
+  # gebruikt (StudentService.koppelLeerlingMetCode). Er is dus BEWUST
+  # geen tweede koppelmechanisme, geen tweede QR-formaat en geen extra
+  # backend/migration. `mobile_scanner` is de actief onderhouden
+  # opvolger van de gedeprecateerde `qr_code_scanner`.
+  mobile_scanner: ^4.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

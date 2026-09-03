@@ -17,6 +17,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:leerling_app/core/constants/app_colors.dart';
 import 'package:leerling_app/features/home/home_coach_provider.dart';
 import 'package:leerling_app/features/home/home_provider.dart';
 import 'package:leerling_app/features/home/home_screen.dart';
@@ -82,12 +83,13 @@ const _leegVoorbereiding = PreparationViewModel(
 );
 
 const _leegCoach = HomeCoachData(
-  readinessScore: 0,
+  readinessScore: null,
   status: 'Nog onvoldoende data',
-  advies: 'Volg meer lessen voor gepersonaliseerd advies.',
+  advies: 'Volg meer lessen voor een betrouwbaar examenadvies.',
   feedback: '',
   laatstGeoefend: [],
   heeftData: false,
+  heeftBetrouwbareScore: false,
 );
 
 Widget _bouwHomeScherm({
@@ -220,21 +222,88 @@ void main() {
         ),
         coach: const HomeCoachData(
           readinessScore: 79,
-          status: 'Bijna examenklaar',
+          status: 'Bijna klaar',
           advies: 'Extra aandacht voor kijkgedrag en bijzondere verrichtingen.',
           feedback: '',
           laatstGeoefend: [],
           heeftData: true,
+          heeftBetrouwbareScore: true,
         ),
       ));
       await tester.pumpAndSettle();
 
       expect(find.text('Examenadvies'), findsOneWidget);
-      expect(find.text('Bijna examenklaar'), findsOneWidget);
+      expect(find.text('Bijna klaar'), findsOneWidget);
+      expect(find.text('79%'), findsOneWidget);
 
       await tester.tap(find.text('Examenadvies'));
       await tester.pumpAndSettle();
       expect(find.text('Examenadvies-scherm'), findsOneWidget);
+    });
+
+    testWidgets(
+        'Nog niet klaar met geldige score toont percentage en is niet grijs',
+        (tester) async {
+      gebruikRuimeViewport(tester);
+      await tester.pumpWidget(_bouwHomeScherm(
+        profiel: _bouwProfiel(),
+        home: HomeData(
+          volgendeLes: _bouwLes(),
+          openFacturen: const [],
+          ongelezenNotificaties: 0,
+          recenteNotificaties: const [],
+        ),
+        coach: const HomeCoachData(
+          readinessScore: 27,
+          status: 'Nog niet klaar',
+          advies: 'Voertuigbeheersing',
+          feedback: '',
+          laatstGeoefend: [],
+          heeftData: true,
+          heeftBetrouwbareScore: true,
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('27%'), findsOneWidget);
+      expect(find.text('Nog niet klaar'), findsOneWidget);
+      expect(find.text('Examenadvies'), findsOneWidget);
+      expect(find.text('Voertuigbeheersing'), findsOneWidget);
+
+      final ring = tester.widget<CircularProgressIndicator>(
+        find.byType(CircularProgressIndicator),
+      );
+      expect(ring.value, closeTo(0.27, 0.001));
+      expect(ring.valueColor?.value, AppColors.primary);
+      expect(ring.backgroundColor, const Color(0xFFF0F2F5));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'empty examenadvies mag grijs blijven zonder neppercentage',
+        (tester) async {
+      gebruikRuimeViewport(tester);
+      await tester.pumpWidget(_bouwHomeScherm(
+        profiel: _bouwProfiel(),
+        home: HomeData(
+          volgendeLes: _bouwLes(),
+          openFacturen: const [],
+          ongelezenNotificaties: 0,
+          recenteNotificaties: const [],
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Nog onvoldoende data'), findsOneWidget);
+      expect(find.text('—'), findsOneWidget);
+      expect(find.text('27%'), findsNothing);
+
+      final ring = tester.widget<CircularProgressIndicator>(
+        find.byType(CircularProgressIndicator),
+      );
+      expect(ring.value, 0);
+      expect(ring.valueColor?.value, AppColors.textHint);
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets(

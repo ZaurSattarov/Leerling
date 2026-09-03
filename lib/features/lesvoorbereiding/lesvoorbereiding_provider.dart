@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/utils/komende_les_filter.dart';
 import '../planning/planning_provider.dart';
 import 'preparation_mapper.dart';
 
@@ -22,7 +23,7 @@ final lesvoorbereidingProvider =
   final vorigeLessen = await ref.watch(vorigeLessenProvider.future);
 
   return buildPreparationViewModel(
-    nextLesson: komendeLessen.isNotEmpty ? komendeLessen.first : null,
+    nextLesson: selecteerVolgendeLes(komendeLessen, DateTime.now()),
     previousLessons: vorigeLessen,
   );
 });

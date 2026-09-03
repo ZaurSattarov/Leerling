@@ -1,3 +1,7 @@
+import 'dart:io' show Platform;
+
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, visibleForTesting;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +11,25 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import 'auth_design.dart';
+
+/// Apple-login alleen op iOS. Op Android en web nooit tonen of aanroepen.
+@visibleForTesting
+bool leerlingToonAppleLogin({
+  bool? isWeb,
+  bool? isAndroid,
+  bool? isIOS,
+  TargetPlatform? platform,
+}) {
+  final web = isWeb ?? kIsWeb;
+  if (web) return false;
+
+  final android = isAndroid ?? (!kIsWeb && Platform.isAndroid);
+  if (android) return false;
+
+  final ios = isIOS ?? (!kIsWeb && Platform.isIOS);
+  final doel = platform ?? defaultTargetPlatform;
+  return ios || doel == TargetPlatform.iOS;
+}
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -113,6 +136,14 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } finally {
       if (mounted) setState(() => _laden = false);
+    }
+  }
+
+  Future<void> _meldAanMetApple() async {
+    if (_laden) return;
+    if (!leerlingToonAppleLogin()) return;
+    if (mounted) {
+      setState(() => _fout = 'Apple-login is momenteel niet beschikbaar.');
     }
   }
 
@@ -341,52 +372,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Divider(
-                          color: AppColors.textHint.withValues(alpha: 0.3)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        'of',
-                        style: GoogleFonts.inter(
-                            fontSize: 13, color: AppColors.textSecondary),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                          color: AppColors.textHint.withValues(alpha: 0.3)),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  height: 52,
-                  child: OutlinedButton.icon(
-                    onPressed: _laden ? null : _meldAanMetGoogle,
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      side: const BorderSide(color: Color(0xFFDADCE0)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    icon: Image.asset(
-                      'assets/icons/google_logo.png',
-                      height: 20,
-                      width: 20,
-                    ),
-                    label: Text(
-                      'Doorgaan met Google',
-                      style: GoogleFonts.inter(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF1F1F1F),
-                      ),
-                    ),
+                const _OfScheiding(),
+                const SizedBox(height: 16),
+                Text(
+                  'Of ga verder met',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary,
                   ),
+                ),
+                const SizedBox(height: 16),
+                _SocialLoginRij(
+                  toonApple: leerlingToonAppleLogin(),
+                  googleAan: _laden ? null : _meldAanMetGoogle,
+                  appleAan: _laden ? null : _meldAanMetApple,
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -490,6 +491,125 @@ class _WachtwoordVeld extends StatelessWidget {
       ),
       validator: validator,
       onFieldSubmitted: (_) => onSubmit(),
+    );
+  }
+}
+
+class _SocialLoginRij extends StatelessWidget {
+  final bool toonApple;
+  final VoidCallback? googleAan;
+  final VoidCallback? appleAan;
+
+  const _SocialLoginRij({
+    required this.toonApple,
+    required this.googleAan,
+    required this.appleAan,
+  });
+
+  Widget _googleKnop() {
+    return _SocialLoginKnop(
+      label: 'Inloggen met Google',
+      onPressed: googleAan,
+      child: Image.asset(
+        'assets/icons/google_logo.png',
+        height: 22,
+        width: 22,
+      ),
+    );
+  }
+
+  Widget _appleKnop() {
+    return _SocialLoginKnop(
+      label: 'Inloggen met Apple',
+      onPressed: appleAan,
+      child: const Icon(
+        Icons.apple,
+        size: 26,
+        color: AppColors.textPrimary,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!toonApple) {
+      return _googleKnop();
+    }
+
+    return Row(
+      children: [
+        Expanded(child: _googleKnop()),
+        const SizedBox(width: 12),
+        Expanded(child: _appleKnop()),
+      ],
+    );
+  }
+}
+
+class _OfScheiding extends StatelessWidget {
+  const _OfScheiding();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Divider(color: AppColors.textHint.withValues(alpha: 0.3)),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            'of',
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Divider(color: AppColors.textHint.withValues(alpha: 0.3)),
+        ),
+      ],
+    );
+  }
+}
+
+class _SocialLoginKnop extends StatelessWidget {
+  final String label;
+  final VoidCallback? onPressed;
+  final Widget child;
+
+  const _SocialLoginKnop({
+    required this.label,
+    required this.onPressed,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hoogte = MediaQuery.sizeOf(context).height < 700 ? 48.0 : 52.0;
+    return SizedBox(
+      height: hoogte,
+      child: Material(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(14),
+          child: Semantics(
+            button: true,
+            label: label,
+            child: Ink(
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Center(child: child),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

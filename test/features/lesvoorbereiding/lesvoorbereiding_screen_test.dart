@@ -24,6 +24,20 @@ Les _nextLesson() => const Les(
       bijgewerktOp: '2026-01-01T00:00:00Z',
     );
 
+Les _vorigeLes() => const Les(
+      id: 'vorige-1',
+      instructeurId: 'instr-1',
+      leerlingId: 'leerling-1',
+      datum: '2026-08-19',
+      starttijd: '22:30',
+      eindtijd: '23:15',
+      duurMinuten: 45,
+      status: LesStatus.afgerond,
+      zichtbaarVoorLeerling: true,
+      aangemaaktOp: '2026-01-01T00:00:00Z',
+      bijgewerktOp: '2026-01-01T00:00:00Z',
+    );
+
 Widget _bouwScherm(PreparationViewModel vm) {
   return ProviderScope(
     overrides: [
@@ -64,6 +78,8 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.text('Nog geen voorbereiding beschikbaar'), findsOneWidget);
       expect(find.text('21:00 – 22:00'), findsOneWidget);
+      expect(find.text('VOLGENDE LES'), findsOneWidget);
+      expect(find.text('DIT NAM JE MEE UIT JE VORIGE LES'), findsNothing);
     });
   });
 
@@ -79,6 +95,8 @@ void main() {
         PreparationViewModel(
           emptyState: PreparationEmptyState.none,
           nextLesson: _nextLesson(),
+          sourceLesson: _vorigeLes(),
+          sourceLessonDate: '2026-08-19',
           focusItems: const ['spiegelen', 'rotondes'],
           attentionItems: const [
             PreparationSkillItem(
@@ -105,6 +123,13 @@ void main() {
       expect(find.textContaining('Kijk eerder in je spiegels'), findsOneWidget);
       expect(find.textContaining('invoegen op de snelweg'), findsOneWidget);
       expect(find.text('Goed'), findsOneWidget);
+      expect(find.text('ALGEMENE BEOORDELING'), findsOneWidget);
+      expect(find.text('LAATSTE BEOORDELING'), findsNothing);
+      expect(find.text('VOLGENDE LES'), findsOneWidget);
+      expect(find.text('DIT NAM JE MEE UIT JE VORIGE LES'), findsOneWidget);
+      expect(find.text('22:30 – 23:15'), findsOneWidget);
+      expect(find.text('21:00 – 22:00'), findsOneWidget);
+      expect(find.text('Op basis van je beoordeling uit deze les'), findsOneWidget);
 
       // Spiegelen staat als focuspunt maar NIET nogmaals als los
       // scorepunt/attention-item -- geen dubbele vermelding.
@@ -127,6 +152,53 @@ void main() {
       expect(find.text('Feedback van je instructeur'), findsNothing);
       expect(find.text('Voorbereiding volgende les'), findsNothing);
       expect(find.text('LAATSTE BEOORDELING'), findsNothing);
+      expect(find.text('ALGEMENE BEOORDELING'), findsNothing);
+    });
+  });
+
+  group('Herkomst vorige les / empty secties', () {
+    testWidgets('geen feedback en geen voorbereiding: secties blijven weg',
+        (tester) async {
+      await tester.pumpWidget(_bouwScherm(
+        PreparationViewModel(
+          emptyState: PreparationEmptyState.none,
+          nextLesson: _nextLesson(),
+          sourceLesson: _vorigeLes(),
+          sourceLessonDate: '2026-08-19',
+          attentionItems: const [
+            PreparationSkillItem(
+                skillKey: 'kijkgedrag', label: 'Kijkgedrag', score: 1),
+          ],
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Feedback van je instructeur'), findsNothing);
+      expect(find.text('Voorbereiding volgende les'), findsNothing);
+      expect(find.text('Kijkgedrag'), findsOneWidget);
+      expect(find.text('1/5'), findsOneWidget);
+      expect(find.text('DIT NAM JE MEE UIT JE VORIGE LES'), findsOneWidget);
+    });
+
+    testWidgets('algemene beoordeling staat los van vaardigheidsscores',
+        (tester) async {
+      await tester.pumpWidget(_bouwScherm(
+        PreparationViewModel(
+          emptyState: PreparationEmptyState.none,
+          nextLesson: _nextLesson(),
+          sourceLesson: _vorigeLes(),
+          attentionItems: const [
+            PreparationSkillItem(
+                skillKey: 'spiegelen', label: 'Spiegelen', score: 1),
+          ],
+          overallRating: 'Goed',
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('1/5'), findsOneWidget);
+      expect(find.text('Goed'), findsOneWidget);
+      expect(find.text('ALGEMENE BEOORDELING'), findsOneWidget);
     });
   });
 
@@ -142,6 +214,7 @@ void main() {
         PreparationViewModel(
           emptyState: PreparationEmptyState.none,
           nextLesson: _nextLesson(),
+          sourceLesson: _vorigeLes(),
           focusItems: const ['spiegelen', 'rotondes', 'parkeren'],
           attentionItems: const [
             PreparationSkillItem(
