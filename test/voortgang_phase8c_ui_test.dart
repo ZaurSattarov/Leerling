@@ -6,9 +6,12 @@ void main() {
   final screen = File('lib/features/voortgang/voortgang_screen.dart');
   final trendsProvider =
       File('lib/features/voortgang/voortgang_trends_provider.dart');
+  final tijdlijnCard =
+      File('lib/features/voortgang/widgets/tijdlijn_card.dart');
 
   String screenSource() => screen.readAsStringSync();
   String providerSource() => trendsProvider.readAsStringSync();
+  String tijdlijnCardSource() => tijdlijnCard.readAsStringSync();
 
   group('Voortgang Fase 8C UI guards', () {
     test(
@@ -75,7 +78,11 @@ void main() {
 
     test('tijdlijn gebruikt vaste labels en opmerkingen ogen niet als knop',
         () {
-      final source = screenSource();
+      // De rijke tijdlijn-card (met 'Geoefend'/'Opmerking'/_TijdlijnScoreRij)
+      // is verplaatst naar widgets/tijdlijn_card.dart -- gedeeld tussen de
+      // hoofdpagina (laatste item) en het "Zie alles"-overzicht (volledige
+      // geschiedenis) op /voortgang/tijdlijn.
+      final source = tijdlijnCardSource();
 
       expect(source, contains("'Geoefend'"));
       expect(source, contains("'Opmerking'"));
@@ -88,6 +95,32 @@ void main() {
       final source = screenSource();
 
       expect(source, contains('MediaQuery.paddingOf(context).bottom + 96'));
+    });
+
+    test(
+        'hoofdpagina toont alleen de laatste tijdlijn-gebeurtenis met een '
+        "'Zie alles'-knop naar het volledige overzicht", () {
+      final source = screenSource();
+      final route = File('lib/app.dart').readAsStringSync();
+      final fullScreen = File(
+        'lib/features/voortgang/voortgang_tijdlijn_screen.dart',
+      ).readAsStringSync();
+      final provider = providerSource();
+
+      expect(source, contains("action: 'Zie alles'"));
+      expect(source, contains("context.push('/voortgang/tijdlijn')"));
+      expect(source, contains('[trends.tijdlijn.first]'));
+      // Hoofdpagina toont bewust NIET de hele lijst in één keer.
+      expect(source, isNot(contains('TijdlijnCard(items: trends.tijdlijn)')));
+
+      expect(route, contains("path: '/voortgang/tijdlijn'"));
+      expect(route, contains('VoortgangTijdlijnScreen'));
+
+      expect(fullScreen, contains('TijdlijnCard(items: trends.tijdlijn)'));
+
+      // Geen kunstmatige cap meer op de geschiedenis -- volledige data
+      // blijft beschikbaar via "Zie alles".
+      expect(provider, isNot(contains('.reversed.take(8)')));
     });
   });
 }

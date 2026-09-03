@@ -115,7 +115,17 @@ class FactuurPdfUtils {
     required LeerlingProfiel? leerling,
     required String leerlingNaam,
   }) async {
-    final pdf = pw.Document();
+    // Expliciet Inter laden als PDF-basisfont -- de standaard base14-fonts
+    // (Helvetica) van het `pdf`-package kennen geen €-glyph en tonen die
+    // dan als een leeg kruisje/vierkantje (o.a. zichtbaar naast "Totaal").
+    // Inter (al gebundeld als appfont, zie pubspec.yaml) ondersteunt € wel.
+    final interRegular =
+        pw.Font.ttf(await rootBundle.load('assets/fonts/Inter-Regular.ttf'));
+    final interBold =
+        pw.Font.ttf(await rootBundle.load('assets/fonts/Inter-Bold.ttf'));
+    final pdf = pw.Document(
+      theme: pw.ThemeData.withFont(base: interRegular, bold: interBold),
+    );
     final regels = factuur.factuurregels ?? const <FactuurRegel>[];
     final subtotaal = factuur.subtotaalCents ??
         (regels.isNotEmpty

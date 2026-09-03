@@ -195,6 +195,8 @@ class _NotificatieCard extends ConsumerWidget {
       case 'arrival_started':
       case 'arrival_available':
         return Icons.near_me_rounded;
+      case 'support_antwoord':
+        return Icons.chat_bubble_outline_rounded;
       default:
         return Icons.notifications_rounded;
     }
@@ -228,6 +230,8 @@ class _NotificatieCard extends ConsumerWidget {
       case 'arrival_started':
       case 'arrival_available':
         return AppColors.infoSolid;
+      case 'support_antwoord':
+        return AppColors.primary;
       default:
         return AppColors.dark3;
     }
@@ -236,8 +240,6 @@ class _NotificatieCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppCard(
-      backgroundColor:
-          notificatie.gelezen ? AppColors.white : AppColors.primaryLight,
       onTap: () async {
         if (!notificatie.gelezen && !notificatie.isMock) {
           final profiel = await ref.read(mijnProfielProvider.future);

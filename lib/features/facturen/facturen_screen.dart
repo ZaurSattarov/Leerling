@@ -84,14 +84,9 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
       backgroundColor: AppColors.surface,
       body: Column(
         children: [
-          MainTabHeader(
+          const MainTabHeader(
             title: 'Mijn facturen',
-            actions: [
-              MainHeaderIconKnop(
-                icon: Icons.notifications_none_rounded,
-                onTap: () => context.go('/notificaties'),
-              ),
-            ],
+            actions: [MainHeaderNotificatieKnop()],
           ),
           Expanded(
             child: RefreshIndicator(

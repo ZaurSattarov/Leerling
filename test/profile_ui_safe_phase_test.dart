@@ -100,11 +100,25 @@ void main() {
     expect(source, contains("'Vandaag'"));
     expect(source, contains("'Deze week'"));
     expect(source, contains("'Eerder'"));
-    expect(source, contains('AppColors.primaryLight'));
+    // SaaS-styling gelijk aan de Instructeur-app: geen gekleurde
+    // kaartachtergrond meer voor ongelezen meldingen (was
+    // AppColors.primaryLight) -- ongelezen blijft zichtbaar via vetgedrukte
+    // titel en een kleine indicatorstip.
+    expect(source, isNot(contains('AppColors.primaryLight')));
+    expect(source, contains('notificatie.gelezen'));
+    expect(source, contains('FontWeight.w700'));
   });
 
-  test('Help gebruikt uitsluitend het officiële supportkanaal', () {
+  test('Help & Support opent als hub met Chat- en FAQ-tegel', () {
     final source = read('lib/features/help/help_screen.dart');
+    expect(source, contains("context.push('/help/support')"));
+    expect(source, contains("context.push('/help/faq')"));
+    expect(source, contains('Chat met support'));
+    expect(source, contains('Help & FAQ'));
+  });
+
+  test('Help & FAQ gebruikt uitsluitend het officiële supportkanaal', () {
+    final source = read('lib/features/help/help_faq_screen.dart');
     expect(source, contains('info@klantio.com'));
     expect(source, contains('Klantio Support'));
     expect(

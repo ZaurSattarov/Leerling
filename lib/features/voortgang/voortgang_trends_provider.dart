@@ -208,7 +208,10 @@ class VoortgangTrendsCalculator {
       lessenPerWeekLabel: _lessenPerWeekLabel(chronologisch),
       scoreHistorie: scoreHistorie.takeLast(6),
       competenties: competentieTrends,
-      tijdlijn: chronologisch.reversed.take(8).map(_tijdlijnItem).toList(),
+      // Volledige geschiedenis (geen cap meer) -- de hoofdpagina van
+      // Voortgang toont zelf alleen het eerste/laatste item, "Zie alles"
+      // (/voortgang/tijdlijn) toont deze volledige lijst.
+      tijdlijn: chronologisch.reversed.map(_tijdlijnItem).toList(),
       sterkeCompetenties: sterke,
       aandachtspunten: aandacht,
       lesAdvies: '',

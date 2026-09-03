@@ -140,10 +140,20 @@ class _LesDetailBody extends ConsumerWidget {
               // 5. Locatie + Kaart -- wordt automatisch Live Aankomst zodra
               // de instructeur voor precies deze les een zichtbare sessie
               // heeft (Feature 2, Fase 4). Zelfde kaart, geen losse feature.
-              if (les.locatie?.isNotEmpty == true) ...[
-                _OphaallocatieSectie(les: les),
-                const SizedBox(height: 12),
-              ],
+              //
+              // BUGFIX (Fase 2, 2026-09-04, live geverifieerd op
+              // emulator-5554): deze sectie mag NIET gate'd zijn op
+              // `les.locatie`. Een les zonder ophaallocatie kan alsnog een
+              // actieve Live Aankomst-sessie hebben (server-side geverifieerd:
+              // arrival_sessions/current_arrival_location bestaan onafhankelijk
+              // van lessen.locatie). Vroeger werd de hele sectie -- en dus
+              // ook _LiveAankomstOphaalKaart + ArrivalLiveMap -- overgeslagen,
+              // waardoor de leerling wel de "Live Aankomst actief"-banner
+              // zag maar geen kaart/marker eronder. De sectie beslist nu
+              // intern zelf wat te renderen (Live Aankomst > statische
+              // ophaallocatie > niets); zij tekent haar eigen trailing
+              // spacing zodat een leeg resultaat 0 hoogte houdt.
+              _OphaallocatieSectie(les: les),
 
               // 6. Geoefende onderwerpen / voorbereiding
               if (les.geoefendeOnderwerpen.isNotEmpty) ...[
@@ -993,14 +1003,34 @@ class _OphaallocatieSectieState extends ConsumerState<_OphaallocatieSectie> {
         location != null &&
         !stale;
 
-    if (!toonLiveAankomst) {
-      return _LocatieCard(les: widget.les);
+    final heeftLocatie = (widget.les.locatie ?? '').trim().isNotEmpty;
+
+    // BUGFIX (Fase 2, 2026-09-04): sectie tekent zelf haar trailing
+    // spacing zodat een leeg resultaat (geen Live Aankomst én geen
+    // ingevulde ophaallocatie) 0 hoogte houdt -- geen dubbele witruimte
+    // in het Lesdetails-Column. Zie ook de plek waar deze sectie
+    // aangeroepen wordt.
+    final Widget? inhoud;
+    if (toonLiveAankomst) {
+      inhoud = _LiveAankomstOphaalKaart(
+        les: widget.les,
+        sessionId: session.id,
+        latitude: location.latitude,
+        longitude: location.longitude,
+      );
+    } else if (heeftLocatie) {
+      inhoud = _LocatieCard(les: widget.les);
+    } else {
+      inhoud = null;
     }
-    return _LiveAankomstOphaalKaart(
-      les: widget.les,
-      sessionId: session.id,
-      latitude: location.latitude,
-      longitude: location.longitude,
+
+    if (inhoud == null) return const SizedBox.shrink();
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        inhoud,
+        const SizedBox(height: 12),
+      ],
     );
   }
 }

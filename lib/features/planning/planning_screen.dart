@@ -39,14 +39,9 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
       backgroundColor: AppColors.surface,
       body: Column(
         children: [
-          MainTabHeader(
+          const MainTabHeader(
             title: 'Mijn lessen',
-            actions: [
-              MainHeaderIconKnop(
-                icon: Icons.notifications_outlined,
-                onTap: () => context.go('/notificaties'),
-              ),
-            ],
+            actions: [MainHeaderNotificatieKnop()],
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 10),
@@ -432,7 +427,6 @@ class _LessonDateBlock extends StatelessWidget {
       ),
     );
   }
-
 }
 
 class _LessonMetaRow extends StatelessWidget {

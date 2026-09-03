@@ -556,6 +556,152 @@ void main() {
       // overblijft aan het einde van de test.
       await tester.pump(const Duration(seconds: 7));
     });
+
+    // ------------------------------------------------------------------
+    // Fase 2-bugfix (2026-09-04) — les.locatie mag Live Aankomst NIET
+    // langer verbergen. Vroeger was de hele _OphaallocatieSectie op
+    // Lesdetails gate'd achter `if (les.locatie?.isNotEmpty == true)`,
+    // waardoor een les zonder ingevulde ophaallocatie -- maar mét een
+    // actieve, zichtbare Live Aankomst-sessie -- de "Live Aankomst
+    // actief"-banner wel liet zien maar geen kaart/marker eronder. Live
+    // geverifieerd op emulator-5554: server-side arrival_sessions +
+    // current_arrival_location bestonden correct, alleen de client
+    // renderde de kaart niet. Onderstaande tests zetten dat gedrag vast.
+    // ------------------------------------------------------------------
+    testWidgets(
+        'Fase 2 bugfix: les zonder ophaallocatie MAAR met actieve, '
+        'zichtbare Live Aankomst -> live kaart + marker met echte '
+        'current_arrival_location-coördinaten', (tester) async {
+      final les = _bouwLes(locatie: null);
+      final repo = FakeArrivalRepository();
+      repo.sessionsByLesson[les.id] = _sessie(lessonId: les.id);
+      repo.locationsBySession['sess-1'] = _locatie(lat: 52.3676, lon: 4.9041);
+      final controller = await _bouwArrivalController(repo, les);
+      addTearDown(controller.dispose);
+
+      await tester
+          .pumpWidget(_bouwScherm(les, arrivalController: controller));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(GoogleMap), findsOneWidget,
+          reason: 'kaart moet zichtbaar zijn ondanks lege les.locatie');
+      expect(find.text('Instructeur onderweg · Live'), findsOneWidget);
+      expect(find.text('Bekijk live kaart'), findsOneWidget);
+
+      final map = tester.widget<GoogleMap>(find.byType(GoogleMap));
+      expect(map.markers, hasLength(1),
+          reason: 'exact één instructeur-marker; geen fake/0,0-marker');
+      final marker = map.markers.single;
+      expect(marker.position, const LatLng(52.3676, 4.9041),
+          reason: 'marker gebruikt echte current_arrival_location-coördinaten '
+              '-- geen fallback naar Nederland-centroid of les.locatie');
+      expect(map.myLocationEnabled, false,
+          reason: 'nooit de leerling zijn eigen locatie tonen');
+    });
+
+    testWidgets(
+        'Fase 2 bugfix: nieuwe locatie-update op een les zonder '
+        'ophaallocatie beweegt de marker zichtbaar mee (realtime)',
+        (tester) async {
+      final les = _bouwLes(locatie: null);
+      final repo = FakeArrivalRepository();
+      repo.sessionsByLesson[les.id] = _sessie(lessonId: les.id);
+      repo.locationsBySession['sess-1'] = _locatie(lat: 52.3676, lon: 4.9041);
+      final controller = await _bouwArrivalController(repo, les);
+      addTearDown(controller.dispose);
+
+      await tester
+          .pumpWidget(_bouwScherm(les, arrivalController: controller));
+      await tester.pumpAndSettle();
+
+      var map = tester.widget<GoogleMap>(find.byType(GoogleMap));
+      expect(map.markers.single.position, const LatLng(52.3676, 4.9041));
+
+      // Nieuwe binnenkomende locatie (bv. een Realtime-event of pol-tik):
+      repo.locationsBySession['sess-1'] =
+          _locatie(lat: 52.3700, lon: 4.9070);
+      repo.stuurLocationEvent('sess-1');
+      await tester.pumpAndSettle();
+
+      map = tester.widget<GoogleMap>(find.byType(GoogleMap));
+      expect(map.markers, hasLength(1));
+      expect(map.markers.single.position, const LatLng(52.3700, 4.9070),
+          reason: 'marker moet naar de nieuwe positie bewegen, niet '
+              'blijven staan op de oude coördinaten');
+    });
+
+    testWidgets(
+        'Fase 2 bugfix: les zonder ophaallocatie én zonder actieve Live '
+        'Aankomst -> hele sectie is 0 hoogte (geen "OPHAALLOCATIE"-badge, '
+        'geen witruimte)', (tester) async {
+      final les = _bouwLes(locatie: null);
+      final repo = FakeArrivalRepository();
+      repo.sessionsByLesson[les.id] = null;
+      final controller = await _bouwArrivalController(repo, les);
+      addTearDown(controller.dispose);
+
+      await tester
+          .pumpWidget(_bouwScherm(les, arrivalController: controller));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(GoogleMap), findsNothing);
+      expect(find.text('OPHAALLOCATIE'), findsNothing);
+      expect(find.text('Bekijk locatie'), findsNothing);
+      expect(find.text('Bekijk live kaart'), findsNothing);
+      expect(find.textContaining('null'), findsNothing,
+          reason: 'nooit "null" of een placeholder-tekst renderen');
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'Fase 2 bugfix: Live Aankomst start terwijl Lesdetails al open is '
+        '(les zonder locatie) -> de kaart verschijnt vanzelf zodra de '
+        'sessie zichtbaar wordt', (tester) async {
+      final les = _bouwLes(locatie: null);
+      final repo = FakeArrivalRepository();
+      repo.sessionsByLesson[les.id] = null;
+      final controller = await _bouwArrivalController(repo, les);
+      addTearDown(controller.dispose);
+
+      await tester
+          .pumpWidget(_bouwScherm(les, arrivalController: controller));
+      await tester.pumpAndSettle();
+      expect(find.byType(GoogleMap), findsNothing);
+
+      // Instructeur start Live Aankomst, server-side actief + zichtbaar:
+      repo.sessionsByLesson[les.id] = _sessie(lessonId: les.id);
+      repo.locationsBySession['sess-1'] = _locatie(lat: 52.3676, lon: 4.9041);
+      repo.stuurSessionEvent(les.id);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(GoogleMap), findsOneWidget,
+          reason: 'kaart moet vanzelf verschijnen zonder scherm opnieuw '
+              'te openen');
+      final map = tester.widget<GoogleMap>(find.byType(GoogleMap));
+      expect(map.markers.single.position, const LatLng(52.3676, 4.9041));
+    });
+
+    testWidgets(
+        'Fase 2 bugfix: verkeerde les-id op de sessie -> kaart wordt NIET '
+        'op deze les getoond (geen kruisbesmetting tussen lessen/leerlingen)',
+        (tester) async {
+      final les = _bouwLes(locatie: null, id: 'les-A');
+      final repo = FakeArrivalRepository();
+      // Actieve, zichtbare sessie MAAR voor een andere les:
+      repo.sessionsByLesson[les.id] =
+          _sessie(lessonId: 'les-ANDERS', id: 'sess-X');
+      repo.locationsBySession['sess-X'] = _locatie(lat: 52.3676, lon: 4.9041);
+      final controller = await _bouwArrivalController(repo, les);
+      addTearDown(controller.dispose);
+
+      await tester
+          .pumpWidget(_bouwScherm(les, arrivalController: controller));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(GoogleMap), findsNothing,
+          reason: 'sessie hoort bij een andere les-id -- nooit tonen op deze');
+      expect(find.text('Bekijk live kaart'), findsNothing);
+    });
   });
 
   group('les_detail_screen.dart -- Ophaallocatiekaart (bron-guard)', () {

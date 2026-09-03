@@ -146,6 +146,7 @@ class _KopKaart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const IconBadge(
                 icon: Icons.inventory_2_rounded,
@@ -154,60 +155,31 @@ class _KopKaart extends StatelessWidget {
               ),
               const SizedBox(width: 14),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      detail.pakketnaam,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 6,
-                      children: [
-                        if (detail.rijbewijsCategorie?.isNotEmpty == true)
-                          _Badge(label: detail.rijbewijsCategorie!.toUpperCase()),
-                        if (_transmissieLabel != null)
-                          _Badge(label: _transmissieLabel!),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: _statusKleur.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(999),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 7,
-                  height: 7,
-                  decoration:
-                      BoxDecoration(color: _statusKleur, shape: BoxShape.circle),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  detail.statusLabel,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: _statusKleur,
+                child: Text(
+                  detail.pakketnaam,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
                   ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 10),
+              // Statusbadge rechtsboven -- zelfde neutrale/gebordeerde
+              // stijl als StatusPill/FactuurStatusUi elders in de app
+              // (geen pastel-getinte achtergrond meer).
+              _StatusBadge(label: detail.statusLabel, kleur: _statusKleur),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: [
+              if (detail.rijbewijsCategorie?.isNotEmpty == true)
+                _Badge(label: detail.rijbewijsCategorie!.toUpperCase()),
+              if (_transmissieLabel != null) _Badge(label: _transmissieLabel!),
+            ],
           ),
         ],
       ),
@@ -223,6 +195,47 @@ class _KopKaart extends StatelessWidget {
       default:
         return null;
     }
+  }
+}
+
+/// Statusbadge (bv. "Actief") -- zelfde neutrale/gebordeerde badge-stijl als
+/// [StatusPill]/`FactuurStatusUi` elders in de app (grijze achtergrond,
+/// dunne rand, solide semantische tekstkleur) i.p.v. een fletse pastel-
+/// getinte achtergrond in de statuskleur zelf.
+class _StatusBadge extends StatelessWidget {
+  final String label;
+  final Color kleur;
+  const _StatusBadge({required this.label, required this.kleur});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF0F2F5),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: const Color(0xFFE2E2E7)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 7,
+            height: 7,
+            decoration: BoxDecoration(color: kleur, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: kleur,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -395,7 +408,8 @@ class _VoorwaardenKaart extends StatelessWidget {
       rijen.add(_VoorwaardeRij(
         icon: Icons.payments_outlined,
         label: 'Losse lesprijs',
-        waarde: '€ ${detail.losseLesprijs!.toStringAsFixed(2).replaceAll('.', ',')}',
+        waarde:
+            '€ ${detail.losseLesprijs!.toStringAsFixed(2).replaceAll('.', ',')}',
       ));
     }
     if (detail.startdatum?.isNotEmpty == true) {
@@ -446,13 +460,16 @@ class _VoorwaardeRij extends StatelessWidget {
         IconBadge(icon: icon, color: AppColors.iconSlate, size: 34),
         const SizedBox(width: 12),
         Expanded(
-          child:
-              Text(label, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+          child: Text(label,
+              style: const TextStyle(
+                  fontSize: 13, color: AppColors.textSecondary)),
         ),
         Text(
           waarde,
           style: const TextStyle(
-              fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary),
         ),
       ],
     );
@@ -501,7 +518,9 @@ class _InbegrepenRij extends StatelessWidget {
           child: Text(
             label,
             style: const TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary),
           ),
         ),
       ],
@@ -528,7 +547,8 @@ class _LegacyMelding extends StatelessWidget {
               'Deze voorwaarden komen uit de huidige pakkettencatalogus van je '
               'rijschool, niet uit een vastgelegde overeenkomst. Neem contact op '
               'met je instructeur als je twijfelt.',
-              style: TextStyle(fontSize: 12, height: 1.4, color: AppColors.textSecondary),
+              style: TextStyle(
+                  fontSize: 12, height: 1.4, color: AppColors.textSecondary),
             ),
           ),
         ],

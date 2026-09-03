@@ -107,6 +107,7 @@ class Notificatie {
       'exam_result' => '/examens',
       'voortgang' || 'examenadvies' => '/examenadvies',
       'admin_message' => '/notificaties',
+      'support_antwoord' => '/help/support',
       _ => '/home',
     };
   }
@@ -125,6 +126,9 @@ class Notificatie {
       '/profiel',
       '/notificaties',
       '/beschikbaarheid',
+      // Supportantwoord-notificaties (Help & Support, 2026-09-03) linken
+      // naar het eigen supportgesprek.
+      '/help',
     ];
     return toegestanePrefixes.any(route.startsWith)
         ? route
