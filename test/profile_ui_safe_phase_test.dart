@@ -109,27 +109,8 @@ void main() {
     expect(source, contains('FontWeight.w700'));
   });
 
-  test('Help & Support opent als hub met Chat- en FAQ-tegel', () {
-    final source = read('lib/features/help/help_screen.dart');
-    expect(source, contains("context.push('/help/support')"));
-    expect(source, contains("context.push('/help/faq')"));
-    expect(source, contains('Chat met support'));
-    expect(source, contains('Help & FAQ'));
-  });
-
-  test('Help & FAQ gebruikt uitsluitend het officiële supportkanaal', () {
-    final source = read('lib/features/help/help_faq_screen.dart');
-    expect(source, contains('info@klantio.com'));
-    expect(source, contains('Klantio Support'));
-    expect(
-      source,
-      contains('Stuur ons een e-mail. We reageren zo snel mogelijk.'),
-    );
-    expect(source, isNot(contains('Supportadres nog niet geconfigureerd')));
-    expect(source, isNot(contains('Bel je rijschool')));
-    expect(source, isNot(contains('ContactUri.tel')));
-    expect(source, contains('ContactUri.email'));
-  });
+  // Help & Support-hub + FAQ zijn verwijderd (redesign 2026-09-04, zie
+  // test/support_chat_redesign_test.dart): '/help' opent nu direct de chat.
 
   test('Wachtwoordreset heeft loading succes en foutstatus', () {
     final source = read('lib/features/profiel/beveiliging_screen.dart');

@@ -100,6 +100,9 @@ class SupportMessage {
   final String body;
   final String source;
   final DateTime createdAt;
+  final String? attachmentPath;
+  final String? attachmentMime;
+  final int? attachmentSizeBytes;
 
   const SupportMessage({
     required this.id,
@@ -108,9 +111,13 @@ class SupportMessage {
     required this.body,
     required this.source,
     required this.createdAt,
+    this.attachmentPath,
+    this.attachmentMime,
+    this.attachmentSizeBytes,
   });
 
   bool get isVanGebruiker => senderType == 'user';
+  bool get heeftBijlage => attachmentPath != null && attachmentPath!.isNotEmpty;
 
   factory SupportMessage.fromJson(Map<String, dynamic> json) {
     return SupportMessage(
@@ -120,6 +127,9 @@ class SupportMessage {
       body: (json['body'] as String?) ?? '',
       source: (json['source'] as String?) ?? 'app',
       createdAt: DateTime.parse(json['created_at'] as String),
+      attachmentPath: json['attachment_path'] as String?,
+      attachmentMime: json['attachment_mime'] as String?,
+      attachmentSizeBytes: (json['attachment_size_bytes'] as num?)?.toInt(),
     );
   }
 }

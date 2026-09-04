@@ -25,13 +25,14 @@ class SupportInboxScreen extends ConsumerWidget {
       body: Column(
         children: [
           MainDetailHeader(
-            title: 'Mijn supportvragen',
+            title: 'Eerdere gesprekken',
             fallbackRoute: '/help',
             actions: [
               IconButton(
-                onPressed: () => context.push('/help/support/nieuw'),
-                tooltip: 'Nieuw gesprek',
-                icon: const Icon(Icons.add_rounded, color: Colors.white),
+                onPressed: () => context.push('/help'),
+                tooltip: 'Naar de chat',
+                icon: const Icon(Icons.chat_bubble_outline_rounded,
+                    color: Colors.white),
               ),
             ],
           ),
@@ -103,7 +104,7 @@ class SupportInboxScreen extends ConsumerWidget {
                               SupportPrimaryButton(
                                 label: 'Nieuw gesprek',
                                 onPressed: () =>
-                                    context.push('/help/support/nieuw'),
+                                    context.push('/help'),
                               ),
                             ],
                           ),

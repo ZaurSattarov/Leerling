@@ -1,9 +1,22 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/support_thread.dart';
 import 'student_service.dart';
+
+class SupportAttachment {
+  final String path;
+  final String mime;
+  final int sizeBytes;
+
+  const SupportAttachment({
+    required this.path,
+    required this.mime,
+    required this.sizeBytes,
+  });
+}
 
 /// Canonical supportchat-service voor de Leerling-app -- 1-op-1 poort van
 /// de Instructeur-app (rijschool-planner-flutter/lib/core/services/
@@ -84,11 +97,16 @@ class SupportService {
     }
   }
 
+  // subject/category zijn bewust optioneel: de Help & Support-chat opent
+  // direct (geen apart onderwerp-/categorieformulier meer); de Edge
+  // Function vult server-side een default-onderwerp in ('Nieuw gesprek')
+  // wanneer dit veld leeg blijft.
   static Future<SupportActionResult> createThread({
-    required String subject,
+    String? subject,
     required String body,
     String? category,
     String? clientRequestId,
+    SupportAttachment? attachment,
   }) {
     // create_leerling (niet het generieke 'create') -- de Edge Function zet
     // hierdoor server-side altijd product_context='leerling' en weigert
@@ -96,10 +114,11 @@ class SupportService {
     return _invoke(
       action: 'create_leerling',
       body: {
-        'subject': subject,
+        if (subject != null && subject.isNotEmpty) 'subject': subject,
         'body': body,
         if (category != null) 'category': category,
         'client_request_id': clientRequestId ?? newSupportRequestId(),
+        ..._attachmentBody(attachment),
       },
     );
   }
@@ -108,6 +127,7 @@ class SupportService {
     required String threadId,
     required String body,
     String? clientRequestId,
+    SupportAttachment? attachment,
   }) {
     return _invoke(
       action: 'reply',
@@ -115,8 +135,62 @@ class SupportService {
         'thread_id': threadId,
         'body': body,
         'client_request_id': clientRequestId ?? newSupportRequestId(),
+        ..._attachmentBody(attachment),
       },
     );
+  }
+
+  static Map<String, dynamic> _attachmentBody(SupportAttachment? attachment) {
+    if (attachment == null) return const {};
+    return {
+      'attachment_path': attachment.path,
+      'attachment_mime': attachment.mime,
+      'attachment_size_bytes': attachment.sizeBytes,
+    };
+  }
+
+  /// Uploadt een foto naar de private bucket `support-attachments` op het
+  /// pad `{auth.uid()}/{uuid}.{ext}` (Storage-RLS staat alleen de eigen map
+  /// + actieve platform_staff toe). Het supportbericht zelf met de
+  /// verwijzing naar dit pad wordt pas daarna, via de Edge Function
+  /// (service_role), weggeschreven -- nooit een directe insert hier.
+  static Future<SupportAttachment> uploadAttachment({
+    required Uint8List bytes,
+    required String mimeType,
+  }) async {
+    final uid = StudentService.client.auth.currentUser?.id ?? '';
+    final ext = _extensionFor(mimeType);
+    final path = '$uid/${DateTime.now().microsecondsSinceEpoch}_'
+        '${Random.secure().nextInt(1 << 32)}$ext';
+    await StudentService.client.storage.from('support-attachments').uploadBinary(
+          path,
+          bytes,
+          fileOptions: FileOptions(contentType: mimeType),
+        );
+    return SupportAttachment(path: path, mime: mimeType, sizeBytes: bytes.length);
+  }
+
+  /// Signed URL (1 uur geldig) om een bijlage te tonen -- bucket is privé,
+  /// geen publieke URL.
+  static Future<String> signedAttachmentUrl(String path) {
+    return StudentService.client.storage
+        .from('support-attachments')
+        .createSignedUrl(path, 3600);
+  }
+
+  static String _extensionFor(String mimeType) {
+    switch (mimeType) {
+      case 'image/png':
+        return '.png';
+      case 'image/webp':
+        return '.webp';
+      case 'image/heic':
+        return '.heic';
+      case 'image/heif':
+        return '.heif';
+      default:
+        return '.jpg';
+    }
   }
 
   static Future<SupportActionResult> retryMail(String threadId) {

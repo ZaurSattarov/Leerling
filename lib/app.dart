@@ -29,11 +29,8 @@ import 'features/planning/planning_screen.dart';
 import 'features/planning/les_detail_screen.dart';
 import 'features/les_logboek/les_logboek_screen.dart';
 import 'features/examenadvies/examenadvies_screen.dart';
-import 'features/help/help_screen.dart';
-import 'features/help/help_faq_screen.dart';
+import 'features/help/support_chat_screen.dart';
 import 'features/help/support_inbox_screen.dart';
-import 'features/help/support_new_thread_screen.dart';
-import 'features/help/support_thread_screen.dart';
 import 'features/legal/content/privacy_policy_nl.dart';
 import 'features/legal/content/terms_conditions_nl.dart';
 import 'features/legal/legal_document_screen.dart';
@@ -246,35 +243,34 @@ final _routerProvider = Provider<GoRouter>((ref) {
         builder: (_, __) => const ProfielAfrondenScreen(),
       ),
 
-      // Help & Support — full screen, outside bottom nav.
+      // Help & Support — full screen, outside bottom nav. Opent direct de
+      // chat (redesign 2026-09-04): geen hub/FAQ-keuze en geen apart
+      // onderwerp-/categorieformulier meer. '/help/support' blijft
+      // geregistreerd voor bestaande notificatie-fallbacks
+      // (routeVoorType('support_antwoord') in models/notificatie.dart) en
+      // wijst naar hetzelfde directe-chatscherm als '/help'.
       GoRoute(
         path: '/help',
         builder: (_, __) => const StudentProfileGate(
-          child: HelpScreen(),
-        ),
-      ),
-      GoRoute(
-        path: '/help/faq',
-        builder: (_, __) => const StudentProfileGate(
-          child: HelpFaqScreen(),
+          child: SupportChatScreen(),
         ),
       ),
       GoRoute(
         path: '/help/support',
         builder: (_, __) => const StudentProfileGate(
-          child: SupportInboxScreen(),
-        ),
-      ),
-      GoRoute(
-        path: '/help/support/nieuw',
-        builder: (_, __) => const StudentProfileGate(
-          child: SupportNewThreadScreen(),
+          child: SupportChatScreen(),
         ),
       ),
       GoRoute(
         path: '/help/support/:id',
         builder: (_, state) => StudentProfileGate(
-          child: SupportThreadScreen(threadId: state.pathParameters['id']!),
+          child: SupportChatScreen(threadId: state.pathParameters['id']!),
+        ),
+      ),
+      GoRoute(
+        path: '/help/gesprekken',
+        builder: (_, __) => const StudentProfileGate(
+          child: SupportInboxScreen(),
         ),
       ),
 

@@ -2,133 +2,131 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-/// Guardtests voor de Help & Support-poort (Punt 11 + 12): dezelfde
-/// bron-string-aanpak als de overige *_test.dart-bestanden in deze map.
-/// Draait geen live Supabase-calls (die vereisen een echte sessie) --
-/// verifieert dat de juiste bestanden/routes/aanroepen bestaan en dat de
-/// canonical backend-contracten (Edge Function `support-chat`,
-/// `support_threads_app`, RLS) worden gebruikt zoals bedoeld.
+/// Guardtests voor de Help & Support-redesign (2026-09-04): directe chat,
+/// geen hub/FAQ-tegels, geen apart onderwerp-/categorieformulier, foto-
+/// bijlagen, realtime, Klantio-primary i.p.v. blauw uit de Figma-referentie.
+/// 1-op-1 poort van de Instructeur-app
+/// (test/support_chat_redesign_test.dart). Draait geen live Supabase-calls
+/// (die vereisen een echte sessie) -- verifieert dat de juiste
+/// bestanden/routes/aanroepen bestaan en dat de canonical backend-contracten
+/// (Edge Function support-chat, support_threads_app, RLS) gebruikt worden
+/// zoals bedoeld.
 void main() {
   String read(String path) => File(path).readAsStringSync();
 
-  group('Help & Support (leerling-poort)', () {
+  group('Help & Support-redesign (leerling-poort)', () {
     test('A. Help & Support is bereikbaar vanuit Profiel', () {
       final profiel = read('lib/features/profiel/profiel_screen.dart');
       expect(profiel, contains("context.push('/help')"));
       expect(profiel, contains('Help & Support'));
     });
 
-    test(
-        'B. Alle nieuwe supportschermen gebruiken MainDetailHeader '
-        '(terugpijl, geen navbar)', () {
+    test('B. De oude hub/FAQ/nieuw-gesprek-schermen bestaan niet meer', () {
       for (final path in [
         'lib/features/help/help_screen.dart',
         'lib/features/help/help_faq_screen.dart',
-        'lib/features/help/support_inbox_screen.dart',
         'lib/features/help/support_new_thread_screen.dart',
         'lib/features/help/support_thread_screen.dart',
       ]) {
-        final source = read(path);
-        expect(source, contains('MainDetailHeader'), reason: path);
+        expect(File(path).existsSync(), isFalse, reason: path);
       }
     });
 
-    test('C. Help-hub linkt naar Chat met support en Help & FAQ', () {
-      final source = read('lib/features/help/help_screen.dart');
-      expect(source, contains("context.push('/help/support')"));
-      expect(source, contains("context.push('/help/faq')"));
+    test(
+        'C. app.dart opent /help en /help/support direct via '
+        'SupportChatScreen -- geen HelpScreen/HelpFaqScreen/'
+        'SupportNewThreadScreen meer', () {
+      final app = read('lib/app.dart');
+      expect(app, contains("import 'features/help/support_chat_screen.dart';"));
+      expect(app, isNot(contains('HelpScreen(')));
+      expect(app, isNot(contains('HelpFaqScreen')));
+      expect(app, isNot(contains('SupportNewThreadScreen')));
+      expect(app, contains("path: '/help',"));
+      expect(app, contains('SupportChatScreen(),'));
+      expect(app, contains("threadId: state.pathParameters['id']!"));
+      // Bestaande notificatie-fallback ('/help/support', zonder id) blijft
+      // geregistreerd en wijst naar hetzelfde directe-chatscherm.
+      expect(app, contains("path: '/help/support',"));
     });
 
     test(
-        'D. Nieuw-gesprekscherm heeft categorie, onderwerp en bericht, en '
-        'gebruikt de leerlinggerichte categorielijst', () {
-      final source = read('lib/features/help/support_new_thread_screen.dart');
-      expect(source, contains('supportCategorieen'));
-      expect(source, contains('_onderwerp'));
-      expect(source, contains('_bericht'));
-      expect(source, contains('SupportService.createThread'));
+        'D. SupportChatScreen gebruikt MainDetailHeader (consistent met de '
+        'rest van de app, geen aparte navbar)', () {
+      final source = read('lib/features/help/support_chat_screen.dart');
+      expect(source, contains('MainDetailHeader'));
     });
 
     test(
-        'E/H. SupportService maakt threads aan en verstuurt replies via de '
+        'E. Nieuw gesprek aanmaken vereist geen onderwerp/categorie meer van '
+        'de leerling', () {
+      final service = read('lib/core/services/support_service.dart');
+      expect(service, isNot(contains('required String subject')));
+      final screen = read('lib/features/help/support_chat_screen.dart');
+      expect(screen, contains('SupportService.createThread(body: body'));
+    });
+
+    test(
+        'F. SupportService maakt threads aan en verstuurt replies via de '
         'bestaande Edge Function `support-chat` -- geen directe '
-        'insert/update op support_threads of support_messages', () {
+        'insert/update op support_threads of support_messages (Storage-'
+        'upload voor bijlagen is geen table-write)', () {
       final source = read('lib/core/services/support_service.dart');
       expect(source, contains("'support-chat'"));
       expect(source, contains("action: 'create_leerling'"));
       expect(source, contains("action: 'reply'"));
-      // Alleen leesqueries (select) op support_messages zijn toegestaan
-      // (listMessages, RLS-gescoped) -- schrijven gaat altijd via de Edge
-      // Function (service_role), nooit via .insert()/.update() vanuit de
-      // client.
       expect(source, isNot(contains('.insert(')));
       expect(source, isNot(contains('.update(')));
     });
 
     test(
-        'F/I. product_context wordt NOOIT als request-body-sleutel vanuit de '
-        'Leerling-client verstuurd -- alleen als leesfilter gebruikt, nooit '
-        'als request-body-key (`\'product_context\':`)', () {
+        'G. Foto-bijlagen gaan naar de private support-attachments-bucket, '
+        'nooit als base64 in de database', () {
       final service = read('lib/core/services/support_service.dart');
-      // Wél toegestaan: .eq('product_context', ...) als LEESFILTER (de
-      // isolatiefix zelf). NIET toegestaan: 'product_context': ... als
-      // sleutel in een request-body die naar de Edge Function gaat -- dat
-      // veld bepaalt de server uitsluitend zelf, per aangeroepen actie.
-      expect(service, isNot(contains("'product_context':")));
-      final newThreadScreen =
-          read('lib/features/help/support_new_thread_screen.dart');
-      expect(newThreadScreen, isNot(contains("'product_context':")));
+      expect(service, contains("storage.from('support-attachments')"));
+      expect(service, contains('uploadBinary'));
+      expect(service, contains('createSignedUrl'));
     });
 
     test(
-        'G. Threads/messages worden gelezen via de RLS-gescoped view/tabel '
+        'H. product_context wordt NOOIT als request-body-sleutel vanuit de '
+        'Leerling-client verstuurd -- alleen als leesfilter gebruikt', () {
+      final service = read('lib/core/services/support_service.dart');
+      expect(service, isNot(contains("'product_context':")));
+      final screen = read('lib/features/help/support_chat_screen.dart');
+      expect(screen, isNot(contains("'product_context':")));
+    });
+
+    test(
+        'I. Threads/messages worden gelezen via de RLS-gescoped view/tabel '
         '(support_threads_app), niet rechtstreeks support_threads', () {
       final source = read('lib/core/services/support_service.dart');
       expect(source, contains("from('support_threads_app')"));
       expect(source, isNot(contains("from('support_threads')")));
     });
 
-    test('I. Een bestaand gesprek laadt thread + berichten via providers', () {
-      final provider = read('lib/features/help/support_provider.dart');
-      expect(provider, contains('supportThreadProvider'));
-      expect(provider, contains('supportMessagesProvider'));
-      final screen = read('lib/features/help/support_thread_screen.dart');
-      expect(screen, contains('supportThreadProvider(widget.threadId)'));
-      expect(screen, contains('supportMessagesProvider(widget.threadId)'));
+    test(
+        'J. Realtime: de chat abonneert op support_messages/support_threads '
+        'i.p.v. uitsluitend handmatig verversen', () {
+      final source = read('lib/features/help/support_chat_screen.dart');
+      expect(source, contains('.onPostgresChanges('));
+      expect(source, contains("table: 'support_messages'"));
+      expect(source, contains("table: 'support_threads'"));
     });
 
-    test('J/K. Help & FAQ bevat alleen leerlinggerichte categorieën', () {
-      final source = read('lib/features/help/help_faq_screen.dart');
-      for (final categorie in [
-        'Account & profiel',
-        'Planning & lessen',
-        'Lespakket & voortgang',
-        'Live Aankomst',
-        'Facturen & betalingen',
-        'Notificaties',
-        'Rijschool & instructeur',
-        'Privacy & gegevens',
-        'Support',
-      ]) {
-        expect(source, contains(categorie), reason: categorie);
-      }
-      // Geen instructeur-specifieke content (leerlingen hebben geen
-      // rijschool/leerlingenbeheer).
-      expect(source, isNot(contains('Hoe voeg ik een leerling toe')));
-      expect(source, isNot(contains('Hoe beheer ik mijn rijschool')));
+    test(
+        'K. Klantio-primary komt terug in verzendknop/eigen berichten/'
+        'attachment-knop -- geen blauw uit de Figma-referentie', () {
+      final source = read('lib/features/help/support_chat_screen.dart');
+      expect(source, contains('AppColors.primary'));
+      expect(source, isNot(contains('Colors.blue')));
     });
 
-    test('Alle vijf supportroutes zijn geregistreerd in app.dart', () {
-      final app = read('lib/app.dart');
-      for (final route in [
-        "path: '/help'",
-        "path: '/help/faq'",
-        "path: '/help/support'",
-        "path: '/help/support/nieuw'",
-        "path: '/help/support/:id'",
-      ]) {
-        expect(app, contains(route), reason: route);
-      }
+    test(
+        'L. Afgesloten gesprek toont een afsluit-melding met een "Nieuwe '
+        'chat starten"-actie', () {
+      final source = read('lib/features/help/support_chat_screen.dart');
+      expect(source, contains('Je vorige gesprek is afgesloten.'));
+      expect(source, contains('Nieuwe chat starten'));
     });
 
     test('Notificatie-routewhitelist staat /help toe (supportantwoorden)', () {
