@@ -1,7 +1,7 @@
 {
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\app.dart": {
-    "mtime": 1788472917.0660436,
-    "hash": "e8b9616ead2b5182011cf2c23cca6366"
+    "mtime": 1788517144.530812,
+    "hash": "6feffecb149c161df236ce9d63526bf3"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\main.dart": {
     "mtime": 1788301416.6354465,
@@ -60,8 +60,8 @@
     "hash": "74796dccf13b67952c6232112694dd00"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\services\\support_service.dart": {
-    "mtime": 1788459861.8822896,
-    "hash": "cb1351c530d2d57c19bd5ebe4853f5cf"
+    "mtime": 1788517144.530812,
+    "hash": "59f6007f677e95f71d222d0712eeedd6"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\utils\\contact_uri.dart": {
     "mtime": 1788301416.5769384,
@@ -199,29 +199,17 @@
     "mtime": 1788301416.5971084,
     "hash": "77b4c1703c1534c0206d7f4c97b5d006"
   },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\help\\help_faq_screen.dart": {
-    "mtime": 1788459861.8822896,
-    "hash": "77014157636554a5783e409d0b113dd0"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\help\\help_screen.dart": {
-    "mtime": 1788459861.8822896,
-    "hash": "b6facc93356670400826db5bb7865952"
+  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\help\\support_chat_screen.dart": {
+    "mtime": 1788516940.0391133,
+    "hash": "75dd0def528a4adce5919ed67c3b6259"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\help\\support_inbox_screen.dart": {
-    "mtime": 1788459861.8822896,
-    "hash": "0d15ac22eac71f63efa312d1e92e0088"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\help\\support_new_thread_screen.dart": {
-    "mtime": 1788459861.8822896,
-    "hash": "f91874c6a380e72b094478500fe5e317"
+    "mtime": 1788517144.5323167,
+    "hash": "7312888a8a2ea77a21f45ea27a88800b"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\help\\support_provider.dart": {
-    "mtime": 1788459861.8822896,
-    "hash": "87eac2f1a651447a3601d42e0c82fa45"
-  },
-  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\help\\support_thread_screen.dart": {
-    "mtime": 1788459861.8822896,
-    "hash": "d9a927fa1e1a709855f0a83d98cfb9e5"
+    "mtime": 1788517144.5333216,
+    "hash": "9af96ea7f82831490d25bf6d9fa01221"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\help\\widgets\\support_ui.dart": {
     "mtime": 1788459861.8981886,
@@ -252,8 +240,8 @@
     "hash": "8fb3c4848b54ab29a65c48711a64043a"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\koppelcode\\qr_scan_screen.dart": {
-    "mtime": 1788472904.3107755,
-    "hash": "2bc12dcee3290f7addd9d5c7f384f605"
+    "mtime": 1788517144.5333216,
+    "hash": "680da7c675faf95797ff40ac715c5fd6"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\legal\\legal_document_screen.dart": {
     "mtime": 1788301416.6041288,
@@ -496,8 +484,8 @@
     "hash": "0c21acc0b0595119043ce7adf17258d1"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\models\\support_thread.dart": {
-    "mtime": 1788459861.8981886,
-    "hash": "50b794a9a33aaaf0ad943eaa444ff7b1"
+    "mtime": 1788517144.5343218,
+    "hash": "f37a0430c5e10cb8d451fa536798fd0f"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\shared\\providers\\auth_provider.dart": {
     "mtime": 1777896706.8795753,
@@ -676,8 +664,8 @@
     "hash": "0a3618903f7af3ffcafbf0497cb0d036"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\profile_ui_safe_phase_test.dart": {
-    "mtime": 1788459861.8981886,
-    "hash": "73d47c22be9f57e8eebaaef70c4b3e82"
+    "mtime": 1788517144.5353215,
+    "hash": "4c926eb4936217ad4e77b24e40a207ce"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\push_service_apns_test.dart": {
     "mtime": 1788301416.6908803,
@@ -688,8 +676,8 @@
     "hash": "689f51f31e2729608150e249bf8837d9"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\support_help_test.dart": {
-    "mtime": 1788459861.8981886,
-    "hash": "c5c1ddb3d2918f1209f3d4ff7b9748ae"
+    "mtime": 1788517144.536322,
+    "hash": "3d277502c35af85eb8bf452828d4767f"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\voortgang_phase8c_ui_test.dart": {
     "mtime": 1788459861.8981886,
@@ -776,8 +764,8 @@
     "hash": "c8a5692d9b07448f63d8bdcf19def1da"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\features\\koppelcode\\koppel_keuze_screen_test.dart": {
-    "mtime": 1788472965.751104,
-    "hash": "8684d8d023a26ceadd6f4e916500cb34"
+    "mtime": 1788517144.5353215,
+    "hash": "b5e6707c50db85d84d2112f504191420"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\features\\koppelcode\\qr_payload_cross_app_contract_test.dart": {
     "mtime": 1788472990.6362355,
