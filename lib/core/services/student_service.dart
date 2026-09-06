@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -164,6 +165,65 @@ class StudentService {
     );
   }
 
+  // ── FACEBOOK-LOGIN (native, classic access token -> Supabase idToken) ──
+  // Zelfde architectuur/pattern als de Google-login hierboven (ongewijzigd
+  // gelaten): Supabase's signInWithIdToken() op dezelfde auth.users-
+  // architectuur. Net als bij Google heeft de Leerling-app géén eigen
+  // profiel om na login te activeren -- een leerling-profiel wordt
+  // uitsluitend door de instructeur aangemaakt en pas via
+  // koppelLeerlingMetCode() gekoppeld, ongeacht de inlogmethode.
+  //
+  // BELANGRIJK, geverifieerd tegen de actuele Supabase Flutter-referentie
+  // (supabase.com/docs/reference/dart/auth-signinwithidtoken, sectie
+  // Facebook): ondanks de Google/Apple-vereiste voor een echt OIDC-JWT
+  // verwacht Supabase's Facebook-provider gewoon de normale Facebook
+  // access token (ClassicToken.tokenString) als `idToken`-parameter, GEEN
+  // Limited-Login-JWT en GEEN nonce. Een eerdere versie van deze functie
+  // gebruikte ten onrechte Limited Login + zelf-gegenereerde nonce -- dat
+  // wijkt af van de gedocumenteerde flow en kan zelfs mislukken (Supabase's
+  // generieke OIDC-parser is niet toegerust op Facebook's JWT-structuur,
+  // zie github.com/supabase/auth/issues/1522, "Bad ID token").
+  //
+  // Vereist configuratie (zie AppConfig.facebookAppId/facebookClientToken +
+  // de native Android/iOS-config): een Meta for Developers-app met het
+  // "Facebook Login"-product, en dezelfde Facebook-app als Client ID/Secret
+  // ingesteld bij de Facebook-provider in het Supabase-dashboard
+  // (Authentication > Providers) -- dat is server-side configuratie die
+  // hier niet vanuit de app te zetten is.
+
+  /// Start de native Facebook-accountkiezer en logt in via Supabase's
+  /// idToken-flow. Retourneert `null` wanneer de gebruiker annuleert --
+  /// normaal gedrag, geen fout. Gooit een [StateError] bij een echte
+  /// configuratiefout -- exact hetzelfde contract als [meldAanMetGoogle].
+  static Future<AuthResponse?> meldAanMetFacebook() async {
+    if (AppConfig.facebookAppId.isEmpty) {
+      throw StateError(
+        'Facebook-login is niet geconfigureerd (FACEBOOK_APP_ID ontbreekt).',
+      );
+    }
+
+    final result = await FacebookAuth.instance.login(
+      permissions: const ['email', 'public_profile'],
+    );
+
+    if (result.status == LoginStatus.cancelled) return null; // gebruiker annuleerde
+    if (result.status != LoginStatus.success) {
+      throw StateError(
+        'Facebook-login mislukt (${result.status.name}): ${result.message ?? 'onbekende fout'}',
+      );
+    }
+
+    final accessToken = result.accessToken?.tokenString;
+    if (accessToken == null) {
+      throw StateError('Facebook leverde geen access token.');
+    }
+
+    return client.auth.signInWithIdToken(
+      provider: OAuthProvider.facebook,
+      idToken: accessToken,
+    );
+  }
+
   static Future<void> uitloggen() async {
     // Google-sessie lokaal loskoppelen (signOut, geen disconnect/revoke) --
     // zodat een volgende "Doorgaan met Google" weer een accountkeuze toont
@@ -173,6 +233,13 @@ class StudentService {
       await _google.signOut();
     } catch (e) {
       debugPrint('[auth][google] signOut mislukte (genegeerd): $e');
+    }
+    // Facebook-sessie lokaal loskoppelen -- zelfde reden/best-effort als
+    // hierboven bij Google.
+    try {
+      await FacebookAuth.instance.logOut();
+    } catch (e) {
+      debugPrint('[auth][facebook] signOut mislukte (genegeerd): $e');
     }
     if (client.auth.currentSession == null) return;
     // Push (Fase 5): dit apparaat deactiveren VOORDAT de sessie sluit --
@@ -223,6 +290,11 @@ class StudentService {
       await _google.signOut();
     } catch (e) {
       debugPrint('[auth][google] signOut na accountverwijdering mislukte: $e');
+    }
+    try {
+      await FacebookAuth.instance.logOut();
+    } catch (e) {
+      debugPrint('[auth][facebook] signOut na accountverwijdering mislukte: $e');
     }
   }
 

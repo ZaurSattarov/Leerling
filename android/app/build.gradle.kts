@@ -39,6 +39,24 @@ val mapsApiKey: String =
                 "voor welke key dit moet zijn (Android Leerling, com.klantio.leerling)."
         )
 
+// Facebook-login (App ID + Client Token van de Meta for Developers-app,
+// "Facebook Login"-product) -- NOOIT hardcoded en NOOIT gecommit. Lokaal:
+// voeg toe aan het al-gitignorede android/local.properties:
+//   FACEBOOK_APP_ID=<jouw Facebook App ID>
+//   FACEBOOK_CLIENT_TOKEN=<jouw Facebook Client Token>
+// CI: zet de omgevingsvariabelen FACEBOOK_APP_ID/FACEBOOK_CLIENT_TOKEN.
+// Bewust GEEN harde build-fout (in tegenstelling tot mapsApiKey hierboven):
+// Facebook-login is een nieuwe, optionele feature -- een build zonder deze
+// waarden moet gewoon blijven werken (Facebook-knop faalt dan pas bij een
+// daadwerkelijke tap, met een nette foutmelding, zie
+// StudentService.meldAanMetFacebook).
+val facebookAppId: String =
+    (localProperties.getProperty("FACEBOOK_APP_ID") ?: System.getenv("FACEBOOK_APP_ID"))
+        ?: ""
+val facebookClientToken: String =
+    (localProperties.getProperty("FACEBOOK_CLIENT_TOKEN") ?: System.getenv("FACEBOOK_CLIENT_TOKEN"))
+        ?: ""
+
 android {
     namespace = "com.klantio.leerling"
     compileSdk = flutter.compileSdkVersion
@@ -69,6 +87,8 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         manifestPlaceholders["mapsApiKey"] = mapsApiKey
+        manifestPlaceholders["facebookAppId"] = facebookAppId
+        manifestPlaceholders["facebookClientToken"] = facebookClientToken
     }
 
     buildTypes {

@@ -90,6 +90,7 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen>
     });
     await _controller.stop();
     unawaited(HapticFeedback.selectionClick());
+    if (!mounted) return;
 
     try {
       await KoppelFlow.koppelEnNavigeer(

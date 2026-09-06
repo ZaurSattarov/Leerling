@@ -139,11 +139,40 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _meldAanMetApple() async {
+  Future<void> _meldAanMetFacebook() async {
     if (_laden) return;
-    if (!leerlingToonAppleLogin()) return;
-    if (mounted) {
-      setState(() => _fout = 'Apple-login is momenteel niet beschikbaar.');
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _laden = true;
+      _fout = null;
+    });
+
+    try {
+      final response = await StudentService.meldAanMetFacebook();
+      if (response == null) {
+        // Gebruiker annuleerde de Facebook-login -- normaal gedrag, geen
+        // foutmelding tonen.
+        return;
+      }
+      if (!mounted) return;
+      final profiel = await StudentService.getMijnProfiel();
+      if (mounted) context.go(profiel != null ? '/home' : '/koppelcode');
+    } on AuthException catch (e) {
+      if (mounted) setState(() => _fout = _vriendelijkeFout(e.message));
+    } on StateError catch (e) {
+      debugPrint('[login][facebook] configuratiefout: ${e.message}');
+      if (mounted) {
+        setState(
+            () => _fout = 'Facebook-login is momenteel niet beschikbaar.');
+      }
+    } catch (e) {
+      debugPrint('[login][facebook] onbekende fout: $e');
+      if (mounted) {
+        setState(() =>
+            _fout = 'Facebook-login mislukt. Controleer je verbinding.');
+      }
+    } finally {
+      if (mounted) setState(() => _laden = false);
     }
   }
 
@@ -385,9 +414,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
                 _SocialLoginRij(
-                  toonApple: leerlingToonAppleLogin(),
                   googleAan: _laden ? null : _meldAanMetGoogle,
-                  appleAan: _laden ? null : _meldAanMetApple,
+                  facebookAan: _laden ? null : _meldAanMetFacebook,
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -496,14 +524,12 @@ class _WachtwoordVeld extends StatelessWidget {
 }
 
 class _SocialLoginRij extends StatelessWidget {
-  final bool toonApple;
   final VoidCallback? googleAan;
-  final VoidCallback? appleAan;
+  final VoidCallback? facebookAan;
 
   const _SocialLoginRij({
-    required this.toonApple,
     required this.googleAan,
-    required this.appleAan,
+    required this.facebookAan,
   });
 
   Widget _googleKnop() {
@@ -518,29 +544,29 @@ class _SocialLoginRij extends StatelessWidget {
     );
   }
 
-  Widget _appleKnop() {
+  Widget _facebookKnop() {
     return _SocialLoginKnop(
-      label: 'Inloggen met Apple',
-      onPressed: appleAan,
+      label: 'Inloggen met Facebook',
+      onPressed: facebookAan,
+      // Officieel, herkenbaar Facebook-logo (ingebouwd Material-icoon, geen
+      // los asset nodig) in het officiële Facebook-blauw.
       child: const Icon(
-        Icons.apple,
+        Icons.facebook,
         size: 26,
-        color: AppColors.textPrimary,
+        color: Color(0xFF1877F2),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!toonApple) {
-      return _googleKnop();
-    }
-
+    // Google en Facebook altijd naast elkaar, op zowel Android als iOS --
+    // zelfde rij-opbouw/styling als voorheen (Expanded + 12px tussenruimte).
     return Row(
       children: [
         Expanded(child: _googleKnop()),
         const SizedBox(width: 12),
-        Expanded(child: _appleKnop()),
+        Expanded(child: _facebookKnop()),
       ],
     );
   }

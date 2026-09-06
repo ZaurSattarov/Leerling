@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/push_service.dart';
 import '../../core/services/student_service.dart';
+import 'splash_layout.dart';
+import 'splash_phase_animations.dart';
+import 'widgets/splash_svg_element.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -18,22 +20,23 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
-  // Animatie/opmaak 1-op-1 overgenomen van de Instructeur-app
+  // Visuele opbouw/animatie 1-op-1 overgenomen van de Instructeur-app
   // (rijschool-planner-flutter/lib/features/splash/splash_screen.dart,
-  // KlantioStartupSplash) zodat beide apps dezelfde startup-splash tonen.
-  // Instructeur = "bron van waarheid"; hier alleen de tekst onderaan wijkt af
-  // (LEERLINGENPORTAAL i.p.v. RIJPLANNER). De bestaande bootstrap-/
-  // routinglogica hieronder (auth-check, redirect naar /login, /verificatie,
-  // /home, /koppelcode) is bewust ongewijzigd gelaten.
-  static double _logoSizeForWidth(double width) =>
-      (width * 0.86).clamp(280.0, 360.0);
-
-  static const _subtitleSlideDistance = 10.0;
+  // KlantioStartupSplash) zodat beide apps dezelfde startup-splash tonen --
+  // Instructeur = bron van waarheid. Alleen de assets (ICON/KLANTIO/
+  // LEERLINGENPORTAAL i.p.v. L icon/KLANTIO/RIJPLANNER) en de
+  // achtergrondkleur (#131528 i.p.v. AppColors.primary) wijken af. De
+  // bestaande bootstrap-/routinglogica hieronder (auth-check, redirect naar
+  // /login, /verificatie, /home, /koppelcode) is bewust ongewijzigd
+  // gelaten -- dit widget blijft, anders dan de Instructeur-splash, een
+  // geroute pagina die zelf navigeert na afloop van de animatie.
+  static const _lIconAssetPath = 'assets/Splash Screen/l ICON.svg';
+  static const _klantioAssetPath = 'assets/Splash Screen/KLANTIO.svg';
+  static const _portaalAssetPath =
+      'assets/Splash Screen/LEERLINGENPORTAAL.svg';
 
   late final AnimationController _ctrl;
-  late final Animation<double> _subtitleFade;
-  late final Animation<double> _subtitleOffset;
-  late final Animation<double> _screenFade;
+  late final SplashPhaseAnimations _phases;
 
   @override
   void initState() {
@@ -41,30 +44,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2800),
+      duration: SplashPhaseAnimations.totalDuration,
     );
-
-    _subtitleFade = CurvedAnimation(
-      parent: _ctrl,
-      curve: const Interval(0.38, 0.62, curve: Curves.easeOut),
-    );
-
-    _subtitleOffset = Tween<double>(
-      begin: _subtitleSlideDistance,
-      end: 0,
-    ).animate(
-      CurvedAnimation(
-        parent: _ctrl,
-        curve: const Interval(0.44, 0.72, curve: Curves.easeOutCubic),
-      ),
-    );
-
-    _screenFade = Tween<double>(begin: 1.0, end: 0.0).animate(
-      CurvedAnimation(
-        parent: _ctrl,
-        curve: const Interval(0.88, 1.0, curve: Curves.easeIn),
-      ),
-    );
+    _phases = SplashPhaseAnimations(_ctrl);
 
     _ctrl.forward().whenCompleteOrCancel(_bootstrap);
   }
@@ -118,57 +100,40 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.splashBackground,
       body: AnimatedBuilder(
         animation: _ctrl,
         builder: (context, _) {
-          final logoSize = _logoSizeForWidth(
+          final composition = SplashLayout.composeFor(
             MediaQuery.sizeOf(context).width,
           );
-          return Opacity(
-            opacity: _screenFade.value,
-            child: _SplashCanvas(
-              logo: _logo(logoSize),
-              logoSize: logoSize,
-              subtitle: _subtitle(),
+          return _SplashCanvas(
+            composition: composition,
+            lIcon: SplashSvgElement(
+              elementKey: const ValueKey('splash-l-icon'),
+              assetPath: _lIconAssetPath,
+              width: composition.lSize,
+              height: composition.lSize,
+              appear: _phases.lAppear,
+              appearScaleFrom: 0.92,
+            ),
+            klantio: SplashSvgElement(
+              elementKey: const ValueKey('splash-klantio'),
+              assetPath: _klantioAssetPath,
+              width: composition.klantioWidth,
+              height: composition.klantioHeight,
+              appear: _phases.klantioAppear,
+              appearScaleFrom: 0.97,
+            ),
+            portaal: SplashSvgElement(
+              elementKey: const ValueKey('splash-leerlingenportaal'),
+              assetPath: _portaalAssetPath,
+              width: composition.portaalWidth,
+              height: composition.portaalHeight,
+              appear: _phases.portaalAppear,
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _logo(double logoSize) {
-    return SizedBox(
-      width: logoSize,
-      height: logoSize,
-      child: Image.asset(
-        'assets/images/klantio_splash_logo.png',
-        fit: BoxFit.contain,
-        filterQuality: FilterQuality.high,
-      ),
-    );
-  }
-
-  Widget _subtitle() {
-    return Transform.translate(
-      offset: Offset(0, _subtitleOffset.value),
-      child: FadeTransition(
-        opacity: _subtitleFade,
-        child: Text(
-          'LEERLINGENPORTAAL',
-          maxLines: 1,
-          textAlign: TextAlign.center,
-          style: GoogleFonts.inter(
-            color: AppColors.dark.withValues(alpha: 0.72),
-            fontSize: 12.5,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 5.5,
-            height: 1.0,
-            decoration: TextDecoration.none,
-            backgroundColor: Colors.transparent,
-          ),
-        ),
       ),
     );
   }
@@ -184,42 +149,58 @@ class _SplashProfileResult {
   final bool isNetworkError;
 }
 
+/// Legt de vaste lay-out van de splash vast: effen achtergrond +
+/// gecentreerde compositie van ICON, KLANTIO (gecentreerd) en
+/// LEERLINGENPORTAAL (klein, rechts uitgelijnd onder het woordmerk) --
+/// zelfde structuur als `_SplashCanvas` in de Instructeur-app. Puur
+/// structuur -- alle beweging zit in de (intro-)animaties die van
+/// buitenaf worden doorgegeven; na de intro blijft alles gewoon stilstaan.
 class _SplashCanvas extends StatelessWidget {
-  final Widget logo;
-  final double logoSize;
-  final Widget subtitle;
+  final SplashComposition composition;
+  final Widget lIcon;
+  final Widget klantio;
+  final Widget portaal;
 
   const _SplashCanvas({
-    required this.logo,
-    required this.logoSize,
-    required this.subtitle,
+    required this.composition,
+    required this.lIcon,
+    required this.klantio,
+    required this.portaal,
   });
 
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: Colors.white,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final height = constraints.maxHeight;
-          return Stack(
-            alignment: Alignment.center,
+      color: AppColors.splashBackground,
+      child: Center(
+        child: SizedBox(
+          height: composition.totalHeight,
+          width: composition.klantioWidth,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Positioned(
-                top: height * 0.46 - logoSize / 2,
-                left: 0,
-                right: 0,
-                child: Center(child: logo),
-              ),
-              Positioned(
-                top: height * 0.76,
-                left: 24,
-                right: 24,
-                child: Center(child: subtitle),
+              lIcon,
+              SizedBox(height: composition.gapLToKlantio),
+              klantio,
+              SizedBox(height: composition.gapKlantioToPortaal),
+              // LEERLINGENPORTAAL: klein, hangt net voorbij de rechterrand
+              // van het woordmerk -- exact dezelfde compositieregel als
+              // RIJPLANNER bij de Instructeur-app. De extra verticale drop
+              // is een pure paint-verschuiving (geen layout-effect), dus
+              // ICON/KLANTIO en hun centrering blijven ongewijzigd.
+              Transform.translate(
+                offset: Offset(
+                  composition.portaalRightOverhang,
+                  composition.portaalExtraDrop,
+                ),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: portaal,
+                ),
               ),
             ],
-          );
-        },
+          ),
+        ),
       ),
     );
   }

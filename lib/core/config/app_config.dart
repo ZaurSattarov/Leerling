@@ -32,4 +32,19 @@ class AppConfig {
   static const String googleServerClientId = String.fromEnvironment(
     'GOOGLE_SERVER_CLIENT_ID',
   );
+
+  /// App ID van de Meta for Developers-app ("Facebook Login"-product) --
+  /// nodig voor de native Facebook Limited-Login-flow. Gebruik:
+  /// flutter run --dart-define=FACEBOOK_APP_ID=xxxxxxxxxx
+  static const String facebookAppId = String.fromEnvironment(
+    'FACEBOOK_APP_ID',
+  );
+
+  /// Client Token van dezelfde Meta for Developers-app (Instellingen >
+  /// Geavanceerd > Beveiliging, "Clienttoken"). Vereist door het Facebook
+  /// Android/iOS SDK naast de App ID. Gebruik:
+  /// flutter run --dart-define=FACEBOOK_CLIENT_TOKEN=xxxxxxxxxx
+  static const String facebookClientToken = String.fromEnvironment(
+    'FACEBOOK_CLIENT_TOKEN',
+  );
 }

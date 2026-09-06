@@ -10,7 +10,7 @@ void main() {
   // /koppelcode/handmatig zodat de tap-navigatie aantoonbaar naar de juiste
   // route gaat, zonder de echte QR-scanner-plugin (mobile_scanner) te
   // instantiëren -- dat vereist een platform-kanaal.
-  Widget _buildApp() {
+  Widget buildApp() {
     final router = GoRouter(
       initialLocation: '/koppelcode',
       routes: [
@@ -46,7 +46,7 @@ void main() {
   testWidgets(
       'toont beide koppel-opties (QR-scan én koppelcode) na registratie',
       (tester) async {
-    await tester.pumpWidget(_buildApp());
+    await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
     expect(find.text('Koppel je account'), findsOneWidget);
@@ -59,7 +59,7 @@ void main() {
 
   testWidgets('tap op "Scan QR-code" navigeert naar /koppelcode/scan',
       (tester) async {
-    await tester.pumpWidget(_buildApp());
+    await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Scan QR-code'));
@@ -72,7 +72,7 @@ void main() {
       'tap op "Koppelcode invoeren" navigeert naar /koppelcode/handmatig -- '
       'de bestaande handmatige flow blijft volledig bereikbaar',
       (tester) async {
-    await tester.pumpWidget(_buildApp());
+    await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Koppelcode invoeren'));

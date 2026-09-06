@@ -14,6 +14,10 @@ class AppColors {
   static const Color dark2 = Color(0xFF1A2332);
   static const Color dark3 = Color(0xFF2F3A4C);
 
+  // Exacte splashscreen-achtergrond van de Leerlingen-app (afwijkend van de
+  // Instructeur-splash, die AppColors.primary als achtergrond gebruikt).
+  static const Color splashBackground = Color(0xFF131528);
+
   // Light theme backgrounds (aligned with Instrecteur)
   static const Color surface = Color(0xFFF4F5F7);
   static const Color pageBg = Color(0xFFF4F5F7);
