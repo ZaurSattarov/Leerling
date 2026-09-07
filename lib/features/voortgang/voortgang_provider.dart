@@ -1,5 +1,21 @@
 export '../../shared/providers/auth_provider.dart' show mijnProfielProvider;
 
+// Historische lokale groepering van skill-keys.
+//
+// LET OP: deze constanten worden NIET meer gebruikt om Examenadvies of de
+// CBR-radar op "Mijn voortgang" te voeden. Dat gebeurt sinds de canonical-
+// refactor uitsluitend via `examenadviesProvider` →
+// `ExamenadviesData.categorieen` (Postgres RPC `rpc_get_examenadvies`).
+//
+// Ze blijven staan als:
+//  - Referentie voor code die skill-key labels wil tonen zonder een
+//    RPC-aanroep (bv. losse skill-key in de tijdlijn).
+//  - Documentatie van de historische 6 categorienamen (parallel aan de
+//    canonieke lijst in `examenVaardigheidCategorieen`).
+//
+// Geen nieuwe consumer mag hierop een parallelle examenadvies-formule
+// bouwen. Zie `Klantio-Knowledge/02 - FEATURES/Examenadvies.md`.
+
 const Map<String, List<String>> vaardighedenCategorieen = {
   'Voertuigbeheersing': [
     'stuurcontrole',
@@ -44,117 +60,6 @@ const Map<String, List<String>> vaardighedenCategorieen = {
     'algehele_ervaring',
   ],
 };
-
-class CbrCompetentie {
-  final String naam;
-  final List<String> vaardigheidKeys;
-  final String uitlegSterk;
-  final String uitlegGoedOpWeg;
-  final String uitlegNogOefenen;
-
-  const CbrCompetentie({
-    required this.naam,
-    required this.vaardigheidKeys,
-    required this.uitlegSterk,
-    required this.uitlegGoedOpWeg,
-    required this.uitlegNogOefenen,
-  });
-
-  String uitlegVoor(double percentage) {
-    if (percentage >= 0.8) return uitlegSterk;
-    if (percentage >= 0.5) return uitlegGoedOpWeg;
-    return uitlegNogOefenen;
-  }
-
-  String statusVoor(double percentage) {
-    if (percentage >= 0.8) return 'Sterk';
-    if (percentage >= 0.5) return 'Goed op weg';
-    return 'Nog oefenen';
-  }
-}
-
-const List<CbrCompetentie> cbrCompetenties = [
-  CbrCompetentie(
-    naam: 'Voertuigbeheersing',
-    vaardigheidKeys: [
-      'stuurcontrole',
-      'gas_rem_koppeling',
-      'schakelen',
-      'optrekken_remmen',
-      'voertuig_controle',
-    ],
-    uitlegSterk: 'Je bedient de auto rustig en gecontroleerd.',
-    uitlegGoedOpWeg: 'Je basis is stabiel, blijf werken aan soepel tempo.',
-    uitlegNogOefenen: 'Focus op controle over sturen, remmen en schakelen.',
-  ),
-  CbrCompetentie(
-    naam: 'Kijkgedrag',
-    vaardigheidKeys: [
-      'spiegelgebruik',
-      'dode_hoek',
-      'reactie_omgeving',
-      'volgafstand',
-      'signalen',
-    ],
-    uitlegSterk: 'Je kijkt actief vooruit en gebruikt spiegels consequent.',
-    uitlegGoedOpWeg: 'Je kijkt steeds beter, maar nog niet altijd vroeg genoeg.',
-    uitlegNogOefenen: 'Oefen vooruit kijken, spiegels en dode hoek als vaste routine.',
-  ),
-  CbrCompetentie(
-    naam: 'Verkeersinzicht',
-    vaardigheidKeys: [
-      'voorrang',
-      'kruispunten',
-      'rotondes',
-      'bebording',
-      'rijstroken',
-      'anticiperen',
-    ],
-    uitlegSterk: 'Je leest verkeerssituaties goed en anticipeert op tijd.',
-    uitlegGoedOpWeg: 'Je begrijpt situaties beter, blijf keuzes eerder maken.',
-    uitlegNogOefenen: 'Werk aan voorrang, borden en drukke kruispunten.',
-  ),
-  CbrCompetentie(
-    naam: 'Bijzondere verrichtingen',
-    vaardigheidKeys: [
-      'keren',
-      'achteruit_inparkeren',
-      'parallel_parkeren',
-      'invoegen_uitvoegen',
-      'bochten',
-    ],
-    uitlegSterk: 'Je voert verrichtingen beheerst en overzichtelijk uit.',
-    uitlegGoedOpWeg: 'De stappen zitten erin, oefen nog op rust en precisie.',
-    uitlegNogOefenen: 'Oefen parkeren, keren en controle rondom de auto.',
-  ),
-  CbrCompetentie(
-    naam: 'Zelfstandig rijden',
-    vaardigheidKeys: [
-      'zelfstandig_rijden',
-      'rijbaan_positie',
-      'snelheidsaanpassing',
-      'inhalen',
-      'rechts_houden',
-      'zijdelingse_afstand',
-    ],
-    uitlegSterk: 'Je rijdt zelfstandig met duidelijke positie en tempo.',
-    uitlegGoedOpWeg: 'Je wordt zelfstandiger, maar hebt soms nog bevestiging nodig.',
-    uitlegNogOefenen: 'Focus op zelf keuzes maken, positie en snelheid.',
-  ),
-  CbrCompetentie(
-    naam: 'Examenvoorbereiding',
-    vaardigheidKeys: [
-      'stressbeheersing',
-      'richtingaanwijzer',
-      'algehele_ervaring',
-      'anticiperen',
-      'zelfstandig_rijden',
-    ],
-    uitlegSterk: 'Je rijdt consistent genoeg voor examenvoorbereiding.',
-    uitlegGoedOpWeg: 'Je komt dichterbij, blijf werken aan rust en consistentie.',
-    uitlegNogOefenen: 'Werk aan stress, zelfstandigheid en vaste routines.',
-  ),
-];
 
 const Map<String, String> vaardighedenLabels = {
   'stuurcontrole': 'Stuurcontrole',

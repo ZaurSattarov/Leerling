@@ -119,16 +119,18 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
                             20, 20, 20, NavShellTokens.contentBottomClearance),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
-                            // 1. Finance overzicht kaart
-                            _FinanceOverzichtKaart(stats: stats),
-                            const SizedBox(height: 12),
-
-                            // 2. Status verdeling
-                            _DonutChartKaart(
-                                stats: stats, animation: _chartAnim),
+                            // 1. Gecombineerde statusverdeling +
+                            //    financieel overzicht (één kaart).
+                            //    Beide onderdelen consumeren exact dezelfde
+                            //    `_FactuurStats.van(facturen)` — geen tweede
+                            //    berekening of nieuwe dataflow.
+                            _StatusEnFinanceKaart(
+                              stats: stats,
+                              animation: _chartAnim,
+                            ),
                             const SizedBox(height: 24),
 
-                            // 3. Facturenlijst
+                            // 2. Facturenlijst
                             const SectionHeader(title: 'Alle facturen'),
                             const SizedBox(height: 12),
                             ...facturen.map(
@@ -147,10 +149,9 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
                           20, 20, 20, NavShellTokens.contentBottomClearance),
                       sliver: SliverList(
                         delegate: SliverChildListDelegate([
-                          const SkeletonBox(height: 148, radius: 18),
-                          const SizedBox(height: 12),
-                          const SkeletonBox(height: 190, radius: 18),
-                          const SizedBox(height: 10),
+                          // Skeleton voor de gecombineerde kaart.
+                          const SkeletonBox(height: 300, radius: 18),
+                          const SizedBox(height: 24),
                           const SkeletonCard(),
                           const SizedBox(height: 10),
                           const SkeletonCard(),
@@ -237,18 +238,65 @@ class _FactuurStats {
   String get betaaldLabel => bedragLabel(betaaldCents);
 }
 
-// ── Finance overzicht kaart ───────────────────────────────────────────────────
+// ── Gecombineerde statusverdeling + financieel overzicht ─────────────────────
+//
+// Vervangt de vroegere losse `_FinanceOverzichtKaart` en `_DonutChartKaart`.
+// Beide onderdelen consumeren exact dezelfde `_FactuurStats.van(facturen)` —
+// geen tweede berekening, geen nieuwe dataflow. De bewuste discrepantie
+// tussen donut-totaal (som van betaald/openstaand/verlopen) en
+// "Facturen"-mini-stat (`totaalAantal`, inclusief bv. concept/geannuleerd)
+// blijft behouden: dat is bestaande businessbetekenis en mag niet
+// stilzwijgend gelijkgetrokken worden.
 
-class _FinanceOverzichtKaart extends StatelessWidget {
+class _StatusEnFinanceKaart extends StatelessWidget {
   final _FactuurStats stats;
-  const _FinanceOverzichtKaart({required this.stats});
+  final Animation<double> animation;
+
+  const _StatusEnFinanceKaart({
+    required this.stats,
+    required this.animation,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final totaalRelevant =
+        stats.betaaldAantal + stats.openstaandAantal + stats.verlopenAantal;
     final heeftVervaldatum = stats.eerstVolgendeVervaldag != null;
     final vervalLabel = heeftVervaldatum
         ? DatumUtils.korteDatum(stats.eerstVolgendeVervaldag!)
         : '—';
+
+    // Zelfde segment-samenstelling als voorheen (alleen actionable statussen).
+    final segmenten = <_DonutSegment>[
+      if (stats.betaaldAantal > 0)
+        _DonutSegment(
+          waarde:
+              totaalRelevant == 0 ? 0 : stats.betaaldAantal / totaalRelevant,
+          kleur: _groenStatus,
+          label: 'Betaald',
+          aantal: stats.betaaldAantal,
+          statusKleur: _groenStatus,
+        ),
+      if (stats.openstaandAantal > 0)
+        _DonutSegment(
+          waarde: totaalRelevant == 0
+              ? 0
+              : stats.openstaandAantal / totaalRelevant,
+          kleur: _oranjeWaarschuwing,
+          label: 'Openstaand',
+          aantal: stats.openstaandAantal,
+          statusKleur: _oranjeWaarschuwing,
+        ),
+      if (stats.verlopenAantal > 0)
+        _DonutSegment(
+          waarde:
+              totaalRelevant == 0 ? 0 : stats.verlopenAantal / totaalRelevant,
+          kleur: _roodWaarschuwing,
+          label: 'Verlopen',
+          aantal: stats.verlopenAantal,
+          statusKleur: _roodWaarschuwing,
+        ),
+    ];
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -267,7 +315,7 @@ class _FinanceOverzichtKaart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Kaart header — zelfde patroon als voortgang kaarten
+          // Kaart header — zelfde patroon/icoon als voorheen op de donutkaart.
           Row(
             children: [
               Container(
@@ -278,14 +326,14 @@ class _FinanceOverzichtKaart extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
-                  Icons.account_balance_wallet_outlined,
+                  Icons.donut_large_rounded,
                   size: 18,
                   color: AppColors.textSecondary,
                 ),
               ),
               const SizedBox(width: 12),
               const Text(
-                'Financieel overzicht',
+                'Factuurstatus verdeling',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w800,
@@ -294,9 +342,53 @@ class _FinanceOverzichtKaart extends StatelessWidget {
               ),
             ],
           ),
+
+          // Donut + legenda — alleen tonen als er relevante facturen zijn.
+          // Bij 0 actionable facturen (bv. alle-concept-fase) verbergen we
+          // de donut i.p.v. een lege 0-facturen-cirkel te tonen. De
+          // financiële samenvatting hieronder blijft altijd staan.
+          if (totaalRelevant > 0) ...[
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                SizedBox(
+                  width: 120,
+                  height: 120,
+                  child: AnimatedBuilder(
+                    animation: animation,
+                    builder: (_, __) => CustomPaint(
+                      painter: _DonutPainter(
+                        segmenten: segmenten,
+                        voortgang: animation.value,
+                        totalAantal: totaalRelevant,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 24),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: segmenten
+                        .map((s) => Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: _LegendeRij(segment: s),
+                            ))
+                        .toList(),
+                  ),
+                ),
+              ],
+            ),
+          ],
+
+          // Visuele scheiding tussen statusverdeling en financiële samenvatting
+          // — houdt de gecombineerde kaart rustig i.p.v. alles tegen elkaar.
+          const SizedBox(height: 18),
+          const Divider(height: 1, thickness: 0.75, color: AppColors.border),
           const SizedBox(height: 18),
 
-          // Twee rijen stats
+          // Financiële samenvatting — zelfde bron (`_FactuurStats`) en
+          // zelfde `_OverzichtStat`-styling als de oude losse kaart.
           Row(
             children: [
               Expanded(
@@ -409,129 +501,10 @@ class _OverzichtStat extends StatelessWidget {
   }
 }
 
-// ── Donut chart kaart ─────────────────────────────────────────────────────────
-
-class _DonutChartKaart extends StatelessWidget {
-  final _FactuurStats stats;
-  final Animation<double> animation;
-
-  const _DonutChartKaart({required this.stats, required this.animation});
-
-  @override
-  Widget build(BuildContext context) {
-    final totaal =
-        stats.betaaldAantal + stats.openstaandAantal + stats.verlopenAantal;
-    if (totaal == 0) return const SizedBox.shrink();
-
-    // Segmenten: betaald licht groen, openstaand rood, verlopen donker rood.
-    // Geen oranje — max 2 kleuren voor rust.
-    final segmenten = [
-      if (stats.betaaldAantal > 0)
-        _DonutSegment(
-          waarde: stats.betaaldAantal / totaal,
-          kleur: _groenStatus,
-          label: 'Betaald',
-          aantal: stats.betaaldAantal,
-          statusKleur: _groenStatus,
-        ),
-      if (stats.openstaandAantal > 0)
-        _DonutSegment(
-          waarde: stats.openstaandAantal / totaal,
-          kleur: _oranjeWaarschuwing,
-          label: 'Openstaand',
-          aantal: stats.openstaandAantal,
-          statusKleur: _oranjeWaarschuwing,
-        ),
-      if (stats.verlopenAantal > 0)
-        _DonutSegment(
-          waarde: stats.verlopenAantal / totaal,
-          kleur: _roodWaarschuwing,
-          label: 'Verlopen',
-          aantal: stats.verlopenAantal,
-          statusKleur: _roodWaarschuwing,
-        ),
-    ];
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.border, width: 0.75),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF0F2F5),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.donut_large_rounded,
-                  size: 18,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Text(
-                'Factuurstatus verdeling',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              // Donut chart
-              SizedBox(
-                width: 120,
-                height: 120,
-                child: AnimatedBuilder(
-                  animation: animation,
-                  builder: (_, __) => CustomPaint(
-                    painter: _DonutPainter(
-                      segmenten: segmenten,
-                      voortgang: animation.value,
-                      totalAantal: totaal,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 24),
-              // Legenda
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: segmenten
-                      .map((s) => Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: _LegendeRij(segment: s),
-                          ))
-                      .toList(),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
+// ── Donut chart primitieven ──────────────────────────────────────────────────
+// De donut zelf (segment/painter/legenda) blijft ongewijzigd; alleen de
+// omhulzende kaart is samengevoegd met het financieel overzicht hierboven
+// (`_StatusEnFinanceKaart`).
 
 class _DonutSegment {
   final double waarde;

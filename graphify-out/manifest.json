@@ -8,12 +8,12 @@
     "hash": "a198b8db9d80a29acd5e5638449c50f9"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\config\\app_config.dart": {
-    "mtime": 1788459861.8822896,
-    "hash": "8f51a67a3bd4db46b4da042b86e07bfc"
+    "mtime": 1788649292.8936863,
+    "hash": "dd9810f189c37e58a8d5f737cb71e879"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\constants\\app_colors.dart": {
-    "mtime": 1781127956.1473012,
-    "hash": "bcf74530229efff179396007d6a6f131"
+    "mtime": 1788645290.1381106,
+    "hash": "f16027200a93cf08d3a6656fe2dadc5b"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\constants\\nav_shell_tokens.dart": {
     "mtime": 1788301416.5724156,
@@ -56,8 +56,8 @@
     "hash": "2814d57c6e6df54b606ae9b803f1a183"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\services\\student_service.dart": {
-    "mtime": 1788468975.7119153,
-    "hash": "74796dccf13b67952c6232112694dd00"
+    "mtime": 1788811855.606536,
+    "hash": "760945d53820bbe8cdfc528379c2b380"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\core\\services\\support_service.dart": {
     "mtime": 1788517144.530812,
@@ -128,8 +128,8 @@
     "hash": "2ce8d7ca515fc07bd03bad31fdfde67c"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\auth\\login_screen.dart": {
-    "mtime": 1788463738.6655293,
-    "hash": "e7c3fb18d7f06e9d39e2a3042f55e9c2"
+    "mtime": 1788811916.1981657,
+    "hash": "cd3aa18b1826749f07d8617ae2246dc9"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\auth\\registreer_screen.dart": {
     "mtime": 1788301416.5889604,
@@ -192,8 +192,8 @@
     "hash": "be18b403523bc7be6486ffe3370f1d0b"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\facturen\\facturen_screen.dart": {
-    "mtime": 1788459861.8822896,
-    "hash": "579ece54eda3bf53a4d85a32ee9a86db"
+    "mtime": 1788814478.1792123,
+    "hash": "74410b3f3a3b49f0c60b335b4b07f5d0"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\facturen\\factuur_detail_screen.dart": {
     "mtime": 1788301416.5971084,
@@ -308,7 +308,7 @@
     "hash": "898565db2de39c55718a5c6e63608d98"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\planning\\les_detail_screen.dart": {
-    "mtime": 1788466113.4288816,
+    "mtime": 1788562265.9322946,
     "hash": "95952b095dbe8b60f1e2459ef9234bf9"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\planning\\planning_provider.dart": {
@@ -395,9 +395,21 @@
     "mtime": 1788301416.6289365,
     "hash": "732ea612d300b5b543093dc2946ff0c2"
   },
+  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\splash\\splash_layout.dart": {
+    "mtime": 1788646005.997151,
+    "hash": "5691c4843df77d42f66b0d977502e84d"
+  },
+  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\splash\\splash_phase_animations.dart": {
+    "mtime": 1788645330.1587017,
+    "hash": "3c2d8e90c2a940957f172f877e195402"
+  },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\splash\\splash_screen.dart": {
-    "mtime": 1788301416.6299367,
-    "hash": "80b67f3fcac44603b0663897f3b34828"
+    "mtime": 1788646018.2902238,
+    "hash": "4b7db33fd5f8784bf95fb6cf921d687d"
+  },
+  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\splash\\widgets\\splash_svg_element.dart": {
+    "mtime": 1788645343.9913187,
+    "hash": "19041abaafba9e5f94e95a4289a413b7"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\voortgang\\lespakket_detail_provider.dart": {
     "mtime": 1788301416.630939,
@@ -412,20 +424,20 @@
     "hash": "821c89f8bf7f64538be1679ac849f98e"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\voortgang\\voortgang_provider.dart": {
-    "mtime": 1778231574.715564,
-    "hash": "6a6ff46a10c642d92e38ae2bdd3f5ed5"
+    "mtime": 1788808527.7972748,
+    "hash": "a1f6ee3d569d4e3875c287cb6fde52f4"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\voortgang\\voortgang_screen.dart": {
-    "mtime": 1788459861.8981886,
-    "hash": "cb0186e1a470ac7a17e00d548b77b69b"
+    "mtime": 1788808488.3961453,
+    "hash": "11fec0704b50e14ccb4c760b56e9e2f8"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\voortgang\\voortgang_tijdlijn_screen.dart": {
     "mtime": 1788459861.8981886,
     "hash": "c1186dc2966e992fdf8040d4d26dc3b7"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\voortgang\\voortgang_trends_provider.dart": {
-    "mtime": 1788459861.8981886,
-    "hash": "265e9a3f42c7f0219144478c3594e296"
+    "mtime": 1788808565.859994,
+    "hash": "4860f0a211ea7bdf88d3064c81f1aa47"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\lib\\features\\voortgang\\widgets\\tijdlijn_card.dart": {
     "mtime": 1788459861.8981886,
@@ -599,6 +611,10 @@
     "mtime": 1788376815.8386893,
     "hash": "c8fa33cfa9b78fe33dc662336aca71e2"
   },
+  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\arrival_geen_debug_override_test.dart": {
+    "mtime": 1788564097.8270886,
+    "hash": "5f4064b209e7bb7d755cc929defdcfae"
+  },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\beschikbaarheid_navigator_guard_test.dart": {
     "mtime": 1788301416.6656227,
     "hash": "d7b843595d5de0b809327999c4732330"
@@ -674,6 +690,10 @@
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\push_service_tap_test.dart": {
     "mtime": 1788301416.691879,
     "hash": "689f51f31e2729608150e249bf8837d9"
+  },
+  "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\splash_composition_test.dart": {
+    "mtime": 1788646101.5263247,
+    "hash": "91ca956bf3535ee0f0a16806975a66f5"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\test\\support_help_test.dart": {
     "mtime": 1788517144.536322,
@@ -848,8 +868,8 @@
     "hash": "a1a5923622e5b986452b7bac14e08e48"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\pubspec.yaml": {
-    "mtime": 1788472677.449306,
-    "hash": "aed76aeec53e8f56d9dceabea3ed6642"
+    "mtime": 1788649321.5840518,
+    "hash": "65ed9a8e1b798095ec8b2f8a5799c285"
   },
   "C:\\Users\\zaurs\\Documents\\ZaurProject\\Leerling\\README.md": {
     "mtime": 1777896706.8208709,

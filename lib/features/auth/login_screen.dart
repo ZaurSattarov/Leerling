@@ -157,16 +157,33 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       final profiel = await StudentService.getMijnProfiel();
       if (mounted) context.go(profiel != null ? '/home' : '/koppelcode');
-    } on AuthException catch (e) {
+    } on AuthException catch (e, st) {
+      // TIJDELIJKE DIAGNOSTIEK (2026-09-07): statusCode/code erbij, zodat
+      // zichtbaar is of/hoe ver signInWithIdToken() daadwerkelijk werd
+      // bereikt en wat Supabase exact terugstuurde.
+      debugPrint(
+        '[login][facebook][DIAG] Supabase AuthException bereikt -- '
+        'message=${e.message} statusCode=${e.statusCode} code=${e.code}\n$st',
+      );
       if (mounted) setState(() => _fout = _vriendelijkeFout(e.message));
-    } on StateError catch (e) {
-      debugPrint('[login][facebook] configuratiefout: ${e.message}');
+    } on StateError catch (e, st) {
+      // Native/SDK-level probleem (missende Info.plist FacebookAppID,
+      // SDK-init faalt, geen accessToken enz). Volledige boodschap logged
+      // voor debug; UI toont de generieke tekst. Dit is de tak die
+      // "Facebook-login is momenteel niet beschikbaar" toont -- de exacte
+      // reden staat altijd in e.message hieronder (bevat status/tokenType/
+      // isIOS, zie meldAanMetFacebook()).
+      debugPrint('[login][facebook][DIAG] StateError bereikt: ${e.message}\n$st');
       if (mounted) {
         setState(
             () => _fout = 'Facebook-login is momenteel niet beschikbaar.');
       }
-    } catch (e) {
-      debugPrint('[login][facebook] onbekende fout: $e');
+    } catch (e, st) {
+      // Meest waarschijnlijk PlatformException uit de Facebook SDK: hier
+      // staat de exacte native reden in (bv. missende App ID/Client Token,
+      // fout in URL-scheme, gebruiker niet toegevoegd als tester). Volledige
+      // details naar debug console.
+      debugPrint('[login][facebook] ${e.runtimeType}: $e\n$st');
       if (mounted) {
         setState(() =>
             _fout = 'Facebook-login mislukt. Controleer je verbinding.');

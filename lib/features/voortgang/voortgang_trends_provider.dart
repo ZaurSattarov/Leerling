@@ -1,77 +1,124 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/services/student_service.dart';
-import '../../models/leerling_profiel.dart';
 import '../../models/les.dart';
+import '../examenadvies/examenadvies_ontwikkeling.dart';
+import '../examenadvies/examenadvies_provider.dart';
 import 'voortgang_provider.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Voortgang-provider: uitsluitend een ADAPTER over canonical data.
+//
+// - Examenadvies %, categorieën, sterke punten, aandachtspunten, trend en
+//   sparkline komen ALLEMAAL uit `examenadviesProvider` (→ Postgres RPC
+//   `rpc_get_examenadvies` → `klantio_bereken_examenadvies`). Zelfde bron als
+//   Home, geen tweede formule in Flutter. Zie
+//   `Klantio-Knowledge/02 - FEATURES/Examenadvies.md`.
+// - Alleen puur les-gebaseerde statistieken (lessen/week, laatste
+//   beoordeling, tijdlijn) komen uit `student_lessen_view` — die vallen
+//   bewust NIET onder Examenadvies.
+// ─────────────────────────────────────────────────────────────────────────────
 
 final voortgangTrendsProvider =
     FutureProvider.autoDispose<VoortgangTrendsData>((ref) async {
-  final profiel = await ref.watch(mijnProfielProvider.future);
-  if (profiel == null) return emptyVoortgangTrends;
+  final profielAsync = await ref.watch(mijnProfielProvider.future);
+  if (profielAsync == null) return emptyVoortgangTrends;
 
+  // Canonical Examenadvies-bron — exact dezelfde die Home gebruikt.
+  final advies = await ref.watch(examenadviesProvider.future);
+
+  // Aanvullende lesstatistieken (GEEN examenadvies-inhoud).
+  List<Les> lessen;
   try {
-    final lessen = await StudentService.getMijnVorigeLessen(
-      profiel.id,
+    lessen = await StudentService.getMijnVorigeLessen(
+      profielAsync.id,
       alleenZichtbaarLogboek: true,
     );
-    return VoortgangTrendsCalculator.bereken(
-      profiel: profiel,
-      lessen: lessen,
-    );
   } catch (_) {
-    return emptyVoortgangTrends;
+    lessen = const [];
   }
+
+  return VoortgangTrendsCalculator.fromCanonical(
+    advies: advies,
+    lessen: lessen,
+  );
 });
 
 // ── Data models ───────────────────────────────────────────────────────────────
 
 class VoortgangTrendsData {
   final bool isMock;
+
+  /// Canonical Examenadvies-percentage (uit RPC `advies.score`). 0 als er
+  /// nog geen betrouwbare score is. Nooit lokaal opnieuw berekend.
   final int huidigeScore;
+
+  /// Canonical betrouwbaarheidsvlag: wanneer false hoort er GEEN percentage
+  /// getoond te worden (dan tonen we een "onvoldoende data"-toestand).
+  final bool heeftBetrouwbareScore;
+
+  /// Statusklasse-label van Postgres (`advies.statusLabel`).
+  final String statusLabel;
+
+  /// Canonical uitlegtekst voor de ontwikkeling ("Je verkeersinzicht is
+  /// verbeterd" etc.). Leeg wanneer de RPC niets geeft.
+  final String ontwikkelingTekst;
+
+  /// Bewust op 0 vastgezet: de canonical RPC levert geen totaal-%-delta.
+  /// Trend-informatie leeft in `sparkline` en in `radarCategorieen[].trend`.
   final int vorigeScore;
   final int verschil;
-  final String trendLabel;
-  final String uitleg;
-  final double? gemiddeldeBeoordeling;
-  final String beoordelingTrend;
-  final String competentieTrend;
-  final String lessenPerWeekLabel;
-  final List<TrendPoint> scoreHistorie;
-  final List<CompetentieTrend> competenties;
-  final List<LesTijdlijnItem> tijdlijn;
 
-  // New: enriched fields for redesigned UI
+  /// Canonical sparkline (uit `bouwOntwikkelingSparkline(advies)`) — zelfde
+  /// helper als Home gebruikt voor de Ontwikkeling-kaart. `null` als er
+  /// minder dan 2 canonical lespunten in enige categorie zijn.
+  final ExamenadviesSparklineData? sparkline;
+
+  /// UI-adapter over `sparkline.punten`: dezelfde punten in de bestaande
+  /// TrendPoint-vorm zodat de bestaande `_LineChartPainter` niet hoeft te
+  /// wijzigen. Schaalconversie 1..5 → 0..100, geen berekening.
+  final List<TrendPoint> scoreHistorie;
+
+  /// Canonical 6 categorieën uit `advies.categorieen`, altijd in
+  /// vaste canonical volgorde (Voertuigbeheersing, Observatie, Manoeuvres,
+  /// Verkeer, Wegpositie, Gedrag). Ontbrekende categorieën hebben
+  /// `huidigOpVijf == null`. Zowel de radar als de rijen eronder consumeren
+  /// deze lijst — één bron, geen tweede berekening.
+  final List<CategorieScore> radarCategorieen;
+
+  /// Sterke punten (canonical `advies.sterkePunten`).
   final List<String> sterkeCompetenties;
+
+  /// Aandachtspunten (canonical `advies.nogOefenen`).
   final List<String> aandachtspunten;
-  final String lesAdvies;
-  final String motivatieTekst;
+
+  /// "Wat verandert er?"-rijen: canonical categorie-trends + puur
+  /// les-gebaseerde statistieken (lesritme, laatste beoordeling).
   final List<InzichtItem> inzichten;
-  final List<double> radarWaarden; // 0..1 per CBR-competentie (6 values)
+
+  /// Voor "Wat verandert er?"-lesritme (uit lessen, GEEN examenadvies).
+  final String lessenPerWeekLabel;
+
+  /// Voor de tijdlijn-card (uit lessen, GEEN examenadvies).
+  final List<LesTijdlijnItem> tijdlijn;
 
   const VoortgangTrendsData({
     required this.isMock,
     required this.huidigeScore,
+    required this.heeftBetrouwbareScore,
+    required this.statusLabel,
+    required this.ontwikkelingTekst,
     required this.vorigeScore,
     required this.verschil,
-    required this.trendLabel,
-    required this.uitleg,
-    required this.gemiddeldeBeoordeling,
-    required this.beoordelingTrend,
-    required this.competentieTrend,
-    required this.lessenPerWeekLabel,
+    required this.sparkline,
     required this.scoreHistorie,
-    required this.competenties,
-    required this.tijdlijn,
+    required this.radarCategorieen,
     required this.sterkeCompetenties,
     required this.aandachtspunten,
-    required this.lesAdvies,
-    required this.motivatieTekst,
     required this.inzichten,
-    required this.radarWaarden,
+    required this.lessenPerWeekLabel,
+    required this.tijdlijn,
   });
-
-  bool get heeftHistorie => scoreHistorie.length >= 2 || tijdlijn.length >= 2;
 }
 
 class TrendPoint {
@@ -79,22 +126,6 @@ class TrendPoint {
   final int score;
 
   const TrendPoint({required this.label, required this.score});
-}
-
-class CompetentieTrend {
-  final String naam;
-  final int huidigeScore;
-  final int vorigeScore;
-  final int verschil;
-  final String label;
-
-  const CompetentieTrend({
-    required this.naam,
-    required this.huidigeScore,
-    required this.vorigeScore,
-    required this.verschil,
-    required this.label,
-  });
 }
 
 /// Eén inzicht-item voor "Wat verandert er?" sectie
@@ -152,186 +183,138 @@ class CompetentieDelta {
   const CompetentieDelta({required this.naam, required this.delta});
 }
 
-// ── Calculator ────────────────────────────────────────────────────────────────
+// ── Canonical adapter ─────────────────────────────────────────────────────────
 
 class VoortgangTrendsCalculator {
   const VoortgangTrendsCalculator._();
 
-  static VoortgangTrendsData bereken({
-    required LeerlingProfiel profiel,
+  /// Zet canonical `ExamenadviesData` + lesdata om in de UI-shape van
+  /// `VoortgangTrendsData`. Geen businesslogica; alleen mappen/labelen.
+  static VoortgangTrendsData fromCanonical({
+    required ExamenadviesData advies,
     required List<Les> lessen,
   }) {
     final chronologisch = [...lessen]..sort((a, b) =>
         '${a.datum} ${a.starttijd}'.compareTo('${b.datum} ${b.starttijd}'));
-    if (chronologisch.isEmpty) return emptyVoortgangTrends;
 
-    final scoreHistorie = <TrendPoint>[];
-    for (var i = 0; i < chronologisch.length; i++) {
-      final subset = chronologisch.take(i + 1).toList();
-      scoreHistorie.add(
-        TrendPoint(
-          label: _dagMaand(chronologisch[i].datum),
-          score: _readinessVoor(
-            profiel: profiel,
-            lessenTotNu: subset,
-            gevolgdeLessenTotNu: i + 1,
-          ),
-        ),
-      );
-    }
-
-    final huidige = scoreHistorie.last.score;
-    final vorige = scoreHistorie.length >= 2
-        ? scoreHistorie[scoreHistorie.length - 2].score
-        : huidige;
-    final verschil = huidige - vorige;
-    final recente = chronologisch.length > 4
-        ? chronologisch.sublist(chronologisch.length - 4)
-        : chronologisch;
-
-    final competentieTrends =
-        _competentieTrends(chronologisch).take(4).toList();
-    final sterke = _sterkeCompetenties(chronologisch);
-    final aandacht = _aandachtspunten(chronologisch);
-    final radarWaarden = _radarWaarden(profiel);
+    final radarCats = _canonicalRadar(advies);
+    final sparkline = bouwOntwikkelingSparkline(advies);
+    final scoreHistorie = _sparklineNaarTrendPoints(sparkline);
 
     return VoortgangTrendsData(
       isMock: false,
-      huidigeScore: huidige,
-      vorigeScore: vorige,
-      verschil: verschil,
-      trendLabel: _trendLabel(verschil),
-      uitleg: _scoreUitleg(vorige, huidige, verschil),
-      gemiddeldeBeoordeling: _gemiddeldeBeoordeling(recente),
-      beoordelingTrend: _beoordelingTrend(chronologisch),
-      competentieTrend: _competentieTrend(chronologisch),
-      lessenPerWeekLabel: _lessenPerWeekLabel(chronologisch),
-      scoreHistorie: scoreHistorie.takeLast(6),
-      competenties: competentieTrends,
-      // Volledige geschiedenis (geen cap meer) -- de hoofdpagina van
-      // Voortgang toont zelf alleen het eerste/laatste item, "Zie alles"
-      // (/voortgang/tijdlijn) toont deze volledige lijst.
-      tijdlijn: chronologisch.reversed.map(_tijdlijnItem).toList(),
-      sterkeCompetenties: sterke,
-      aandachtspunten: aandacht,
-      lesAdvies: '',
-      motivatieTekst: '',
+      huidigeScore: advies.score ?? 0,
+      heeftBetrouwbareScore: advies.heeftBetrouwbareScore,
+      statusLabel: advies.statusLabel,
+      ontwikkelingTekst: advies.ontwikkeling,
+      vorigeScore: 0,
+      verschil: 0,
+      sparkline: sparkline,
+      scoreHistorie: scoreHistorie,
+      radarCategorieen: radarCats,
+      sterkeCompetenties: advies.sterkePunten,
+      aandachtspunten: advies.nogOefenen,
       inzichten: _inzichten(
-        competentieTrends: competentieTrends,
+        advies: advies,
         chronologisch: chronologisch,
       ),
-      radarWaarden: radarWaarden,
+      lessenPerWeekLabel: _lessenPerWeekLabel(chronologisch),
+      tijdlijn: chronologisch.reversed.map(_tijdlijnItem).toList(),
     );
   }
 
-  // ── Radar waarden (per CBR-competentie in volgorde van cbrCompetenties) ─────
+  // ── Canonical radar-categorieën ──────────────────────────────────────────
+  //
+  // Altijd 6 canonieke categorieën in vaste volgorde. Wanneer de RPC voor
+  // een categorie geen rij heeft (bv. bij `onvoldoendeData`), tonen we die
+  // categorie met `huidigOpVijf == null` en trend `onbekend` — dat is de
+  // canonical "leeg"-toestand, geen verzonnen waarde.
 
-  static List<double> _radarWaarden(LeerlingProfiel profiel) {
-    final vaardigheden = profiel.vaardigheden ?? <String, dynamic>{};
-    return cbrCompetenties.map((c) {
-      final scores = c.vaardigheidKeys
-          .map((key) => (vaardigheden[key] as num? ?? 0).toDouble())
-          .where((s) => s > 0)
-          .toList();
-      if (scores.isEmpty) return 0.0;
-      return (scores.reduce((a, b) => a + b) / scores.length / 5.0)
-          .clamp(0.0, 1.0);
-    }).toList();
+  static List<CategorieScore> _canonicalRadar(ExamenadviesData advies) {
+    final perNaam = <String, CategorieScore>{
+      for (final c in advies.categorieen) c.naam: c,
+    };
+    return [
+      for (final cat in examenVaardigheidCategorieen)
+        perNaam[cat.naam] ??
+            CategorieScore(
+              naam: cat.naam,
+              huidigOpVijf: null,
+              trend: VaardigheidTrend.onbekend,
+            ),
+    ];
   }
 
-  // ── Sterke / aandacht punten ──────────────────────────────────────────────
-
-  static List<String> _sterkeCompetenties(List<Les> lessen) {
-    final gemiddelden = _competentieGemiddelden(lessen);
-    final gesorteerd = gemiddelden.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    return gesorteerd
-        .where((e) => e.value >= 60)
-        .take(3)
-        .map((e) => _competentieNaam(e.key))
-        .toList();
+  static List<TrendPoint> _sparklineNaarTrendPoints(
+    ExamenadviesSparklineData? sparkline,
+  ) {
+    if (sparkline == null || sparkline.punten.length < 2) return const [];
+    // Canonical historie is op 1..5-schaal. UI-schaalconversie naar 0..100
+    // zodat de bestaande `_LineChartPainter` en `%`-labels blijven werken.
+    return [
+      for (var i = 0; i < sparkline.punten.length; i++)
+        TrendPoint(
+          label: '${i + 1}',
+          score: (sparkline.punten[i] * 20).round().clamp(0, 100),
+        ),
+    ];
   }
 
-  static List<String> _aandachtspunten(List<Les> lessen) {
-    final gemiddelden = _competentieGemiddelden(lessen);
-    final gesorteerd = gemiddelden.entries.toList()
-      ..sort((a, b) => a.value.compareTo(b.value));
-    return gesorteerd
-        .where((e) => e.value < 65)
-        .take(3)
-        .map((e) => _competentieNaam(e.key))
-        .toList();
-  }
-
-  // ── Les advies & motivatie ────────────────────────────────────────────────
-
-  static String lesAdvies(List<String> aandacht, List<Les> lessen) {
-    return '';
-  }
-
-  static String motivatieTekst(int huidige, int verschil, List<String> sterk) {
-    if (huidige >= 85) return '';
-    if (huidige >= 70) return '';
-    if (verschil > 0) {
-      if (sterk.isNotEmpty) {
-        return '';
-      }
-      return '';
-    }
-    if (verschil < 0) return '';
-    return '';
-  }
-
-  // ── Dynamische inzichten ──────────────────────────────────────────────────
+  // ── "Wat verandert er?" ──────────────────────────────────────────────────
 
   static List<InzichtItem> _inzichten({
-    required List<CompetentieTrend> competentieTrends,
+    required ExamenadviesData advies,
     required List<Les> chronologisch,
   }) {
     final items = <InzichtItem>[];
 
-    // Stijgende competentie
-    final stijgend = competentieTrends.where((c) => c.verschil >= 5).toList();
+    // Canonical categorie-trends (uit de RPC, geen lokale delta-berekening).
+    final stijgend = advies.categorieen
+        .where((c) => c.trend == VaardigheidTrend.stijgt && c.heeftData)
+        .toList();
     for (final c in stijgend.take(2)) {
       items.add(InzichtItem(
         icon: Icons.arrow_upward_rounded,
         iconColor: const Color(0xFF16A34A),
         titel: c.naam,
-        oudeWaarde: '${c.vorigeScore}%',
-        nieuweWaarde: '${c.huidigeScore}%',
-        delta: '+${c.verschil}%',
+        // Bestaande UI-shape blijft (`oudeWaarde` / `nieuweWaarde`); we
+        // hangen er canonical categoriewaarden aan i.p.v. verzonnen deltas.
+        oudeWaarde: 'Vorige les',
+        nieuweWaarde: '${c.scoreLabel}/5',
+        delta: 'Stijgt',
         deltaColor: const Color(0xFF16A34A),
       ));
     }
 
-    // Dalende competentie
-    final dalend = competentieTrends.where((c) => c.verschil <= -5).toList();
+    final dalend = advies.categorieen
+        .where((c) => c.trend == VaardigheidTrend.daalt && c.heeftData)
+        .toList();
     for (final c in dalend.take(1)) {
       items.add(InzichtItem(
         icon: Icons.arrow_downward_rounded,
         iconColor: const Color(0xFFD97706),
         titel: c.naam,
-        oudeWaarde: '${c.vorigeScore}%',
-        nieuweWaarde: '${c.huidigeScore}%',
-        delta: '${c.verschil}%',
+        oudeWaarde: 'Vorige les',
+        nieuweWaarde: '${c.scoreLabel}/5',
+        delta: 'Daalt',
         deltaColor: const Color(0xFFD97706),
       ));
     }
 
-    // Stabiele competentie
-    final stabiel = competentieTrends
-        .where((c) => c.verschil.abs() < 5 && c.huidigeScore >= 60)
+    final stabiel = advies.categorieen
+        .where((c) => c.trend == VaardigheidTrend.stabiel && c.heeftData)
         .toList();
     if (stabiel.isNotEmpty) {
+      final c = stabiel.first;
       items.add(InzichtItem(
         icon: Icons.remove_rounded,
         iconColor: const Color(0xFF64748B),
-        titel: stabiel.first.naam,
-        waarde: '${stabiel.first.huidigeScore}% stabiel',
+        titel: c.naam,
+        waarde: '${c.scoreLabel}/5 stabiel',
       ));
     }
 
-    // Lesritme
+    // Puur les-gebaseerde statistieken (GEEN examenadvies-inhoud).
     if (chronologisch.length >= 2) {
       items.add(InzichtItem(
         icon: Icons.calendar_month_rounded,
@@ -341,7 +324,6 @@ class VoortgangTrendsCalculator {
       ));
     }
 
-    // Laatste beoordeling
     final laatste = chronologisch.isNotEmpty ? chronologisch.last : null;
     if (laatste?.beoordeling != null &&
         _beoordelingLabel(laatste!.beoordeling) != 'Geen beoordeling') {
@@ -357,7 +339,7 @@ class VoortgangTrendsCalculator {
     return items.take(5).toList();
   }
 
-  // ── Tijdlijn ──────────────────────────────────────────────────────────────
+  // ── Tijdlijn (puur uit lesdata — geen examenadvies-formule) ──────────────
 
   static LesTijdlijnItem _tijdlijnItem(Les les) {
     final besteCompetentie = _besteCompetentie(les);
@@ -392,83 +374,6 @@ class VoortgangTrendsCalculator {
     );
   }
 
-  static List<CompetentieDelta> _deltaVoorLes(Les les) {
-    final scores = les.competentieScores ?? const <String, dynamic>{};
-    final result = <CompetentieDelta>[];
-    for (final entry in scores.entries) {
-      final raw = entry.value;
-      if (raw is! num || raw.toDouble() <= 0) continue;
-      final pct = (raw.toDouble() / 5 * 100).round();
-      result.add(CompetentieDelta(
-        naam: _competentieNaam(entry.key),
-        delta: pct,
-      ));
-    }
-    result.sort((a, b) => b.delta.compareTo(a.delta));
-    return result.take(3).toList();
-  }
-
-  // ── Helpers ───────────────────────────────────────────────────────────────
-
-  static int _readinessVoor({
-    required LeerlingProfiel profiel,
-    required List<Les> lessenTotNu,
-    required int gevolgdeLessenTotNu,
-  }) {
-    final lesProgress = profiel.lessenTotaal <= 0
-        ? 0.0
-        : (gevolgdeLessenTotNu / profiel.lessenTotaal * 100)
-            .clamp(0, 100)
-            .toDouble();
-    final beoordeling = _beoordelingScore(lessenTotNu);
-    final competenties = _competentieScore(lessenTotNu);
-
-    final onderdelen = <_WeightedScore>[
-      _WeightedScore(lesProgress, 0.40),
-      if (competenties != null) _WeightedScore(competenties, 0.35),
-      if (beoordeling != null) _WeightedScore(beoordeling, 0.25),
-    ];
-    return _weightedAverage(onderdelen).round().clamp(0, 100).toInt();
-  }
-
-  static List<CompetentieTrend> _competentieTrends(List<Les> lessen) {
-    if (lessen.length < 2) return const [];
-    final vorigeLessen = lessen.take(lessen.length - 1).toList();
-    final huidigeScores = _competentieGemiddelden(lessen);
-    final vorigeScores = _competentieGemiddelden(vorigeLessen);
-
-    final result = <CompetentieTrend>[];
-    for (final entry in huidigeScores.entries) {
-      final vorige = vorigeScores[entry.key] ?? entry.value;
-      final verschil = (entry.value - vorige).round();
-      result.add(CompetentieTrend(
-        naam: _competentieNaam(entry.key),
-        huidigeScore: entry.value.round(),
-        vorigeScore: vorige.round(),
-        verschil: verschil,
-        label: _trendLabel(verschil),
-      ));
-    }
-    result.sort((a, b) => b.verschil.abs().compareTo(a.verschil.abs()));
-    return result;
-  }
-
-  static Map<String, double> _competentieGemiddelden(List<Les> lessen) {
-    final values = <String, List<double>>{};
-    for (final les in lessen) {
-      final scores = les.competentieScores ?? const <String, dynamic>{};
-      for (final entry in scores.entries) {
-        final raw = entry.value;
-        final score = raw is num ? raw.toDouble() : null;
-        if (score == null || score <= 0) continue;
-        values.putIfAbsent(entry.key, () => []).add(
-              score <= 5 ? score / 5 * 100 : score.clamp(0, 100),
-            );
-      }
-    }
-    return values.map((key, scores) => MapEntry(key, _average(scores)));
-  }
-
   static String _besteCompetentie(Les les) {
     final scores = les.competentieScores ?? const <String, dynamic>{};
     MapEntry<String, dynamic>? beste;
@@ -484,89 +389,40 @@ class VoortgangTrendsCalculator {
           ? ''
           : les.geoefendeOnderwerpen.take(2).join(', ');
     }
-    return '${_competentieNaam(beste.key)} ${beste.value}/5';
+    return '${_competentieNaamKort(beste.key)} ${beste.value}/5';
   }
 
-  static double? _gemiddeldeBeoordeling(List<Les> lessen) {
-    final scores = lessen.map(_beoordelingWaarde).whereType<double>().toList();
-    return scores.isEmpty ? null : _average(scores);
+  static List<CompetentieDelta> _deltaVoorLes(Les les) {
+    final scores = les.competentieScores ?? const <String, dynamic>{};
+    final result = <CompetentieDelta>[];
+    for (final entry in scores.entries) {
+      final raw = entry.value;
+      if (raw is! num || raw.toDouble() <= 0) continue;
+      final pct = (raw.toDouble() / 5 * 100).round();
+      result.add(CompetentieDelta(
+        naam: _competentieNaamKort(entry.key),
+        delta: pct,
+      ));
+    }
+    result.sort((a, b) => b.delta.compareTo(a.delta));
+    return result.take(3).toList();
   }
 
-  static double? _beoordelingScore(List<Les> lessen) {
-    final gemiddelde = _gemiddeldeBeoordeling(lessen);
-    if (gemiddelde == null) return null;
-    return (gemiddelde / 5 * 100).clamp(0, 100);
-  }
-
-  static double? _competentieScore(List<Les> lessen) {
-    final scores = _competentieGemiddelden(lessen).values.toList();
-    return scores.isEmpty ? null : _average(scores);
-  }
-
-  static double? _beoordelingWaarde(Les les) {
-    return switch (les.beoordeling) {
-      '5' => 5,
-      '4' => 4,
-      '3' => 3,
-      '2' => 2,
-      '1' => 1,
-      'goed' => 4,
-      'voldoende' => 3,
-      'onvoldoende' => 2,
-      _ => null,
+  static String _competentieNaamKort(String key) {
+    // Puur voor de tijdlijn-labels (opsomming van geoefende skills per les).
+    // NIET voor Examenadvies-categorisering — die komt volledig uit de RPC.
+    return switch (key) {
+      'voertuigbeheersing' => 'Voertuigbeheersing',
+      'kijkgedrag' => 'Kijkgedrag',
+      'verkeersinzicht' => 'Verkeersinzicht',
+      'bijzondere_verrichtingen' => 'Bijzondere verrichtingen',
+      'zelfstandig_rijden' => 'Zelfstandig rijden',
+      'examenvoorbereiding' => 'Examenvoorbereiding',
+      _ => key.replaceAll('_', ' '),
     };
   }
 
-  static String _beoordelingTrend(List<Les> lessen) {
-    final scores = lessen.map(_beoordelingWaarde).whereType<double>().toList();
-    if (scores.length < 2) return 'Nog onvoldoende beoordelingsdata';
-    final verschil = scores.last - scores.first;
-    if (verschil > 0.3) return 'Je beoordelingen verbeteren';
-    if (verschil < -0.3) return 'Meer oefenen nodig op beoordeling';
-    return 'Je beoordelingen zijn stabiel';
-  }
-
-  static String _competentieTrend(List<Les> lessen) {
-    final trends = _competentieTrends(lessen);
-    if (trends.isEmpty) return 'Nog onvoldoende competentiedata';
-    final stabiel = trends.firstWhere(
-      (trend) => trend.verschil.abs() <= 4,
-      orElse: () => trends.first,
-    );
-    if (stabiel.verschil.abs() <= 4) {
-      return '${stabiel.naam} is ${lessen.length.clamp(2, 3)} lessen stabiel gebleven';
-    }
-    if (trends.first.verschil > 0) return '${trends.first.naam} gaat vooruit';
-    return '${trends.first.naam} vraagt extra aandacht';
-  }
-
-  static String _lessenPerWeekLabel(List<Les> lessen) {
-    if (lessen.length < 2) return 'Nog te weinig lessen voor weektrend';
-    final eerste = DateTime.tryParse(lessen.first.datum);
-    final laatste = DateTime.tryParse(lessen.last.datum);
-    if (eerste == null || laatste == null) {
-      return '${lessen.length} afgeronde lessen';
-    }
-    final dagen = laatste.difference(eerste).inDays.abs().clamp(1, 365);
-    final weken = (dagen / 7).clamp(1, 99);
-    final perWeek = lessen.length / weken;
-    return '${_formatAantal(perWeek)} lessen per week';
-  }
-
-  static String _scoreUitleg(int vorige, int huidige, int verschil) {
-    if (verschil > 0)
-      return 'Je examenadvies steeg van $vorige% naar $huidige%.';
-    if (verschil < 0) {
-      return 'Je examenadvies ging van $vorige% naar $huidige%; focus op consistentie.';
-    }
-    return 'Je examenadvies bleef stabiel op $huidige%.';
-  }
-
-  static String _trendLabel(int verschil) {
-    if (verschil >= 3) return 'Stijgend';
-    if (verschil <= -3) return 'Meer oefenen nodig';
-    return 'Stabiel';
-  }
+  // ── Kleine format-helpers ────────────────────────────────────────────────
 
   static String _beoordelingLabel(String? beoordeling) {
     return switch (beoordeling) {
@@ -582,22 +438,17 @@ class VoortgangTrendsCalculator {
     };
   }
 
-  static String _competentieNaam(String key) {
-    return switch (key) {
-      'voertuigbeheersing' => 'Voertuigbeheersing',
-      'kijkgedrag' => 'Kijkgedrag',
-      'verkeersinzicht' => 'Verkeersinzicht',
-      'bijzondere_verrichtingen' => 'Bijzondere verrichtingen',
-      'zelfstandig_rijden' => 'Zelfstandig rijden',
-      'examenvoorbereiding' => 'Examenvoorbereiding',
-      _ => key.replaceAll('_', ' '),
-    };
-  }
-
-  static String _dagMaand(String datum) {
-    final parsed = DateTime.tryParse(datum);
-    if (parsed == null) return datum;
-    return '${parsed.day.toString().padLeft(2, '0')}-${parsed.month.toString().padLeft(2, '0')}';
+  static String _lessenPerWeekLabel(List<Les> lessen) {
+    if (lessen.length < 2) return 'Nog te weinig lessen voor weektrend';
+    final eerste = DateTime.tryParse(lessen.first.datum);
+    final laatste = DateTime.tryParse(lessen.last.datum);
+    if (eerste == null || laatste == null) {
+      return '${lessen.length} afgeronde lessen';
+    }
+    final dagen = laatste.difference(eerste).inDays.abs().clamp(1, 365);
+    final weken = (dagen / 7).clamp(1, 99);
+    final perWeek = lessen.length / weken;
+    return '${_formatAantal(perWeek)} lessen per week';
   }
 
   static String _langeDatum(String datum) {
@@ -625,54 +476,49 @@ class VoortgangTrendsCalculator {
     if ((value - afgerond).abs() < 0.05) return afgerond.toInt().toString();
     return value.toStringAsFixed(1).replaceAll('.', ',');
   }
-
-  static double _weightedAverage(List<_WeightedScore> scores) {
-    final totaal = scores.fold<double>(0, (sum, item) => sum + item.weight);
-    if (scores.isEmpty || totaal == 0) return 0;
-    return scores.fold<double>(
-            0, (sum, item) => sum + item.score * item.weight) /
-        totaal;
-  }
-
-  static double _average(Iterable<double> values) {
-    final list = values.toList();
-    if (list.isEmpty) return 0;
-    return list.reduce((a, b) => a + b) / list.length;
-  }
 }
 
-class _WeightedScore {
-  final double score;
-  final double weight;
-
-  const _WeightedScore(this.score, this.weight);
-}
-
-extension _TakeLast<T> on List<T> {
-  List<T> takeLast(int count) {
-    if (length <= count) return this;
-    return sublist(length - count);
-  }
-}
+// ── Empty-state (nooit een verzonnen percentage) ─────────────────────────────
 
 const emptyVoortgangTrends = VoortgangTrendsData(
   isMock: true,
   huidigeScore: 0,
+  heeftBetrouwbareScore: false,
+  statusLabel: 'Nog onvoldoende data',
+  ontwikkelingTekst: '',
   vorigeScore: 0,
   verschil: 0,
-  trendLabel: 'Nog onvoldoende data',
-  uitleg: 'Volg meer lessen om je voortgang te zien.',
-  gemiddeldeBeoordeling: null,
-  beoordelingTrend: 'Nog onvoldoende beoordelingsdata',
-  competentieTrend: 'Nog onvoldoende competentiedata',
-  lessenPerWeekLabel: 'Nog geen afgeronde lessen',
+  sparkline: null,
   scoreHistorie: [],
-  competenties: [],
-  tijdlijn: [],
+  radarCategorieen: [
+    CategorieScore(
+        naam: 'Voertuigbeheersing',
+        huidigOpVijf: null,
+        trend: VaardigheidTrend.onbekend),
+    CategorieScore(
+        naam: 'Observatie',
+        huidigOpVijf: null,
+        trend: VaardigheidTrend.onbekend),
+    CategorieScore(
+        naam: 'Manoeuvres',
+        huidigOpVijf: null,
+        trend: VaardigheidTrend.onbekend),
+    CategorieScore(
+        naam: 'Verkeer',
+        huidigOpVijf: null,
+        trend: VaardigheidTrend.onbekend),
+    CategorieScore(
+        naam: 'Wegpositie',
+        huidigOpVijf: null,
+        trend: VaardigheidTrend.onbekend),
+    CategorieScore(
+        naam: 'Gedrag',
+        huidigOpVijf: null,
+        trend: VaardigheidTrend.onbekend),
+  ],
   sterkeCompetenties: [],
   aandachtspunten: [],
-  lesAdvies: 'Volg meer lessen voor persoonlijk lesadvies.',
-  motivatieTekst: 'Volg je eerste les om je voortgang bij te houden.',
   inzichten: [],
-  radarWaarden: [0, 0, 0, 0, 0, 0],
+  lessenPerWeekLabel: 'Nog geen afgeronde lessen',
+  tijdlijn: [],
 );

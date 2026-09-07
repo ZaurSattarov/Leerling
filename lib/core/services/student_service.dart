@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -165,7 +167,7 @@ class StudentService {
     );
   }
 
-  // ── FACEBOOK-LOGIN (native, classic access token -> Supabase idToken) ──
+  // ── FACEBOOK-LOGIN (native, platform-specifieke OIDC-token -> Supabase) ──
   // Zelfde architectuur/pattern als de Google-login hierboven (ongewijzigd
   // gelaten): Supabase's signInWithIdToken() op dezelfde auth.users-
   // architectuur. Net als bij Google heeft de Leerling-app géén eigen
@@ -173,16 +175,37 @@ class StudentService {
   // uitsluitend door de instructeur aangemaakt en pas via
   // koppelLeerlingMetCode() gekoppeld, ongeacht de inlogmethode.
   //
-  // BELANGRIJK, geverifieerd tegen de actuele Supabase Flutter-referentie
-  // (supabase.com/docs/reference/dart/auth-signinwithidtoken, sectie
-  // Facebook): ondanks de Google/Apple-vereiste voor een echt OIDC-JWT
-  // verwacht Supabase's Facebook-provider gewoon de normale Facebook
-  // access token (ClassicToken.tokenString) als `idToken`-parameter, GEEN
-  // Limited-Login-JWT en GEEN nonce. Een eerdere versie van deze functie
-  // gebruikte ten onrechte Limited Login + zelf-gegenereerde nonce -- dat
-  // wijkt af van de gedocumenteerde flow en kan zelfs mislukken (Supabase's
-  // generieke OIDC-parser is niet toegerust op Facebook's JWT-structuur,
-  // zie github.com/supabase/auth/issues/1522, "Bad ID token").
+  // CORRECTIE (2026-09-07): de eerdere versie gebruikte de gewone,
+  // niet-JWT Facebook access token (`ClassicToken.tokenString`) als
+  // `idToken` -- dat is wat de simpele voorbeeldcode op
+  // supabase.com/docs/reference/dart/auth-signinwithidtoken en
+  // supabase.com/docs/guides/auth/social-login/auth-facebook laat zien,
+  // MAAR dat gaf in de praktijk "AuthApiError: Bad ID token" (live
+  // getest). Verklaring: Supabase's signInWithIdToken-endpoint verwacht
+  // voor ALLE providers (ook facebook) een echte JWT om te verifiëren --
+  // een opaque access token is geen geldige JWT en faalt daarom meteen op
+  // structuurniveau, ongeacht dashboard-configuratie.
+  //
+  // Werkende aanpak: net als bij Google/Apple een ECHTE JWT meegeven, hier
+  // via Facebook's OIDC-authenticatietoken (bevestigd aanwezig in
+  // flutter_facebook_auth v7.2.0/platform_interface v6.1.2 -- gecontroleerd
+  // in de package-source, niet aangenomen):
+  //   - iOS: `loginTracking: LoginTracking.limited` -> resultaat is een
+  //     `LimitedToken`, waarvan `.tokenString` zelf al de OIDC-JWT is.
+  //   - Android: `loginTracking: LoginTracking.enabled` (classic) +
+  //     `openid`-permissie + `loginBehavior: LoginBehavior.webOnly` ->
+  //     resultaat is een `ClassicToken` met een gevulde
+  //     `.authenticationToken` (de OIDC-JWT); `.tokenString` blijft de
+  //     gewone, niet-JWT access token en wordt hier NIET gebruikt.
+  // Een expliciete nonce wordt meegegeven aan zowel Facebook (`login`) als
+  // Supabase (`signInWithIdToken`) -- zelfde nonce-koppeling als bij
+  // Apple-sign-in, ter verificatie van de JWT.
+  //
+  // Deze exacte combinatie staat NIET met zoveel woorden op de officiële
+  // Supabase-documentatiepagina's (die tonen alleen de simpele, hier
+  // gebleken kapotte variant) -- de gebruikte symbolen zijn wel stuk voor
+  // stuk geverifieerd te bestaan in de daadwerkelijk geïnstalleerde
+  // package-source.
   //
   // Vereist configuratie (zie AppConfig.facebookAppId/facebookClientToken +
   // de native Android/iOS-config): een Meta for Developers-app met het
@@ -190,38 +213,106 @@ class StudentService {
   // ingesteld bij de Facebook-provider in het Supabase-dashboard
   // (Authentication > Providers) -- dat is server-side configuratie die
   // hier niet vanuit de app te zetten is.
+  static final Random _nonceRandom = Random.secure();
+
+  static String _genereerNonce() {
+    final bytes = List<int>.generate(16, (_) => _nonceRandom.nextInt(256));
+    return bytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+  }
 
   /// Start de native Facebook-accountkiezer en logt in via Supabase's
   /// idToken-flow. Retourneert `null` wanneer de gebruiker annuleert --
-  /// normaal gedrag, geen fout. Gooit een [StateError] bij een echte
-  /// configuratiefout -- exact hetzelfde contract als [meldAanMetGoogle].
+  /// normaal gedrag, geen fout. Laat elke andere fout (SDK-init,
+  /// PlatformException, AuthException, netwerkfout) doorlopen naar de
+  /// aanroeper met zijn eigen type -- de aanroeper logt de exacte fout,
+  /// zodat een debugsessie kan zien waaróm het mislukt.
+  ///
+  /// BEWUST GEEN Dart-precheck op `AppConfig.facebookAppId`: de Facebook
+  /// SDK leest de App ID zelf uit Info.plist/AndroidManifest.xml (native
+  /// meta-data), niet uit Dart. Een precheck hier veroorzaakt een valse
+  /// "configuratiefout" wanneer de native config wél correct staat maar er
+  /// alleen geen --dart-define is meegegeven. AppConfig.facebookAppId
+  /// blijft bestaan als optioneel dart-define voor CI/dev-doeleinden, maar
+  /// is geen runtime-vereiste voor de login-flow zelf.
   static Future<AuthResponse?> meldAanMetFacebook() async {
-    if (AppConfig.facebookAppId.isEmpty) {
-      throw StateError(
-        'Facebook-login is niet geconfigureerd (FACEBOOK_APP_ID ontbreekt).',
-      );
-    }
+    final isIOS = !kIsWeb && Platform.isIOS;
+    final nonce = _genereerNonce();
 
     final result = await FacebookAuth.instance.login(
-      permissions: const ['email', 'public_profile'],
+      permissions: isIOS
+          ? const ['email', 'public_profile']
+          // 'openid' is vereist op Android om ClassicToken.authenticationToken
+          // (de OIDC-JWT) gevuld te krijgen -- zonder deze permissie blijft
+          // dat veld null en valt de login terug op de kapotte tokenString-weg.
+          : const ['email', 'public_profile', 'openid'],
+      loginTracking: isIOS ? LoginTracking.limited : LoginTracking.enabled,
+      loginBehavior:
+          isIOS ? LoginBehavior.nativeWithFallback : LoginBehavior.webOnly,
+      nonce: nonce,
+    );
+
+    // ── TIJDELIJKE DIAGNOSTIEK (2026-09-07) — verwijderen zodra de
+    // "Bad ID token"/"niet beschikbaar"-melding is opgelost. Logt nooit de
+    // daadwerkelijke token-waarden, alleen status/aanwezigheid/lengtes. ──
+    debugPrint(
+      '[login][facebook][DIAG] platform=${isIOS ? "iOS" : "Android"} '
+      'loginStatus=${result.status.name} sdkMessage=${result.message ?? "(geen)"}',
     );
 
     if (result.status == LoginStatus.cancelled) return null; // gebruiker annuleerde
     if (result.status != LoginStatus.success) {
       throw StateError(
-        'Facebook-login mislukt (${result.status.name}): ${result.message ?? 'onbekende fout'}',
+        'Facebook-login mislukt (status=${result.status.name}): '
+        '${result.message ?? 'geen SDK-melding'}',
       );
     }
 
-    final accessToken = result.accessToken?.tokenString;
-    if (accessToken == null) {
-      throw StateError('Facebook leverde geen access token.');
+    final token = result.accessToken;
+
+    // ── TIJDELIJKE DIAGNOSTIEK (2026-09-07) — zie hierboven. ──
+    debugPrint(
+      '[login][facebook][DIAG] accessToken.runtimeType=${token.runtimeType} '
+      'accessToken.type=${token?.type.name ?? "(null)"} '
+      'isLimitedToken=${token is LimitedToken} '
+      'isClassicToken=${token is ClassicToken} '
+      'hasAuthenticationToken=${token is ClassicToken ? token.authenticationToken != null : "n.v.t. (geen ClassicToken)"} '
+      'hasTokenString=${token != null && token.tokenString.isNotEmpty}',
+    );
+
+    final idToken = switch (token) {
+      LimitedToken t => t.tokenString, // iOS: de JWT zelf
+      ClassicToken t => t.authenticationToken, // Android: aparte OIDC-JWT
+      _ => null,
+    };
+    if (idToken == null) {
+      throw StateError(
+        'Facebook-login: LoginStatus.success maar geen bruikbare OIDC-JWT '
+        '(tokenType=${token?.type.name}, isIOS=$isIOS). Controleer op '
+        'Android of de "openid"-permissie is toegestaan door de gebruiker/'
+        'Meta-app, en op iOS of Limited Login correct is geconfigureerd.',
+      );
     }
 
-    return client.auth.signInWithIdToken(
-      provider: OAuthProvider.facebook,
-      idToken: accessToken,
+    // ── TIJDELIJKE DIAGNOSTIEK (2026-09-07) — bevestigt dat signInWithIdToken
+    // daadwerkelijk wordt bereikt, vóór de eventuele Supabase-fout. ──
+    debugPrint(
+      '[login][facebook][DIAG] idToken bepaald (lengte=${idToken.length}, '
+      'nonce.length=${nonce.length}) -- roept nu client.auth.signInWithIdToken aan...',
     );
+
+    final response = await client.auth.signInWithIdToken(
+      provider: OAuthProvider.facebook,
+      idToken: idToken,
+      nonce: nonce,
+    );
+
+    // ── TIJDELIJKE DIAGNOSTIEK (2026-09-07) — bevestigt succesvolle respons. ──
+    debugPrint(
+      '[login][facebook][DIAG] signInWithIdToken geslaagd: '
+      'user.id aanwezig=${response.user != null} session aanwezig=${response.session != null}',
+    );
+
+    return response;
   }
 
   static Future<void> uitloggen() async {

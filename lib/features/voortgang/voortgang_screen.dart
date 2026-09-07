@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_tab_header.dart';
+import '../examenadvies/examenadvies_data.dart';
 import 'lespakket_voortgang_provider.dart';
 import 'voortgang_provider.dart';
 import 'voortgang_trends_provider.dart';
@@ -65,15 +66,6 @@ class VoortgangScreen extends ConsumerWidget {
                         );
                       }
 
-                      final vaardigheden =
-                          profiel.vaardigheden ?? <String, dynamic>{};
-                      final competentieScores = cbrCompetenties
-                          .map((c) => _CompetentieScore.fromVaardigheden(
-                                competentie: c,
-                                vaardigheden: vaardigheden,
-                              ))
-                          .toList();
-
                       return SliverPadding(
                         padding: EdgeInsets.fromLTRB(
                           _screenPadding,
@@ -106,7 +98,10 @@ class VoortgangScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: _sectionTitleGap),
 
-                            // 2. Examen readiness + motivatie
+                            // 2. Examenadvies-kaart — CANONICAL bron
+                            //    (`examenadviesProvider` via
+                            //    `voortgangTrendsProvider`, zelfde bron als
+                            //    Home). Geen lokale readiness-formule.
                             trendsAsync.when(
                               data: (trends) =>
                                   _ExamenReadinessCard(trends: trends),
@@ -117,23 +112,26 @@ class VoortgangScreen extends ConsumerWidget {
                             const SizedBox(height: _sectionGap),
 
                             // 3. CBR competenties — radar chart
+                            //    Data uit canonical `radarCategorieen`
+                            //    (RPC → 6 canonieke categorieën). Zelfde
+                            //    lijst voedt zowel radar als de rijen.
                             const SectionHeader(title: 'CBR-competenties'),
                             const SizedBox(height: _sectionTitleGap),
                             trendsAsync.when(
                               data: (trends) => _CbrRadarCard(
-                                competentieScores: competentieScores,
-                                radarWaarden: trends.radarWaarden,
+                                categorieen: trends.radarCategorieen,
                               ),
                               loading: () =>
                                   const SkeletonBox(height: 280, radius: 18),
-                              error: (_, __) => _CbrRadarCard(
-                                competentieScores: competentieScores,
-                                radarWaarden: List.filled(6, 0.0),
+                              error: (_, __) => const _CbrRadarCard(
+                                categorieen: [],
                               ),
                             ),
                             const SizedBox(height: _sectionTitleGap),
 
                             // 4. Sterke punten + aandachtspunten
+                            //    Uit canonical `advies.sterkePunten` /
+                            //    `advies.nogOefenen`. Geen lokale drempels.
                             trendsAsync.when(
                               data: (trends) =>
                                   _SterkAandachtRow(trends: trends),
@@ -144,6 +142,8 @@ class VoortgangScreen extends ConsumerWidget {
                             const SizedBox(height: _sectionGap),
 
                             // 5. Wat verandert er? — dynamische inzichten
+                            //    Categorie-trends uit canonical RPC +
+                            //    puur les-gebaseerde statistieken.
                             const SectionHeader(title: 'Wat verandert er?'),
                             const SizedBox(height: _sectionTitleGap),
                             trendsAsync.when(
@@ -153,7 +153,9 @@ class VoortgangScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: _sectionTitleGap),
 
-                            // 6. Score lijn chart + stats
+                            // 6. Examenadviestrend — canonical sparkline
+                            //    (`bouwOntwikkelingSparkline`), zelfde
+                            //    helper die Home ook gebruikt.
                             trendsAsync.when(
                               data: (trends) => _ScoreChartCard(trends: trends),
                               loading: () => const SizedBox.shrink(),
@@ -357,33 +359,35 @@ class _TotaleVoortgangCard extends StatelessWidget {
 }
 
 // ── Examen readiness card ─────────────────────────────────────────────────────
+//
+// Bron = canonical Examenadvies (dezelfde als Home's `_ExamenadviesHero`).
+// Percentage is ALTIJD `trends.huidigeScore` = `advies.score` uit
+// `rpc_get_examenadvies`. Nooit lokaal opnieuw berekend.
 
 class _ExamenReadinessCard extends StatelessWidget {
   final VoortgangTrendsData trends;
   const _ExamenReadinessCard({required this.trends});
 
   Color get _scoreColor {
-    if (trends.huidigeScore >= 100) return _groen;
+    if (!trends.heeftBetrouwbareScore) return AppColors.textSecondary;
+    if (trends.huidigeScore >= 80) return _groen;
     if (trends.huidigeScore >= 50) return _oranje;
     return _rood;
   }
 
-  String get _readinessLabel {
-    if (trends.huidigeScore >= 85) return 'Klaar voor examen';
-    if (trends.huidigeScore >= 70) return 'Bijna examenklaar';
-    if (trends.huidigeScore >= 50) return 'Goed op weg';
-    return 'Nog meer oefenen';
-  }
-
   @override
   Widget build(BuildContext context) {
-    final trendLabel = trends.verschil == 0
-        ? 'Geen vorige meting'
-        : '${trends.verschil > 0 ? '+' : ''}${trends.verschil}% sinds vorige meting';
+    final toonScore = trends.heeftBetrouwbareScore;
+    final scoreTekst = toonScore ? '${trends.huidigeScore}%' : '—';
+    final infoLabel = trends.ontwikkelingTekst.isNotEmpty
+        ? trends.ontwikkelingTekst
+        : (toonScore
+            ? 'Geen vorige meting'
+            : 'Nog onvoldoende beoordelingen');
 
     return Semantics(
       label:
-          'Examenadvies ${trends.huidigeScore} procent. $_readinessLabel. $trendLabel.',
+          'Examenadvies ${toonScore ? '${trends.huidigeScore} procent' : 'nog onvoldoende data'}. ${trends.statusLabel}. $infoLabel.',
       child: AppCard(
         padding: const EdgeInsets.all(_cardPadding),
         child: Row(
@@ -405,7 +409,7 @@ class _ExamenReadinessCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        '${trends.huidigeScore}%',
+                        scoreTekst,
                         style: TextStyle(
                           color: _scoreColor,
                           fontSize: 32,
@@ -418,7 +422,7 @@ class _ExamenReadinessCard extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 2),
                           child: Text(
-                            _readinessLabel,
+                            trends.statusLabel,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
@@ -432,15 +436,13 @@ class _ExamenReadinessCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  trends.verschil == 0
-                      ? const _NeutralBadge(label: 'Geen vorige meting')
-                      : _DeltaChip(verschil: trends.verschil),
+                  _NeutralBadge(label: infoLabel),
                 ],
               ),
             ),
             const SizedBox(width: 12),
             _CircularProgressWidget(
-              value: trends.huidigeScore / 100,
+              value: toonScore ? trends.huidigeScore / 100 : 0,
               color: _scoreColor,
               size: 64,
               showLabel: false,
@@ -453,25 +455,28 @@ class _ExamenReadinessCard extends StatelessWidget {
 }
 
 // ── CBR Radar chart card ──────────────────────────────────────────────────────
+//
+// Categorieën + percentages komen uit canonical `trends.radarCategorieen`
+// (RPC → 6 canonieke categorieën). Zelfde lijst voedt radar EN de rijen —
+// één bron, geen tweede berekening.
 
 class _CbrRadarCard extends StatelessWidget {
-  final List<_CompetentieScore> competentieScores;
-  final List<double> radarWaarden;
+  final List<CategorieScore> categorieen;
 
-  const _CbrRadarCard({
-    required this.competentieScores,
-    required this.radarWaarden,
-  });
+  const _CbrRadarCard({required this.categorieen});
 
   @override
   Widget build(BuildContext context) {
-    final labels = cbrCompetenties.map(_radarLabelVoor).toList();
-    final effectiefWaarden = radarWaarden.length == 6
-        ? radarWaarden
-        : competentieScores.map((s) => s.percentage).toList();
-    final samenvatting = competentieScores
-        .map((score) =>
-            '${score.competentie.naam} ${(score.percentage * 100).round()} procent')
+    final effectief = categorieen.isEmpty
+        ? const <CategorieScore>[]
+        : categorieen;
+    final labels = effectief.map((c) => _radarLabelVoor(c.naam)).toList();
+    final waarden = effectief
+        .map((c) => ((c.huidigOpVijf ?? 0) / 5.0).clamp(0.0, 1.0))
+        .toList();
+    final samenvatting = effectief
+        .map((c) =>
+            '${c.naam} ${(((c.huidigOpVijf ?? 0) / 5.0) * 100).round()} procent')
         .join(', ');
 
     return Semantics(
@@ -489,7 +494,7 @@ class _CbrRadarCard extends StatelessWidget {
                     dimension: chartSize,
                     child: CustomPaint(
                       painter: _RadarChartPainter(
-                        waarden: effectiefWaarden,
+                        waarden: waarden,
                         labels: labels,
                       ),
                     ),
@@ -499,12 +504,12 @@ class _CbrRadarCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Column(
-              children: competentieScores.asMap().entries.map((entry) {
+              children: effectief.asMap().entries.map((entry) {
                 return Padding(
                   padding: EdgeInsets.only(
                     top: entry.key == 0 ? 0 : 10,
                   ),
-                  child: _CompetentieProgressRow(score: entry.value),
+                  child: _CompetentieProgressRow(categorie: entry.value),
                 );
               }).toList(),
             ),
@@ -515,33 +520,40 @@ class _CbrRadarCard extends StatelessWidget {
   }
 }
 
-String _radarLabelVoor(CbrCompetentie competentie) {
-  return switch (competentie.naam) {
+/// Verkorte radarlabels (visueel behoud). Uitsluitend UI-labeling; wijzigt
+/// geen data of berekening.
+String _radarLabelVoor(String canonicalNaam) {
+  return switch (canonicalNaam) {
     'Voertuigbeheersing' => 'Voertuig',
-    'Kijkgedrag' => 'Kijkgedrag',
-    'Verkeersinzicht' => 'Inzicht',
-    'Bijzondere verrichtingen' => 'Verrichtingen',
-    'Zelfstandig rijden' => 'Zelfstandig',
-    'Examenvoorbereiding' => 'Examen',
-    _ => competentie.naam,
+    'Observatie' => 'Observatie',
+    'Manoeuvres' => 'Manoeuvres',
+    'Verkeer' => 'Verkeer',
+    'Wegpositie' => 'Wegpositie',
+    'Gedrag' => 'Gedrag',
+    _ => canonicalNaam,
   };
 }
 
 class _CompetentieProgressRow extends StatelessWidget {
-  final _CompetentieScore score;
-  const _CompetentieProgressRow({required this.score});
+  final CategorieScore categorie;
+  const _CompetentieProgressRow({required this.categorie});
+
+  double get _pct =>
+      ((categorie.huidigOpVijf ?? 0) / 5.0).clamp(0.0, 1.0);
 
   Color get _kleur {
-    if (score.percentage >= 0.8) return _groen;
-    if (score.percentage >= 0.5) return _oranje;
+    if (!categorie.heeftData) return AppColors.textHint;
+    if (_pct >= 0.8) return _groen;
+    if (_pct >= 0.5) return _oranje;
     return _rood;
   }
 
   @override
   Widget build(BuildContext context) {
-    final pct = (score.percentage * 100).round();
+    final pct = (_pct * 100).round();
+    final labelPct = categorie.heeftData ? '$pct%' : '—';
     return Semantics(
-      label: '${score.competentie.naam}: $pct procent.',
+      label: '${categorie.naam}: ${categorie.heeftData ? '$pct procent' : 'nog geen data'}.',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -560,7 +572,7 @@ class _CompetentieProgressRow extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  score.competentie.naam,
+                  categorie.naam,
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -573,7 +585,7 @@ class _CompetentieProgressRow extends StatelessWidget {
               SizedBox(
                 width: 44,
                 child: Text(
-                  '$pct%',
+                  labelPct,
                   textAlign: TextAlign.right,
                   style: TextStyle(
                     fontSize: 13,
@@ -590,7 +602,7 @@ class _CompetentieProgressRow extends StatelessWidget {
             borderRadius: BorderRadius.circular(999),
             child: LinearProgressIndicator(
               minHeight: 5,
-              value: score.percentage.clamp(0.0, 1.0),
+              value: _pct,
               backgroundColor: AppColors.border,
               valueColor: AlwaysStoppedAnimation<Color>(_kleur),
             ),
@@ -711,7 +723,7 @@ class _RadarChartPainter extends CustomPainter {
             TextSpan(
               text: '$pct%',
               style: TextStyle(
-                color: pct >= 100
+                color: pct >= 80
                     ? _groen
                     : pct >= 50
                         ? _oranje
@@ -742,8 +754,6 @@ class _RadarChartPainter extends CustomPainter {
   bool shouldRepaint(covariant _RadarChartPainter old) =>
       old.waarden != waarden;
 }
-
-// ── Competentie legenda item ──────────────────────────────────────────────────
 
 // ── Sterk / aandacht rij ──────────────────────────────────────────────────────
 
@@ -973,26 +983,54 @@ class _InzichtRij extends StatelessWidget {
   }
 }
 
-// ── Score lijn chart card ─────────────────────────────────────────────────────
+// ── Examenadviestrend card ───────────────────────────────────────────────────
+//
+// Canonical sparkline uit `bouwOntwikkelingSparkline(advies)` — zelfde
+// helper die de Home-Ontwikkelingkaart al gebruikt. Geen tweede historie-
+// berekening in Flutter.
 
 class _ScoreChartCard extends StatelessWidget {
   final VoortgangTrendsData trends;
   const _ScoreChartCard({required this.trends});
 
   Color get _trendColor {
-    if (trends.verschil > 0) return _groen;
-    if (trends.verschil < 0) return _rood;
-    return _blauw;
+    final trend = trends.sparkline?.trend;
+    return switch (trend) {
+      VaardigheidTrend.stijgt => _groen,
+      VaardigheidTrend.daalt => _rood,
+      VaardigheidTrend.stabiel => _blauw,
+      _ => AppColors.textSecondary,
+    };
   }
 
   IconData get _trendIcon {
-    if (trends.verschil > 0) return Icons.trending_up_rounded;
-    if (trends.verschil < 0) return Icons.trending_down_rounded;
-    return Icons.trending_flat_rounded;
+    final trend = trends.sparkline?.trend;
+    return switch (trend) {
+      VaardigheidTrend.stijgt => Icons.trending_up_rounded,
+      VaardigheidTrend.daalt => Icons.trending_down_rounded,
+      VaardigheidTrend.stabiel => Icons.trending_flat_rounded,
+      _ => Icons.trending_flat_rounded,
+    };
+  }
+
+  String get _trendLabel {
+    final trend = trends.sparkline?.trend;
+    return switch (trend) {
+      VaardigheidTrend.stijgt => 'Stijgend',
+      VaardigheidTrend.daalt => 'Meer oefenen nodig',
+      VaardigheidTrend.stabiel => 'Stabiel',
+      _ => 'Onbekend',
+    };
   }
 
   @override
   Widget build(BuildContext context) {
+    final sparkline = trends.sparkline;
+    final categorieNaam = sparkline?.categorie ?? '—';
+    final huidigPunt = sparkline?.punten.isNotEmpty == true
+        ? sparkline!.punten.last
+        : null;
+
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1016,7 +1054,7 @@ class _ScoreChartCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       trends.scoreHistorie.length >= 2
-                          ? 'Vorige, huidig en verschil'
+                          ? 'Categorie: $categorieNaam'
                           : 'Nog niet genoeg meetpunten voor een lijn',
                       style: const TextStyle(
                         fontSize: 12,
@@ -1028,7 +1066,7 @@ class _ScoreChartCard extends StatelessWidget {
                 ),
               ),
               _StatusChip(
-                label: trends.trendLabel,
+                label: _trendLabel,
                 color: _trendColor,
               ),
             ],
@@ -1068,23 +1106,24 @@ class _ScoreChartCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _MiniStat(
-                  label: 'Vorige',
-                  value: '${trends.vorigeScore}%',
+                  label: 'Categorie',
+                  value: categorieNaam,
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _MiniStat(
                   label: 'Huidig',
-                  value: '${trends.huidigeScore}%',
+                  value: huidigPunt == null
+                      ? '—'
+                      : '${huidigPunt.toStringAsFixed(1)}/5',
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _MiniStat(
-                  label: 'Verschil',
-                  value:
-                      '${trends.verschil >= 0 ? '+' : ''}${trends.verschil}%',
+                  label: 'Trend',
+                  value: _trendLabel,
                   valueColor: _trendColor,
                 ),
               ),
@@ -1146,45 +1185,6 @@ class _NeutralBadge extends StatelessWidget {
           fontWeight: FontWeight.w700,
           color: AppColors.textSecondary,
         ),
-      ),
-    );
-  }
-}
-
-class _DeltaChip extends StatelessWidget {
-  final int verschil;
-  const _DeltaChip({required this.verschil});
-
-  @override
-  Widget build(BuildContext context) {
-    final isPositief = verschil > 0;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: const Color(0xFFE2E2E7)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            isPositief
-                ? Icons.arrow_upward_rounded
-                : Icons.arrow_downward_rounded,
-            size: 10,
-            color: isPositief ? _groen : _rood,
-          ),
-          const SizedBox(width: 2),
-          Text(
-            '${isPositief ? '+' : ''}$verschil%',
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w800,
-              color: isPositief ? _groen : _rood,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -1257,6 +1257,8 @@ class _MiniStat extends StatelessWidget {
               style: const TextStyle(fontSize: 10, color: AppColors.textHint)),
           const SizedBox(height: 4),
           Text(value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w900,
@@ -1437,32 +1439,4 @@ class _LineChartPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _LineChartPainter old) => old.points != points;
-}
-
-// ── CompetentieScore helper ───────────────────────────────────────────────────
-
-class _CompetentieScore {
-  final CbrCompetentie competentie;
-  final double percentage;
-
-  const _CompetentieScore({
-    required this.competentie,
-    required this.percentage,
-  });
-
-  factory _CompetentieScore.fromVaardigheden({
-    required CbrCompetentie competentie,
-    required Map<String, dynamic> vaardigheden,
-  }) {
-    final scores = competentie.vaardigheidKeys
-        .map((key) => (vaardigheden[key] as num? ?? 0).toDouble())
-        .where((score) => score > 0)
-        .toList();
-    final gemiddeld =
-        scores.isEmpty ? 0.0 : scores.reduce((a, b) => a + b) / scores.length;
-    return _CompetentieScore(
-      competentie: competentie,
-      percentage: (gemiddeld / 5.0).clamp(0.0, 1.0),
-    );
-  }
 }
