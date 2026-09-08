@@ -11,6 +11,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import 'auth_design.dart';
+import 'social_login_widgets.dart';
 
 /// Apple-login alleen op iOS. Op Android en web nooit tonen of aanroepen.
 @visibleForTesting
@@ -148,42 +149,28 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final response = await StudentService.meldAanMetFacebook();
-      if (response == null) {
-        // Gebruiker annuleerde de Facebook-login -- normaal gedrag, geen
-        // foutmelding tonen.
-        return;
-      }
-      if (!mounted) return;
-      final profiel = await StudentService.getMijnProfiel();
-      if (mounted) context.go(profiel != null ? '/home' : '/koppelcode');
-    } on AuthException catch (e, st) {
-      // TIJDELIJKE DIAGNOSTIEK (2026-09-07): statusCode/code erbij, zodat
-      // zichtbaar is of/hoe ver signInWithIdToken() daadwerkelijk werd
-      // bereikt en wat Supabase exact terugstuurde.
+      // MIGRATIE (2026-09-08): StudentService.meldAanMetFacebook() gebruikt
+      // sinds deze wijziging signInWithOAuth() -- start alleen de externe
+      // browser-/CustomTab-flow en retourneert een bool (of het starten
+      // gelukt is), GEEN AuthResponse/sessie meer. Geen eigen navigatie
+      // hier meer nodig (anders dan voorheen): zodra de sessie asynchroon
+      // binnenkomt via AuthChangeEvent.signedIn, herevalueert GoRouter's
+      // eigen `redirect` in app.dart (gevoed door de bestaande
+      // refreshListenable/_AuthNotifier) automatisch en stuurt de gebruiker
+      // via /splash naar /home of /koppelcode -- exact hetzelfde mechanisme
+      // dat al voor elke andere inlogmethode geldt. Loading-state mag dus
+      // niet blijven hangen tot die (mogelijk nooit komende, bv. bij
+      // annuleren in de browser) sessie binnenkomt.
+      final gestart = await StudentService.meldAanMetFacebook();
+      debugPrint('[login][facebook] signInWithOAuth gestart: $gestart');
+    } on AuthException catch (e) {
       debugPrint(
-        '[login][facebook][DIAG] Supabase AuthException bereikt -- '
-        'message=${e.message} statusCode=${e.statusCode} code=${e.code}\n$st',
+        '[login][facebook] AuthException -- statusCode=${e.statusCode} code=${e.code}',
       );
       if (mounted) setState(() => _fout = _vriendelijkeFout(e.message));
-    } on StateError catch (e, st) {
-      // Native/SDK-level probleem (missende Info.plist FacebookAppID,
-      // SDK-init faalt, geen accessToken enz). Volledige boodschap logged
-      // voor debug; UI toont de generieke tekst. Dit is de tak die
-      // "Facebook-login is momenteel niet beschikbaar" toont -- de exacte
-      // reden staat altijd in e.message hieronder (bevat status/tokenType/
-      // isIOS, zie meldAanMetFacebook()).
-      debugPrint('[login][facebook][DIAG] StateError bereikt: ${e.message}\n$st');
-      if (mounted) {
-        setState(
-            () => _fout = 'Facebook-login is momenteel niet beschikbaar.');
-      }
-    } catch (e, st) {
-      // Meest waarschijnlijk PlatformException uit de Facebook SDK: hier
-      // staat de exacte native reden in (bv. missende App ID/Client Token,
-      // fout in URL-scheme, gebruiker niet toegevoegd als tester). Volledige
-      // details naar debug console.
-      debugPrint('[login][facebook] ${e.runtimeType}: $e\n$st');
+    } catch (e) {
+      // Bv. geen browser/CustomTab beschikbaar om de OAuth-URL te openen.
+      debugPrint('[login][facebook] ${e.runtimeType}: kon login niet starten');
       if (mounted) {
         setState(() =>
             _fout = 'Facebook-login mislukt. Controleer je verbinding.');
@@ -418,7 +405,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const _OfScheiding(),
+                const OfScheiding(),
                 const SizedBox(height: 16),
                 Text(
                   'Of ga verder met',
@@ -430,7 +417,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                _SocialLoginRij(
+                SocialLoginRij(
                   googleAan: _laden ? null : _meldAanMetGoogle,
                   facebookAan: _laden ? null : _meldAanMetFacebook,
                 ),
@@ -540,119 +527,7 @@ class _WachtwoordVeld extends StatelessWidget {
   }
 }
 
-class _SocialLoginRij extends StatelessWidget {
-  final VoidCallback? googleAan;
-  final VoidCallback? facebookAan;
-
-  const _SocialLoginRij({
-    required this.googleAan,
-    required this.facebookAan,
-  });
-
-  Widget _googleKnop() {
-    return _SocialLoginKnop(
-      label: 'Inloggen met Google',
-      onPressed: googleAan,
-      child: Image.asset(
-        'assets/icons/google_logo.png',
-        height: 22,
-        width: 22,
-      ),
-    );
-  }
-
-  Widget _facebookKnop() {
-    return _SocialLoginKnop(
-      label: 'Inloggen met Facebook',
-      onPressed: facebookAan,
-      // Officieel, herkenbaar Facebook-logo (ingebouwd Material-icoon, geen
-      // los asset nodig) in het officiële Facebook-blauw.
-      child: const Icon(
-        Icons.facebook,
-        size: 26,
-        color: Color(0xFF1877F2),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Google en Facebook altijd naast elkaar, op zowel Android als iOS --
-    // zelfde rij-opbouw/styling als voorheen (Expanded + 12px tussenruimte).
-    return Row(
-      children: [
-        Expanded(child: _googleKnop()),
-        const SizedBox(width: 12),
-        Expanded(child: _facebookKnop()),
-      ],
-    );
-  }
-}
-
-class _OfScheiding extends StatelessWidget {
-  const _OfScheiding();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Divider(color: AppColors.textHint.withValues(alpha: 0.3)),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(
-            'of',
-            style: GoogleFonts.inter(
-              fontSize: 13,
-              color: AppColors.textSecondary,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Divider(color: AppColors.textHint.withValues(alpha: 0.3)),
-        ),
-      ],
-    );
-  }
-}
-
-class _SocialLoginKnop extends StatelessWidget {
-  final String label;
-  final VoidCallback? onPressed;
-  final Widget child;
-
-  const _SocialLoginKnop({
-    required this.label,
-    required this.onPressed,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final hoogte = MediaQuery.sizeOf(context).height < 700 ? 48.0 : 52.0;
-    return SizedBox(
-      height: hoogte,
-      child: Material(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: BorderRadius.circular(14),
-          child: Semantics(
-            button: true,
-            label: label,
-            child: Ink(
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: Center(child: child),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+// SocialLoginRij/OfScheiding/SocialLoginKnop verplaatst naar
+// social_login_widgets.dart (2026-09-08) -- gedeeld met registreer_screen.dart
+// zodat login en registratie exact dezelfde Google/Facebook-knopstijl
+// gebruiken.

@@ -7,6 +7,7 @@ import '../../core/config/app_config.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import 'auth_design.dart';
+import 'social_login_widgets.dart';
 
 class RegistreerScreen extends StatefulWidget {
   const RegistreerScreen({super.key});
@@ -81,6 +82,73 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
     } catch (e) {
       debugPrint('[registratie] onbekende fout: $e');
       _toonFout('Registratie mislukt: $e');
+    } finally {
+      if (mounted) setState(() => _laden = false);
+    }
+  }
+
+  // ── SOCIAL AUTH (2026-09-08) ─────────────────────────────────────────────
+  // Zelfde knop/functie voor bestaande én nieuwe gebruikers -- er bestaat
+  // BEWUST geen aparte "Registreren met Google/Facebook"-variant. De
+  // OAuth-provider/Supabase bepaalt zelf of het om een login of een nieuwe
+  // account-aanmaak gaat (signInWithIdToken/signInWithOAuth maken
+  // automatisch een nieuwe auth.users-rij aan als er nog geen account met
+  // dat e-mailadres bestaat). Deze handlers zijn bewust identiek aan hun
+  // tegenhangers in login_screen.dart. Geen eigen profielactivatie hier --
+  // de Leerling-app heeft die stap niet (zie student_service.dart); een
+  // nieuw social-account wordt normaal, zoals elk nieuw account, pas via
+  // de bestaande koppelcode-flow aan een leerlingprofiel gekoppeld.
+  Future<void> _meldAanMetGoogle() async {
+    if (_laden) return;
+    FocusScope.of(context).unfocus();
+    setState(() => _laden = true);
+
+    try {
+      final response = await StudentService.meldAanMetGoogle();
+      if (response == null) {
+        // Gebruiker annuleerde de Google-accountkiezer -- normaal gedrag,
+        // geen foutmelding tonen.
+        return;
+      }
+      if (!mounted) return;
+      final profiel = await StudentService.getMijnProfiel();
+      if (mounted) context.go(profiel != null ? '/home' : '/koppelcode');
+    } on AuthException catch (e) {
+      _toonFout(_vriendelijkeFout(e.message));
+    } on StateError catch (e) {
+      debugPrint('[registratie][google] configuratiefout: ${e.message}');
+      _toonFout('Google-login is momenteel niet beschikbaar.');
+    } catch (e) {
+      debugPrint('[registratie][google] onbekende fout: $e');
+      _toonFout('Google-login mislukt. Controleer je verbinding.');
+    } finally {
+      if (mounted) setState(() => _laden = false);
+    }
+  }
+
+  Future<void> _meldAanMetFacebook() async {
+    if (_laden) return;
+    FocusScope.of(context).unfocus();
+    setState(() => _laden = true);
+
+    try {
+      // signInWithOAuth() start alleen de externe browser-/CustomTab-flow en
+      // retourneert een bool (of het starten gelukt is), GEEN sessie. De
+      // sessie/navigatie komt asynchroon binnen via GoRouter's eigen
+      // redirect (gevoed door de refreshListenable/_AuthNotifier in
+      // app.dart) -- zelfde mechanisme als voor elke andere inlogmethode,
+      // geen eigen navigatie hier nodig.
+      final gestart = await StudentService.meldAanMetFacebook();
+      debugPrint('[registratie][facebook] signInWithOAuth gestart: $gestart');
+    } on AuthException catch (e) {
+      debugPrint(
+        '[registratie][facebook] AuthException -- statusCode=${e.statusCode} code=${e.code}',
+      );
+      _toonFout(_vriendelijkeFout(e.message));
+    } catch (e) {
+      debugPrint(
+          '[registratie][facebook] ${e.runtimeType}: kon login niet starten');
+      _toonFout('Facebook-login mislukt. Controleer je verbinding.');
     } finally {
       if (mounted) setState(() => _laden = false);
     }
@@ -244,6 +312,23 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
                             ),
                           ),
                   ),
+                ),
+                const SizedBox(height: 20),
+                const OfScheiding(),
+                const SizedBox(height: 16),
+                Text(
+                  'Of ga verder met',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SocialLoginRij(
+                  googleAan: _laden ? null : _meldAanMetGoogle,
+                  facebookAan: _laden ? null : _meldAanMetFacebook,
                 ),
                 const SizedBox(height: 16),
                 Row(
