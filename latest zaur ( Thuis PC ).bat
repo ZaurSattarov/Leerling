@@ -6,6 +6,13 @@ set "ADB=%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe"
 set "EMULATOR=%LOCALAPPDATA%\Android\Sdk\emulator\emulator.exe"
 set "APP_ID=nl.rijschool.leerling_app"
 set "MAIN_ACTIVITY=nl.rijschool.leerling_app.MainActivity"
+rem Google-login (google_sign_in) heeft op Android een serverClientId nodig
+rem zodat het idToken de audience heeft die Supabase's Google-provider
+rem verwacht -- zonder deze dart-define blijft AppConfig.googleServerClientId
+rem leeg en faalt Google-login met "Google-login is momenteel niet
+rem beschikbaar." Client ID is publiek (geen secret), Client Secret staat
+rem hier bewust NIET.
+set "GOOGLE_DART_DEFINE=--dart-define=GOOGLE_SERVER_CLIENT_ID=864861187721-i87tu2n5l2aubmpi6oqs57t5bf1uqnkq.apps.googleusercontent.com"
 
 if not exist "%PROJECT_DIR%pubspec.yaml" (
     echo PROJECTMAP NIET GEVONDEN: %PROJECT_DIR%
@@ -52,7 +59,7 @@ echo [1/4] Emulator ruimte vrijmaken...
 call :CleanEmulator
 
 echo [2/4] Bouwen...
-call "%FLUTTER%" build apk --debug --target-platform android-x64
+call "%FLUTTER%" build apk --debug --target-platform android-x64 %GOOGLE_DART_DEFINE%
 if errorlevel 1 (
     echo BUILD MISLUKT
     pause
