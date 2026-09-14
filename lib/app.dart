@@ -251,14 +251,22 @@ final _routerProvider = Provider<GoRouter>((ref) {
       // wijst naar hetzelfde directe-chatscherm als '/help'.
       GoRoute(
         path: '/help',
-        builder: (_, __) => const StudentProfileGate(
-          child: SupportChatScreen(),
+        // `?nieuw=1` (2026-09-10): door de "Nieuw ticket"-actie op
+        // "Eerdere gesprekken" -- forceert direct de lege composer i.p.v.
+        // een eventueel al actief gesprek te tonen. 1-op-1 poort van de
+        // Instructeur-app (app.dart, `/profiel/support?nieuw=1`).
+        builder: (_, state) => StudentProfileGate(
+          child: SupportChatScreen(
+            forceNew: state.uri.queryParameters['nieuw'] == '1',
+          ),
         ),
       ),
       GoRoute(
         path: '/help/support',
-        builder: (_, __) => const StudentProfileGate(
-          child: SupportChatScreen(),
+        builder: (_, state) => StudentProfileGate(
+          child: SupportChatScreen(
+            forceNew: state.uri.queryParameters['nieuw'] == '1',
+          ),
         ),
       ),
       GoRoute(

@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/contact_uri.dart';
 import '../../models/instructeur.dart';
+import '../../models/leerling_voertuig.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'rijschool_provider.dart';
@@ -28,6 +29,7 @@ class MijnRijschoolScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final instructeurAsync = ref.watch(mijnInstructeurProvider);
+    final voertuigAsync = ref.watch(mijnVoertuigProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -39,7 +41,10 @@ class MijnRijschoolScreen extends ConsumerWidget {
           Expanded(
             child: RefreshIndicator(
               color: AppColors.primary,
-              onRefresh: () async => ref.invalidate(mijnInstructeurProvider),
+              onRefresh: () async {
+                ref.invalidate(mijnInstructeurProvider);
+                ref.invalidate(mijnVoertuigProvider);
+              },
               child: instructeurAsync.when(
                 loading: () => ListView(
                   padding: const EdgeInsets.all(20),
@@ -73,7 +78,11 @@ class MijnRijschoolScreen extends ConsumerWidget {
                       ],
                     );
                   }
-                  return _MijnRijschoolBody(instructeur: instructeur);
+                  return _MijnRijschoolBody(
+                    instructeur: instructeur,
+                    voertuig: voertuigAsync.valueOrNull,
+                    voertuigLaden: voertuigAsync.isLoading,
+                  );
                 },
               ),
             ),
@@ -86,7 +95,13 @@ class MijnRijschoolScreen extends ConsumerWidget {
 
 class _MijnRijschoolBody extends StatelessWidget {
   final Instructeur instructeur;
-  const _MijnRijschoolBody({required this.instructeur});
+  final LeerlingVoertuig? voertuig;
+  final bool voertuigLaden;
+  const _MijnRijschoolBody({
+    required this.instructeur,
+    this.voertuig,
+    this.voertuigLaden = false,
+  });
 
   static const _leeg = MijnRijschoolScreen._leeg;
 
@@ -156,6 +171,42 @@ class _MijnRijschoolBody extends StatelessWidget {
               ],
             ],
           ),
+        ),
+        const SizedBox(height: 22),
+        const SectionHeader(title: 'Voertuig'),
+        const SizedBox(height: 12),
+        AppCard(
+          child: voertuig != null
+              ? Column(
+                  children: [
+                    ProfileInfoRow(
+                      icon: Icons.directions_car_outlined,
+                      iconColor: AppColors.iconBlue,
+                      label: 'Kenteken',
+                      value: voertuig!.kenteken?.trim().isNotEmpty == true
+                          ? voertuig!.kenteken!.trim()
+                          : _leeg,
+                      isEmpty: voertuig!.kenteken?.trim().isNotEmpty != true,
+                    ),
+                    const Divider(height: 20),
+                    ProfileInfoRow(
+                      icon: Icons.badge_outlined,
+                      iconColor: AppColors.iconSlate,
+                      label: 'Merk / model',
+                      value: voertuig!.naam ?? _leeg,
+                      isEmpty: voertuig!.naam == null,
+                    ),
+                  ],
+                )
+              : ProfileInfoRow(
+                  icon: Icons.directions_car_outlined,
+                  iconColor: AppColors.iconSlate,
+                  label: 'Toegewezen voertuig',
+                  value: voertuigLaden
+                      ? 'Laden…'
+                      : 'Nog geen voertuig toegewezen',
+                  isEmpty: true,
+                ),
         ),
         if (_heeftInstructeurSectie) ...[
           const SizedBox(height: 22),

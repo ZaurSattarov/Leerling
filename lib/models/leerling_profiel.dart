@@ -84,6 +84,12 @@ class LeerlingProfiel {
   final String? transmissie;
   final String? startdatum;
 
+  // Canonical leerling → voertuig-voorkeur (leerlingen.preferred_vehicle_id
+  // → vehicles.id) — zelfde bron als Instrecteur's "standaard lesauto" bij
+  // Nieuwe les en Admin Web. Uitsluitend een voorstel/default; het
+  // daadwerkelijke lesvoertuig staat per les op `lessen.voertuig_id`.
+  final String? preferredVehicleId;
+
   const LeerlingProfiel({
     required this.id,
     required this.instructeurId,
@@ -123,6 +129,7 @@ class LeerlingProfiel {
     this.rijbewijsSoort,
     this.transmissie,
     this.startdatum,
+    this.preferredVehicleId,
   });
 
   String get volledigeNaam => '$voornaam $achternaam'.trim();
@@ -202,6 +209,7 @@ class LeerlingProfiel {
       rijbewijsSoort: json['rijbewijs_soort'] as String?,
       transmissie: json['transmissie'] as String?,
       startdatum: json['startdatum'] as String?,
+      preferredVehicleId: json['preferred_vehicle_id'] as String?,
     );
   }
 }

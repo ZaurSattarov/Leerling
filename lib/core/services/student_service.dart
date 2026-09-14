@@ -19,6 +19,7 @@ import '../../models/notificatie.dart';
 import '../../models/examen.dart';
 import '../../models/instructeur.dart';
 import '../../models/instructor_lesson_package.dart';
+import '../../models/leerling_voertuig.dart';
 import '../../features/examenadvies/examenadvies_data.dart';
 import 'push_service.dart';
 
@@ -428,6 +429,19 @@ class StudentService {
         .eq('id', instructeurId)
         .maybeSingle();
     return res != null ? Instructeur.fromJson(res) : null;
+  }
+
+  /// Canonical toegewezen voertuig van de leerling
+  /// (leerlingen.preferred_vehicle_id → vehicles.id) — view-only, zelfde
+  /// bron als Instrecteur/Admin. `null` wanneer geen voertuig toegewezen is;
+  /// RLS (niet deze methode) bepaalt of de rij zichtbaar is.
+  static Future<LeerlingVoertuig?> getMijnVoertuig(String voertuigId) async {
+    final res = await client
+        .from('vehicles')
+        .select('id, kenteken, merk, model')
+        .eq('id', voertuigId)
+        .maybeSingle();
+    return res != null ? LeerlingVoertuig.fromJson(res) : null;
   }
 
   /// Legacy-leesfallback voor het toegewezen lespakket: uitsluitend gebruikt

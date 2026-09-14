@@ -28,10 +28,14 @@ class SupportInboxScreen extends ConsumerWidget {
             title: 'Eerdere gesprekken',
             fallbackRoute: '/help',
             actions: [
+              // Nieuw-ticket-actie (2026-09-10): hergebruikt de bestaande
+              // forceNew-flow (`?nieuw=1`, zie app.dart) i.p.v. gewoon naar
+              // de chat te navigeren -- die kon een al actief gesprek tonen
+              // in plaats van een nieuw ticket te starten.
               IconButton(
-                onPressed: () => context.push('/help'),
-                tooltip: 'Naar de chat',
-                icon: const Icon(Icons.chat_bubble_outline_rounded,
+                onPressed: () => context.push('/help?nieuw=1'),
+                tooltip: 'Nieuw ticket',
+                icon: const Icon(Icons.add_comment_outlined,
                     color: Colors.white),
               ),
             ],

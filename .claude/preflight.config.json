@@ -1,0 +1,32 @@
+{
+  "_comment": "Projectspecifieke configuratie voor de centrale Klantio preflight-enforcement gate (hooks in ~/.claude/settings.json + ~/.claude/hooks/preflight/*.ps1). Geen secrets in dit bestand.",
+  "project": "Leerling",
+
+  "graphMcpServer": "graphify-leerling",
+  "requireGraphify": true,
+  "requireObsidian": true,
+  "requireSkill": true,
+  "requireImpact": true,
+
+  "requiredSkillPatterns": [],
+
+  "exemptPathPatterns": [
+    "^graphify-out/",
+    "\\.md$",
+    "^docs/",
+    "^\\.claude/",
+    "^\\.agents/",
+    "^\\.git/",
+    "^BACKUP/",
+    "^build/",
+    "package-lock\\.json$",
+    "pubspec\\.lock$",
+    "\\.bak-"
+  ],
+
+  "guardedPathPatterns": [
+    "^lib/",
+    "^supabase/",
+    "^test/"
+  ]
+}

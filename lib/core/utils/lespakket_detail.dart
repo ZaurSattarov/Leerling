@@ -204,20 +204,19 @@ class LespakketDetail {
         false;
 
     // ── Lessen-modus: totaal/gevolgd/resterend ──────────────────────────
-    // Alleen echte pakketlessen tellen mee (matcht de server-trigger
-    // fn_lesson_balance_sync, die lessen_gevolgd ook uitsluitend voor
-    // les_type='pakketles' ophoogt) -- voorkomt dat losse lessen of
-    // examenritten hier per ongeluk meetellen. "Resterend" telt hier bewust
-    // niet ook nog geplande lessen af (zelfde, eenvoudigere definitie als
-    // Leerling.pakketLesAantal-gebaseerde weergave in de Instructeur-app).
-    final afgerondUitLessen = lessen
-        .where((les) =>
-            les.status == LesStatus.afgerond && les.lesType == 'Pakketles')
-        .length;
-    final gebruiktFallback =
-        lessen.isEmpty && afgerondUitLessen == 0 && profiel.lessenGevolgd > 0;
+    // Canonical bugfix (2026-09-10): 'gevolgd' komt uitsluitend nog uit de
+    // server-side bijgehouden leerlingen.lessen_gevolgd-teller (dezelfde
+    // bron als Instrecteur/Admin Web) i.p.v. een client-side recount van
+    // `lessen` (afkomstig van `student_lessen_view`, die een afgeronde les
+    // alleen toont wanneer zichtbaar_voor_leerling=true -- terecht voor
+    // content/feedback, maar geen geldig criterium voor pakketcredit-
+    // verbruik; bewezen root cause van een discrepantie tussen apps). Geen
+    // tweede recount meer: lessen_gevolgd is hier onvoorwaardelijk de bron.
+    // "Resterend" telt hier bewust niet ook nog geplande lessen af (zelfde,
+    // eenvoudigere definitie als Leerling.pakketLesAantal-gebaseerde
+    // weergave in de Instructeur-app).
     final gevolgdeLessen =
-        gebruiktFallback ? profiel.lessenGevolgd : afgerondUitLessen;
+        profiel.lessenGevolgd < 0 ? 0 : profiel.lessenGevolgd;
     final totaalLessen =
         profiel.lessenTotaal < 0 ? 0 : profiel.lessenTotaal;
     final resterendeLessen = (totaalLessen - gevolgdeLessen).clamp(0, 9999);

@@ -42,11 +42,14 @@ void main() {
       expect(app, isNot(contains('HelpFaqScreen')));
       expect(app, isNot(contains('SupportNewThreadScreen')));
       expect(app, contains("path: '/help',"));
-      expect(app, contains('SupportChatScreen(),'));
+      expect(app, contains('SupportChatScreen('));
       expect(app, contains("threadId: state.pathParameters['id']!"));
       // Bestaande notificatie-fallback ('/help/support', zonder id) blijft
       // geregistreerd en wijst naar hetzelfde directe-chatscherm.
       expect(app, contains("path: '/help/support',"));
+      // Nieuw-ticket-actie (2026-09-10, 1-op-1 poort van de
+      // Instructeur-app): `?nieuw=1` forceert direct de lege composer.
+      expect(app, contains("forceNew: state.uri.queryParameters['nieuw'] == '1'"));
     });
 
     test(

@@ -24,14 +24,20 @@ import 'widgets/support_ui.dart';
 class SupportChatScreen extends ConsumerStatefulWidget {
   final String? threadId;
 
-  const SupportChatScreen({super.key, this.threadId});
+  /// Forceert direct de lege composer-staat, ongeacht een eventueel actief
+  /// gesprek -- gebruikt door de "Nieuw ticket"-actie op "Eerdere
+  /// gesprekken" (2026-09-10, 1-op-1 poort van de Instructeur-app). Zie
+  /// app.dart: `/help?nieuw=1`.
+  final bool forceNew;
+
+  const SupportChatScreen({super.key, this.threadId, this.forceNew = false});
 
   @override
   ConsumerState<SupportChatScreen> createState() => _SupportChatScreenState();
 }
 
 class _SupportChatScreenState extends ConsumerState<SupportChatScreen> {
-  bool _forceNewChat = false;
+  late bool _forceNewChat = widget.forceNew;
 
   @override
   Widget build(BuildContext context) {
@@ -278,6 +284,14 @@ class _EmptyComposerViewState extends ConsumerState<_EmptyComposerView> {
           ),
           SafeArea(
             top: false,
+            // Bugfix 2026-09-10 (1-op-1 poort van de Instructeur-app):
+            // composer stond te dicht tegen de systeem-navigatiebalk aan op
+            // toestellen met een klein/afwezig OS-bottom-inset. `minimum`
+            // garandeert een vloerwaarde bovenop het bestaande OS-inset --
+            // additief op de eigen 12px-padding van `_Composer` hieronder,
+            // geen vervanging van de SafeArea-aanpak en geen vast bedrag
+            // wanneer het echte OS-inset al groter is.
+            minimum: const EdgeInsets.only(bottom: 12),
             child: _Composer(
               controller: _bericht,
               bezig: _bezig,
@@ -374,7 +388,18 @@ class _ThreadViewState extends ConsumerState<_ThreadView> {
 
   void _goBack(BuildContext context) {
     if (widget.isExplicitRoute) {
-      context.go('/help');
+      // Normale stack-navigatie (2026-09-10 navigatiefix): een expliciete
+      // route (vanuit "Verdere gesprekken" of een deeplink) hoort gewoon te
+      // poppen naar het scherm waar de gebruiker vandaan kwam i.p.v. de
+      // hele stack te vervangen met `context.go` -- dat sprong altijd terug
+      // naar de hoofdchat, ook vanuit "Verdere gesprekken", en voelde aan
+      // als een navigatieloop. Alleen zonder eigen stack (bv. rechtstreekse
+      // notificatie-deeplink) valt terug op de hoofdchat.
+      if (context.canPop()) {
+        context.pop();
+      } else {
+        context.go('/help');
+      }
     } else {
       Navigator.of(context).maybePop();
     }
@@ -521,6 +546,8 @@ class _ThreadViewState extends ConsumerState<_ThreadView> {
           ),
           SafeArea(
             top: false,
+            // Zelfde vloerwaarde-fix als de lege-composer-staat hierboven.
+            minimum: const EdgeInsets.only(bottom: 12),
             child: threadAsync.maybeWhen(
               data: (thread) {
                 if (thread.status == SupportThreadStatus.closed) {
@@ -696,25 +723,30 @@ class _Composer extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              // Solide Klantio-primary achtergrond, wit icoon (2026-09-10) --
+              // 1-op-1 poort van dezelfde fix in de Instructeur-app
+              // (support_chat_screen.dart), i.p.v. de vorige pastel/
+              // transparante achtergrond.
               SizedBox(
                 width: 48,
                 height: 48,
-                child: IconButton(
+                child: FilledButton(
                   onPressed: bezig
                       ? null
                       : () => _showAttachmentSheet(
                             context,
                             (p) => onPickedChanged(p),
                           ),
-                  tooltip: 'Foto toevoegen',
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  icon: const Icon(Icons.camera_alt_outlined,
-                      color: AppColors.primary, size: 20),
+                  child: const Icon(Icons.camera_alt_rounded,
+                      color: Colors.white, size: 20),
                 ),
               ),
               const SizedBox(width: 8),

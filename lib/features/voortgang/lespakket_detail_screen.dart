@@ -184,9 +184,12 @@ class _LespakketDetailBody extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  data.gebruiktFallback
-                      ? 'Omdat er geen afgeronde lessen in de opgehaalde lessenlijst staan, gebruiken we tijdelijk de profielwaarde lessen_gevolgd.'
-                      : 'Alleen afgeronde lessen tellen als verbruikt. Geplande lessen tellen apart. Geannuleerd, verzet en geen toon tellen niet als verbruikt.',
+                  // Canonical bugfix (2026-09-10): 'afgerond' komt altijd uit
+                  // de servergegevens (lessen_gevolgd), nooit meer uit een
+                  // client-side telling -- geen fallback-uitleg meer nodig.
+                  'Afgerond komt uit de servergegevens van je instructeur. '
+                  'Alleen geplande pakketlessen tellen apart als "Gepland". '
+                  'Geannuleerd, verzet en geen toon tellen niet als verbruikt.',
                   style: const TextStyle(
                     fontSize: 13,
                     height: 1.45,
