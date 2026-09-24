@@ -94,7 +94,10 @@ class StudentService {
     Map<String, dynamic>? metadata,
   }) async {
     final trimmedEmail = email.trim();
-    debugPrint('[student.registreren] email=$trimmedEmail');
+    // AVG: geen plaintext e-mailadres in de log — alleen bevestigen dát er
+    // geregistreerd wordt (debugPrint is in release sowieso no-op via
+    // installReleaseLogGuard, maar defense-in-depth in debug).
+    debugPrint('[student.registreren] gestart');
 
     try {
       final response = await client.auth.signUp(

@@ -13,6 +13,12 @@ dependencies:
   # Backend
   supabase_flutter: ^2.3.0
 
+  # Secure storage (2026-09-24): versleutelde opslag van de Supabase-sessie
+  # (access/refresh-JWT) via Android Keystore en iOS Keychain, i.p.v. de
+  # standaard plaintext SharedPreferences. Zie
+  # lib/core/services/secure_supabase_local_storage.dart.
+  flutter_secure_storage: ^10.3.1
+
   # Google-login (native accountkiezer op Android, gebruikt samen met
   # Supabase's signInWithIdToken -- geen Firebase Auth). Vereist de bestaande
   # "Klantio Leerling Android"/"...Android Debug"-OAuth-clients in Google

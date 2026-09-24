@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Security-hardening (2026-09-24): expliciet weigeren dat de app-data
+  via cloud-backup (auto backup, Google Drive) of via device-transfer
+  (Backup & Restore bij fabrikanten-migratie) verlaat.
+
+  Zolang de Supabase-sessie nu via Keystore (flutter_secure_storage)
+  wordt bewaard, is dit vooral defense-in-depth voor eventuele
+  SharedPreferences-inhoud die géén geheim is maar ook geen backup nodig
+  heeft (device-id, onboarding-vlagjes, feature-flags). Voorkomt bovendien
+  dat een oude, plaintext-sessie uit een pre-hardening backup ooit terug
+  op een nieuw toestel gerestored wordt.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </device-transfer>
+</data-extraction-rules>

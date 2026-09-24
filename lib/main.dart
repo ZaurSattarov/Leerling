@@ -6,17 +6,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'core/debug/release_log_guard.dart';
 import 'core/services/push_service.dart';
+import 'core/services/secure_supabase_local_storage.dart';
 import 'core/services/student_service.dart';
 import 'app.dart';
 
 void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
+    // Security/AVG: onderdruk alle debug-logging (mogelijke PII) in release —
+    // moet vóór de eerste log-aanroep staan. Zie release_log_guard.dart.
+    installReleaseLogGuard();
 
     FlutterError.onError = (details) {
       FlutterError.presentError(details);
-      debugPrint('[FATAL] FlutterError: ${details.exceptionAsString()}');
+      // Geen exception-message loggen: kan PII bevatten (bv. server-response
+      // met e-mailadres). Alleen exception-type + stack-trace-locatie.
+      debugPrint('[FATAL] FlutterError: ${details.exception.runtimeType}');
       debugPrint('[FATAL] Stack: ${details.stack}');
     };
 
@@ -27,6 +34,13 @@ void main() {
     await Supabase.initialize(
       url: StudentService.supabaseUrl,
       anonKey: StudentService.supabaseAnonKey,
+      // Security (2026-09-24): sessie (access/refresh-JWT) versleuteld
+      // opslaan in Keystore/Keychain i.p.v. plaintext SharedPreferences.
+      // Zie secure_supabase_local_storage.dart. PKCE-flow + deep-link-
+      // detectie blijven op de supabase_flutter-defaults.
+      authOptions: FlutterAuthClientOptions(
+        localStorage: SecureSupabaseLocalStorage(),
+      ),
     );
 
     // Push notificaties (Fase 5) — alleen Firebase-init hier. Luisteraars,
@@ -52,7 +66,9 @@ void main() {
       unawaited(PushService.handleInitialMessageIfAny());
     });
   }, (error, stack) {
-    debugPrint('[FATAL] Uncaught error: $error');
+    // Geen `$error` loggen: kan PII bevatten (bv. e-mailadres in
+    // exception-message). Alleen runtime-type + stack (locatie, geen data).
+    debugPrint('[FATAL] Uncaught error: ${error.runtimeType}');
     debugPrint('[FATAL] Stack: $stack');
   });
 }
