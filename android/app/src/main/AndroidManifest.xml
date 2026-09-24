@@ -48,6 +48,27 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="leerlingplanner" android:host="auth"/>
             </intent-filter>
+            <!-- Android App Links: geverifieerde HTTPS deep links gebonden aan
+                 klantio.com — voorkomt dat andere apps auth/reset-links kapen.
+                 Vereist: https://klantio.com/.well-known/assetlinks.json met de
+                 release-keystore SHA-256 fingerprint. android:autoVerify="true"
+                 activeert de verificatie bij installatie. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https"
+                      android:host="klantio.com"
+                      android:pathPrefix="/auth"/>
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https"
+                      android:host="klantio.com"
+                      android:pathPrefix="/auth/reset-password"/>
+            </intent-filter>
             <!-- Mollie-factuurbetaling: return-pagina (mollie-factuur-return)
                  opent "Open in Klantio" via leerlingplanner://factuur?id=... -->
             <intent-filter>
