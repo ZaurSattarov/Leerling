@@ -106,7 +106,7 @@ dependencies:
   # geen tweede koppelmechanisme, geen tweede QR-formaat en geen extra
   # backend/migration. `mobile_scanner` is de actief onderhouden
   # opvolger van de gedeprecateerde `qr_code_scanner`.
-  mobile_scanner: ^4.0.1
+  mobile_scanner: ^6.0.0
 
 dev_dependencies:
   flutter_test:

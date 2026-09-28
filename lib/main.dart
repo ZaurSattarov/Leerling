@@ -31,15 +31,24 @@ void main() {
 
     await initializeDateFormatting('nl_NL', null);
 
+    // Keychain kan op bepaalde simulators een PlatformException gooien —
+    // val dan terug op de default SharedPreferencesLocalStorage zodat
+    // de app toch opstart.
+    LocalStorage? localStorage;
+    try {
+      final store = FlutterSecureKeyValueStore();
+      await store.containsKey(kSupabaseSecureSessionKey); // smoke-test
+      localStorage = SecureSupabaseLocalStorage(store: store);
+    } catch (_) {
+      debugPrint('[main] Keychain niet beschikbaar, gebruik plaintext opslag');
+      localStorage = null; // supabase_flutter default
+    }
+
     await Supabase.initialize(
       url: StudentService.supabaseUrl,
       anonKey: StudentService.supabaseAnonKey,
-      // Security (2026-09-24): sessie (access/refresh-JWT) versleuteld
-      // opslaan in Keystore/Keychain i.p.v. plaintext SharedPreferences.
-      // Zie secure_supabase_local_storage.dart. PKCE-flow + deep-link-
-      // detectie blijven op de supabase_flutter-defaults.
       authOptions: FlutterAuthClientOptions(
-        localStorage: SecureSupabaseLocalStorage(),
+        localStorage: localStorage,
       ),
     );
 
