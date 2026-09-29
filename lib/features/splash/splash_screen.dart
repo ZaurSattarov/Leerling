@@ -107,7 +107,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           final composition = SplashLayout.composeFor(
             MediaQuery.sizeOf(context).width,
           );
-          return _SplashCanvas(
+          final canvas = _SplashCanvas(
             composition: composition,
             lIcon: SplashSvgElement(
               elementKey: const ValueKey('splash-l-icon'),
@@ -133,8 +133,157 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               appear: _phases.portaalAppear,
             ),
           );
+
+          return _SplashCurtainSplit(
+            lineProgress: _phases.centerLineAppear.value,
+            splitProgress: _phases.curtainSplit.value,
+            child: canvas,
+          );
         },
       ),
+    );
+  }
+}
+
+class _LeftHalfClipper extends CustomClipper<Rect> {
+  const _LeftHalfClipper();
+
+  @override
+  Rect getClip(Size size) => Rect.fromLTRB(0, 0, size.width / 2, size.height);
+
+  @override
+  bool shouldReclip(CustomClipper<Rect> oldClipper) => false;
+}
+
+class _RightHalfClipper extends CustomClipper<Rect> {
+  const _RightHalfClipper();
+
+  @override
+  Rect getClip(Size size) =>
+      Rect.fromLTRB(size.width / 2, 0, size.width, size.height);
+
+  @override
+  bool shouldReclip(CustomClipper<Rect> oldClipper) => false;
+}
+
+/// Transitie-animatie: witte lichtlijn verschijnt in het midden en splitst
+/// naar links en rechts (shutter reveal) om het achterliggende dashboard te onthullen.
+class _SplashCurtainSplit extends StatelessWidget {
+  final double lineProgress;
+  final double splitProgress;
+  final Widget child;
+
+  const _SplashCurtainSplit({
+    required this.lineProgress,
+    required this.splitProgress,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (lineProgress <= 0.0 && splitProgress <= 0.0) {
+      return child;
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final size = constraints.biggest;
+        final halfWidth = size.width / 2;
+        final splitDistance = halfWidth * splitProgress;
+
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            // Linker paneel dat naar links wegschuift
+            if (splitProgress < 1.0)
+              Positioned(
+                left: -splitDistance,
+                top: 0,
+                width: size.width,
+                height: size.height,
+                child: ClipRect(
+                  clipper: const _LeftHalfClipper(),
+                  child: child,
+                ),
+              ),
+
+            // Rechter paneel dat naar rechts wegschuift
+            if (splitProgress < 1.0)
+              Positioned(
+                left: splitDistance,
+                top: 0,
+                width: size.width,
+                height: size.height,
+                child: ClipRect(
+                  clipper: const _RightHalfClipper(),
+                  child: child,
+                ),
+              ),
+
+            // Witte lichtlijn in het midden en splitsende randlijnen
+            if (lineProgress > 0.0 && splitProgress < 1.0) ...[
+              if (splitProgress == 0.0)
+                Center(
+                  child: Container(
+                    width: 3.0,
+                    height: size.height * lineProgress,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(1.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else ...[
+                // Linker randlijn
+                Positioned(
+                  left: halfWidth - splitDistance - 1.5,
+                  top: 0,
+                  bottom: 0,
+                  width: 3.0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withValues(alpha: 0.8),
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Rechter randlijn
+                Positioned(
+                  left: halfWidth + splitDistance - 1.5,
+                  top: 0,
+                  bottom: 0,
+                  width: 3.0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withValues(alpha: 0.8),
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ],
+        );
+      },
     );
   }
 }

@@ -161,10 +161,10 @@ ui-ux-pro-max`, Flutter-/Supabase-skills uit `00 - KLANTIO/AI Skills Register.md
 register blijft leidend voor UI/design/Flutter/Supabase. Deze bundle is leidend voor de
 workflow ERONDER (hoe een taak wordt aangepakt, niet hoe de UI eruitziet).
 
-**Locatie:** `C:\Users\zaurs\Documents\ZaurProject\.agents\skills\BUNDLE SKILLS\skills\` (21
-gecontroleerde skills, geen scripts/executables/binaries — zie `SECURITY_CLEANUP_REPORT.md` in
-die map). Bestaat het pad niet, of is een `SKILL.md` leeg/onleesbaar: meld dit expliciet, doe
-niet alsof de skill beschikbaar/geladen is.
+**Locatie:**
+- **PC 1 (bevestigd):** `C:\PROJECTS\Skills\BUNDLE SKILLS\skills\`
+- **PC 2 (bevestigd):** `C:\Users\zaurs\Documents\ZaurProject\.agents\skills\BUNDLE SKILLS\skills\`
+(21 gecontroleerde skills, geen scripts/executables/binaries — zie `SECURITY_CLEANUP_REPORT.md` in die map). Bestaat het pad niet, of is een `SKILL.md` leeg/onleesbaar: meld dit expliciet, doe niet alsof de skill beschikbaar/geladen is.
 
 **User-invoked** (agent forceert dit nooit zelfstandig als verplichte stap, alleen op expliciet
 verzoek): ask-matt, grill-with-docs, implement, improve-codebase-architecture, to-spec,
@@ -203,9 +203,21 @@ instructie.
 **Skill-first blijft ongewijzigd van kracht** voor deze bundle — zie `00 - KLANTIO/AI Skills
 Register.md` §1 voor het volledige principe.
 
-**Bekend, niet-opgelost aandachtspunt:** `implement`/`to-spec`/`to-tickets`/`tdd` uit deze
-bundle overlappen functioneel met de bestaande `superpowers`-skill
-(`writing-plans`/`executing-plans`/`test-driven-development`) uit het Klantio-skillregister.
-Er is hier bewust GEEN automatische voorrangsregel tussen beide vastgelegd — bij twijfel welke
-bron leidend is voor plannen/TDD, kort benoemen en de gebruiker laten kiezen, niet zelf
-verzinnen.
+---
+
+## Google Agent Skills (2026-09-29)
+
+Officiële Google Agent Skills (`https://github.com/google/skills`) voor Google Cloud, Cloud Storage, GCP IAM, BigQuery, Firebase en developer tools.
+
+**Locatie:**
+- **PC 1 (bevestigd):** `C:\PROJECTS\Skills\BUNDLE SKILLS\skills\google-skills\skills\`
+- **PC 2:** `C:\Users\zaurs\Documents\ZaurProject\.agents\skills\BUNDLE SKILLS\skills\google-skills\skills\`
+
+**Model-invoked (automatisch laden bij nieuwe sessie en relevante taak):**
+- Cloud Storage buckets & FUSE (`cloud/google-cloud-storage-basics`, `google-cloud-storage-bucket-architect`, `google-cloud-storage-fuse`)
+- GCP IAM & Security (`cloud/iam-helper-...`, `secops-...`)
+- Managed Airflow / Orchestration (`cloud/managed-airflow-...`)
+- BigQuery & Data analytics (`analytics/...`)
+- Developer retrieval & tools (`developers/retrieving-developer-knowledge`, `finding-google-skills`)
+
+Wordt automatisch geraadpleegd zodra een taak Google Cloud, Storage, IAM, Firebase of BigQuery raakt.

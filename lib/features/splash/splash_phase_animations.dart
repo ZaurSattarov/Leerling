@@ -21,17 +21,22 @@ import 'package:flutter/animation.dart';
 /// de intro blijft de compositie gewoon op zijn definitieve positie staan
 /// tot de splash sluit en de app normaal verdergaat.
 class SplashPhaseAnimations {
-  static const totalDuration = Duration(milliseconds: 3000);
+  static const totalDuration = Duration(milliseconds: 3200);
 
-  static const _msPerUnit = 3000.0;
+  static const _msPerUnit = 3200.0;
   static Interval _at(double startMs, double endMs, {Curve curve = _ease}) =>
       Interval(startMs / _msPerUnit, endMs / _msPerUnit, curve: curve);
 
   static const _ease = Curves.easeOutCubic;
+  static const _splitEase = Curves.easeInOutCubic;
 
   static final _lAppear = _at(0, 500);
   static final _klantioAppear = _at(350, 850);
   static final _portaalAppear = _at(700, 1100);
+
+  // Transitie-fase: witte lijn verschijnt in het midden en splitst naar links/rechts
+  static final _centerLineAppear = _at(2000, 2250, curve: Curves.easeOut);
+  static final _curtainSplit = _at(2250, 3150, curve: _splitEase);
 
   final AnimationController controller;
 
@@ -41,6 +46,10 @@ class SplashPhaseAnimations {
       CurvedAnimation(parent: controller, curve: _klantioAppear);
   late final Animation<double> portaalAppear =
       CurvedAnimation(parent: controller, curve: _portaalAppear);
+  late final Animation<double> centerLineAppear =
+      CurvedAnimation(parent: controller, curve: _centerLineAppear);
+  late final Animation<double> curtainSplit =
+      CurvedAnimation(parent: controller, curve: _curtainSplit);
 
   SplashPhaseAnimations(this.controller);
 }

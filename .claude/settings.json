@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo REMINDER: Voer KLANTIO PREFLIGHT uit voordat je code wijzigt. Lees via Obsidian MCP: '00 - KLANTIO/Product Architectuur/Solo & Team - Canonical Architectuur.md' + '01 - ARCHITECTUUR/Productarchitectuur.md'. Toon compact KLANTIO PREFLIGHT. Graphify: gebruik graphify-leerling MCP. Impeccable = leeg op deze machine, meld dit bij UI/design taken."
+          }
+        ]
+      }
+    ]
+  }
+}
