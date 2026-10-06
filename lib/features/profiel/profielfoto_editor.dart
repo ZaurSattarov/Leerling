@@ -8,6 +8,8 @@ import '../../core/services/student_service.dart';
 import '../../models/leerling_profiel.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/snackbar.dart';
+import '../../core/constants/cool_icons.dart';
+import '../../shared/widgets/main_scaffold.dart';
 
 // Gedeelde profielfoto-weergave + upload-flow (Fase 5). Eerder inline in
 // profiel_screen.dart -- hierheen verplaatst zodat zowel de profielkaart
@@ -43,39 +45,42 @@ class _EditableProfielAvatarState extends ConsumerState<EditableProfielAvatar> {
     final profiel = widget.profiel;
     if (profiel == null || _busy) return;
 
-    final source = await showModalBottomSheet<ImageSource>(
-      context: context,
-      backgroundColor: AppColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-      ),
-      builder: (ctx) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 38,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.border,
-                  borderRadius: BorderRadius.circular(999),
+    final source = await metNativeNavAfgedekt<ImageSource>(
+      context,
+      () => showModalBottomSheet<ImageSource>(
+        context: context,
+        backgroundColor: AppColors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+        ),
+        builder: (ctx) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 38,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.border,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 18),
-              PhotoSourceTile(
-                icon: Icons.photo_library_outlined,
-                label: 'Kies uit galerij',
-                onTap: () => Navigator.pop(ctx, ImageSource.gallery),
-              ),
-              const Divider(height: 18),
-              PhotoSourceTile(
-                icon: Icons.photo_camera_outlined,
-                label: 'Maak foto',
-                onTap: () => Navigator.pop(ctx, ImageSource.camera),
-              ),
-            ],
+                const SizedBox(height: 18),
+                PhotoSourceTile(
+                  icon: CoolIcons.image01,
+                  label: 'Kies uit galerij',
+                  onTap: () => Navigator.pop(ctx, ImageSource.gallery),
+                ),
+                const Divider(height: 18),
+                PhotoSourceTile(
+                  icon: CoolIcons.image02,
+                  label: 'Maak foto',
+                  onTap: () => Navigator.pop(ctx, ImageSource.camera),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -222,8 +227,8 @@ class ProfileAvatar extends StatelessWidget {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(
-                          Icons.camera_alt_rounded,
-                          color: AppColors.textSecondary,
+                          CoolIcons.image02,
+                          color: AppColors.iconPrimary,
                           size: 13,
                         ),
                 ),
@@ -279,11 +284,7 @@ class PhotoSourceTile extends StatelessWidget {
             Container(
               width: 38,
               height: 38,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF0F2F5),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(icon, color: AppColors.iconDark, size: 18),
+              child: Icon(icon, color: AppColors.iconPrimary, size: 18),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -297,8 +298,8 @@ class PhotoSourceTile extends StatelessWidget {
               ),
             ),
             const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.textMuted,
+              CoolIcons.chevronRight,
+              color: AppColors.iconPrimary,
             ),
           ],
         ),

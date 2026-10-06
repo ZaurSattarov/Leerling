@@ -7,6 +7,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/services/communication_service.dart';
 import '../../core/services/student_service.dart';
 import 'auth_design.dart';
+import '../../core/constants/cool_icons.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -108,7 +109,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       appBar: AppBar(
         title: const Text('Nieuw wachtwoord'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(CoolIcons.chevronLeft),
           onPressed: () => context.go('/login'),
         ),
       ),
@@ -133,109 +134,109 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   Form(
                     key: _formKey,
                     child: Container(
-                  padding: const EdgeInsets.all(22),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        'Kies een nieuw wachtwoord',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
+                      padding: const EdgeInsets.all(22),
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.border),
                       ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Gebruik minimaal 8 tekens en kies een wachtwoord dat je niet op andere plekken gebruikt.',
-                        style: TextStyle(
-                          color: AppColors.textSecondary,
-                          height: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 22),
-                      TextFormField(
-                        controller: _passwordCtrl,
-                        obscureText: !_showPassword,
-                        autocorrect: false,
-                        enableSuggestions: false,
-                        decoration: AuthDesign.inputDecoration(
-                          hint: 'Nieuw wachtwoord',
-                          iconData: Icons.lock_outline_rounded,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _showPassword
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              color: AuthDesign.icon,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'Kies een nieuw wachtwoord',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
                             ),
-                            onPressed: () =>
-                                setState(() => _showPassword = !_showPassword),
                           ),
-                        ),
-                        validator: (value) {
-                          if ((value ?? '').trim().length < 8) {
-                            return 'Minimaal 8 tekens';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 14),
-                      TextFormField(
-                        controller: _confirmCtrl,
-                        obscureText: !_showConfirm,
-                        autocorrect: false,
-                        enableSuggestions: false,
-                        decoration: AuthDesign.inputDecoration(
-                          hint: 'Bevestig wachtwoord',
-                          iconData: Icons.lock_reset_rounded,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _showConfirm
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              color: AuthDesign.icon,
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Gebruik minimaal 8 tekens en kies een wachtwoord dat je niet op andere plekken gebruikt.',
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              height: 1.5,
                             ),
-                            onPressed: () =>
-                                setState(() => _showConfirm = !_showConfirm),
                           ),
-                        ),
-                        validator: (value) {
-                          if ((value ?? '').trim().isEmpty) {
-                            return 'Bevestig je wachtwoord';
-                          }
-                          return null;
-                        },
-                        onFieldSubmitted: (_) => _save(),
+                          const SizedBox(height: 22),
+                          TextFormField(
+                            controller: _passwordCtrl,
+                            obscureText: !_showPassword,
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            decoration: AuthDesign.inputDecoration(
+                              hint: 'Nieuw wachtwoord',
+                              iconData: CoolIcons.lock,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _showPassword
+                                      ? CoolIcons.hide
+                                      : CoolIcons.show,
+                                  color: AuthDesign.icon,
+                                ),
+                                onPressed: () => setState(
+                                    () => _showPassword = !_showPassword),
+                              ),
+                            ),
+                            validator: (value) {
+                              if ((value ?? '').trim().length < 8) {
+                                return 'Minimaal 8 tekens';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 14),
+                          TextFormField(
+                            controller: _confirmCtrl,
+                            obscureText: !_showConfirm,
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            decoration: AuthDesign.inputDecoration(
+                              hint: 'Bevestig wachtwoord',
+                              iconData: CoolIcons.lockOpen,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _showConfirm
+                                      ? CoolIcons.hide
+                                      : CoolIcons.show,
+                                  color: AuthDesign.icon,
+                                ),
+                                onPressed: () => setState(
+                                    () => _showConfirm = !_showConfirm),
+                              ),
+                            ),
+                            validator: (value) {
+                              if ((value ?? '').trim().isEmpty) {
+                                return 'Bevestig je wachtwoord';
+                              }
+                              return null;
+                            },
+                            onFieldSubmitted: (_) => _save(),
+                          ),
+                          const SizedBox(height: 22),
+                          SizedBox(
+                            height: 52,
+                            child: ElevatedButton(
+                              style: AuthDesign.primaryButtonStyle(),
+                              onPressed: _loading ? null : _save,
+                              child: _loading
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppColors.white,
+                                      ),
+                                    )
+                                  : const Text('Wachtwoord opslaan'),
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 22),
-                      SizedBox(
-                        height: 52,
-                        child: ElevatedButton(
-                          style: AuthDesign.primaryButtonStyle(),
-                          onPressed: _loading ? null : _save,
-                          child: _loading
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: AppColors.white,
-                                  ),
-                                )
-                              : const Text('Wachtwoord opslaan'),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
                 ],
               ),
             ),

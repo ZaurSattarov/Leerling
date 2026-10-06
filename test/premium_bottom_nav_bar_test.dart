@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:leerling_app/core/constants/app_colors.dart';
 import 'package:leerling_app/shared/widgets/main_scaffold.dart';
+import 'package:leerling_app/core/constants/cool_icons.dart';
 
 const _items = [
   NavBarItem(
@@ -17,23 +18,23 @@ const _items = [
       route: '/home'),
   NavBarItem(
       label: 'Planning',
-      icon: Icons.calendar_today_outlined,
+      icon: CoolIcons.calendar,
       activeIcon: Icons.calendar_today_rounded,
       route: '/planning'),
   NavBarItem(
       label: 'Voortgang',
       icon: Icons.bar_chart_outlined,
-      activeIcon: Icons.bar_chart_rounded,
+      activeIcon: CoolIcons.chartBarVertical01,
       route: '/voortgang'),
   NavBarItem(
       label: 'Facturen',
-      icon: Icons.receipt_long_outlined,
-      activeIcon: Icons.receipt_long_rounded,
+      icon: CoolIcons.fileDocument,
+      activeIcon: CoolIcons.fileDocument,
       route: '/facturen'),
   NavBarItem(
       label: 'Profiel',
-      icon: Icons.person_outline_rounded,
-      activeIcon: Icons.person_rounded,
+      icon: CoolIcons.user01,
+      activeIcon: CoolIcons.user01,
       route: '/profiel'),
 ];
 
@@ -153,7 +154,7 @@ void main() {
       expect(actiefIcon.color, Colors.white);
     });
 
-    testWidgets('inactieve iconen gebruiken AppColors.textSecondary',
+    testWidgets('inactieve iconen gebruiken AppColors.iconPrimary (Instructeur-app)',
         (tester) async {
       await _pompNavBar(tester, activeIndex: 1, width: 390);
       final inactiefIcon = tester.widget<Icon>(find.descendant(
@@ -161,7 +162,7 @@ void main() {
         matching: find.byType(Icon),
       ));
       expect(inactiefIcon.icon, Icons.home_outlined);
-      expect(inactiefIcon.color, AppColors.textSecondary);
+      expect(inactiefIcon.color, AppColors.iconPrimary);
     });
   });
 }

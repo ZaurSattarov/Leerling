@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/nav_shell_tokens.dart';
 import '../../core/services/student_service.dart';
 import '../../core/utils/contact_uri.dart';
 import '../../models/instructeur.dart';
@@ -18,6 +17,8 @@ import 'profile_hero_copy.dart';
 import 'profielfoto_editor.dart';
 import 'rijschool_provider.dart';
 import 'widgets/profiel_menu_widgets.dart';
+import '../../core/constants/cool_icons.dart';
+import '../../shared/widgets/main_scaffold.dart';
 
 // ── Design tokens ────────────────────────────────────────────────────────────
 // 1-op-1 overgenomen uit de Instructeur-app (rijschool-planner-flutter,
@@ -106,21 +107,24 @@ class _ProfielHub extends ConsumerStatefulWidget {
 
 class _ProfielHubState extends ConsumerState<_ProfielHub> {
   Future<void> _uitloggen() async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Uitloggen?'),
-        content: const Text('Weet je zeker dat je wilt uitloggen?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Annuleren'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Uitloggen'),
-          ),
-        ],
+    final confirm = await metNativeNavAfgedekt<bool>(
+      context,
+      () => showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Uitloggen?'),
+          content: const Text('Weet je zeker dat je wilt uitloggen?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Annuleren'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Uitloggen'),
+            ),
+          ],
+        ),
       ),
     );
     if (confirm != true || !mounted) return;
@@ -135,28 +139,34 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
   }
 
   void _toonOverDeApp() {
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Over de app'),
-        content: const Text('Leerling App · versie 1.0.7'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Sluiten'),
-          ),
-        ],
+    metNativeNavAfgedekt<void>(
+      context,
+      () => showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Over de app'),
+          content: const Text('Leerling App · versie 1.0.7'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Sluiten'),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Future<void> _toonContactActies(Instructeur instructeur) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      barrierColor: Colors.black54,
-      isScrollControlled: true,
-      builder: (ctx) => _ContactActiesSheet(instructeur: instructeur),
+    await metNativeNavAfgedekt<void>(
+      context,
+      () => showModalBottomSheet<void>(
+        context: context,
+        backgroundColor: Colors.transparent,
+        barrierColor: Colors.black54,
+        isScrollControlled: true,
+        builder: (ctx) => _ContactActiesSheet(instructeur: instructeur),
+      ),
     );
   }
 
@@ -190,7 +200,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
               ProfielMenuTile(
-                icon: Icons.badge_outlined,
+                icon: CoolIcons.userCardId,
                 label: 'Persoonlijke gegevens',
                 subtitle: 'Naam, contactgegevens & rijbewijs',
                 onTap: () => context.push('/profiel/persoonlijke-gegevens'),
@@ -208,7 +218,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
               ProfielMenuTile(
-                icon: Icons.school_outlined,
+                icon: CoolIcons.bookOpen,
                 label: 'Mijn rijschool',
                 subtitle: 'Rijschool- en instructeurgegevens',
                 onTap: () => context.push('/profiel/mijn-rijschool'),
@@ -226,7 +236,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
               ProfielMenuTile(
-                icon: Icons.inventory_2_outlined,
+                icon: CoolIcons.archive,
                 label: 'Lespakket',
                 subtitle: _lespakketSubtitle(p),
                 // Fallback naar het oude pakket-enum (basis/standaard/...)
@@ -239,7 +249,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
               ),
               const Divider(height: 1, indent: 62),
               ProfielMenuTile(
-                icon: Icons.trending_up_rounded,
+                icon: CoolIcons.trendingUp,
                 label: 'Mijn voortgang',
                 subtitle: p != null
                     ? '${p.lessenGevolgd}/${p.lessenTotaal} lessen gevolgd'
@@ -248,7 +258,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
               ),
               const Divider(height: 1, indent: 62),
               ProfielMenuTile(
-                icon: Icons.quiz_outlined,
+                icon: CoolIcons.circleHelp,
                 label: 'Mijn examens',
                 subtitle: 'Examenstatus & resultaten',
                 onTap: () => context.push('/examens'),
@@ -267,7 +277,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             child: ProfielMenuCard(children: [
               instructeurAsync.maybeWhen(
                 data: (instructeur) => ProfielMenuTile(
-                  icon: Icons.forum_outlined,
+                  icon: CoolIcons.chatConversation,
                   label: 'Contact met instructeur',
                   subtitle: 'Bel of app je instructeur',
                   onTap: instructeur == null
@@ -275,7 +285,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
                       : () => _toonContactActies(instructeur),
                 ),
                 orElse: () => const ProfielMenuTile(
-                  icon: Icons.forum_outlined,
+                  icon: CoolIcons.chatConversation,
                   label: 'Contact met instructeur',
                 ),
               ),
@@ -292,7 +302,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
               ProfielMenuTile(
-                icon: Icons.receipt_long_outlined,
+                icon: CoolIcons.fileDocument,
                 label: 'Mijn facturen',
                 subtitle: 'Bekijk en betaal facturen',
                 onTap: () => context.go('/facturen'),
@@ -310,14 +320,14 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
               ProfielMenuTile(
-                icon: Icons.notifications_none_rounded,
+                icon: CoolIcons.bell,
                 label: 'Notificaties',
                 subtitle: 'Beheer welke meldingen je ontvangt',
                 onTap: () => context.push('/profiel/notificatie-instellingen'),
               ),
               const Divider(height: 1, indent: 62),
               ProfielMenuTile(
-                icon: Icons.settings_outlined,
+                icon: CoolIcons.settings,
                 label: 'App-instellingen',
                 subtitle: 'Machtigingen en beveiliging',
                 onTap: () => context.push('/profiel/app-instellingen'),
@@ -334,7 +344,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
               ProfielMenuTile(
-                icon: Icons.privacy_tip_outlined,
+                icon: CoolIcons.shieldCheck,
                 label: 'Privacy, gegevens & juridisch',
                 subtitle: 'Documenten, gegevens en account',
                 onTap: () => context.push('/profiel/privacy'),
@@ -352,13 +362,13 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
               ProfielMenuTile(
-                icon: Icons.headset_mic_outlined,
+                icon: CoolIcons.headphones,
                 label: 'Help & Support',
                 onTap: () => context.push('/help'),
               ),
               const Divider(height: 1, indent: 62),
               ProfielMenuTile(
-                icon: Icons.info_outline_rounded,
+                icon: CoolIcons.info,
                 label: 'Over de app',
                 onTap: _toonOverDeApp,
               ),
@@ -376,13 +386,13 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             child: Column(
               children: [
                 _DangerRow(
-                  icon: Icons.logout_rounded,
+                  icon: CoolIcons.logOut,
                   label: 'Uitloggen',
                   onTap: _uitloggen,
                 ),
                 const SizedBox(height: 14),
                 _DangerRow(
-                  icon: Icons.delete_forever_rounded,
+                  icon: CoolIcons.trashFull,
                   label: 'Account verwijderen',
                   onTap: _toonAccountVerwijderen,
                 ),
@@ -390,7 +400,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             ),
           ),
 
-          const SizedBox(height: NavShellTokens.contentBottomClearance),
+          SizedBox(height: MainShellContentInset.bottomOf(context)),
         ],
       ),
     );
@@ -699,8 +709,8 @@ class _ContactActiesSheet extends StatelessWidget {
                 const SizedBox(height: 18),
                 if (telUri != null)
                   _ContactSheetAction(
-                    icon: Icons.phone_outlined,
-                    iconColor: AppColors.successSolid,
+                    icon: CoolIcons.phone,
+                    iconColor: AppColors.iconPrimary,
                     label: 'Bellen',
                     value: instructeur.telefoon!.trim(),
                     onTap: () async {
@@ -712,8 +722,8 @@ class _ContactActiesSheet extends StatelessWidget {
                   const Divider(height: 18),
                 if (whatsappUri != null)
                   _ContactSheetAction(
-                    icon: Icons.chat_outlined,
-                    iconColor: AppColors.whatsapp,
+                    icon: CoolIcons.chat,
+                    iconColor: AppColors.iconPrimary,
                     label: 'WhatsApp',
                     value: (instructeur.whatsappNummer ?? instructeur.telefoon)!
                         .trim(),
@@ -726,8 +736,8 @@ class _ContactActiesSheet extends StatelessWidget {
                   const Divider(height: 18),
                 if (emailUri != null)
                   _ContactSheetAction(
-                    icon: Icons.email_outlined,
-                    iconColor: AppColors.infoSolid,
+                    icon: CoolIcons.mail,
+                    iconColor: AppColors.iconPrimary,
                     label: 'E-mail',
                     value: instructeur.email!.trim(),
                     onTap: () async {
@@ -807,8 +817,8 @@ class _ContactSheetAction extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right_rounded,
-                color: AppColors.textMuted, size: 20),
+            const Icon(CoolIcons.chevronRight,
+                color: AppColors.iconPrimary, size: 20),
           ],
         ),
       ),

@@ -19,6 +19,7 @@ import '../lesvoorbereiding/lesvoorbereiding_provider.dart';
 import 'planning_provider.dart';
 import 'widgets/lesson_status_badge.dart';
 import 'widgets/live_aankomst_banner.dart';
+import '../../core/constants/cool_icons.dart';
 
 class LesDetailScreen extends ConsumerWidget {
   final String id;
@@ -51,7 +52,7 @@ class LesDetailScreen extends ConsumerWidget {
                 if (les == null) {
                   return const Center(
                     child: EmptyState(
-                      icon: Icons.search_off_rounded,
+                      icon: CoolIcons.searchMagnifyingGlass,
                       title: 'Les niet gevonden',
                       subtitle:
                           'Deze les bestaat niet of je hebt geen toegang.',
@@ -65,7 +66,7 @@ class LesDetailScreen extends ConsumerWidget {
                   child: CircularProgressIndicator(color: AppColors.primary)),
               error: (e, _) => Center(
                 child: EmptyState(
-                  icon: Icons.wifi_off_rounded,
+                  icon: CoolIcons.cloudOff,
                   title: 'Kon les niet laden',
                   subtitle: e.toString(),
                 ),
@@ -165,7 +166,7 @@ class _LesDetailBody extends ConsumerWidget {
                       ? 'Geplande onderwerpen'
                       : 'Geoefende onderwerpen',
                   onderwerpen: les.geoefendeOnderwerpen,
-                  iconColor: const Color(0xFF5645D4),
+                  iconColor: AppColors.iconPrimary,
                 ),
                 const SizedBox(height: 12),
               ],
@@ -174,8 +175,8 @@ class _LesDetailBody extends ConsumerWidget {
               if (les.zichtbaarVoorLeerling &&
                   les.instructeurFeedback?.trim().isNotEmpty == true) ...[
                 _TekstCard(
-                  icoon: Icons.notes_rounded,
-                  iconColor: const Color(0xFF5645D4),
+                  icoon: CoolIcons.note,
+                  iconColor: AppColors.iconPrimary,
                   titel: 'Feedback & aandachtspunten',
                   tekst: les.instructeurFeedback!,
                 ),
@@ -185,8 +186,8 @@ class _LesDetailBody extends ConsumerWidget {
               // 8. Mijn notitie
               if (les.leerlingNotitie?.trim().isNotEmpty == true) ...[
                 _TekstCard(
-                  icoon: Icons.edit_note_rounded,
-                  iconColor: const Color(0xFFD97706),
+                  icoon: CoolIcons.noteEdit,
+                  iconColor: AppColors.iconPrimary,
                   titel: 'Mijn notitie',
                   tekst: les.leerlingNotitie!,
                 ),
@@ -263,8 +264,8 @@ class _DatumTijdCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    const Icon(Icons.access_time_rounded,
-                        size: 15, color: AppColors.textSecondary),
+                    const Icon(CoolIcons.clock,
+                        size: 15, color: AppColors.iconPrimary),
                     const SizedBox(width: 5),
                     Expanded(
                       child: Text(
@@ -301,9 +302,9 @@ class _DetailDateBlock extends StatelessWidget {
       width: 58,
       height: 70,
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
+        color: AppColors.neutralBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E2E7), width: 0.75),
+        border: Border.all(color: AppColors.border, width: 0.75),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -368,7 +369,7 @@ class _LesInformatieCard extends StatelessWidget {
     final lesContextRijen = <Widget>[
       if (toonRijschool)
         _LesContextRij(
-          icon: Icons.storefront_rounded,
+          icon: CoolIcons.building03,
           label: 'Rijschool',
           inhoud: Text(
             rijschoolNaam!,
@@ -384,7 +385,7 @@ class _LesInformatieCard extends StatelessWidget {
         ),
       if (toonInstructeur)
         _LesContextRij(
-          icon: Icons.person_rounded,
+          icon: CoolIcons.user01,
           label: 'Instructeur',
           inhoud: Text(
             instructeurNaam,
@@ -400,7 +401,7 @@ class _LesInformatieCard extends StatelessWidget {
         ),
       if (toonLesType)
         _LesContextRij(
-          icon: Icons.school_rounded,
+          icon: CoolIcons.bookOpen,
           label: 'Lestype',
           inhoud: Text(
             lesType,
@@ -472,11 +473,7 @@ class _LesContextRij extends StatelessWidget {
           width: 32,
           height: 32,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF0F2F5),
-            borderRadius: BorderRadius.circular(9),
-          ),
-          child: Icon(icon, size: 16, color: AppColors.textSecondary),
+          child: Icon(icon, size: 16, color: AppColors.iconPrimary),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -627,13 +624,13 @@ class _StapDot extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: leeg ? const Color(0xFFF0F2F5) : AppColors.primary,
+            color: leeg ? AppColors.neutralBg : AppColors.primary,
             border: leeg ? Border.all(color: const Color(0xFFD5DAE1)) : null,
           ),
           child: leeg
               ? null
               : vinkje
-                  ? Icon(Icons.check_rounded,
+                  ? Icon(CoolIcons.check,
                       color: Colors.white, size: formaat * 0.55)
                   : Container(
                       width: formaat * 0.3,
@@ -691,7 +688,7 @@ class _AfwijkendeStatusRij extends StatelessWidget {
           alignment: Alignment.center,
           decoration: const BoxDecoration(
               shape: BoxShape.circle, color: AppColors.primary),
-          child: const Icon(Icons.check_rounded, color: Colors.white, size: 10),
+          child: const Icon(CoolIcons.check, color: Colors.white, size: 10),
         ),
         const SizedBox(width: 8),
         Flexible(
@@ -709,7 +706,7 @@ class _AfwijkendeStatusRij extends StatelessWidget {
         const SizedBox(width: 10),
         const Expanded(
           child: DecoratedBox(
-            decoration: BoxDecoration(color: Color(0xFFE2E2E7)),
+            decoration: BoxDecoration(color: AppColors.border),
             child: SizedBox(height: 1),
           ),
         ),
@@ -736,23 +733,23 @@ class _ContactActiesCard extends StatelessWidget {
     final acties = <Widget>[
       if (heeftTelefoon)
         _ContactButton(
-          icon: Icons.phone_rounded,
+          icon: CoolIcons.phone,
           label: 'Bellen',
-          iconColor: const Color(0xFF16A34A),
+          iconColor: AppColors.iconPrimary,
           onTap: () => _bel(context, telefoon),
         ),
       if (heeftTelefoon)
         _ContactButton(
-          icon: Icons.chat_rounded,
+          icon: CoolIcons.chatCircleDots,
           label: 'WhatsApp',
-          iconColor: const Color(0xFF22C55E),
+          iconColor: AppColors.iconPrimary,
           onTap: () => _whatsapp(context, telefoon),
         ),
       if (heeftEmail)
         _ContactButton(
-          icon: Icons.mail_outline_rounded,
+          icon: CoolIcons.mail,
           label: 'E-mail',
-          iconColor: const Color(0xFF2563EB),
+          iconColor: AppColors.iconPrimary,
           onTap: () => _mail(context, email),
         ),
     ];
@@ -1134,7 +1131,7 @@ class _LiveAankomstOphaalKaart extends StatelessWidget {
                             ),
                             const SizedBox(width: 4),
                             Icon(
-                              Icons.arrow_forward_rounded,
+                              CoolIcons.arrowRightMd,
                               size: 14,
                               color: Colors.white.withValues(alpha: 0.92),
                             ),
@@ -1165,7 +1162,7 @@ class _LiveBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: const Color(0xFFE2E2E7)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -1306,7 +1303,7 @@ class _LocatieCard extends StatelessWidget {
                             ),
                             const SizedBox(width: 4),
                             Icon(
-                              Icons.arrow_forward_rounded,
+                              CoolIcons.arrowRightMd,
                               size: 14,
                               color: Colors.white.withValues(alpha: 0.92),
                             ),
@@ -1349,12 +1346,12 @@ class _OphaallocatieBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: const Color(0xFFE2E2E7)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.location_on_rounded, size: 12, color: AppColors.primary),
+          Icon(CoolIcons.mapPin, size: 12, color: AppColors.iconPrimary),
           const SizedBox(width: 4),
           const Text(
             'OPHAALLOCATIE',
@@ -1391,8 +1388,7 @@ class _KaartPin extends StatelessWidget {
         ],
       ),
       alignment: Alignment.center,
-      child: const Icon(Icons.location_on_rounded,
-          color: AppColors.primary, size: 20),
+      child: const Icon(CoolIcons.mapPin, color: AppColors.iconPrimary, size: 20),
     );
   }
 }
@@ -1532,7 +1528,7 @@ class _VoertuigCard extends StatelessWidget {
             Row(
               children: [
                 const IconBadge(
-                  icon: Icons.directions_car_rounded,
+                  icon: CoolIcons.carAuto,
                   color: AppColors.textPrimary,
                   size: 36,
                 ),
@@ -1644,7 +1640,7 @@ class _OnderwerpCard extends StatelessWidget {
           Row(
             children: [
               IconBadge(
-                  icon: Icons.checklist_rounded, color: iconColor, size: 36),
+                  icon: CoolIcons.listChecklist, color: iconColor, size: 36),
               const SizedBox(width: 10),
               Text(
                 titel,
@@ -1677,9 +1673,9 @@ class _OnderwerpChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
+        color: AppColors.neutralBg,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE2E2E7)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Text(
         label,
@@ -1710,8 +1706,8 @@ class _CanonicalVoorbereidingVoorKomendeLes extends ConsumerWidget {
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: _TekstCard(
-            icoon: Icons.lightbulb_rounded,
-            iconColor: const Color(0xFF5645D4),
+            icoon: CoolIcons.bulb,
+            iconColor: AppColors.iconPrimary,
             titel: 'Voorbereiding volgende les',
             tekst: tekst,
           ),
@@ -1782,17 +1778,17 @@ class _VolgendeLesCTA extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: () => context.push('/beschikbaarheid'),
-        icon: const Icon(Icons.add_circle_outline_rounded, size: 18),
+        icon: const Icon(CoolIcons.addPlusCircle, size: 18),
         label: const Text('Nieuwe les aanvragen'),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(52),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
           elevation: 0,
           textStyle: const TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -1869,7 +1865,7 @@ class _ContactButton extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE2E2E7)),
+              border: Border.all(color: AppColors.border),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1878,10 +1874,6 @@ class _ContactButton extends StatelessWidget {
                   width: 30,
                   height: 30,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF0F2F5),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
                   child: Icon(icon, color: iconColor, size: 16),
                 ),
                 const SizedBox(height: 6),
@@ -1957,12 +1949,8 @@ class _EvaluatieSection extends StatelessWidget {
                   Container(
                     width: 36,
                     height: 36,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF0F2F5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(Icons.stars_rounded,
-                        size: 18, color: AppColors.textPrimary),
+                    child: const Icon(CoolIcons.star,
+                        size: 18, color: AppColors.iconPrimary),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -1986,10 +1974,10 @@ class _EvaluatieSection extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF0F2F5),
+                        color: AppColors.neutralBg,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: const Color(0xFFE2E2E7), width: 0.75),
+                        border:
+                            Border.all(color: AppColors.border, width: 0.75),
                       ),
                       child: Text(
                         eval.interventionLabel,
@@ -2003,7 +1991,7 @@ class _EvaluatieSection extends StatelessWidget {
               ),
               if (eval.feedback?.trim().isNotEmpty == true) ...[
                 const SizedBox(height: 14),
-                const Divider(height: 1, color: Color(0xFFE2E2E7)),
+                const Divider(height: 1, color: AppColors.border),
                 const SizedBox(height: 14),
                 Text(
                   '"${eval.feedback!.trim()}"',
@@ -2017,14 +2005,14 @@ class _EvaluatieSection extends StatelessWidget {
               ],
               if (goede.isNotEmpty || verbeter.isNotEmpty) ...[
                 const SizedBox(height: 14),
-                const Divider(height: 1, color: Color(0xFFE2E2E7)),
+                const Divider(height: 1, color: AppColors.border),
                 const SizedBox(height: 14),
                 if (goede.isNotEmpty) ...[
                   _SkillGroep(
                     label: 'Goed gedaan',
-                    icon: Icons.check_circle_rounded,
+                    icon: CoolIcons.circleCheck,
                     kleur: const Color(0xFF16A34A),
-                    achtergrond: const Color(0xFFF0F2F5),
+                    achtergrond: AppColors.neutralBg,
                     scores: goede,
                   ),
                   if (verbeter.isNotEmpty) const SizedBox(height: 10),
@@ -2032,20 +2020,20 @@ class _EvaluatieSection extends StatelessWidget {
                 if (verbeter.isNotEmpty)
                   _SkillGroep(
                     label: 'Aandachtspunten',
-                    icon: Icons.warning_amber_rounded,
+                    icon: CoolIcons.triangleWarning,
                     kleur: const Color(0xFFD97706),
-                    achtergrond: const Color(0xFFF0F2F5),
+                    achtergrond: AppColors.neutralBg,
                     scores: verbeter,
                   ),
               ],
               if (eval.nextLessonAdvice?.trim().isNotEmpty == true) ...[
                 const SizedBox(height: 14),
-                const Divider(height: 1, color: Color(0xFFE2E2E7)),
+                const Divider(height: 1, color: AppColors.border),
                 const SizedBox(height: 10),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.lightbulb_rounded,
+                    const Icon(CoolIcons.bulb,
                         size: 16, color: Color(0xFF5645D4)),
                     const SizedBox(width: 8),
                     Expanded(
@@ -2254,7 +2242,7 @@ class _ScoreRij extends StatelessWidget {
             child: LinearProgressIndicator(
               value: score.score / 5,
               minHeight: 6,
-              backgroundColor: const Color(0xFFE2E2E7),
+              backgroundColor: AppColors.border,
               valueColor: AlwaysStoppedAnimation<Color>(kleur),
             ),
           ),
@@ -2283,13 +2271,13 @@ class _EvaluatieFallback extends StatelessWidget {
           _OnderwerpCard(
             titel: 'Focus punten',
             onderwerpen: les.focusPunten,
-            iconColor: const Color(0xFF5645D4),
+            iconColor: AppColors.iconPrimary,
           ),
         if (les.volgendeLesAdvies?.trim().isNotEmpty == true) ...[
           const SizedBox(height: 12),
           _TekstCard(
-            icoon: Icons.lightbulb_rounded,
-            iconColor: const Color(0xFF5645D4),
+            icoon: CoolIcons.bulb,
+            iconColor: AppColors.iconPrimary,
             titel: 'Voorbereiding volgende les',
             tekst: les.volgendeLesAdvies!,
           ),
@@ -2309,7 +2297,7 @@ class _EvaluatieNietBeschikbaar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           IconBadge(
-            icon: Icons.rate_review_outlined,
+            icon: CoolIcons.chatDots,
             color: AppColors.textPrimary,
             size: 36,
           ),
@@ -2358,7 +2346,7 @@ class _EvaluatieLoadingSkeleton extends StatelessWidget {
             height: 14,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: const Color(0xFFE2E2E7),
+              color: AppColors.border,
               borderRadius: BorderRadius.circular(7),
             ),
           ),
@@ -2367,7 +2355,7 @@ class _EvaluatieLoadingSkeleton extends StatelessWidget {
             height: 14,
             width: 200,
             decoration: BoxDecoration(
-              color: const Color(0xFFE2E2E7),
+              color: AppColors.border,
               borderRadius: BorderRadius.circular(7),
             ),
           ),

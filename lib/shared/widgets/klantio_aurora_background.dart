@@ -42,7 +42,8 @@ class _KlantioAuroraBackgroundState extends State<KlantioAuroraBackground>
   @override
   Widget build(BuildContext context) {
     final isDark = widget.isDark;
-    final baseColor = isDark ? const Color(0xFF0F111E) : const Color(0xFFF9FAFC);
+    final baseColor =
+        isDark ? const Color(0xFF0F111E) : const Color(0xFFF9FAFC);
 
     return Stack(
       fit: StackFit.expand,
@@ -96,6 +97,7 @@ class _AuroraBlobsPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Exacte 2*PI cyclus
     final t = progress * 2 * math.pi;
 
     // SaaS & Klantio merkkleuren
@@ -114,12 +116,16 @@ class _AuroraBlobsPainter extends CustomPainter {
     final w = size.width;
     final h = size.height;
 
-    // Blob 1: Klantio Rose (bovenzijde / midden bewegend)
+    // Alle frequenties zijn strikt gehele getallen (k = 1, 2)
+    // Dit garandeert dat sin(k*0) == sin(k*2π) en cos(k*0) == cos(k*2π),
+    // waardoor de animatie oneindig doorloopt zonder schok, hapering of opnieuw beginnen.
+
+    // Blob 1: Klantio Rose (zweeft vloeiend over de bovenkant, links en door het midden)
     final blob1Center = Offset(
-      w * 0.35 + math.sin(t) * (w * 0.22),
-      h * 0.22 + math.cos(t * 0.8) * (h * 0.15),
+      w * 0.36 + math.sin(t) * (w * 0.28),
+      h * 0.28 + math.cos(t) * (h * 0.20),
     );
-    final blob1Radius = math.min(w, h) * (0.42 + math.sin(t * 1.2) * 0.05);
+    final blob1Radius = math.min(w, h) * (0.46 + math.sin(2 * t) * 0.05);
 
     final paint1 = Paint()
       ..shader = RadialGradient(
@@ -127,12 +133,12 @@ class _AuroraBlobsPainter extends CustomPainter {
       ).createShader(Rect.fromCircle(center: blob1Center, radius: blob1Radius));
     canvas.drawCircle(blob1Center, blob1Radius, paint1);
 
-    // Blob 2: SaaS Indigo (rechtsboven / rechtsmidden)
+    // Blob 2: SaaS Indigo (zweeft over rechtsboven, de rechterzijde en het centrum)
     final blob2Center = Offset(
-      w * 0.72 + math.cos(t * 1.1) * (w * 0.20),
-      h * 0.40 + math.sin(t * 0.9) * (h * 0.18),
+      w * 0.68 + math.cos(t) * (w * 0.26),
+      h * 0.42 + math.sin(t) * (h * 0.22),
     );
-    final blob2Radius = math.min(w, h) * (0.48 + math.cos(t) * 0.06);
+    final blob2Radius = math.min(w, h) * (0.50 + math.cos(2 * t) * 0.05);
 
     final paint2 = Paint()
       ..shader = RadialGradient(
@@ -140,12 +146,12 @@ class _AuroraBlobsPainter extends CustomPainter {
       ).createShader(Rect.fromCircle(center: blob2Center, radius: blob2Radius));
     canvas.drawCircle(blob2Center, blob2Radius, paint2);
 
-    // Blob 3: Warm Coral / Pastel Accent (onderzijde / linksonder)
+    // Blob 3: Warm Coral (zweeft over de onderkant, linksonder en rechtsonder)
     final blob3Center = Offset(
-      w * 0.45 + math.sin(t * 0.7 + 1.0) * (w * 0.25),
-      h * 0.78 + math.cos(t * 1.3) * (h * 0.14),
+      w * 0.48 + math.sin(t + math.pi * 0.67) * (w * 0.30),
+      h * 0.74 + math.cos(t + math.pi * 0.67) * (h * 0.18),
     );
-    final blob3Radius = math.min(w, h) * (0.45 + math.sin(t * 0.8) * 0.05);
+    final blob3Radius = math.min(w, h) * (0.48 + math.sin(2 * t + 1.2) * 0.05);
 
     final paint3 = Paint()
       ..shader = RadialGradient(

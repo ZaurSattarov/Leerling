@@ -9,6 +9,7 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import '../../shared/widgets/snackbar.dart';
 import 'notificaties_provider.dart';
+import '../../core/constants/cool_icons.dart';
 
 class NotificatiesScreen extends ConsumerWidget {
   const NotificatiesScreen({super.key});
@@ -52,7 +53,7 @@ class NotificatiesScreen extends ConsumerWidget {
                       if (notificaties.isEmpty) {
                         return const SliverFillRemaining(
                           child: EmptyState(
-                            icon: Icons.notifications_off_outlined,
+                            icon: CoolIcons.bellOff,
                             title: 'Geen meldingen',
                             subtitle: 'Je hebt nog geen meldingen ontvangen.',
                           ),
@@ -92,7 +93,7 @@ class NotificatiesScreen extends ConsumerWidget {
                     ),
                     error: (e, _) => SliverFillRemaining(
                       child: EmptyState(
-                        icon: Icons.wifi_off_rounded,
+                        icon: CoolIcons.cloudOff,
                         title: 'Kon meldingen niet laden',
                         subtitle: e.toString(),
                       ),
@@ -173,32 +174,32 @@ class _NotificatieCard extends ConsumerWidget {
       case 'lesson_planned':
       case 'lesson_changed':
       case 'lesson_cancelled':
-        return Icons.directions_car_rounded;
+        return CoolIcons.carAuto;
       case 'voorbereiding':
-        return Icons.task_alt_rounded;
+        return CoolIcons.circleCheck;
       case 'feedback':
       case 'lesson_feedback':
-        return Icons.rate_review_rounded;
+        return CoolIcons.chatDots;
       case 'factuur':
       case 'invoice_created':
       case 'invoice_paid':
-        return Icons.receipt_long_rounded;
+        return CoolIcons.fileDocument;
       case 'package_almost_empty':
-        return Icons.inventory_2_rounded;
+        return CoolIcons.archive;
       case 'exam_scheduled':
-        return Icons.event_rounded;
+        return CoolIcons.calendar;
       case 'exam_result':
-        return Icons.emoji_events_rounded;
+        return CoolIcons.star;
       case 'voortgang':
       case 'examenadvies':
-        return Icons.bar_chart_rounded;
+        return CoolIcons.chartBarVertical01;
       case 'arrival_started':
       case 'arrival_available':
-        return Icons.near_me_rounded;
+        return CoolIcons.navigation;
       case 'support_antwoord':
-        return Icons.chat_bubble_outline_rounded;
+        return CoolIcons.chat;
       default:
-        return Icons.notifications_rounded;
+        return CoolIcons.bell;
     }
   }
 

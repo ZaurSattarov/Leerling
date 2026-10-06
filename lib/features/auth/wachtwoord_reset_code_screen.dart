@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import 'auth_design.dart';
+import '../../core/constants/cool_icons.dart';
 
 class WachtwoordResetCodeScreen extends StatefulWidget {
   const WachtwoordResetCodeScreen({super.key, required this.email});
@@ -185,7 +186,7 @@ class _WachtwoordResetCodeScreenState extends State<WachtwoordResetCodeScreen> {
         backgroundColor: AppColors.surface,
         appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded),
+            icon: const Icon(CoolIcons.chevronLeft),
             onPressed: () => context.go('/wachtwoord-vergeten'),
           ),
           title: const Text('Verificatiecode'),
@@ -206,7 +207,7 @@ class _WachtwoordResetCodeScreenState extends State<WachtwoordResetCodeScreen> {
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
-                    Icons.lock_reset_rounded,
+                    CoolIcons.lockOpen,
                     color: Colors.white,
                     size: 32,
                   ),

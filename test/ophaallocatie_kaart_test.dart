@@ -29,6 +29,7 @@ import 'package:leerling_app/models/les.dart';
 import 'package:leerling_app/shared/providers/auth_provider.dart';
 
 import 'features/arrival/fakes.dart';
+import 'package:leerling_app/core/constants/cool_icons.dart';
 
 /// Test-double die altijd een vast, bekend coördinatenpaar teruggeeft --
 /// zodat de "pickup-marker in de fullscreen-kaart"-tests niet afhankelijk
@@ -548,7 +549,7 @@ void main() {
       // terugknop -- geen losse ETA/route-elementen.
       expect(find.byType(GoogleMap), findsOneWidget);
       expect(find.text('Instructeur onderweg'), findsOneWidget);
-      expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
+      expect(find.byIcon(CoolIcons.chevronLeft), findsOneWidget);
 
       // De compacte kaart onder de fullscreen-route blijft gemount (gewone
       // push, geen pop) en heeft dus ook nog haar eigen 6s-fallbacktimer.

@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/config/app_config.dart';
 import '../../core/constants/app_colors.dart';
 import 'auth_design.dart';
+import '../../core/constants/cool_icons.dart';
 
 class VerificatieScreen extends StatefulWidget {
   final String email;
@@ -174,7 +175,7 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
         backgroundColor: AppColors.surface,
         appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded),
+            icon: const Icon(CoolIcons.chevronLeft),
             onPressed: () => context.go('/registreer'),
           ),
           title: const Text('E-mail bevestigen'),

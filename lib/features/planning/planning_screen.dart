@@ -9,6 +9,8 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_tab_header.dart';
 import 'planning_provider.dart';
 import 'widgets/lesson_status_badge.dart';
+import '../../core/constants/cool_icons.dart';
+import '../../shared/widgets/main_scaffold.dart';
 
 class PlanningScreen extends ConsumerStatefulWidget {
   const PlanningScreen({super.key});
@@ -89,9 +91,9 @@ class _PillTabBar extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: 48),
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
+        color: AppColors.neutralBg,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE2E2E7), width: 0.75),
+        border: Border.all(color: AppColors.border, width: 0.75),
       ),
       child: Row(
         children: List.generate(labels.length, (i) {
@@ -151,8 +153,8 @@ class _LessenTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final lessenAsync = ref.watch(provider);
-    final safeBottom = MediaQuery.paddingOf(context).bottom;
-    final listPadding = EdgeInsets.fromLTRB(20, 20, 20, 96 + safeBottom);
+    final listPadding = EdgeInsets.fromLTRB(
+        20, 20, 20, MainShellContentInset.bottomOf(context));
 
     return RefreshIndicator(
       color: AppColors.primary,
@@ -204,7 +206,7 @@ class _LessenTab extends ConsumerWidget {
           padding: listPadding,
           children: [
             EmptyState(
-              icon: Icons.wifi_off_rounded,
+              icon: CoolIcons.cloudOff,
               title: 'Kon lessen niet laden',
               subtitle: e.toString(),
             ),
@@ -229,15 +231,9 @@ class _PlanningEmptyState extends StatelessWidget {
           Container(
             width: 58,
             height: 58,
-            decoration: BoxDecoration(
-              color: AppColors.borderLight,
-              borderRadius: BorderRadius.circular(16),
-            ),
             child: Icon(
-              isKomend
-                  ? Icons.event_available_outlined
-                  : Icons.fact_check_outlined,
-              color: AppColors.textSecondary,
+              isKomend ? CoolIcons.calendarCheck : CoolIcons.listChecklist,
+              color: AppColors.iconPrimary,
               size: 28,
             ),
           ),
@@ -283,19 +279,20 @@ class _NieuweLesButton extends StatelessWidget {
           HapticFeedback.lightImpact();
           context.push('/beschikbaarheid');
         },
-        icon: const Icon(Icons.add_rounded, size: 19),
+        icon: const Icon(CoolIcons.addPlus, size: 19),
         label: const Text('Nieuwe les aanvragen'),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(52),
           elevation: 0,
+          // Pilvorm, zoals de primaire knoppen in de Instructeur-app.
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(999),
           ),
           textStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -387,9 +384,9 @@ class _LessonDateBlock extends StatelessWidget {
       width: 58,
       height: 70,
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
+        color: AppColors.neutralBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E2E7), width: 0.75),
+        border: Border.all(color: AppColors.border, width: 0.75),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -441,13 +438,10 @@ class _LessonMetaRow extends StatelessWidget {
     final naam = les.instructeurNaam;
     final toonNaam = naam != null && naam.isNotEmpty && !_isEmail(naam);
     final items = <({IconData icon, String tekst})>[
-      if (toonNaam) (icon: Icons.person_outline_rounded, tekst: naam),
+      if (toonNaam) (icon: CoolIcons.user01, tekst: naam),
       if (les.locatie?.isNotEmpty == true)
-        (icon: Icons.location_on_outlined, tekst: les.locatie!),
-      (
-        icon: Icons.timer_outlined,
-        tekst: DatumUtils.duurLabel(les.duurMinuten)
-      ),
+        (icon: CoolIcons.mapPin, tekst: les.locatie!),
+      (icon: CoolIcons.timer, tekst: DatumUtils.duurLabel(les.duurMinuten)),
     ];
 
     return Wrap(
@@ -481,7 +475,7 @@ class _LessonMetaItem extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 15, color: AppColors.textSecondary),
+          Icon(icon, size: 15, color: AppColors.iconPrimary),
           const SizedBox(width: 4),
           Flexible(
             child: Text(

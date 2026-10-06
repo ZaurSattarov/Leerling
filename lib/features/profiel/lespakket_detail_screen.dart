@@ -5,6 +5,7 @@ import '../../core/utils/lespakket_detail.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import '../voortgang/lespakket_detail_provider.dart';
+import '../../core/constants/cool_icons.dart';
 
 /// Profiel -> Rijopleiding -> Lespakket (Fase 4). Bewust een NIEUW, apart
 /// scherm/route (i.p.v. het bestaande /voortgang/lespakket te hergebruiken):
@@ -45,7 +46,7 @@ class ProfielLespakketScreen extends ConsumerWidget {
                   children: [
                     const SizedBox(height: 60),
                     EmptyState(
-                      icon: Icons.wifi_off_rounded,
+                      icon: CoolIcons.cloudOff,
                       title: 'Kon pakketgegevens niet laden',
                       subtitle: e.toString(),
                     ),
@@ -57,7 +58,7 @@ class ProfielLespakketScreen extends ConsumerWidget {
                       children: const [
                         SizedBox(height: 60),
                         EmptyState(
-                          icon: Icons.inventory_2_outlined,
+                          icon: CoolIcons.archive,
                           title: 'Geen pakket ingesteld',
                           subtitle:
                               'Je instructeur heeft nog geen lespakket aan je gekoppeld.',
@@ -70,7 +71,7 @@ class ProfielLespakketScreen extends ConsumerWidget {
                       children: const [
                         SizedBox(height: 60),
                         EmptyState(
-                          icon: Icons.error_outline_rounded,
+                          icon: CoolIcons.circleWarning,
                           title: 'Pakketgegevens niet beschikbaar',
                           subtitle:
                               'Neem contact op met je rijschool voor de voorwaarden van je lespakket.',
@@ -149,7 +150,7 @@ class _KopKaart extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const IconBadge(
-                icon: Icons.inventory_2_rounded,
+                icon: CoolIcons.archive,
                 color: AppColors.primary,
                 size: 44,
               ),
@@ -212,9 +213,9 @@ class _StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
+        color: AppColors.neutralBg,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: const Color(0xFFE2E2E7)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -248,9 +249,9 @@ class _Badge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
+        color: AppColors.neutralBg,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: const Color(0xFFE2E2E7)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Text(
         label,
@@ -392,21 +393,21 @@ class _VoorwaardenKaart extends StatelessWidget {
 
     if (detail.lesduurMinuten > 0) {
       rijen.add(_VoorwaardeRij(
-        icon: Icons.schedule_outlined,
+        icon: CoolIcons.clock,
         label: 'Lesduur',
         waarde: '${detail.lesduurMinuten} minuten',
       ));
     }
     if (detail.pakketprijs != null) {
       rijen.add(_VoorwaardeRij(
-        icon: Icons.euro_rounded,
+        icon: CoolIcons.creditCard01,
         label: 'Pakketprijs',
         waarde: detail.prijsLabel,
       ));
     }
     if (detail.losseLesprijs != null && detail.losseLesprijs! > 0) {
       rijen.add(_VoorwaardeRij(
-        icon: Icons.payments_outlined,
+        icon: CoolIcons.creditCard01,
         label: 'Losse lesprijs',
         waarde:
             '€ ${detail.losseLesprijs!.toStringAsFixed(2).replaceAll('.', ',')}',
@@ -414,7 +415,7 @@ class _VoorwaardenKaart extends StatelessWidget {
     }
     if (detail.startdatum?.isNotEmpty == true) {
       rijen.add(_VoorwaardeRij(
-        icon: Icons.event_outlined,
+        icon: CoolIcons.calendar,
         label: 'Startdatum',
         waarde: detail.startdatum!,
       ));
@@ -509,7 +510,7 @@ class _InbegrepenRij extends StatelessWidget {
     return Row(
       children: [
         const IconBadge(
-          icon: Icons.check_circle_rounded,
+          icon: CoolIcons.circleCheck,
           color: AppColors.successSolid,
           size: 34,
         ),
@@ -534,13 +535,13 @@ class _LegacyMelding extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
+        color: AppColors.neutralBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E2E7)),
+        border: Border.all(color: AppColors.border),
       ),
       child: const Row(
         children: [
-          Icon(Icons.info_outline_rounded, color: AppColors.iconDark, size: 18),
+          Icon(CoolIcons.info, color: AppColors.iconPrimary, size: 18),
           SizedBox(width: 10),
           Expanded(
             child: Text(

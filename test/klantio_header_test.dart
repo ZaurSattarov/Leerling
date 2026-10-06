@@ -8,11 +8,13 @@
 // - geen eyebrow-labels meer, nergens in de app;
 // - Home toont geen datum meer, en is compact: [avatar] Hoi, Naam. [bel];
 // - responsive op 320/360/390/430px en bij 130% tekstschaal;
-// - geen pastelkleuren: de bestaande donkere navy-gradient blijft exact.
+// - geen pastelkleuren: vlakke donkere headerbalk (#1E2635) met 1px
+//   onderrand, 1-op-1 de Instructeur-app (2026-10-06).
 
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:leerling_app/core/constants/app_colors.dart';
@@ -20,6 +22,9 @@ import 'package:leerling_app/shared/widgets/home_header.dart';
 import 'package:leerling_app/shared/widgets/klantio_header.dart';
 import 'package:leerling_app/shared/widgets/main_detail_header.dart';
 import 'package:leerling_app/shared/widgets/main_tab_header.dart';
+import 'package:leerling_app/core/constants/cool_icons.dart';
+import 'package:leerling_app/features/notificaties/notificaties_provider.dart';
+import 'package:leerling_app/shared/widgets/isomorphic_icons.dart';
 
 /// Pompt [child] in een echte, gecontroleerde viewport-breedte -- een
 /// ancestor [MediaQuery] boven [MaterialApp] wordt genegeerd (MaterialApp
@@ -39,12 +44,16 @@ Future<void> _pomp(
   addTearDown(tester.view.resetDevicePixelRatio);
 
   await tester.pumpWidget(
-    MediaQuery(
-      data: MediaQueryData(
-        size: Size(width, height),
-        textScaler: TextScaler.linear(textScale),
+    ProviderScope(
+      // De bel leest het aantal ongelezen meldingen zelf uit een provider.
+      overrides: [ongelezenNotificatiesProvider.overrideWith((ref) async => 3)],
+      child: MediaQuery(
+        data: MediaQueryData(
+          size: Size(width, height),
+          textScaler: TextScaler.linear(textScale),
+        ),
+        child: MaterialApp(home: Scaffold(body: child)),
       ),
-      child: MaterialApp(home: Scaffold(body: child)),
     ),
   );
   await tester.pumpAndSettle();
@@ -68,7 +77,8 @@ void main() {
           tester.getSize(find.byType(KlantioHeaderShell)).height;
 
       expect(tabHoogte, detailHoogte);
-      expect(tabHoogte, kKlantioHeaderContentHeight);
+      // 56px content + 1px onderrand van de headerbalk.
+      expect(tabHoogte, kKlantioHeaderContentHeight + 1);
     });
 
     testWidgets(
@@ -85,7 +95,7 @@ void main() {
       );
 
       expect(tester.getSize(find.byType(KlantioHeaderShell)).height,
-          kKlantioHeaderContentHeight);
+          kKlantioHeaderContentHeight + 1);
     });
   });
 
@@ -106,7 +116,7 @@ void main() {
           title: 'Mijn lessen',
           actions: [
             MainHeaderIconKnop(
-                icon: Icons.notifications_none_rounded, onTap: () {}),
+                icon: CoolIcons.bell, onTap: () {}),
           ],
         ),
         width: breedte,
@@ -155,7 +165,7 @@ void main() {
           title: 'Lesdetails',
           actions: [
             MainHeaderIconKnop(
-                icon: Icons.notifications_none_rounded, onTap: () {}),
+                icon: CoolIcons.bell, onTap: () {}),
           ],
         ),
       );
@@ -235,7 +245,7 @@ void main() {
       );
 
       expect(find.text('Hoi, Lisa.'), findsOneWidget);
-      expect(find.byIcon(Icons.notifications_none_rounded), findsOneWidget);
+      expect(find.byType(IsomorphicHeaderBellButton), findsOneWidget);
 
       // Avatar (initiaal-fallback zonder avatarUrl) en begroeting op
       // dezelfde verticale positie -- voelen als één blok, niet gestapeld.
@@ -282,7 +292,8 @@ void main() {
   group('Headercontract -- kleuren (geen pastel toegevoegd)', () {
     testWidgets(
         'MainTabHeader/MainDetailHeader/HomeHeader gebruiken dezelfde '
-        'bestaande donkere navy-gradient, niets pastel', (tester) async {
+        'vlakke donkere headerbalk (Instructeur-app), niets pastel',
+        (tester) async {
       for (final header in [
         const MainTabHeader(title: 'Mijn lessen'),
         const MainDetailHeader(title: 'Lesdetails'),
@@ -296,9 +307,9 @@ void main() {
               matching: find.byType(Container),
             )
             .first);
-        final gradient = (container.decoration as BoxDecoration).gradient
-            as LinearGradient;
-        expect(gradient.colors, kKlantioHeaderGradient);
+        final deco = container.decoration as BoxDecoration;
+        expect(deco.color, const Color(0xFF1E2635));
+        expect(deco.gradient, isNull);
       }
     });
   });
@@ -313,7 +324,7 @@ void main() {
             title: 'Een best lange titel die bijna niet past',
             actions: [
               MainHeaderIconKnop(
-                  icon: Icons.notifications_none_rounded, onTap: () {}),
+                  icon: CoolIcons.bell, onTap: () {}),
             ],
           ),
           width: breedte,
@@ -376,12 +387,12 @@ void main() {
   });
 
   group('Notificatiebadge', () {
-    testWidgets('belknop is een cirkel van 40x40 met wit icoon in het midden',
+    testWidgets('icoonknop is 40x40 met licht icoon in het midden, zonder vlak',
         (tester) async {
       await _pomp(
         tester,
         MainHeaderIconKnop(
-          icon: Icons.notifications_none_rounded,
+          icon: CoolIcons.bell,
           onTap: () {},
         ),
       );
@@ -390,12 +401,12 @@ void main() {
       expect(knop.width, 40);
       expect(knop.height, 40);
 
-      final icoon = tester.getRect(find.byIcon(Icons.notifications_none_rounded));
+      final icoon = tester.getRect(find.byIcon(CoolIcons.bell));
       final knopRect = tester.getRect(find.byType(MainHeaderIconKnop));
       expect(icoon.center.dx, closeTo(knopRect.center.dx, 0.5));
       expect(icoon.center.dy, closeTo(knopRect.center.dy, 0.5));
-      expect(tester.widget<Icon>(find.byIcon(Icons.notifications_none_rounded)).color,
-          Colors.white);
+      expect(tester.widget<Icon>(find.byIcon(CoolIcons.bell)).color,
+          const Color(0xFFF8FAFC));
     });
 
     for (final entry in const {1: '1', 12: '12', 100: '99+'}.entries) {
@@ -404,7 +415,7 @@ void main() {
         await _pomp(
           tester,
           MainHeaderIconKnop(
-            icon: Icons.notifications_none_rounded,
+            icon: CoolIcons.bell,
             badgeCount: entry.key,
             onTap: () {},
           ),

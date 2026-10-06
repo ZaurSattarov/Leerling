@@ -1,4 +1,5 @@
-/// Geometrie van de splash-compositie (ICON + KLANTIO + LEERLINGENPORTAAL).
+/// Geometrie van de splash-compositie (merkteken + KLANTIO +
+/// LEERLINGENPORTAAL).
 ///
 /// 1-op-1 dezelfde architectuur/percentages als de Instructeur-app
 /// (rijschool-planner-flutter/lib/features/splash/splash_layout.dart) --
@@ -25,7 +26,11 @@ class SplashLayout {
 
   // Native afmetingen van de SVG-bronbestanden
   // (assets/Splash Screen/ -- Leerlingen-app).
-  static const double lIconSourceSize = 139;
+  //
+  // Het merkteken ("Behaald") staat op een 256x256-canvas met 48 eenheden
+  // marge rondom; het zichtbare teken is dus 160/256 van [markSourceSize]
+  // (~94pt op de ontwerpbreedte).
+  static const double markSourceSize = 150;
   static const double klantioSourceWidth = 233;
   static const double klantioSourceHeight = 42;
   static const double portaalSourceWidth = 147;
@@ -34,7 +39,7 @@ class SplashLayout {
   /// Proportionele tussenruimtes -- zelfde fracties als de Instructeur-app
   /// (SplashLayout._gapLToKlantioFactor /
   /// _gapKlantioToRijplannerFactor / _rijplannerRightOverhangFactor).
-  static const double _gapLToKlantioFactor = 0.10; // t.o.v. lIconSourceSize
+  static const double _gapMarkToKlantioFactor = 0.10; // t.o.v. markSourceSize
   static const double _gapKlantioToPortaalFactor = 0.14; // t.o.v. klantioH
 
   /// LEERLINGENPORTAAL hangt net iets voorbij de rechterrand van KLANTIO
@@ -54,25 +59,25 @@ class SplashLayout {
   static SplashComposition composeFor(double screenWidth) {
     final scale = (screenWidth / designWidth).clamp(0.8, 1.6);
 
-    final lSize = lIconSourceSize * scale;
+    final markSize = markSourceSize * scale;
     final klantioWidth = klantioSourceWidth * scale;
     final klantioHeight = klantioSourceHeight * scale;
     final portaalWidth = portaalSourceWidth * scale;
     final portaalHeight = portaalSourceHeight * scale;
 
-    final gapLToKlantio = lIconSourceSize * scale * _gapLToKlantioFactor;
+    final gapMarkToKlantio = markSourceSize * scale * _gapMarkToKlantioFactor;
     final gapKlantioToPortaal = klantioHeight * _gapKlantioToPortaalFactor;
     final portaalRightOverhang = portaalWidth * _portaalRightOverhangFactor;
     final portaalExtraDrop = portaalHeight * _portaalExtraDropFactor;
 
     return SplashComposition(
       scale: scale,
-      lSize: lSize,
+      markSize: markSize,
       klantioWidth: klantioWidth,
       klantioHeight: klantioHeight,
       portaalWidth: portaalWidth,
       portaalHeight: portaalHeight,
-      gapLToKlantio: gapLToKlantio,
+      gapMarkToKlantio: gapMarkToKlantio,
       gapKlantioToPortaal: gapKlantioToPortaal,
       portaalRightOverhang: portaalRightOverhang,
       portaalExtraDrop: portaalExtraDrop,
@@ -83,31 +88,36 @@ class SplashLayout {
 /// Kant-en-klare, geschaalde afmetingen/tussenruimtes voor één schermbreedte.
 class SplashComposition {
   final double scale;
-  final double lSize;
+  final double markSize;
   final double klantioWidth;
   final double klantioHeight;
   final double portaalWidth;
   final double portaalHeight;
-  final double gapLToKlantio;
+  final double gapMarkToKlantio;
   final double gapKlantioToPortaal;
   final double portaalRightOverhang;
   final double portaalExtraDrop;
 
   const SplashComposition({
     required this.scale,
-    required this.lSize,
+    required this.markSize,
     required this.klantioWidth,
     required this.klantioHeight,
     required this.portaalWidth,
     required this.portaalHeight,
-    required this.gapLToKlantio,
+    required this.gapMarkToKlantio,
     required this.gapKlantioToPortaal,
     required this.portaalRightOverhang,
     required this.portaalExtraDrop,
   });
 
-  /// Totale hoogte van de volledige compositie (ICON t/m LEERLINGENPORTAAL),
+  /// Totale hoogte van de volledige compositie (merkteken t/m
+  /// LEERLINGENPORTAAL),
   /// voor verticale centrering als één geheel.
   double get totalHeight =>
-      lSize + gapLToKlantio + klantioHeight + gapKlantioToPortaal + portaalHeight;
+      markSize +
+      gapMarkToKlantio +
+      klantioHeight +
+      gapKlantioToPortaal +
+      portaalHeight;
 }

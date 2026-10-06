@@ -9,6 +9,7 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import '../../shared/widgets/snackbar.dart';
 import 'widgets/settings_action_row.dart';
+import '../../core/constants/cool_icons.dart';
 
 class BeveiligingScreen extends ConsumerStatefulWidget {
   const BeveiligingScreen({super.key});
@@ -176,7 +177,7 @@ class _BeveiligingScreenState extends ConsumerState<BeveiligingScreen> {
                     children: [
                       SettingsActionRow(
                         key: const Key('beveiliging_ingelogd_account'),
-                        icon: Icons.person_outline_rounded,
+                        icon: CoolIcons.user01,
                         title: 'Ingelogd account',
                         subtitle: 'Bekijk je accountinformatie',
                         semanticLabel: 'Ingelogd account',
@@ -185,7 +186,7 @@ class _BeveiligingScreenState extends ConsumerState<BeveiligingScreen> {
                       const Divider(height: 1, indent: 80),
                       SettingsActionRow(
                         key: const Key('beveiliging_wachtwoord_herstellen'),
-                        icon: Icons.key_outlined,
+                        icon: CoolIcons.lock,
                         title: 'Wachtwoord herstellen',
                         subtitle: 'Stel een nieuw wachtwoord in',
                         semanticLabel: 'Wachtwoord herstellen',
@@ -195,7 +196,7 @@ class _BeveiligingScreenState extends ConsumerState<BeveiligingScreen> {
                       const Divider(height: 1, indent: 80),
                       SettingsActionRow(
                         key: const Key('beveiliging_uitloggen'),
-                        icon: Icons.logout_rounded,
+                        icon: CoolIcons.logOut,
                         title: 'Uitloggen op dit apparaat',
                         subtitle: _uitloggenLaden
                             ? 'Uitloggen wordt uitgevoerd...'
@@ -255,7 +256,7 @@ class _PasswordCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const IconBadge(
-            icon: Icons.lock_outline_rounded,
+            icon: CoolIcons.lock,
             color: AppColors.iconPrimary,
             size: 56,
           ),
@@ -307,7 +308,7 @@ class _PasswordCard extends StatelessWidget {
                                   color: AppColors.primary,
                                 ),
                               )
-                            : const Icon(Icons.mail_outline_rounded, size: 21),
+                            : const Icon(CoolIcons.mail, size: 21),
                         label: Text(
                           loading ? 'Versturen...' : 'Resetlink versturen',
                           maxLines: 1,
@@ -320,7 +321,7 @@ class _PasswordCard extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           minimumSize: const Size(0, 52),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(999),
                           ),
                         ),
                       ),

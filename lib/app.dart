@@ -9,6 +9,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/constants/app_colors.dart';
 import 'core/lifecycle/account_scoped_invalidation.dart';
+import 'core/providers/main_shell_nav_bar_visibility.dart';
+import 'core/services/native_navigation_bridge.dart';
 import 'core/services/access_gate_service.dart';
 import 'core/services/push_service.dart';
 import 'features/arrival/arrival_provider.dart';
@@ -60,6 +62,28 @@ import 'shared/widgets/student_profile_gate.dart';
 // hebben. Dit bestond nog niet in deze app (anders dan de Instructeur-app).
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
+String? _laatsteAuthCode;
+
+/// Google- en e-mailbevestiging komen terug als
+/// `leerlingplanner://auth/...`. GoRouter kent dat adres niet als pagina.
+/// De code wordt hier omgewisseld voor een sessie, daarna gaat de app
+/// naar splash of wachtwoord-reset.
+Future<void> _rondAuthCallbackAf(Uri uri) async {
+  final code = uri.queryParameters['code'];
+  if (code == null || code.isEmpty) return;
+  if (code == _laatsteAuthCode) return;
+  if (Supabase.instance.client.auth.currentSession != null) {
+    _laatsteAuthCode = code;
+    return;
+  }
+  _laatsteAuthCode = code;
+  try {
+    await Supabase.instance.client.auth.getSessionFromUrl(uri);
+  } catch (e) {
+    debugPrint('[auth] callback mislukt: ${e.runtimeType}');
+  }
+}
+
 /// Centrale GoRouter-referentie voor push-deeplinks (zelfde patroon als
 /// factuur deep link via ref.read(_routerProvider).push in _LeerlingAppState).
 GoRouter? globalLeerlingGoRouter;
@@ -76,6 +100,10 @@ class _AuthNotifier extends ChangeNotifier {
           _ref.read(arrivalControllerProvider.notifier).onAuthLost();
         });
         blockedAccessStatus = null;
+        _ref.read(mainShellMountedProvider.notifier).state = false;
+        _ref
+            .read(nativeNavigationProvider.notifier)
+            .setBarVisible(false, force: true);
       }
       // Klantio Intern Beheerplatform — accountblokkade (Optie B,
       // 2026-09-01). Losstaande, aanvullende check naast alle bestaande
@@ -141,7 +169,13 @@ final _routerProvider = Provider<GoRouter>((ref) {
     navigatorKey: rootNavigatorKey,
     initialLocation: '/splash',
     refreshListenable: authNotifier,
-    redirect: (context, state) {
+    redirect: (context, state) async {
+      if (state.uri.scheme == 'leerlingplanner' && state.uri.host == 'auth') {
+        await _rondAuthCallbackAf(state.uri);
+        if (state.uri.path == '/reset-password') return '/reset-password';
+        return '/splash';
+      }
+
       final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
       final loc = state.uri.path;
 
@@ -255,7 +289,7 @@ final _routerProvider = Provider<GoRouter>((ref) {
         // "Eerdere gesprekken" -- forceert direct de lege composer i.p.v.
         // een eventueel al actief gesprek te tonen. 1-op-1 poort van de
         // Instructeur-app (app.dart, `/profiel/support?nieuw=1`).
-        builder: (_, state) => StudentProfileGate(
+        builder: (_, state) => _DetailRoute(
           child: SupportChatScreen(
             forceNew: state.uri.queryParameters['nieuw'] == '1',
           ),
@@ -263,7 +297,7 @@ final _routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/help/support',
-        builder: (_, state) => StudentProfileGate(
+        builder: (_, state) => _DetailRoute(
           child: SupportChatScreen(
             forceNew: state.uri.queryParameters['nieuw'] == '1',
           ),
@@ -271,13 +305,13 @@ final _routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/help/support/:id',
-        builder: (_, state) => StudentProfileGate(
+        builder: (_, state) => _DetailRoute(
           child: SupportChatScreen(threadId: state.pathParameters['id']!),
         ),
       ),
       GoRoute(
         path: '/help/gesprekken',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: SupportInboxScreen(),
         ),
       ),
@@ -285,7 +319,7 @@ final _routerProvider = Provider<GoRouter>((ref) {
       // Notificaties — full screen, outside bottom nav
       GoRoute(
         path: '/notificaties',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: NotificatiesScreen(),
         ),
       ),
@@ -293,32 +327,32 @@ final _routerProvider = Provider<GoRouter>((ref) {
       // Beschikbaarheid — full screen, outside bottom nav
       GoRoute(
         path: '/profiel/notificatie-instellingen',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: NotificatieInstellingenScreen(),
         ),
       ),
       GoRoute(
         path: '/profiel/app-instellingen',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: AppInstellingenScreen(),
         ),
       ),
       GoRoute(
         path: '/profiel/app-machtigingen',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: AppMachtigingenScreen(),
         ),
       ),
       GoRoute(
         path: '/profiel/beveiliging',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: BeveiligingScreen(),
         ),
       ),
 
       GoRoute(
         path: '/beschikbaarheid',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: BeschikbaarheidScreen(),
         ),
       ),
@@ -333,25 +367,25 @@ final _routerProvider = Provider<GoRouter>((ref) {
       // blijven daardoor ongewijzigd werken.
       GoRoute(
         path: '/planning/:id',
-        builder: (_, state) => StudentProfileGate(
+        builder: (_, state) => _DetailRoute(
           child: LesDetailScreen(id: state.pathParameters['id']!),
         ),
       ),
       GoRoute(
         path: '/les-logboek',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: LesLogboekScreen(),
         ),
       ),
       GoRoute(
         path: '/examenadvies',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: ExamenadviesScreen(),
         ),
       ),
       GoRoute(
         path: '/examens',
-        builder: (_, state) => StudentProfileGate(
+        builder: (_, state) => _DetailRoute(
           child: ExamensScreen(
             highlightExamId: state.uri.queryParameters['exam'],
           ),
@@ -359,61 +393,61 @@ final _routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/lesvoorbereiding',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: LesvoorbereidingScreen(),
         ),
       ),
       GoRoute(
         path: '/voortgang/lespakket',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: LespakketDetailScreen(),
         ),
       ),
       GoRoute(
         path: '/voortgang/tijdlijn',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: VoortgangTijdlijnScreen(),
         ),
       ),
       GoRoute(
         path: '/profiel/lespakket',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: ProfielLespakketScreen(),
         ),
       ),
       GoRoute(
         path: '/profiel/persoonlijke-gegevens',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: ProfielPersoonlijkeGegevensScreen(),
         ),
       ),
       GoRoute(
         path: '/profiel/mijn-rijschool',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: MijnRijschoolScreen(),
         ),
       ),
       GoRoute(
         path: '/profiel/privacy',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: PrivacyJuridischScreen(),
         ),
       ),
       GoRoute(
         path: '/profiel/privacy-beleid',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: LegalDocumentScreen(document: privacyPolicyNl),
         ),
       ),
       GoRoute(
         path: '/profiel/algemene-voorwaarden',
-        builder: (_, __) => const StudentProfileGate(
+        builder: (_, __) => const _DetailRoute(
           child: LegalDocumentScreen(document: termsConditionsNl),
         ),
       ),
       GoRoute(
         path: '/facturen/:id',
-        builder: (_, state) => StudentProfileGate(
+        builder: (_, state) => _DetailRoute(
           child: FactuurDetailScreen(
             id: state.pathParameters['id']!,
             // Hint (GEEN bewijs van betaling): gezet door de deep-link-
@@ -426,7 +460,10 @@ final _routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      // App routes with bottom nav shell -- alleen de vijf echte hoofdtabs
+      // App routes with bottom nav shell -- alleen de vijf echte hoofdtabs.
+      // NoTransitionPage: geen platform-paginatransitie tussen tabs; de
+      // richtingsbewuste slide zit in TabSlideSwitcher (MainScaffold) --
+      // zelfde aanpak als de Instructeur-app.
       ShellRoute(
         builder: (_, __, child) => StudentProfileGate(
           child: MainScaffold(child: child),
@@ -434,23 +471,38 @@ final _routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: '/home',
-            builder: (_, __) => const HomeScreen(),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const HomeScreen(),
+            ),
           ),
           GoRoute(
             path: '/planning',
-            builder: (_, __) => const PlanningScreen(),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const PlanningScreen(),
+            ),
           ),
           GoRoute(
             path: '/voortgang',
-            builder: (_, __) => const VoortgangScreen(),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const VoortgangScreen(),
+            ),
           ),
           GoRoute(
             path: '/facturen',
-            builder: (_, __) => const FacturenScreen(),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const FacturenScreen(),
+            ),
           ),
           GoRoute(
             path: '/profiel',
-            builder: (_, __) => const ProfielScreen(),
+            pageBuilder: (_, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const ProfielScreen(),
+            ),
           ),
         ],
       ),
@@ -464,6 +516,19 @@ final _routerProvider = Provider<GoRouter>((ref) {
   });
   return router;
 });
+
+/// Detail-/subscherm buiten de ShellRoute: profielpoort + de native iOS
+/// glasbalk verbergen zolang dit scherm open is. Die balk is een overlay op
+/// het hele venster en zou anders bovenop detailschermen blijven staan,
+/// terwijl de Leerling-app daar bewust geen navbar toont.
+class _DetailRoute extends StatelessWidget {
+  final Widget child;
+  const _DetailRoute({required this.child});
+
+  @override
+  Widget build(BuildContext context) =>
+      KlantioNavAfdekker(child: StudentProfileGate(child: child));
+}
 
 class LeerlingApp extends ConsumerStatefulWidget {
   const LeerlingApp({super.key});
@@ -552,6 +617,15 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
       title: 'Mijn Rijschool',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
+      // Standaard donkere statusbalk-iconen op de lichte pagina's; de donkere
+      // headerbalk (KlantioHeaderShell) zet daar zelf lichte iconen overheen.
+      builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: child ?? const SizedBox.shrink(),
+      ),
+      // Thema 1-op-1 uit de Instructeur-app (rijschool-planner-flutter/
+      // lib/app.dart): zelfde knoppen (donkere pil), invoervelden,
+      // kaarten, snackbars en datumkiezer.
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
@@ -559,7 +633,8 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
           brightness: Brightness.light,
           surface: AppColors.white,
         ),
-        scaffoldBackgroundColor: AppColors.surface,
+        scaffoldBackgroundColor: AppColors.pageBg,
+        iconTheme: const IconThemeData(color: AppColors.iconPrimary),
         dialogTheme: DialogThemeData(
           backgroundColor: AppColors.white,
           surfaceTintColor: Colors.transparent,
@@ -573,62 +648,74 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
           modalBackgroundColor: AppColors.surface,
           modalBarrierColor: Colors.black54,
         ),
+        progressIndicatorTheme: const ProgressIndicatorThemeData(
+          color: AppColors.loadingAccent,
+          circularTrackColor: AppColors.loadingPrimary,
+          linearTrackColor: AppColors.loadingSecondary,
+          refreshBackgroundColor: AppColors.white,
+        ),
+        snackBarTheme: SnackBarThemeData(
+          backgroundColor: const Color(0xFFF8FAFC),
+          contentTextStyle: const TextStyle(
+            color: Color(0xFF111827),
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+          actionTextColor: AppColors.primary,
+          behavior: SnackBarBehavior.floating,
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+            side: const BorderSide(color: Color(0xFFE5E7EB)),
+          ),
+        ),
         datePickerTheme: DatePickerThemeData(
           backgroundColor: AppColors.white,
           surfaceTintColor: Colors.transparent,
           headerBackgroundColor: AppColors.dark,
-          headerForegroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
-          ),
-          dayStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          todayBorder:
-              BorderSide(color: AppColors.primary.withValues(alpha: 0.55)),
-          todayForegroundColor: WidgetStateProperty.all(AppColors.primary),
-          // Probleem 2 (aanmeld herstelronde, vervolg): zonder deze twee
-          // overrides valt de GESELECTEERDE dag terug op
-          // colorScheme.primary — via ColorScheme.fromSeed niet exact
-          // AppColors.primary, wat als afwijkend bruin/rood oogt. Expliciet
-          // vastzetten op het officiële Klantio primary-token.
-          dayForegroundColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) return Colors.white;
+          headerForegroundColor: AppColors.white,
+          yearForegroundColor: WidgetStateColor.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return AppColors.textPrimary;
+            }
+            if (states.contains(WidgetState.disabled)) {
+              return AppColors.textHint.withValues(alpha: 0.45);
+            }
             return AppColors.textPrimary;
           }),
-          dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+          yearBackgroundColor: WidgetStateColor.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return AppColors.neutralBg;
+            }
+            return Colors.transparent;
+          }),
+          dayForegroundColor: WidgetStateColor.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) return AppColors.white;
+            if (states.contains(WidgetState.disabled)) {
+              return AppColors.textHint.withValues(alpha: 0.45);
+            }
+            return AppColors.textPrimary;
+          }),
+          dayBackgroundColor: WidgetStateColor.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
               return AppColors.primary;
             }
-            return null;
+            return Colors.transparent;
           }),
-          dayOverlayColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return Colors.white.withValues(alpha: 0.12);
-            }
-            return AppColors.primary.withValues(alpha: 0.10);
-          }),
-          todayBackgroundColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primary;
-            }
-            return null;
-          }),
-        ),
-        timePickerTheme: TimePickerThemeData(
-          backgroundColor: AppColors.white,
+          todayForegroundColor:
+              const WidgetStatePropertyAll(AppColors.textPrimary),
+          cancelButtonStyle: TextButton.styleFrom(
+            foregroundColor: AppColors.textPrimary,
+          ),
+          confirmButtonStyle: TextButton.styleFrom(
+            foregroundColor: AppColors.textPrimary,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
           ),
-          hourMinuteTextStyle:
-              const TextStyle(fontSize: 44, fontWeight: FontWeight.w700),
-          dayPeriodTextStyle:
-              const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-          dialHandColor: AppColors.primary,
-          dialBackgroundColor: AppColors.surface,
-          hourMinuteColor: AppColors.surface,
-          entryModeIconColor: AppColors.textSecondary,
         ),
         textTheme: GoogleFonts.interTextTheme(
-          ThemeData.light().textTheme.copyWith(
+          ThemeData.dark().textTheme.copyWith(
                 headlineMedium: const TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 28,
@@ -655,8 +742,10 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
                     color: AppColors.textSecondary, fontSize: 14),
                 bodySmall:
                     const TextStyle(color: AppColors.textHint, fontSize: 12),
-                labelLarge:
-                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                labelLarge: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600),
                 labelMedium: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 12,
@@ -668,9 +757,9 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
               ),
         ),
         textSelectionTheme: TextSelectionThemeData(
-          cursorColor: AppColors.primary,
-          selectionColor: AppColors.dark.withValues(alpha: 0.20),
-          selectionHandleColor: AppColors.primary,
+          cursorColor: AppColors.dark,
+          selectionColor: AppColors.dark.withValues(alpha: 0.18),
+          selectionHandleColor: AppColors.dark,
         ),
         checkboxTheme: CheckboxThemeData(
           fillColor: WidgetStateProperty.resolveWith((states) {
@@ -706,8 +795,8 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
           scrolledUnderElevation: 0,
           centerTitle: false,
           iconTheme: const IconThemeData(color: Colors.white),
-          systemOverlayStyle: SystemUiOverlayStyle.light,
           titleTextStyle: GoogleFonts.inter(
+            color: Colors.white,
             fontSize: 17,
             fontWeight: FontWeight.w600,
           ),
@@ -725,7 +814,8 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: AppColors.dark, width: 1.15),
+            borderSide:
+                const BorderSide(color: AppColors.textPrimary, width: 1.15),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
@@ -742,17 +832,15 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
               GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 14),
           hintStyle: GoogleFonts.inter(color: AppColors.textHint, fontSize: 14),
           floatingLabelStyle: GoogleFonts.inter(
-              color: AppColors.primary,
-              fontSize: 13,
-              fontWeight: FontWeight.w500),
+              color: AppColors.dark, fontSize: 13, fontWeight: FontWeight.w500),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: AppColors.white,
+            backgroundColor: const Color(0xFF1C2938),
+            foregroundColor: Colors.white,
             minimumSize: const Size.fromHeight(54),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(999),
             ),
             elevation: 0,
             shadowColor: Colors.transparent,
@@ -762,14 +850,29 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
             ),
           ),
         ),
-        outlinedButtonTheme: OutlinedButtonThemeData(
-          style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.primary,
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            backgroundColor: const Color(0xFF1C2938),
+            foregroundColor: Colors.white,
             minimumSize: const Size.fromHeight(54),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(999),
             ),
-            side: const BorderSide(color: AppColors.border),
+            elevation: 0,
+            textStyle: GoogleFonts.inter(
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+            ),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFF1C2938),
+            minimumSize: const Size.fromHeight(54),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(999),
+            ),
+            side: const BorderSide(color: Color(0xFF1C2938)),
             textStyle: GoogleFonts.inter(
               fontWeight: FontWeight.w600,
               fontSize: 15,

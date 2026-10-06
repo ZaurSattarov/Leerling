@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../arrival/live_aankomst_banner_logic.dart';
+import '../../../core/constants/cool_icons.dart';
 
 /// Altijd-aanwezige Live Aankomst-banner op Lesdetails (2026-09-03).
 ///
@@ -33,8 +34,8 @@ class LiveAankomstBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final (icoon, iconBg, iconColor, titel, tekst) = switch (status) {
       LiveAankomstBannerStatus.voorVenster => (
-          Icons.location_on_outlined,
-          const Color(0xFFF0F2F5),
+          CoolIcons.mapPin,
+          AppColors.neutralBg,
           AppColors.textPrimary,
           'Live Aankomst',
           vensterOpentOp != null
@@ -43,7 +44,7 @@ class LiveAankomstBanner extends StatelessWidget {
               : 'De live locatie van je instructeur wordt binnenkort zichtbaar.',
         ),
       LiveAankomstBannerStatus.vensterOpenNietGestart => (
-          Icons.location_on_outlined,
+          CoolIcons.mapPin,
           AppColors.primaryLight,
           AppColors.primary,
           'Live Aankomst',
@@ -51,7 +52,7 @@ class LiveAankomstBanner extends StatelessWidget {
               'onderweg is, zie je hem hier op de kaart.',
         ),
       LiveAankomstBannerStatus.actief => (
-          Icons.directions_car_filled_rounded,
+          CoolIcons.carAuto,
           AppColors.successBg,
           AppColors.success,
           'Live Aankomst actief',

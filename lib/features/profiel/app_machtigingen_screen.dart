@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
+import '../../core/constants/cool_icons.dart';
 
 class AppMachtigingenScreen extends StatelessWidget {
   const AppMachtigingenScreen({super.key});
@@ -28,7 +29,7 @@ class AppMachtigingenScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       IconBadge(
-                        icon: Icons.notifications_none_rounded,
+                        icon: CoolIcons.bell,
                         color: AppColors.iconPrimary,
                       ),
                       SizedBox(width: 14),
@@ -48,7 +49,7 @@ class AppMachtigingenScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       IconBadge(
-                        icon: Icons.photo_camera_outlined,
+                        icon: CoolIcons.image02,
                         color: AppColors.iconPrimary,
                       ),
                       SizedBox(width: 14),

@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import 'auth_design.dart';
+import '../../core/constants/cool_icons.dart';
 
 class WachtwoordVergetenScreen extends StatefulWidget {
   const WachtwoordVergetenScreen({super.key});
@@ -77,7 +78,7 @@ class _WachtwoordVergetenScreenState extends State<WachtwoordVergetenScreen> {
       backgroundColor: AppColors.surface,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(CoolIcons.chevronLeft),
           onPressed: () => context.go('/login'),
         ),
         title: const Text('Wachtwoord vergeten'),
@@ -127,7 +128,7 @@ class _WachtwoordVergetenScreenState extends State<WachtwoordVergetenScreen> {
                       enableSuggestions: false,
                       decoration: AuthDesign.inputDecoration(
                         hint: 'E-mailadres',
-                        iconData: Icons.email_outlined,
+                        iconData: CoolIcons.mail,
                       ),
                       validator: AuthDesign.validateEmail,
                       onFieldSubmitted: (_) => _reset(),
@@ -140,13 +141,13 @@ class _WachtwoordVergetenScreenState extends State<WachtwoordVergetenScreen> {
                           vertical: 12,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF0F2F5),
+                          color: AppColors.neutralBg,
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: const Color(0xFFE2E2E7)),
+                          border: Border.all(color: AppColors.border),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.error_outline_rounded,
+                            const Icon(CoolIcons.circleWarning,
                                 color: AuthDesign.error, size: 18),
                             const SizedBox(width: 10),
                             Expanded(

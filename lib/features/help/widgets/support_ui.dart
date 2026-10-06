@@ -13,7 +13,7 @@ class SupportUi {
   SupportUi._();
 
   static const iconBox = 36.0;
-  static const iconBg = Color(0xFFF0F2F5);
+  static const iconBg = AppColors.neutralBg;
   static const accent = Color(0xFF5645D4);
 
   static String formatWhen(DateTime value) {
@@ -38,7 +38,7 @@ class SupportStatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final (bg, fg) = switch (status) {
       SupportThreadStatus.waitingForSupport => (
-          const Color(0xFFF0F2F5),
+          AppColors.neutralBg,
           AppColors.textSecondary,
         ),
       SupportThreadStatus.waitingForUser => (
@@ -46,11 +46,11 @@ class SupportStatusChip extends StatelessWidget {
           AppColors.infoSolid,
         ),
       SupportThreadStatus.closed => (
-          const Color(0xFFF0F2F5),
+          AppColors.neutralBg,
           AppColors.textHint,
         ),
       SupportThreadStatus.open => (
-          const Color(0xFFF0F2F5),
+          AppColors.neutralBg,
           AppColors.textSecondary,
         ),
     };
@@ -97,7 +97,7 @@ class SupportPrimaryButton extends StatelessWidget {
           disabledBackgroundColor: AppColors.neutralBg,
           disabledForegroundColor: AppColors.textHint,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(999),
           ),
         ),
         child: loading

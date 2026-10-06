@@ -7,6 +7,7 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import '../../shared/widgets/status_pill.dart';
 import 'lespakket_voortgang_provider.dart';
+import '../../core/constants/cool_icons.dart';
 
 class LespakketDetailScreen extends ConsumerWidget {
   const LespakketDetailScreen({super.key});
@@ -27,7 +28,7 @@ class LespakketDetailScreen extends ConsumerWidget {
               data: (data) {
                 if (data == null) {
                   return const EmptyState(
-                    icon: Icons.person_off_outlined,
+                    icon: CoolIcons.userClose,
                     title: 'Geen profiel gevonden',
                   );
                 }
@@ -37,7 +38,7 @@ class LespakketDetailScreen extends ConsumerWidget {
                 child: CircularProgressIndicator(color: AppColors.primary),
               ),
               error: (e, _) => EmptyState(
-                icon: Icons.wifi_off_rounded,
+                icon: CoolIcons.cloudOff,
                 title: 'Kon lespakket niet laden',
                 subtitle: e.toString(),
               ),
@@ -72,7 +73,7 @@ class _LespakketDetailBody extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const IconBadge(
-                      icon: Icons.route_rounded,
+                      icon: CoolIcons.navigation,
                       color: AppColors.primary,
                       size: 42,
                     ),
@@ -124,12 +125,12 @@ class _LespakketDetailBody extends ConsumerWidget {
                 const SizedBox(height: 16),
                 if (!data.heeftPakket)
                   const _InlineNotice(
-                    icon: Icons.info_outline_rounded,
+                    icon: CoolIcons.info,
                     text: 'Geen pakket ingesteld',
                   )
                 else if (data.heeftExtraLessen)
                   _InlineNotice(
-                    icon: Icons.add_circle_outline_rounded,
+                    icon: CoolIcons.addPlusCircle,
                     text:
                         '${data.extraLessen} extra les${data.extraLessen == 1 ? '' : 'sen'} gevolgd boven je pakket.',
                   ),
@@ -205,7 +206,7 @@ class _LespakketDetailBody extends ConsumerWidget {
           if (tijdlijn.isEmpty)
             const AppCard(
               child: EmptyState(
-                icon: Icons.event_busy_rounded,
+                icon: CoolIcons.calendarClose,
                 title: 'Nog geen lessen',
                 subtitle:
                     'Afgeronde en geplande lessen verschijnen hier zodra ze beschikbaar zijn.',
@@ -280,13 +281,13 @@ class _InlineNotice extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
+        color: AppColors.neutralBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E2E7)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppColors.primary, size: 18),
+          Icon(icon, color: AppColors.iconPrimary, size: 18),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -369,13 +370,13 @@ class _LesTimelineCard extends StatelessWidget {
   IconData get _icon {
     switch (les.status) {
       case LesStatus.afgerond:
-        return Icons.check_rounded;
+        return CoolIcons.check;
       case LesStatus.gepland:
-        return Icons.event_available_rounded;
+        return CoolIcons.calendarCheck;
       case LesStatus.geannuleerd:
       case LesStatus.verzet:
       case LesStatus.geen_toon:
-        return Icons.event_busy_rounded;
+        return CoolIcons.calendarClose;
     }
   }
 

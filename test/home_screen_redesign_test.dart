@@ -275,7 +275,7 @@ void main() {
       );
       expect(ring.value, closeTo(0.27, 0.001));
       expect(ring.valueColor?.value, AppColors.primary);
-      expect(ring.backgroundColor, const Color(0xFFF0F2F5));
+      expect(ring.backgroundColor, AppColors.neutralBg);
       expect(tester.takeException(), isNull);
     });
 
@@ -578,9 +578,14 @@ void main() {
       // De notificatie-navigatie zelf is sinds de header-refactor verplaatst
       // naar de gedeelde HomeHeader (shared/widgets/home_header.dart) --
       // home_screen.dart geeft alleen nog de losse waarden door.
+      // Sinds 2026-10-06 is dat de gedeelde, geanimeerde bel uit de
+      // Instructeur-app (MainHeaderNotificatieKnop in main_tab_header.dart).
       final headerBron =
           File('lib/shared/widgets/home_header.dart').readAsStringSync();
-      expect(headerBron, contains("context.go('/notificaties')"));
+      expect(headerBron, contains('MainHeaderNotificatieKnop()'));
+      final belBron =
+          File('lib/shared/widgets/main_tab_header.dart').readAsStringSync();
+      expect(belBron, contains("context.push('/notificaties')"));
     });
 
     test('header en business-providers blijven ongewijzigd', () {

@@ -9,6 +9,7 @@ import 'package:leerling_app/models/arrival_session.dart';
 import 'package:leerling_app/models/les.dart';
 
 import 'fakes.dart';
+import 'package:leerling_app/core/constants/cool_icons.dart';
 
 Les _bouwLes({String? locatie, String id = 'les-1'}) {
   return Les(
@@ -92,7 +93,7 @@ void main() {
       expect(find.byType(GoogleMap), findsOneWidget);
       expect(find.text('Instructeur onderweg'), findsOneWidget);
       expect(find.text('Overtoom 283, Amsterdam'), findsOneWidget);
-      expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
+      expect(find.byIcon(CoolIcons.chevronLeft), findsOneWidget);
 
       // Geen technische termen/ETA in de zichtbare UI.
       expect(find.textContaining('ETA'), findsNothing);
@@ -122,7 +123,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(LiveAankomstFullscreenScreen), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.arrow_back_rounded));
+      await tester.tap(find.byIcon(CoolIcons.chevronLeft));
       await tester.pumpAndSettle();
 
       expect(find.byType(LiveAankomstFullscreenScreen), findsNothing);
@@ -182,7 +183,7 @@ void main() {
       expect(find.byType(GoogleMap), findsOneWidget);
       expect(find.text('Ophaallocatie'), findsOneWidget);
       expect(find.text('Amsterdam'), findsOneWidget);
-      expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
+      expect(find.byIcon(CoolIcons.chevronLeft), findsOneWidget);
       // Secundaire externe-navigatie-actie is beschikbaar, maar apart van
       // de hoofdkaart/terugknop.
       expect(find.bySemanticsLabel('Route openen in Maps'), findsOneWidget);

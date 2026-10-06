@@ -9,6 +9,7 @@ import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import '../../shared/widgets/snackbar.dart';
+import '../../core/constants/cool_icons.dart';
 
 // ─── Screen ───────────────────────────────────────────────────────
 
@@ -115,8 +116,8 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
       confirm = await showDialog<bool>(
             context: context,
             builder: (ctx) => AlertDialog(
-              shape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               title: const Text('Verwijderen',
                   style: TextStyle(fontWeight: FontWeight.w700)),
               content: Text(
@@ -164,7 +165,7 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               elevation: 0,
-              icon: const Icon(Icons.add_rounded, size: 20),
+              icon: const Icon(CoolIcons.addPlus, size: 20),
               label: const Text('Tijd toevoegen',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
             ),
@@ -197,14 +198,8 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
                                       Container(
                                         width: 34,
                                         height: 34,
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFFF0F2F5),
-                                          borderRadius:
-                                              BorderRadius.circular(9),
-                                        ),
-                                        child: const Icon(
-                                            Icons.info_outline_rounded,
-                                            color: AppColors.iconDark,
+                                        child: const Icon(CoolIcons.info,
+                                            color: AppColors.iconPrimary,
                                             size: 17),
                                       ),
                                       const SizedBox(width: 12),
@@ -229,7 +224,7 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
                               const SliverFillRemaining(
                                 hasScrollBody: false,
                                 child: EmptyState(
-                                  icon: Icons.schedule_outlined,
+                                  icon: CoolIcons.clock,
                                   title:
                                       'Je hebt nog geen beschikbaarheid toegevoegd.',
                                   subtitle:
@@ -291,7 +286,7 @@ class _BeschikbaarheidTegel extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: const Color(0xFFF0F2F5),
+              color: AppColors.neutralBg,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
@@ -336,9 +331,7 @@ class _BeschikbaarheidTegel extends StatelessWidget {
             children: List.generate(
               5,
               (i) => Icon(
-                i < item.voorkeurScore
-                    ? Icons.star_rounded
-                    : Icons.star_outline_rounded,
+                i < item.voorkeurScore ? CoolIcons.star : CoolIcons.star,
                 size: 14,
                 color: i < item.voorkeurScore
                     ? AppColors.warningSolid
@@ -349,8 +342,8 @@ class _BeschikbaarheidTegel extends StatelessWidget {
 
           // Verwijder knop
           IconButton(
-            icon: const Icon(Icons.delete_outline_rounded,
-                color: AppColors.textHint, size: 20),
+            icon: const Icon(CoolIcons.trashEmpty,
+                color: AppColors.iconPrimary, size: 20),
             onPressed: onVerwijder,
             style: IconButton.styleFrom(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -455,8 +448,7 @@ class _BeschikbaarheidFormulierState
       '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
 
   TimeOfDay? _parseTijd(String raw) {
-    final match =
-        RegExp(r'^([01]\d|2[0-3]):([0-5]\d)$').firstMatch(raw.trim());
+    final match = RegExp(r'^([01]\d|2[0-3]):([0-5]\d)$').firstMatch(raw.trim());
     if (match == null) return null;
     return TimeOfDay(
       hour: int.parse(match.group(1)!),
@@ -683,9 +675,7 @@ class _BeschikbaarheidFormulierState
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Icon(
-                        (i + 1) <= _score
-                            ? Icons.star_rounded
-                            : Icons.star_outline_rounded,
+                        (i + 1) <= _score ? CoolIcons.star : CoolIcons.star,
                         size: 34,
                         color: (i + 1) <= _score
                             ? AppColors.warningSolid
@@ -712,9 +702,9 @@ class _BeschikbaarheidFormulierState
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF0F2F5),
+                    color: AppColors.neutralBg,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFFE2E2E7)),
+                    border: Border.all(color: AppColors.border),
                   ),
                   child: Text(_fout!,
                       style: const TextStyle(
@@ -785,7 +775,8 @@ class _TijdVeldKaart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final randKleur = heeftFout ? AppColors.dangerSolid : AppColors.border;
-    final focusRandKleur = heeftFout ? AppColors.dangerSolid : AppColors.primary;
+    final focusRandKleur =
+        heeftFout ? AppColors.dangerSolid : AppColors.primary;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -879,7 +870,7 @@ class _SnelleTijdChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (selected) ...[
-              const Icon(Icons.check_rounded, size: 14, color: Colors.white),
+              const Icon(CoolIcons.check, size: 14, color: Colors.white),
               const SizedBox(width: 4),
             ],
             Text(
@@ -911,7 +902,7 @@ class _FoutWeergave extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.wifi_off_rounded,
+            const Icon(CoolIcons.cloudOff,
                 size: 48, color: AppColors.dangerSolid),
             const SizedBox(height: 16),
             const Text('Kon gegevens niet laden',

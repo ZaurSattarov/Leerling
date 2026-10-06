@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import '../../shared/providers/auth_provider.dart';
+import '../../core/constants/cool_icons.dart';
 
 /// Landing-scherm na registratie/login voor leerlingen die nog niet gekoppeld
 /// zijn aan een rijschool. Toont TWEE opties:
@@ -53,12 +54,8 @@ class KoppelKeuzeScreen extends ConsumerWidget {
                 child: Container(
                   width: 72,
                   height: 72,
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryLight,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Icon(Icons.school_rounded,
-                      color: AppColors.primary, size: 36),
+                  child: const Icon(CoolIcons.bookOpen,
+                      color: AppColors.iconPrimary, size: 36),
                 ),
               ),
               const SizedBox(height: 24),
@@ -81,9 +78,8 @@ class KoppelKeuzeScreen extends ConsumerWidget {
                     fontSize: 14, color: AppColors.textSecondary, height: 1.5),
               ),
               const SizedBox(height: 32),
-
               _KoppelOptieKaart(
-                icoon: Icons.qr_code_scanner_rounded,
+                icoon: CoolIcons.scanLine,
                 titel: 'Scan QR-code',
                 omschrijving:
                     'Richt je camera op de QR-code die je van je rijinstructeur '
@@ -110,13 +106,11 @@ class KoppelKeuzeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               _KoppelOptieKaart(
-                icoon: Icons.keyboard_rounded,
+                icoon: CoolIcons.text,
                 titel: 'Koppelcode invoeren',
-                omschrijving:
-                    'Typ de 8-tekens koppelcode handmatig in.',
+                omschrijving: 'Typ de 8-tekens koppelcode handmatig in.',
                 onTap: () => context.push('/koppelcode/handmatig'),
               ),
-
               const SizedBox(height: 32),
               const Center(
                 child: Text(
@@ -161,28 +155,16 @@ class _KoppelOptieKaart extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color:
-                  aanbevolen ? AppColors.primary : AppColors.borderLight,
+              color: aanbevolen ? AppColors.primary : AppColors.borderLight,
               width: aanbevolen ? 1.5 : 1,
             ),
           ),
           child: Row(
             children: [
-              Container(
+              SizedBox(
                 width: 52,
                 height: 52,
-                decoration: BoxDecoration(
-                  color: aanbevolen
-                      ? AppColors.primaryLight
-                      : AppColors.iconPrimaryBg,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(
-                  icoon,
-                  color:
-                      aanbevolen ? AppColors.primary : AppColors.iconPrimary,
-                  size: 26,
-                ),
+                child: Icon(icoon, color: AppColors.iconPrimary, size: 28),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -234,8 +216,7 @@ class _KoppelOptieKaart extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(Icons.chevron_right_rounded,
-                  color: AppColors.textHint),
+              const Icon(CoolIcons.chevronRight, color: AppColors.iconPrimary),
             ],
           ),
         ),

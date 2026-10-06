@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/cool_icons.dart';
 
 class ProfielMenuCard extends StatelessWidget {
   final List<Widget> children;
@@ -76,12 +77,7 @@ class ProfielMenuTile extends StatelessWidget {
             Container(
               width: 36,
               height: 36,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF0F2F5),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFE4E5E7)),
-              ),
-              child: Icon(icon, color: const Color(0xFF475569), size: 18),
+              child: Icon(icon, color: AppColors.iconPrimary, size: 18),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -116,7 +112,7 @@ class ProfielMenuTile extends StatelessWidget {
             if (onTap != null) ...[
               const SizedBox(width: 6),
               const Icon(
-                Icons.chevron_right_rounded,
+                CoolIcons.chevronRight,
                 color: Color(0x52222936),
                 size: 17,
               ),

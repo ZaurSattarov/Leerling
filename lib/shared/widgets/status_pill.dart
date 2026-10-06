@@ -3,6 +3,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/factuur_status.dart';
 import '../../models/les.dart';
 import '../../models/factuur.dart';
+import 'status_badge.dart';
 
 class StatusPill extends StatelessWidget {
   final String label;
@@ -18,37 +19,33 @@ class StatusPill extends StatelessWidget {
     this.borderColor,
   });
 
+  /// Zelfde solide statuskleuren als de Instructeur-app (StatusPill.les).
   factory StatusPill.les(LesStatus status) {
     return switch (status) {
       LesStatus.gepland => const StatusPill(
           label: 'Gepland',
-          backgroundColor: Color(0xFFF0F2F5),
-          textColor: AppColors.textPrimary,
-          borderColor: Color(0xFFE2E2E7),
+          backgroundColor: AppColors.infoSolid,
+          textColor: Colors.white,
         ),
       LesStatus.afgerond => const StatusPill(
           label: 'Afgerond',
-          backgroundColor: Color(0xFFF0F2F5),
-          textColor: AppColors.successSolid,
-          borderColor: Color(0xFFE2E2E7),
+          backgroundColor: Color(0xFF4F46E5),
+          textColor: Colors.white,
         ),
       LesStatus.geannuleerd => const StatusPill(
           label: 'Geannuleerd',
-          backgroundColor: Color(0xFFF0F2F5),
-          textColor: AppColors.textSecondary,
-          borderColor: Color(0xFFE2E2E7),
+          backgroundColor: AppColors.dangerSolid,
+          textColor: Colors.white,
         ),
       LesStatus.verzet => const StatusPill(
           label: 'Verzet',
-          backgroundColor: Color(0xFFF0F2F5),
-          textColor: AppColors.textSecondary,
-          borderColor: Color(0xFFE2E2E7),
+          backgroundColor: AppColors.infoSolid,
+          textColor: Colors.white,
         ),
       LesStatus.geen_toon => const StatusPill(
-          label: 'Geen toon',
-          backgroundColor: Color(0xFFF0F2F5),
-          textColor: AppColors.dangerSolid,
-          borderColor: Color(0xFFE2E2E7),
+          label: 'No show',
+          backgroundColor: Color(0xFF991B1B),
+          textColor: Colors.white,
         ),
     };
   }
@@ -65,24 +62,12 @@ class StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(999),
-        border: borderColor != null
-            ? Border.all(color: borderColor!, width: 0.75)
-            : null,
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          color: textColor,
-          letterSpacing: 0.1,
-        ),
-      ),
+    // Solide, uppercase badge -- zelfde weergave als StatusBadge in de
+    // Instructeur-app (kleurvlak + lichte gekleurde gloed).
+    return StatusBadge(
+      label: label,
+      backgroundColor: backgroundColor,
+      textColor: textColor,
     );
   }
 }

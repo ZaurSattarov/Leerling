@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/cool_icons.dart';
 
 /// Klantio Intern Beheerplatform — accountblokkade (Optie B, 2026-09-01).
 ///
@@ -33,9 +34,9 @@ class AccountGeblokkeerdScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  isSuspended ? Icons.pause_circle_outline : Icons.block,
+                  isSuspended ? CoolIcons.pauseCircle : CoolIcons.stopSign,
                   size: 64,
-                  color: AppColors.primary,
+                  color: AppColors.iconPrimary,
                 ),
                 const SizedBox(height: 20),
                 Text(
@@ -51,7 +52,8 @@ class AccountGeblokkeerdScreen extends StatelessWidget {
                 const Text(
                   'Neem contact op met Klantio Support.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
+                  style:
+                      TextStyle(fontSize: 15, color: AppColors.textSecondary),
                 ),
                 const SizedBox(height: 32),
                 OutlinedButton(

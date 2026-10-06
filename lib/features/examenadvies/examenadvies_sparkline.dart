@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import 'examenadvies_data.dart';
 import 'examenadvies_ontwikkeling.dart';
+import '../../core/constants/cool_icons.dart';
 
 class ExamenadviesSparkline extends StatelessWidget {
   final ExamenadviesSparklineData? data;
@@ -69,10 +70,10 @@ Color _trendKleur(VaardigheidTrend trend) {
 
 IconData _trendIcoon(VaardigheidTrend trend) {
   return switch (trend) {
-    VaardigheidTrend.stijgt => Icons.trending_up_rounded,
-    VaardigheidTrend.daalt => Icons.trending_down_rounded,
-    VaardigheidTrend.stabiel => Icons.trending_flat_rounded,
-    VaardigheidTrend.onbekend => Icons.trending_flat_rounded,
+    VaardigheidTrend.stijgt => CoolIcons.trendingUp,
+    VaardigheidTrend.daalt => CoolIcons.trendingDown,
+    VaardigheidTrend.stabiel => CoolIcons.arrowRightMd,
+    VaardigheidTrend.onbekend => CoolIcons.arrowRightMd,
   };
 }
 

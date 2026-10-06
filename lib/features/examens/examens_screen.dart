@@ -6,6 +6,7 @@ import '../../models/examen.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'examens_provider.dart';
+import '../../core/constants/cool_icons.dart';
 
 class ExamensScreen extends ConsumerStatefulWidget {
   final String? highlightExamId;
@@ -68,7 +69,7 @@ class _ExamensScreenState extends ConsumerState<ExamensScreen> {
                       if (examens.isEmpty) {
                         return const SliverFillRemaining(
                           child: EmptyState(
-                            icon: Icons.quiz_outlined,
+                            icon: CoolIcons.circleHelp,
                             title: 'Geen examens',
                             subtitle:
                                 'Je instructeur heeft nog geen examens ingepland.',
@@ -135,7 +136,7 @@ class _ExamensScreenState extends ConsumerState<ExamensScreen> {
                     ),
                     error: (e, _) => SliverFillRemaining(
                       child: EmptyState(
-                        icon: Icons.wifi_off_rounded,
+                        icon: CoolIcons.cloudOff,
                         title: 'Kon examens niet laden',
                         subtitle: e.toString(),
                       ),
@@ -175,11 +176,11 @@ class _ExamenCard extends StatelessWidget {
   IconData get _typeIcon {
     switch (examen.type) {
       case ExamenType.praktijk:
-        return Icons.directions_car_rounded;
+        return CoolIcons.carAuto;
       case ExamenType.theorie:
-        return Icons.menu_book_rounded;
+        return CoolIcons.bookOpen;
       case ExamenType.ttt:
-        return Icons.assignment_rounded;
+        return CoolIcons.fileEdit;
     }
   }
 
@@ -193,104 +194,104 @@ class _ExamenCard extends StatelessWidget {
             )
           : null,
       child: AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IconBadge(icon: _typeIcon, color: _statusColor, size: 44),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      examen.type.label,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      DatumUtils.langeDatum(examen.datum),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              _StatusBadge(status: examen.status),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              if (examen.tijdstip?.isNotEmpty == true) ...[
-                const Icon(Icons.schedule_outlined,
-                    size: 14, color: AppColors.textHint),
-                const SizedBox(width: 4),
-                Text(
-                  examen.tijdstip!,
-                  style: const TextStyle(
-                      fontSize: 12, color: AppColors.textSecondary),
-                ),
-                const SizedBox(width: 16),
-              ],
-              if (examen.locatie?.isNotEmpty == true) ...[
-                const Icon(Icons.location_on_outlined,
-                    size: 14, color: AppColors.textHint),
-                const SizedBox(width: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconBadge(icon: _typeIcon, color: _statusColor, size: 44),
+                const SizedBox(width: 14),
                 Expanded(
-                  child: Text(
-                    examen.locatie!,
-                    style: const TextStyle(
-                        fontSize: 12, color: AppColors.textSecondary),
-                    overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        examen.type.label,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        DatumUtils.langeDatum(examen.datum),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+                _StatusBadge(status: examen.status),
               ],
-            ],
-          ),
-          if (examen.pogingNummer > 1) ...[
-            const SizedBox(height: 8),
-            Text(
-              'Poging ${examen.pogingNummer}',
-              style: const TextStyle(fontSize: 12, color: AppColors.textHint),
             ),
-          ],
-          if (examen.foutpunten != null) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: 14),
             Row(
               children: [
-                const Icon(Icons.error_outline_rounded,
-                    size: 14, color: AppColors.textHint),
-                const SizedBox(width: 4),
-                Text(
-                  '${examen.foutpunten} foutpunten',
-                  style: const TextStyle(
-                      fontSize: 12, color: AppColors.textSecondary),
-                ),
+                if (examen.tijdstip?.isNotEmpty == true) ...[
+                  const Icon(CoolIcons.clock,
+                      size: 14, color: AppColors.iconPrimary),
+                  const SizedBox(width: 4),
+                  Text(
+                    examen.tijdstip!,
+                    style: const TextStyle(
+                        fontSize: 12, color: AppColors.textSecondary),
+                  ),
+                  const SizedBox(width: 16),
+                ],
+                if (examen.locatie?.isNotEmpty == true) ...[
+                  const Icon(CoolIcons.mapPin,
+                      size: 14, color: AppColors.iconPrimary),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      examen.locatie!,
+                      style: const TextStyle(
+                          fontSize: 12, color: AppColors.textSecondary),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ],
             ),
-          ],
-          if (examen.notities?.isNotEmpty == true) ...[
-            const SizedBox(height: 10),
-            Text(
-              examen.notities!,
-              style: const TextStyle(
-                fontSize: 13,
-                height: 1.4,
-                color: AppColors.textSecondary,
+            if (examen.pogingNummer > 1) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Poging ${examen.pogingNummer}',
+                style: const TextStyle(fontSize: 12, color: AppColors.textHint),
               ),
-            ),
+            ],
+            if (examen.foutpunten != null) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  const Icon(CoolIcons.circleWarning,
+                      size: 14, color: AppColors.iconPrimary),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${examen.foutpunten} foutpunten',
+                    style: const TextStyle(
+                        fontSize: 12, color: AppColors.textSecondary),
+                  ),
+                ],
+              ),
+            ],
+            if (examen.notities?.isNotEmpty == true) ...[
+              const SizedBox(height: 10),
+              Text(
+                examen.notities!,
+                style: const TextStyle(
+                  fontSize: 13,
+                  height: 1.4,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
           ],
-        ],
-      ),
+        ),
       ),
     );
   }

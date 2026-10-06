@@ -6,6 +6,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/services/avatar_service.dart';
 import '../../core/services/student_service.dart';
 import '../../shared/providers/auth_provider.dart';
+import '../../core/constants/cool_icons.dart';
 
 class ProfielAfrondenScreen extends ConsumerStatefulWidget {
   const ProfielAfrondenScreen({super.key});
@@ -146,7 +147,7 @@ class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
             const SizedBox(height: 14),
             OutlinedButton.icon(
                 onPressed: _pickDate,
-                icon: const Icon(Icons.cake_outlined),
+                icon: const Icon(CoolIcons.gift),
                 label: Text(_geboortedatum == null
                     ? 'Kies geboortedatum'
                     : '${_geboortedatum!.day}-${_geboortedatum!.month}-${_geboortedatum!.year}')),

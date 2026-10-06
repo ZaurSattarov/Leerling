@@ -9,6 +9,7 @@ import '../../core/services/push_service.dart';
 import '../../core/services/student_service.dart';
 import 'splash_layout.dart';
 import 'splash_phase_animations.dart';
+import 'widgets/splash_logo_mark.dart';
 import 'widgets/splash_svg_element.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -20,20 +21,17 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
-  // Visuele opbouw/animatie 1-op-1 overgenomen van de Instructeur-app
-  // (rijschool-planner-flutter/lib/features/splash/splash_screen.dart,
-  // KlantioStartupSplash) zodat beide apps dezelfde startup-splash tonen --
-  // Instructeur = bron van waarheid. Alleen de assets (ICON/KLANTIO/
-  // LEERLINGENPORTAAL i.p.v. L icon/KLANTIO/RIJPLANNER) en de
-  // achtergrondkleur (#131528 i.p.v. AppColors.primary) wijken af. De
-  // bestaande bootstrap-/routinglogica hieronder (auth-check, redirect naar
-  // /login, /verificatie, /home, /koppelcode) is bewust ongewijzigd
-  // gelaten -- dit widget blijft, anders dan de Instructeur-splash, een
-  // geroute pagina die zelf navigeert na afloop van de animatie.
-  static const _lIconAssetPath = 'assets/Splash Screen/l ICON.svg';
+  // Opbouw (lay-out, woordmerk-wipe, korte tijdlijn) volgt de
+  // Instructeur-splash (rijschool-planner-flutter/lib/features/splash/).
+  // Eigen aan de Leerling-app: het merkteken "Behaald" bouwt zichzelf op
+  // uit vier blokken + het doel-hoekje (zie SplashLogoMark), en de
+  // achtergrond is het donker van het Leerling-app-icoon. De bestaande
+  // bootstrap-/routinglogica hieronder (auth-check, redirect naar /login,
+  // /verificatie, /home, /koppelcode) is bewust ongewijzigd gelaten -- dit
+  // widget blijft een geroute pagina die zelf navigeert na afloop van de
+  // animatie.
   static const _klantioAssetPath = 'assets/Splash Screen/KLANTIO.svg';
-  static const _portaalAssetPath =
-      'assets/Splash Screen/LEERLINGENPORTAAL.svg';
+  static const _portaalAssetPath = 'assets/Splash Screen/LEERLINGENPORTAAL.svg';
 
   late final AnimationController _ctrl;
   late final SplashPhaseAnimations _phases;
@@ -107,23 +105,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           final composition = SplashLayout.composeFor(
             MediaQuery.sizeOf(context).width,
           );
-          final canvas = _SplashCanvas(
+          final exit = _phases.exitFade.value.clamp(0.0, 1.0);
+
+          return _SplashCanvas(
             composition: composition,
-            lIcon: SplashSvgElement(
-              elementKey: const ValueKey('splash-l-icon'),
-              assetPath: _lIconAssetPath,
-              width: composition.lSize,
-              height: composition.lSize,
-              appear: _phases.lAppear,
-              appearScaleFrom: 0.92,
+            exitProgress: exit,
+            mark: SplashLogoMark(
+              elementKey: const ValueKey('splash-logo-mark'),
+              size: composition.markSize,
+              phases: _phases,
             ),
             klantio: SplashSvgElement(
               elementKey: const ValueKey('splash-klantio'),
               assetPath: _klantioAssetPath,
               width: composition.klantioWidth,
               height: composition.klantioHeight,
-              appear: _phases.klantioAppear,
-              appearScaleFrom: 0.97,
+              appear: _phases.klantioReveal,
+              wipe: true,
             ),
             portaal: SplashSvgElement(
               elementKey: const ValueKey('splash-leerlingenportaal'),
@@ -133,157 +131,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               appear: _phases.portaalAppear,
             ),
           );
-
-          return _SplashCurtainSplit(
-            lineProgress: _phases.centerLineAppear.value,
-            splitProgress: _phases.curtainSplit.value,
-            child: canvas,
-          );
         },
       ),
-    );
-  }
-}
-
-class _LeftHalfClipper extends CustomClipper<Rect> {
-  const _LeftHalfClipper();
-
-  @override
-  Rect getClip(Size size) => Rect.fromLTRB(0, 0, size.width / 2, size.height);
-
-  @override
-  bool shouldReclip(CustomClipper<Rect> oldClipper) => false;
-}
-
-class _RightHalfClipper extends CustomClipper<Rect> {
-  const _RightHalfClipper();
-
-  @override
-  Rect getClip(Size size) =>
-      Rect.fromLTRB(size.width / 2, 0, size.width, size.height);
-
-  @override
-  bool shouldReclip(CustomClipper<Rect> oldClipper) => false;
-}
-
-/// Transitie-animatie: witte lichtlijn verschijnt in het midden en splitst
-/// naar links en rechts (shutter reveal) om het achterliggende dashboard te onthullen.
-class _SplashCurtainSplit extends StatelessWidget {
-  final double lineProgress;
-  final double splitProgress;
-  final Widget child;
-
-  const _SplashCurtainSplit({
-    required this.lineProgress,
-    required this.splitProgress,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (lineProgress <= 0.0 && splitProgress <= 0.0) {
-      return child;
-    }
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final size = constraints.biggest;
-        final halfWidth = size.width / 2;
-        final splitDistance = halfWidth * splitProgress;
-
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            // Linker paneel dat naar links wegschuift
-            if (splitProgress < 1.0)
-              Positioned(
-                left: -splitDistance,
-                top: 0,
-                width: size.width,
-                height: size.height,
-                child: ClipRect(
-                  clipper: const _LeftHalfClipper(),
-                  child: child,
-                ),
-              ),
-
-            // Rechter paneel dat naar rechts wegschuift
-            if (splitProgress < 1.0)
-              Positioned(
-                left: splitDistance,
-                top: 0,
-                width: size.width,
-                height: size.height,
-                child: ClipRect(
-                  clipper: const _RightHalfClipper(),
-                  child: child,
-                ),
-              ),
-
-            // Witte lichtlijn in het midden en splitsende randlijnen
-            if (lineProgress > 0.0 && splitProgress < 1.0) ...[
-              if (splitProgress == 0.0)
-                Center(
-                  child: Container(
-                    width: 3.0,
-                    height: size.height * lineProgress,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(1.5),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.9),
-                          blurRadius: 10,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              else ...[
-                // Linker randlijn
-                Positioned(
-                  left: halfWidth - splitDistance - 1.5,
-                  top: 0,
-                  bottom: 0,
-                  width: 3.0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.8),
-                          blurRadius: 8,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                // Rechter randlijn
-                Positioned(
-                  left: halfWidth + splitDistance - 1.5,
-                  top: 0,
-                  bottom: 0,
-                  width: 3.0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.8),
-                          blurRadius: 8,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ],
-        );
-      },
     );
   }
 }
@@ -299,20 +148,23 @@ class _SplashProfileResult {
 }
 
 /// Legt de vaste lay-out van de splash vast: effen achtergrond +
-/// gecentreerde compositie van ICON, KLANTIO (gecentreerd) en
+/// gecentreerde compositie van het merkteken, KLANTIO (gecentreerd) en
 /// LEERLINGENPORTAAL (klein, rechts uitgelijnd onder het woordmerk) --
 /// zelfde structuur als `_SplashCanvas` in de Instructeur-app. Puur
-/// structuur -- alle beweging zit in de (intro-)animaties die van
-/// buitenaf worden doorgegeven; na de intro blijft alles gewoon stilstaan.
+/// structuur -- alle intro-beweging zit in de animaties die van buitenaf
+/// worden doorgegeven. Bij de uitgang stijgt de lockup licht op en vervaagt
+/// naar de achtergrond, waarna de splash zelf doornavigeert.
 class _SplashCanvas extends StatelessWidget {
   final SplashComposition composition;
-  final Widget lIcon;
+  final double exitProgress;
+  final Widget mark;
   final Widget klantio;
   final Widget portaal;
 
   const _SplashCanvas({
     required this.composition,
-    required this.lIcon,
+    required this.exitProgress,
+    required this.mark,
     required this.klantio,
     required this.portaal,
   });
@@ -322,32 +174,41 @@ class _SplashCanvas extends StatelessWidget {
     return ColoredBox(
       color: AppColors.splashBackground,
       child: Center(
-        child: SizedBox(
-          height: composition.totalHeight,
-          width: composition.klantioWidth,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              lIcon,
-              SizedBox(height: composition.gapLToKlantio),
-              klantio,
-              SizedBox(height: composition.gapKlantioToPortaal),
-              // LEERLINGENPORTAAL: klein, hangt net voorbij de rechterrand
-              // van het woordmerk -- exact dezelfde compositieregel als
-              // RIJPLANNER bij de Instructeur-app. De extra verticale drop
-              // is een pure paint-verschuiving (geen layout-effect), dus
-              // ICON/KLANTIO en hun centrering blijven ongewijzigd.
-              Transform.translate(
-                offset: Offset(
-                  composition.portaalRightOverhang,
-                  composition.portaalExtraDrop,
-                ),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: portaal,
+        child: Opacity(
+          opacity: 1.0 - exitProgress,
+          child: Transform.translate(
+            offset: Offset(0, -16 * composition.scale * exitProgress),
+            child: Transform.scale(
+              scale: 1.0 + 0.045 * exitProgress,
+              child: SizedBox(
+                height: composition.totalHeight,
+                width: composition.klantioWidth,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    mark,
+                    SizedBox(height: composition.gapMarkToKlantio),
+                    klantio,
+                    SizedBox(height: composition.gapKlantioToPortaal),
+                    // LEERLINGENPORTAAL: klein, hangt net voorbij de rechterrand
+                    // van het woordmerk -- exact dezelfde compositieregel als
+                    // RIJPLANNER bij de Instructeur-app. De extra verticale drop
+                    // is een pure paint-verschuiving (geen layout-effect), dus
+                    // merkteken/KLANTIO en hun centrering blijven ongewijzigd.
+                    Transform.translate(
+                      offset: Offset(
+                        composition.portaalRightOverhang,
+                        composition.portaalExtraDrop,
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: portaal,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/nav_shell_tokens.dart';
 import '../../core/services/push_service.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/leerling_profiel.dart';
@@ -17,6 +16,9 @@ import '../examenadvies/examenadvies_status_style.dart';
 import '../lesvoorbereiding/lesvoorbereiding_provider.dart';
 import 'home_coach_provider.dart';
 import 'home_provider.dart';
+import '../../core/constants/cool_icons.dart';
+import '../../shared/widgets/main_scaffold.dart';
+import '../../shared/widgets/klantio_pressable.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -75,8 +77,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     _bepaalUrgenteFactuurActie(home.openFacturen);
 
                 return SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(
-                      20, 20, 20, NavShellTokens.contentBottomClearance),
+                  padding: EdgeInsets.fromLTRB(
+                      20, 20, 20, MainShellContentInset.bottomOf(context)),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
                       // Kerncijfers
@@ -149,8 +151,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 );
               },
               loading: () => SliverPadding(
-                padding: const EdgeInsets.fromLTRB(
-                    20, 20, 20, NavShellTokens.contentBottomClearance),
+                padding: EdgeInsets.fromLTRB(
+                    20, 20, 20, MainShellContentInset.bottomOf(context)),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     const _SkeletonHero(),
@@ -163,7 +165,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               error: (e, _) => SliverFillRemaining(
                 child: EmptyState(
-                  icon: Icons.wifi_off_rounded,
+                  icon: CoolIcons.cloudOff,
                   title: 'Kon dashboard niet laden',
                   subtitle: e.toString(),
                 ),
@@ -243,24 +245,24 @@ class _StatsRow extends StatelessWidget {
         _StatCard(
           label: 'Lessen',
           value: '$lessenGevolgd/$lessenTotaal',
-          icon: Icons.school_rounded,
-          iconColor: AppColors.iconBlue,
+          icon: CoolIcons.bookOpen,
+          iconColor: AppColors.iconPrimary,
           onTap: () => context.go('/planning'),
         ),
         const SizedBox(width: 10),
         _StatCard(
           label: 'Voortgang',
           value: '$voortgangPct%',
-          icon: Icons.trending_up_rounded,
-          iconColor: AppColors.iconGreen,
+          icon: CoolIcons.trendingUp,
+          iconColor: AppColors.iconPrimary,
           onTap: () => context.go('/voortgang'),
         ),
         const SizedBox(width: 10),
         _StatCard(
           label: 'Facturen',
           value: '$openFacturen',
-          icon: Icons.receipt_long_rounded,
-          iconColor: AppColors.iconDark,
+          icon: CoolIcons.fileDocument,
+          iconColor: AppColors.iconPrimary,
           showBadge: heeftFacturen,
           onTap: () => context.go('/facturen'),
         ),
@@ -289,21 +291,14 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GestureDetector(
+      child: KlantioPressable(
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
           decoration: BoxDecoration(
             color: AppColors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.border, width: 1),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -315,10 +310,6 @@ class _StatCard extends StatelessWidget {
                   Container(
                     width: 28,
                     height: 28,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF0F2F5),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
                     child: Icon(icon, size: 15, color: iconColor),
                   ),
                   if (showBadge)
@@ -373,21 +364,14 @@ class _VolgendeLesHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return KlantioPressable(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.border, width: 0.75),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
           children: [
@@ -398,9 +382,9 @@ class _VolgendeLesHero extends StatelessWidget {
               width: 58,
               padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFF0F2F5),
+                color: AppColors.neutralBg,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFE2E2E7), width: 0.75),
+                border: Border.all(color: AppColors.border, width: 0.75),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -445,10 +429,9 @@ class _VolgendeLesHero extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF0F2F5),
+                      color: AppColors.neutralBg,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                          color: const Color(0xFFE2E2E7), width: 0.75),
+                      border: Border.all(color: AppColors.border, width: 0.75),
                     ),
                     child: const Text(
                       'Volgende les',
@@ -474,8 +457,8 @@ class _VolgendeLesHero extends StatelessWidget {
                   if (les.instructeurNaam?.isNotEmpty == true) ...[
                     Row(
                       children: [
-                        const Icon(Icons.person_outline_rounded,
-                            size: 13, color: AppColors.textHint),
+                        const Icon(CoolIcons.user01,
+                            size: 13, color: AppColors.iconPrimary),
                         const SizedBox(width: 4),
                         Text(
                           les.instructeurNaam!,
@@ -491,8 +474,8 @@ class _VolgendeLesHero extends StatelessWidget {
                   if (les.locatie?.isNotEmpty == true)
                     Row(
                       children: [
-                        const Icon(Icons.location_on_outlined,
-                            size: 13, color: AppColors.textHint),
+                        const Icon(CoolIcons.mapPin,
+                            size: 13, color: AppColors.iconPrimary),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -511,8 +494,8 @@ class _VolgendeLesHero extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.textHint,
+              CoolIcons.chevronRight,
+              color: AppColors.iconPrimary,
               size: 20,
             ),
           ],
@@ -529,27 +512,16 @@ class _GeenLesCard extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.border, width: 0.75),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
           Container(
             width: 44,
             height: 44,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F2F5),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(Icons.calendar_today_outlined,
-                size: 22, color: AppColors.textHint),
+            child: const Icon(CoolIcons.calendar,
+                size: 22, color: AppColors.iconPrimary),
           ),
           const SizedBox(width: 14),
           const Expanded(
@@ -603,26 +575,19 @@ class _LesvoorbereidingCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return GestureDetector(
+    return KlantioPressable(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.border, width: 0.75),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
           children: [
             const IconBadge(
-              icon: Icons.checklist_rounded,
+              icon: CoolIcons.listChecklist,
               color: AppColors.iconPurple,
               size: 44,
             ),
@@ -663,8 +628,8 @@ class _LesvoorbereidingCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 2),
-                const Icon(Icons.arrow_forward_rounded,
-                    size: 14, color: AppColors.textPrimary),
+                const Icon(CoolIcons.arrowRightMd,
+                    size: 14, color: AppColors.iconPrimary),
               ],
             ),
           ],
@@ -686,21 +651,14 @@ class _VoortgangCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final pct = profiel.voortgangPercent;
 
-    return GestureDetector(
+    return KlantioPressable(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.border, width: 0.75),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -708,7 +666,7 @@ class _VoortgangCard extends StatelessWidget {
             Row(
               children: [
                 const IconBadge(
-                  icon: Icons.bar_chart_rounded,
+                  icon: CoolIcons.chartBarVertical01,
                   color: AppColors.iconGreen,
                   size: 40,
                 ),
@@ -752,7 +710,7 @@ class _VoortgangCard extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: pct,
                 minHeight: 8,
-                backgroundColor: const Color(0xFFF0F2F5),
+                backgroundColor: AppColors.neutralBg,
                 valueColor: const AlwaysStoppedAnimation(AppColors.primary),
               ),
             ),
@@ -795,24 +753,17 @@ class _ExamenadviesHero extends StatelessWidget {
     final toonScore = data.heeftBetrouwbareScore && score != null;
     final label = data.status;
     final labelColor = examenadviesStatusAccentVanLabel(label);
-    const kaartGrijs = Color(0xFFF0F2F5);
-    const badgeBorder = Color(0xFFE2E2E7);
+    const kaartGrijs = AppColors.neutralBg;
+    const badgeBorder = AppColors.border;
 
-    return GestureDetector(
+    return KlantioPressable(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.border, width: 0.75),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -832,8 +783,7 @@ class _ExamenadviesHero extends StatelessWidget {
                           value: toonScore ? score / 100 : 0,
                           strokeWidth: 6,
                           backgroundColor: kaartGrijs,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(labelColor),
+                          valueColor: AlwaysStoppedAnimation<Color>(labelColor),
                           strokeCap: StrokeCap.round,
                         ),
                       ),
@@ -914,12 +864,11 @@ class _ExamenadviesHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Icon(Icons.chevron_right_rounded,
-                    color: AppColors.textHint, size: 20),
+                const Icon(CoolIcons.chevronRight,
+                    color: AppColors.iconPrimary, size: 20),
               ],
             ),
-            if (data.ontwikkeling != null &&
-                data.ontwikkeling!.heeftChart) ...[
+            if (data.ontwikkeling != null && data.ontwikkeling!.heeftChart) ...[
               const SizedBox(height: 12),
               ExamenadviesSparkline(data: data.ontwikkeling),
             ],
@@ -1021,22 +970,15 @@ class _UrgenteFactuurCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.border, width: 0.75),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
           children: [
             IconBadge(
               icon: actie.isVerlopen
-                  ? Icons.warning_rounded
-                  : Icons.receipt_long_rounded,
+                  ? CoolIcons.triangleWarning
+                  : CoolIcons.fileDocument,
               color: kleur,
               size: 44,
             ),
@@ -1087,8 +1029,8 @@ class _UrgenteFactuurCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 2),
-                  const Icon(Icons.arrow_forward_rounded,
-                      size: 14, color: AppColors.textPrimary),
+                  const Icon(CoolIcons.arrowRightMd,
+                      size: 14, color: AppColors.iconPrimary),
                 ],
               ),
             ),
@@ -1110,8 +1052,8 @@ class _SkeletonHero extends StatelessWidget {
       height: 110,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.border, width: 0.75),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
       ),
       padding: const EdgeInsets.all(18),
       child: Row(

@@ -15,6 +15,7 @@ import '../../shared/widgets/main_detail_header.dart';
 import '../../shared/widgets/snackbar.dart';
 import 'support_provider.dart';
 import 'widgets/support_ui.dart';
+import '../../core/constants/cool_icons.dart';
 
 /// Help & Support -- opent altijd direct de chat, geen tussenliggende
 /// hub/FAQ-keuze en geen apart onderwerp-/categorieformulier meer (redesign
@@ -87,14 +88,15 @@ class _SupportChatScreenState extends ConsumerState<SupportChatScreen> {
                 padding: const EdgeInsets.all(20),
                 children: [
                   EmptyState(
-                    icon: Icons.wifi_off_rounded,
+                    icon: CoolIcons.cloudOff,
                     title: 'Support kon niet worden geladen',
                     subtitle: e.toString(),
                   ),
                   const SizedBox(height: 16),
                   SupportPrimaryButton(
                     label: 'Opnieuw proberen',
-                    onPressed: () => ref.invalidate(activeSupportThreadProvider),
+                    onPressed: () =>
+                        ref.invalidate(activeSupportThreadProvider),
                   ),
                 ],
               ),
@@ -134,7 +136,7 @@ class _ClosedView extends StatelessWidget {
               IconButton(
                 onPressed: () => context.push('/help/gesprekken'),
                 tooltip: 'Eerdere gesprekken',
-                icon: const Icon(Icons.history_rounded, color: Colors.white),
+                icon: const Icon(CoolIcons.clock, color: Colors.white),
               ),
             ],
           ),
@@ -146,7 +148,7 @@ class _ClosedView extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const IconBadge(
-                      icon: Icons.check_circle_outline_rounded,
+                      icon: CoolIcons.circleCheck,
                       color: SupportUi.accent,
                       size: 56,
                     ),
@@ -193,8 +195,7 @@ class _EmptyComposerView extends ConsumerStatefulWidget {
   const _EmptyComposerView({this.onCreated});
 
   @override
-  ConsumerState<_EmptyComposerView> createState() =>
-      _EmptyComposerViewState();
+  ConsumerState<_EmptyComposerView> createState() => _EmptyComposerViewState();
 }
 
 class _EmptyComposerViewState extends ConsumerState<_EmptyComposerView> {
@@ -247,7 +248,7 @@ class _EmptyComposerViewState extends ConsumerState<_EmptyComposerView> {
               IconButton(
                 onPressed: () => context.push('/help/gesprekken'),
                 tooltip: 'Eerdere gesprekken',
-                icon: const Icon(Icons.history_rounded, color: Colors.white),
+                icon: const Icon(CoolIcons.clock, color: Colors.white),
               ),
             ],
           ),
@@ -467,7 +468,7 @@ class _ThreadViewState extends ConsumerState<_ThreadView> {
                 IconButton(
                   onPressed: () => context.push('/help/gesprekken'),
                   tooltip: 'Eerdere gesprekken',
-                  icon: const Icon(Icons.history_rounded, color: Colors.white),
+                  icon: const Icon(CoolIcons.clock, color: Colors.white),
                 ),
               ],
             ),
@@ -595,7 +596,8 @@ class _PickedImage {
   const _PickedImage({required this.bytes, required this.mime});
 }
 
-Future<_PickedImage?> _pickImage(BuildContext context, ImageSource source) async {
+Future<_PickedImage?> _pickImage(
+    BuildContext context, ImageSource source) async {
   final file = await ImagePicker().pickImage(
     source: source,
     imageQuality: 82,
@@ -633,8 +635,7 @@ Future<void> _showAttachmentSheet(
           children: [
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.photo_camera_outlined,
-                  color: AppColors.primary),
+              leading: const Icon(CoolIcons.image02, color: AppColors.iconPrimary),
               title: const Text('Maak een foto'),
               onTap: () async {
                 Navigator.of(sheetContext).pop();
@@ -643,8 +644,7 @@ Future<void> _showAttachmentSheet(
               },
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined,
-                  color: AppColors.primary),
+              leading: const Icon(CoolIcons.image01, color: AppColors.iconPrimary),
               title: const Text('Kies uit galerij'),
               onTap: () async {
                 Navigator.of(sheetContext).pop();
@@ -711,7 +711,7 @@ class _Composer extends StatelessWidget {
                             color: AppColors.textPrimary,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.close_rounded,
+                          child: const Icon(CoolIcons.closeMd,
                               color: Colors.white, size: 14),
                         ),
                       ),
@@ -742,10 +742,10 @@ class _Composer extends StatelessWidget {
                     foregroundColor: Colors.white,
                     padding: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(999),
                     ),
                   ),
-                  child: const Icon(Icons.camera_alt_rounded,
+                  child: const Icon(CoolIcons.image02,
                       color: Colors.white, size: 20),
                 ),
               ),
@@ -775,8 +775,8 @@ class _Composer extends StatelessWidget {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide:
-                          const BorderSide(color: AppColors.primary, width: 1.15),
+                      borderSide: const BorderSide(
+                          color: AppColors.primary, width: 1.15),
                     ),
                   ),
                 ),
@@ -792,7 +792,7 @@ class _Composer extends StatelessWidget {
                     foregroundColor: Colors.white,
                     padding: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(999),
                     ),
                   ),
                   child: bezig
@@ -804,7 +804,7 @@ class _Composer extends StatelessWidget {
                             color: Colors.white,
                           ),
                         )
-                      : const Icon(Icons.send_rounded, size: 18),
+                      : const Icon(CoolIcons.paperPlane, size: 18),
                 ),
               ),
             ],
@@ -870,7 +870,8 @@ class _BerichtKaart extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       height: 1.45,
-                      color: vanGebruiker ? Colors.white : AppColors.textPrimary,
+                      color:
+                          vanGebruiker ? Colors.white : AppColors.textPrimary,
                     ),
                   ),
                 const SizedBox(height: 4),
@@ -948,8 +949,7 @@ class _AttachmentPreview extends StatelessWidget {
                 width: 180,
                 height: 180,
                 color: SupportUi.iconBg,
-                child: const Icon(Icons.broken_image_outlined,
-                    color: AppColors.textHint),
+                child: const Icon(CoolIcons.image01, color: AppColors.iconPrimary),
               ),
             ),
           ),

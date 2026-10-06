@@ -226,7 +226,7 @@ void main() {
     test('de wrapper rond bottomNavigationBar bevat geen eigen '
         'achtergrondkleur (geen Container/color/ColoredBox tussen '
         'IosNativeNavigationHost.fallback en PremiumBottomNavBar)', () {
-      final start = bron.indexOf('fallback: Padding(');
+      final start = bron.indexOf('? Padding(');
       final eind = bron.indexOf('PremiumBottomNavBar(', start);
       expect(start, greaterThan(-1));
       expect(eind, greaterThan(start));
@@ -260,9 +260,10 @@ void main() {
           contains('color: isActive ? AppColors.primary : Colors.transparent'));
     });
 
-    test('Scaffold.backgroundColor blijft de lichte pagina-achtergrond '
-        '(AppColors.surface), geen donkere kleur', () {
-      expect(bron, contains('backgroundColor: AppColors.surface'));
+    test('Scaffold.backgroundColor volgt de lichte pagina-achtergrond van '
+        'het thema (scaffoldBackgroundColor), geen donkere kleur', () {
+      expect(bron,
+          contains('backgroundColor: Theme.of(context).scaffoldBackgroundColor'));
     });
   });
 
@@ -273,26 +274,20 @@ void main() {
       expect(bron, contains('contentBottomClearance = 96'));
     });
 
+    // Sinds de Instructeur-navbar (2026-10-06): de eindruimte volgt de
+    // ECHTE navbarhoogte (native glas of Flutter-pil) via
+    // MainShellContentInset, i.p.v. een vaste 96px.
     for (final entry in {
       'Home': 'lib/features/home/home_screen.dart',
+      'Planning': 'lib/features/planning/planning_screen.dart',
+      'Voortgang': 'lib/features/voortgang/voortgang_screen.dart',
       'Facturen': 'lib/features/facturen/facturen_screen.dart',
       'Profiel': 'lib/features/profiel/profiel_screen.dart',
     }.entries) {
-      test('${entry.key} reserveert NavShellTokens.contentBottomClearance '
-          'zodat content niet achter de capsule verdwijnt', () {
+      test('${entry.key} reserveert de dynamische navbar-eindruimte '
+          '(MainShellContentInset)', () {
         final bron = File(entry.value).readAsStringSync();
-        expect(bron, contains('NavShellTokens.contentBottomClearance'));
-      });
-    }
-
-    for (final entry in {
-      'Planning': 'lib/features/planning/planning_screen.dart',
-      'Voortgang': 'lib/features/voortgang/voortgang_screen.dart',
-    }.entries) {
-      test('${entry.key} had al voldoende (>=96) bottom-clearance, '
-          'ongewijzigd gelaten', () {
-        final bron = File(entry.value).readAsStringSync();
-        expect(bron, contains('96'));
+        expect(bron, contains('MainShellContentInset.bottomOf(context)'));
       });
     }
   });

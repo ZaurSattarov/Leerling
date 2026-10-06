@@ -8,6 +8,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import 'auth_design.dart';
 import 'social_login_widgets.dart';
+import '../../core/constants/cool_icons.dart';
 
 class RegistreerScreen extends StatefulWidget {
   const RegistreerScreen({super.key});
@@ -224,7 +225,7 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.surface,
+        backgroundColor: const Color(0xFFF5F5F5),
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -268,7 +269,7 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
                       _Veld(
                         controller: _emailCtrl,
                         hint: 'E-mailadres',
-                        suffixIcon: Icons.email_outlined,
+                        suffixIcon: CoolIcons.mail,
                         keyboardType: TextInputType.emailAddress,
                         validator: AuthDesign.validateEmail,
                       ),
@@ -416,12 +417,10 @@ class _WachtwoordVeld extends StatelessWidget {
       style: GoogleFonts.inter(fontSize: 14, color: AppColors.dark),
       decoration: AuthDesign.inputDecoration(
         hint: hint,
-        iconData: Icons.lock_outline_rounded,
+        iconData: CoolIcons.lock,
         suffixIcon: IconButton(
           icon: Icon(
-            zichtbaar
-                ? Icons.visibility_off_outlined
-                : Icons.visibility_outlined,
+            zichtbaar ? CoolIcons.hide : CoolIcons.show,
             color: AuthDesign.icon,
             size: 20,
           ),

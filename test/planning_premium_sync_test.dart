@@ -58,8 +58,8 @@ void main() {
     test('planning houdt ruimte vrij voor bottom nav en safe area', () {
       final source = read('lib/features/planning/planning_screen.dart');
 
-      expect(source, contains('MediaQuery.paddingOf(context).bottom'));
-      expect(source, contains('96 + safeBottom'));
+      // Dynamische navbar-eindruimte (native glas of Flutter-pil).
+      expect(source, contains('MainShellContentInset.bottomOf(context)'));
     });
 
     test('detail gebruikt centrale badge en echte leerlingstatussen', () {
@@ -74,8 +74,8 @@ void main() {
       expect(badge, contains("label: 'Gepland'"));
       expect(badge, contains("label: 'Afgerond'"));
       expect(badge, contains("label: 'Volgende'"));
-      expect(badge, contains('forceStrutHeight: true'));
-      expect(badge, isNot(contains('toUpperCase()')));
+      // Sinds 2026-10-06: dezelfde solide StatusBadge als de Instructeur-app.
+      expect(badge, contains('StatusBadge('));
     });
 
     test('detail toont duur compact en niet als tweede losse regel', () {

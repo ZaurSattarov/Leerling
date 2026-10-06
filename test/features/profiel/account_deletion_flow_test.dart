@@ -62,7 +62,11 @@ void main() {
     );
   });
 
-  testWidgets('navbar-safe sheet houdt inhoud boven de navbar-footprint',
+  // Sinds de Instructeur-navbar (2026-10-06): de sheet bedekt de navbar
+  // (native balk wordt verborgen, Flutter-pil ligt onder de modale laag),
+  // dus de onderruimte is safe-area + 20 -- zelfde gedrag als de
+  // Instructeur-app (bottomSheetSafeInset met cover-teller).
+  testWidgets('navbar-safe sheet bedekt de navbar en houdt 20px ademruimte',
       (tester) async {
     late double inset;
     await tester.pumpWidget(
@@ -96,7 +100,7 @@ void main() {
     await tester.tap(find.text('open-sheet'));
     await tester.pumpAndSettle();
 
-    expect(inset, greaterThan(40));
+    expect(inset, 20);
     expect(find.text('Account verwijderen'), findsOneWidget);
   });
 

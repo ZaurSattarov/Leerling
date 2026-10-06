@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../voortgang_trends_provider.dart';
+import '../../../core/constants/cool_icons.dart';
 
 // ── Semantische kleuren (zelfde palet als voortgang_screen.dart) ──────────────
 
 const _groen = Color(0xFF16A34A);
 const _oranje = Color(0xFFD97706);
 const _rood = Color(0xFFE11D48);
-const _mutedSurface = Color(0xFFF0F2F5);
+const _mutedSurface = AppColors.neutralBg;
 const _softSurface = Color(0xFFF8F8FA);
 
 /// Gedeelde "Voortgang tijdlijn"-kaart -- gebruikt zowel op de hoofdpagina
@@ -24,7 +25,7 @@ class TijdlijnCard extends StatelessWidget {
     if (items.isEmpty) {
       return const AppCard(
         child: EmptyState(
-          icon: Icons.timeline_rounded,
+          icon: CoolIcons.chartLine,
           title: 'Nog geen tijdlijn',
           subtitle: 'Afgeronde lessen verschijnen hier.',
         ),
@@ -52,9 +53,9 @@ class _TijdlijnRij extends StatelessWidget {
 
   IconData get _eventIcon {
     return switch (item.eventType) {
-      'beoordeling' => Icons.grade_rounded,
-      'aandachtspunt' => Icons.flag_rounded,
-      _ => Icons.check_circle_outline_rounded,
+      'beoordeling' => CoolIcons.star,
+      'aandachtspunt' => CoolIcons.flag,
+      _ => CoolIcons.circleCheck,
     };
   }
 
@@ -81,18 +82,18 @@ class _TijdlijnRij extends StatelessWidget {
                   width: 28,
                   height: 28,
                   decoration: const BoxDecoration(
-                    color: Color(0xFFF0F2F5),
+                    color: AppColors.neutralBg,
                     shape: BoxShape.circle,
                   ),
                   child:
-                      Icon(_eventIcon, color: AppColors.textPrimary, size: 14),
+                      Icon(_eventIcon, color: AppColors.iconPrimary, size: 14),
                 ),
                 if (!isLast)
                   Expanded(
                     child: Container(
                       width: 1.5,
                       margin: const EdgeInsets.symmetric(vertical: 4),
-                      color: const Color(0xFFE2E2E7),
+                      color: AppColors.border,
                     ),
                   ),
               ],
@@ -287,9 +288,9 @@ class _BeoordelingBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
+        color: AppColors.neutralBg,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: const Color(0xFFE2E2E7), width: 0.75),
+        border: Border.all(color: AppColors.border, width: 0.75),
       ),
       child: Text(
         label,

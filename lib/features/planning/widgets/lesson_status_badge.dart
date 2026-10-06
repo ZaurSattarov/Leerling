@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../models/les.dart';
+import '../../../shared/widgets/status_badge.dart';
 
 class LessonStatusBadge extends StatelessWidget {
   final LesStatus status;
@@ -16,45 +17,8 @@ class LessonStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spec = isNext ? _BadgeSpec.next() : _BadgeSpec.forStatus(status);
-
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 26),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: spec.background,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: spec.background.withValues(alpha: 0.18),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          child: Center(
-            widthFactor: 1,
-            heightFactor: 1,
-            child: Text(
-              spec.label,
-              textAlign: TextAlign.center,
-              strutStyle: const StrutStyle(
-                fontSize: 11,
-                height: 1,
-                forceStrutHeight: true,
-              ),
-              style: const TextStyle(
-                fontSize: 11,
-                height: 1,
-                fontWeight: FontWeight.w800,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+    // Zelfde solide, uppercase badge als de Instructeur-app (StatusBadge).
+    return StatusBadge(label: spec.label, backgroundColor: spec.background);
   }
 }
 
@@ -82,7 +46,7 @@ class _BadgeSpec {
         ),
       LesStatus.afgerond => const _BadgeSpec(
           label: 'Afgerond',
-          background: AppColors.successSolid,
+          background: Color(0xFF4F46E5),
         ),
       LesStatus.geannuleerd => const _BadgeSpec(
           label: 'Geannuleerd',

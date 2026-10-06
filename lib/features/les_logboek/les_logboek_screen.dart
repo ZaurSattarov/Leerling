@@ -8,6 +8,7 @@ import '../../shared/widgets/main_detail_header.dart';
 import '../../shared/providers/auth_provider.dart';
 import 'les_logboek_item.dart';
 import 'les_logboek_provider.dart';
+import '../../core/constants/cool_icons.dart';
 
 class LesLogboekScreen extends ConsumerWidget {
   const LesLogboekScreen({super.key});
@@ -27,63 +28,63 @@ class LesLogboekScreen extends ConsumerWidget {
             child: CustomScrollView(
               slivers: [
                 lessenAsync.when(
-            data: (lessen) => SliverPadding(
-              padding: const EdgeInsets.all(20),
-              sliver: SliverList.separated(
-                itemCount: lessen.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  return _LogboekLesCard(
-                    item: lessen[index],
-                    onEditNote: () =>
-                        _openNotitieSheet(context, ref, lessen[index]),
-                  );
-                },
-              ),
-            ),
-            loading: () => SliverPadding(
-              padding: const EdgeInsets.all(20),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  const SkeletonCard(),
-                  const SizedBox(height: 12),
-                  const SkeletonCard(),
-                  const SizedBox(height: 12),
-                  const SkeletonCard(),
-                ]),
-              ),
-            ),
-            error: (_, __) => SliverPadding(
-              padding: const EdgeInsets.all(20),
-              sliver: SliverToBoxAdapter(
-                child: Center(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 40),
-                      Icon(Icons.history_rounded,
-                          size: 48, color: AppColors.textHint),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Kon logboek niet laden',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Controleer je verbinding en probeer opnieuw.',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
+                  data: (lessen) => SliverPadding(
+                    padding: const EdgeInsets.all(20),
+                    sliver: SliverList.separated(
+                      itemCount: lessen.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        return _LogboekLesCard(
+                          item: lessen[index],
+                          onEditNote: () =>
+                              _openNotitieSheet(context, ref, lessen[index]),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ),
-            ),
+                  loading: () => SliverPadding(
+                    padding: const EdgeInsets.all(20),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        const SkeletonCard(),
+                        const SizedBox(height: 12),
+                        const SkeletonCard(),
+                        const SizedBox(height: 12),
+                        const SkeletonCard(),
+                      ]),
+                    ),
+                  ),
+                  error: (_, __) => SliverPadding(
+                    padding: const EdgeInsets.all(20),
+                    sliver: SliverToBoxAdapter(
+                      child: Center(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 40),
+                            Icon(CoolIcons.clock,
+                                size: 48, color: AppColors.iconPrimary),
+                            const SizedBox(height: 12),
+                            Text(
+                              'Kon logboek niet laden',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Controleer je verbinding en probeer opnieuw.',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -140,7 +141,7 @@ class _LogboekLesCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const IconBadge(
-                icon: Icons.fact_check_rounded,
+                icon: CoolIcons.listChecklist,
                 color: AppColors.dark3,
                 size: 40,
               ),
@@ -241,7 +242,7 @@ class _LogboekLesCard extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: TextButton.icon(
                 onPressed: onEditNote,
-                icon: const Icon(Icons.edit_note_rounded, size: 18),
+                icon: const Icon(CoolIcons.noteEdit, size: 18),
                 label: Text(item.leerlingNotitie?.isNotEmpty == true
                     ? 'Notitie bewerken'
                     : 'Mijn notitie toevoegen'),

@@ -138,6 +138,9 @@ flutter:
     - "assets/Splash Screen/"
 
   fonts:
+    - family: CoolIcons
+      fonts:
+        - asset: assets/fonts/CoolIcons.ttf
     - family: Inter
       fonts:
         - asset: assets/fonts/Inter-Regular.ttf

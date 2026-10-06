@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../core/constants/cool_icons.dart';
 
 /// Framer Arrow Fill Button -- 1-op-1 replica van Hyperiux Vault Arrow Fill Button
 /// (https://www.framer.com/marketplace/components/arrow-fill-button/).
@@ -30,7 +31,7 @@ class KlantioAuroraButton extends StatefulWidget {
     this.isLoading = false,
     this.height = 52,
     this.width,
-    this.icon = Icons.arrow_forward_rounded,
+    this.icon = CoolIcons.chevronRight,
     this.accentColor,
   });
 
@@ -142,9 +143,7 @@ class _KlantioAuroraButtonState extends State<KlantioAuroraButton>
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
-                    color: enabled
-                        ? accent
-                        : accent.withValues(alpha: 0.4),
+                    color: enabled ? accent : accent.withValues(alpha: 0.4),
                     width: 1.5,
                   ),
                   boxShadow: enabled
@@ -251,18 +250,18 @@ class _KlantioAuroraButtonState extends State<KlantioAuroraButton>
                                       // Uitgaande pijl: schuift naar rechts weg met fade-out
                                       if (arrowProgress < 0.98)
                                         Transform.translate(
-                                          offset: Offset(
-                                              22.0 * arrowProgress, 0),
+                                          offset:
+                                              Offset(22.0 * arrowProgress, 0),
                                           child: Opacity(
                                             opacity: (1.0 - arrowProgress)
                                                 .clamp(0.0, 1.0),
                                             child: Icon(
                                               widget.icon ??
-                                                  Icons.arrow_forward_rounded,
+                                                  CoolIcons.chevronRight,
                                               color: enabled
                                                   ? accent
-                                                  : accent
-                                                      .withValues(alpha: 0.5),
+                                                  : accent.withValues(
+                                                      alpha: 0.5),
                                               size: 20,
                                             ),
                                           ),
@@ -272,15 +271,13 @@ class _KlantioAuroraButtonState extends State<KlantioAuroraButton>
                                       if (arrowProgress > 0.02)
                                         Transform.translate(
                                           offset: Offset(
-                                              -22.0 *
-                                                  (1.0 - arrowProgress),
-                                              0),
+                                              -22.0 * (1.0 - arrowProgress), 0),
                                           child: Opacity(
-                                            opacity: arrowProgress
-                                                .clamp(0.0, 1.0),
+                                            opacity:
+                                                arrowProgress.clamp(0.0, 1.0),
                                             child: Icon(
                                               widget.icon ??
-                                                  Icons.arrow_forward_rounded,
+                                                  CoolIcons.chevronRight,
                                               color: accent,
                                               size: 20,
                                             ),

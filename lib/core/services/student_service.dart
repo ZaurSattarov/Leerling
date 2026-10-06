@@ -140,11 +140,30 @@ class StudentService {
     );
   }
 
-  /// Start de native Google-accountkiezer en logt in via Supabase's
-  /// idToken-flow. Retourneert `null` wanneer de gebruiker de accountkiezer
-  /// annuleert -- normaal gedrag, geen fout. Gooit een [StateError] bij een
-  /// echte configuratiefout (ontbrekende serverClientId of geen idToken).
+  /// Start Google-aanmelden.
+  ///
+  /// Op iOS is er geen native Google-client in de app. Daar opent Supabase
+  /// de browser. De terugkeer gebruikt [AppConfig.authConfirmRedirectUrl],
+  /// die al in de Supabase-redirectlijst staat. `null` betekent dan: de
+  /// browser is gestart, de sessie volgt via de auth-listener.
+  ///
+  /// Op Android opent de native accountkiezer. `null` betekent daar dat de
+  /// gebruiker die kiezer heeft gesloten.
   static Future<AuthResponse?> meldAanMetGoogle() async {
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
+      final gestart = await client.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: AppConfig.authConfirmRedirectUrl,
+        // De ingebouwde browser blijft wit: Google weigert daar te laden.
+        // Safari zelf toont het inlogscherm en keert daarna terug in de app.
+        authScreenLaunchMode: LaunchMode.externalApplication,
+      );
+      if (!gestart) {
+        throw StateError('Google-login kon niet worden gestart.');
+      }
+      return null;
+    }
+
     if (AppConfig.googleServerClientId.isEmpty) {
       throw StateError(
         'Google-login is niet geconfigureerd (GOOGLE_SERVER_CLIENT_ID ontbreekt).',
@@ -285,7 +304,8 @@ class StudentService {
     try {
       await FacebookAuth.instance.logOut();
     } catch (e) {
-      debugPrint('[auth][facebook] signOut na accountverwijdering mislukte: $e');
+      debugPrint(
+          '[auth][facebook] signOut na accountverwijdering mislukte: $e');
     }
   }
 

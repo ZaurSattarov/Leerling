@@ -16,6 +16,7 @@ import '../../models/les.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'lesvoorbereiding_provider.dart';
+import '../../core/constants/cool_icons.dart';
 
 class LesvoorbereidingScreen extends ConsumerWidget {
   const LesvoorbereidingScreen({super.key});
@@ -40,7 +41,7 @@ class LesvoorbereidingScreen extends ConsumerWidget {
                   ),
                   error: (_, __) => const SliverFillRemaining(
                     child: EmptyState(
-                      icon: Icons.wifi_off_rounded,
+                      icon: CoolIcons.cloudOff,
                       title: 'Kon voorbereiding niet laden',
                       subtitle: 'Probeer het later opnieuw.',
                     ),
@@ -69,7 +70,7 @@ class _LesvoorbereidingSliver extends StatelessWidget {
     if (vm.emptyState == PreparationEmptyState.geenVolgendeLes) {
       return const SliverFillRemaining(
         child: EmptyState(
-          icon: Icons.event_available_outlined,
+          icon: CoolIcons.calendarCheck,
           title: 'Nog geen volgende les gepland',
           subtitle:
               'Zodra je instructeur een les plant, verschijnt hier je voorbereiding.',
@@ -88,12 +89,12 @@ class _LesvoorbereidingSliver extends StatelessWidget {
             _LesMomentKop(
               titel: 'VOLGENDE LES',
               les: nextLesson,
-              icon: Icons.event_outlined,
+              icon: CoolIcons.calendar,
               accent: AppColors.primary,
             ),
             const SizedBox(height: 24),
             const EmptyState(
-              icon: Icons.checklist_rounded,
+              icon: CoolIcons.listChecklist,
               title: 'Nog geen voorbereiding beschikbaar',
               subtitle:
                   'Na een afgeronde les met evaluatie verschijnt hier je voorbereiding voor de volgende les.',
@@ -126,7 +127,7 @@ class _LesvoorbereidingSliver extends StatelessWidget {
           _LesMomentKop(
             titel: 'VOLGENDE LES',
             les: nextLesson,
-            icon: Icons.event_outlined,
+            icon: CoolIcons.calendar,
             accent: AppColors.primary,
           ),
           if (heeftVorigeLesContext) ...[
@@ -135,7 +136,7 @@ class _LesvoorbereidingSliver extends StatelessWidget {
               titel: 'DIT NAM JE MEE UIT JE VORIGE LES',
               les: bronLes,
               fallbackDatum: vm.sourceLessonDate,
-              icon: Icons.history_rounded,
+              icon: CoolIcons.clock,
               accent: AppColors.textSecondary,
             ),
             const SizedBox(height: 8),
@@ -178,8 +179,8 @@ class _LesvoorbereidingSliver extends StatelessWidget {
           if (vm.studentFeedback != null) ...[
             _QuoteKaart(
               titel: 'Feedback van je instructeur',
-              icon: Icons.chat_bubble_outline_rounded,
-              iconColor: AppColors.textSecondary,
+              icon: CoolIcons.chat,
+              iconColor: AppColors.iconPrimary,
               tekst: vm.studentFeedback!,
               alsCitaat: true,
             ),
@@ -188,8 +189,8 @@ class _LesvoorbereidingSliver extends StatelessWidget {
           if (vm.preparationNote != null) ...[
             _QuoteKaart(
               titel: 'Voorbereiding volgende les',
-              icon: Icons.map_outlined,
-              iconColor: AppColors.primary,
+              icon: CoolIcons.map,
+              iconColor: AppColors.iconPrimary,
               tekst: vm.preparationNote!,
               alsCitaat: false,
             ),
@@ -229,11 +230,10 @@ class _LesMomentKop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final datum = les?.datum ?? fallbackDatum;
-    final tijdRegel = (les != null &&
-            les!.starttijd.isNotEmpty &&
-            les!.eindtijd.isNotEmpty)
-        ? '${les!.starttijd} – ${les!.eindtijd}'
-        : null;
+    final tijdRegel =
+        (les != null && les!.starttijd.isNotEmpty && les!.eindtijd.isNotEmpty)
+            ? '${les!.starttijd} – ${les!.eindtijd}'
+            : null;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,

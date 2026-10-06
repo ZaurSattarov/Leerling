@@ -7,6 +7,7 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'account_deletion_flow.dart';
 import 'widgets/profiel_menu_widgets.dart';
+import '../../core/constants/cool_icons.dart';
 
 class PrivacyJuridischScreen extends StatelessWidget {
   const PrivacyJuridischScreen({super.key});
@@ -41,14 +42,14 @@ class PrivacyJuridischScreen extends StatelessWidget {
                 ProfielMenuCard(
                   children: [
                     ProfielMenuTile(
-                      icon: Icons.privacy_tip_rounded,
+                      icon: CoolIcons.shieldCheck,
                       label: 'Privacybeleid',
                       subtitle: 'Gegevens, rechten en bewaartermijnen',
                       onTap: () => context.push('/profiel/privacy-beleid'),
                     ),
                     const Divider(height: 1, indent: 62),
                     ProfielMenuTile(
-                      icon: Icons.article_rounded,
+                      icon: CoolIcons.fileDocument,
                       label: 'Algemene voorwaarden',
                       subtitle: 'Gebruik van de app',
                       onTap: () =>
@@ -79,12 +80,8 @@ class PrivacyJuridischScreen extends StatelessWidget {
                     leading: Container(
                       width: 36,
                       height: 36,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF0F2F5),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
                       child: const Icon(
-                        Icons.delete_forever_rounded,
+                        CoolIcons.trashFull,
                         color: Color(0xFFE11D48),
                         size: 18,
                       ),
@@ -106,7 +103,7 @@ class PrivacyJuridischScreen extends StatelessWidget {
                       ),
                     ),
                     trailing: const Icon(
-                      Icons.chevron_right_rounded,
+                      CoolIcons.chevronRight,
                       color: Color(0x52222936),
                       size: 17,
                     ),

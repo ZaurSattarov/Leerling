@@ -14,6 +14,7 @@ import '../../shared/widgets/snackbar.dart';
 import '../../shared/widgets/status_pill.dart';
 import 'facturen_provider.dart';
 import '../home/home_provider.dart';
+import '../../core/constants/cool_icons.dart';
 
 class FactuurDetailScreen extends ConsumerWidget {
   final String id;
@@ -52,7 +53,7 @@ class FactuurDetailScreen extends ConsumerWidget {
                 if (f == null) {
                   return const Center(
                     child: EmptyState(
-                      icon: Icons.search_off_rounded,
+                      icon: CoolIcons.searchMagnifyingGlass,
                       title: 'Factuur niet gevonden',
                     ),
                   );
@@ -67,7 +68,7 @@ class FactuurDetailScreen extends ConsumerWidget {
               ),
               error: (e, _) => Center(
                 child: EmptyState(
-                  icon: Icons.wifi_off_rounded,
+                  icon: CoolIcons.cloudOff,
                   title: 'Kon factuur niet laden',
                   subtitle: e.toString(),
                 ),
@@ -220,15 +221,15 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: const Color(0xFFE2E2E7), width: 1),
+              border: Border.all(color: AppColors.border, width: 1),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.receipt_long_rounded,
-                        color: AppColors.textHint, size: 16),
+                    const Icon(CoolIcons.fileDocument,
+                        color: AppColors.iconPrimary, size: 16),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
@@ -380,7 +381,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
                       color: Colors.white,
                     ),
                   )
-                : const Icon(Icons.account_balance_rounded, size: 18),
+                : const Icon(CoolIcons.building01, size: 18),
             label: Text(_betalingAanvragen
                 ? 'Betaling aanmaken...'
                 : 'Betaal met iDEAL'),
@@ -403,7 +404,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
           // gevuld).
           OutlinedButton.icon(
             onPressed: _pdfBezig ? null : () => _bekijkFactuurPdf(context),
-            icon: const Icon(Icons.visibility_outlined, size: 18),
+            icon: const Icon(CoolIcons.show, size: 18),
             label: const Text('Factuur bekijken'),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.dark,
@@ -423,7 +424,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
                       color: AppColors.dark,
                     ),
                   )
-                : const Icon(Icons.download_rounded, size: 18),
+                : const Icon(CoolIcons.download, size: 18),
             label: const Text('Download PDF'),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.dark,

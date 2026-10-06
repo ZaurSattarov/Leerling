@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/cool_icons.dart';
 
 class SettingsActionRow extends StatelessWidget {
   final IconData icon;
@@ -41,10 +42,6 @@ class SettingsActionRow extends StatelessWidget {
               Container(
                 width: 48,
                 height: 48,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF0F2F5),
-                  borderRadius: BorderRadius.circular(12),
-                ),
                 child: Icon(icon, color: AppColors.iconPrimary, size: 24),
               ),
               const SizedBox(width: 14),
@@ -77,8 +74,8 @@ class SettingsActionRow extends StatelessWidget {
               if (onTap != null) ...[
                 const SizedBox(width: 8),
                 const Icon(
-                  Icons.chevron_right_rounded,
-                  color: AppColors.textSecondary,
+                  CoolIcons.chevronRight,
+                  color: AppColors.iconPrimary,
                   size: 20,
                 ),
               ],

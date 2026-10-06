@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/constants/cool_icons.dart';
 import 'klantio_header.dart';
 
 /// Centrale terug-actie voor alle detailschermen: `pop()` als de
@@ -18,19 +19,18 @@ void handleDetailBack(BuildContext context, {String fallbackRoute = '/home'}) {
   }
 }
 
-/// Enige gedeelde header voor detail-/subschermen (Lesdetails,
-/// Lesvoorbereiding, Examenadvies, en alle vergelijkbare schermen). Bouwt
-/// op [KlantioHeaderShell]/[KlantioCenteredTitleRow] -- exact dezelfde
-/// hoogte, padding en titelstijl als [MainTabHeader] (main_tab_header.dart),
-/// alleen met een vaste terugknop in de leading-zone i.p.v. geen leading of
-/// een avatar.
-///
-/// Geen eyebrow-label meer (voorheen bv. "PLANNING" boven "Lesdetails").
+/// Enige gedeelde header voor detail-/subschermen. Uiterlijk 1-op-1 gelijk
+/// aan de Instructeur-app (rijschool-planner-flutter/lib/shared/widgets/
+/// main_detail_header.dart): donkere balk, coolicons-chevron in een ronde
+/// tikzone, gecentreerde titel. Leerling-eigen: de pop-of-fallback-
+/// terugactie ([handleDetailBack]) omdat detailschermen hier go_router-
+/// routes zijn.
 class MainDetailHeader extends StatelessWidget {
   final String title;
   final List<Widget> actions;
   final String fallbackRoute;
   final VoidCallback? onBack;
+  final double titleHorizontalPadding;
 
   const MainDetailHeader({
     super.key,
@@ -38,29 +38,40 @@ class MainDetailHeader extends StatelessWidget {
     this.actions = const [],
     this.fallbackRoute = '/home',
     this.onBack,
+    this.titleHorizontalPadding = kKlantioHeaderZoneWidth + 8,
   });
 
   @override
   Widget build(BuildContext context) {
     return KlantioHeaderShell(
       child: KlantioCenteredTitleRow(
-        leading: IconButton(
-          key: const Key('main_detail_header_back'),
-          onPressed:
-              onBack ?? () => handleDetailBack(context, fallbackRoute: fallbackRoute),
-          icon: const Icon(
-            Icons.arrow_back_rounded,
-            color: Colors.white,
-            size: 22,
+        leading: Semantics(
+          button: true,
+          label: 'Terug',
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              key: const Key('main_detail_header_back'),
+              onTap: onBack ??
+                  () => handleDetailBack(context, fallbackRoute: fallbackRoute),
+              borderRadius: BorderRadius.circular(999),
+              // 44x44: minimale tikzone (iOS HIG), zelfde als de headerzone.
+              child: const SizedBox(
+                width: 44,
+                height: 44,
+                child: Center(
+                  child: Icon(
+                    CoolIcons.chevronLeft,
+                    color: Color(0xFFF8FAFC),
+                    size: 22,
+                  ),
+                ),
+              ),
+            ),
           ),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(
-            minWidth: kKlantioHeaderZoneWidth,
-            minHeight: kKlantioHeaderZoneWidth,
-          ),
-          splashRadius: 22,
         ),
         title: title,
+        titleHorizontalPadding: titleHorizontalPadding,
         trailing: actions.isEmpty ? null : _ActionsRow(actions: actions),
       ),
     );

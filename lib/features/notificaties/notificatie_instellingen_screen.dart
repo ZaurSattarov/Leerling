@@ -7,6 +7,7 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import '../../shared/widgets/snackbar.dart';
 import 'notificatie_instellingen_provider.dart';
+import '../../core/constants/cool_icons.dart';
 
 class NotificatieInstellingenScreen extends ConsumerWidget {
   const NotificatieInstellingenScreen({super.key});
@@ -28,7 +29,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
             child: state.when(
               loading: () => const _LoadingState(),
               error: (_, __) => EmptyState(
-                icon: Icons.notifications_off_outlined,
+                icon: CoolIcons.bellOff,
                 title: 'Instellingen laden lukt niet',
                 subtitle: 'Probeer het later opnieuw.',
               ),
@@ -47,7 +48,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             IconBadge(
-                              icon: Icons.info_outline_rounded,
+                              icon: CoolIcons.info,
                               color: AppColors.iconPrimary,
                             ),
                             SizedBox(width: 14),
@@ -77,7 +78,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                           children: [
                             _SwitchRow(
                               key: const Key('toggle_nieuwe_les'),
-                              icon: Icons.event_available_outlined,
+                              icon: CoolIcons.calendarCheck,
                               title: 'Nieuwe les',
                               subtitle:
                                   'Wanneer er een les voor je klaarstaat.',
@@ -91,7 +92,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
                               key: const Key('toggle_les_verplaatst'),
-                              icon: Icons.swap_horiz_rounded,
+                              icon: CoolIcons.arrowLeftRight,
                               title: 'Les verplaatst',
                               subtitle: 'Bij wijzigingen in je lesplanning.',
                               value: voorkeuren.lesVerplaatst,
@@ -104,7 +105,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
                               key: const Key('toggle_les_herinnering'),
-                              icon: Icons.alarm_rounded,
+                              icon: CoolIcons.alarm,
                               title: 'Lesherinneringen',
                               subtitle:
                                   'Herinneringen 1 dag en 1 uur voor je rijles.',
@@ -127,7 +128,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                           children: [
                             _SwitchRow(
                               key: const Key('toggle_nieuwe_factuur'),
-                              icon: Icons.receipt_long_outlined,
+                              icon: CoolIcons.fileDocument,
                               title: 'Nieuwe factuur',
                               subtitle: 'Wanneer een factuur beschikbaar is.',
                               value: voorkeuren.nieuweFactuur,
@@ -140,7 +141,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
                               key: const Key('toggle_betaling_ontvangen'),
-                              icon: Icons.payments_outlined,
+                              icon: CoolIcons.creditCard01,
                               title: 'Betaling verwerkt',
                               subtitle:
                                   'Bevestiging wanneer je betaling is ontvangen en verwerkt.',
@@ -154,7 +155,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
                               key: const Key('toggle_factuurherinnering'),
-                              icon: Icons.schedule_outlined,
+                              icon: CoolIcons.clock,
                               title: 'Factuurherinneringen',
                               subtitle:
                                   'Herinneringen rond openstaande facturen.',
@@ -177,7 +178,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                           children: [
                             _SwitchRow(
                               key: const Key('toggle_examen_gepland'),
-                              icon: Icons.event_outlined,
+                              icon: CoolIcons.calendar,
                               title: 'Examen ingepland',
                               subtitle:
                                   'Als je instructeur een examen voor je plant.',
@@ -191,7 +192,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
                               key: const Key('toggle_examen_herinnering'),
-                              icon: Icons.alarm_on_rounded,
+                              icon: CoolIcons.alarm,
                               title: 'Examenherinneringen',
                               subtitle:
                                   'Herinneringen 7 dagen en 1 dag voor je examen.',
@@ -205,7 +206,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
                               key: const Key('toggle_examen_resultaat'),
-                              icon: Icons.emoji_events_outlined,
+                              icon: CoolIcons.star,
                               title: 'Examenresultaat',
                               subtitle:
                                   'Als je instructeur je examenresultaat toevoegt.',
@@ -219,7 +220,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
                               key: const Key('toggle_examenadvies'),
-                              icon: Icons.school_outlined,
+                              icon: CoolIcons.bookOpen,
                               title: 'Examenadvies',
                               subtitle: 'Updates over je examenadvies.',
                               value: voorkeuren.examenadvies,
@@ -241,7 +242,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                           children: [
                             _SwitchRow(
                               key: const Key('toggle_nieuwe_evaluatie'),
-                              icon: Icons.rate_review_outlined,
+                              icon: CoolIcons.chatDots,
                               title: 'Nieuwe evaluatie',
                               subtitle:
                                   'Wanneer je instructeur feedback deelt.',
@@ -255,7 +256,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
                               key: const Key('toggle_lespakket_bijna_op'),
-                              icon: Icons.layers_outlined,
+                              icon: CoolIcons.layers,
                               title: 'Lespakket bijna op',
                               subtitle: 'Als je lessen bijna op zijn.',
                               value: voorkeuren.lespakketBijnaOp,
@@ -276,21 +277,21 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             _LockedRow(
-                              icon: Icons.event_busy_outlined,
+                              icon: CoolIcons.calendarClose,
                               title: 'Les geannuleerd',
                               subtitle:
                                   'Je hoort altijd wanneer een geplande les niet doorgaat.',
                             ),
                             Divider(height: 1, indent: 72),
                             _LockedRow(
-                              icon: Icons.timer_outlined,
+                              icon: CoolIcons.timer,
                               title: 'Les start binnenkort',
                               subtitle:
                                   'Korte verplichte melding vlak voor aanvang van je rijles.',
                             ),
                             Divider(height: 1, indent: 72),
                             _LockedRow(
-                              icon: Icons.mail_outline_rounded,
+                              icon: CoolIcons.mail,
                               title: 'Bericht van je instructeur',
                               subtitle:
                                   'Directe berichten via Klantio — niet uit te zetten.',

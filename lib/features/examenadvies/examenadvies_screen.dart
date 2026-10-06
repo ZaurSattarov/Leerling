@@ -8,6 +8,7 @@ import 'examenadvies_ontwikkeling.dart';
 import 'examenadvies_provider.dart';
 import 'examenadvies_sparkline.dart';
 import 'examenadvies_status_style.dart';
+import '../../core/constants/cool_icons.dart';
 
 class ExamenadviesScreen extends ConsumerWidget {
   const ExamenadviesScreen({super.key});
@@ -28,7 +29,8 @@ class ExamenadviesScreen extends ConsumerWidget {
               loading: () => const Center(
                 child: CircularProgressIndicator(color: AppColors.primary),
               ),
-              error: (_, __) => const _ExamenadviesBody(advies: emptyExamenadvies),
+              error: (_, __) =>
+                  const _ExamenadviesBody(advies: emptyExamenadvies),
               data: (advies) => RefreshIndicator(
                 color: AppColors.primary,
                 onRefresh: () async {
@@ -61,8 +63,8 @@ class _ExamenadviesBody extends StatelessWidget {
               _ScoreCard(advies: advies),
               const SizedBox(height: 14),
               _TextCard(
-                icon: Icons.psychology_alt_rounded,
-                iconColor: AppColors.infoSolid,
+                icon: CoolIcons.bulb,
+                iconColor: AppColors.iconPrimary,
                 title: 'Waarom dit advies?',
                 body: advies.uitleg,
               ),
@@ -74,8 +76,8 @@ class _ExamenadviesBody extends StatelessWidget {
                 const SizedBox(height: 14),
                 _BulletListCard(
                   title: 'Sterkste punten',
-                  icon: Icons.check_circle_rounded,
-                  iconColor: AppColors.successSolid,
+                  icon: CoolIcons.circleCheck,
+                  iconColor: AppColors.iconPrimary,
                   items: advies.sterkePunten,
                 ),
               ],
@@ -83,8 +85,8 @@ class _ExamenadviesBody extends StatelessWidget {
                 const SizedBox(height: 14),
                 _BulletListCard(
                   title: 'Aandachtspunten',
-                  icon: Icons.flag_rounded,
-                  iconColor: AppColors.warningSolid,
+                  icon: CoolIcons.flag,
+                  iconColor: AppColors.iconPrimary,
                   items: advies.nogOefenen,
                 ),
               ],
@@ -92,8 +94,8 @@ class _ExamenadviesBody extends StatelessWidget {
               _OntwikkelingCard(advies: advies),
               const SizedBox(height: 14),
               _TextCard(
-                icon: Icons.event_available_rounded,
-                iconColor: AppColors.dark3,
+                icon: CoolIcons.calendarCheck,
+                iconColor: AppColors.iconPrimary,
                 title: 'Volgende stap',
                 body: advies.volgendeStap,
               ),
@@ -127,7 +129,7 @@ class _ScoreCard extends StatelessWidget {
           Row(
             children: [
               const IconBadge(
-                icon: Icons.school_rounded,
+                icon: CoolIcons.bookOpen,
                 color: AppColors.dark3,
                 size: 44,
               ),
@@ -235,13 +237,13 @@ class _CategorieRij extends StatelessWidget {
               ),
             ),
             Text(
-              heeftData ? '$label/${ExamenadviesRules.maxScoreOpVijf}' : 'Nog geen score',
+              heeftData
+                  ? '$label/${ExamenadviesRules.maxScoreOpVijf}'
+                  : 'Nog geen score',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
-                color: heeftData
-                    ? AppColors.textSecondary
-                    : AppColors.textHint,
+                color: heeftData ? AppColors.textSecondary : AppColors.textHint,
               ),
             ),
           ],
@@ -276,7 +278,7 @@ class _OntwikkelingCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const IconBadge(
-                icon: Icons.trending_up_rounded,
+                icon: CoolIcons.trendingUp,
                 color: AppColors.successSolid,
                 size: 38,
               ),

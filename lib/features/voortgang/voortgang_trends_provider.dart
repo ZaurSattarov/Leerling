@@ -5,6 +5,8 @@ import '../../models/les.dart';
 import '../examenadvies/examenadvies_ontwikkeling.dart';
 import '../examenadvies/examenadvies_provider.dart';
 import 'voortgang_provider.dart';
+import '../../core/constants/app_colors.dart';
+import '../../core/constants/cool_icons.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Voortgang-provider: uitsluitend een ADAPTER over canonical data.
@@ -274,8 +276,8 @@ class VoortgangTrendsCalculator {
         .toList();
     for (final c in stijgend.take(2)) {
       items.add(InzichtItem(
-        icon: Icons.arrow_upward_rounded,
-        iconColor: const Color(0xFF16A34A),
+        icon: CoolIcons.arrowUpMd,
+        iconColor: AppColors.iconPrimary,
         titel: c.naam,
         // Bestaande UI-shape blijft (`oudeWaarde` / `nieuweWaarde`); we
         // hangen er canonical categoriewaarden aan i.p.v. verzonnen deltas.
@@ -291,8 +293,8 @@ class VoortgangTrendsCalculator {
         .toList();
     for (final c in dalend.take(1)) {
       items.add(InzichtItem(
-        icon: Icons.arrow_downward_rounded,
-        iconColor: const Color(0xFFD97706),
+        icon: CoolIcons.arrowDownMd,
+        iconColor: AppColors.iconPrimary,
         titel: c.naam,
         oudeWaarde: 'Vorige les',
         nieuweWaarde: '${c.scoreLabel}/5',
@@ -307,8 +309,8 @@ class VoortgangTrendsCalculator {
     if (stabiel.isNotEmpty) {
       final c = stabiel.first;
       items.add(InzichtItem(
-        icon: Icons.remove_rounded,
-        iconColor: const Color(0xFF64748B),
+        icon: CoolIcons.removeMinus,
+        iconColor: AppColors.iconPrimary,
         titel: c.naam,
         waarde: '${c.scoreLabel}/5 stabiel',
       ));
@@ -317,8 +319,8 @@ class VoortgangTrendsCalculator {
     // Puur les-gebaseerde statistieken (GEEN examenadvies-inhoud).
     if (chronologisch.length >= 2) {
       items.add(InzichtItem(
-        icon: Icons.calendar_month_rounded,
-        iconColor: const Color(0xFF2563EB),
+        icon: CoolIcons.calendarDays,
+        iconColor: AppColors.iconPrimary,
         titel: 'Gemiddeld aantal lessen',
         waarde: _lessenPerWeekLabel(chronologisch),
       ));
@@ -328,8 +330,8 @@ class VoortgangTrendsCalculator {
     if (laatste?.beoordeling != null &&
         _beoordelingLabel(laatste!.beoordeling) != 'Geen beoordeling') {
       items.add(InzichtItem(
-        icon: Icons.grade_rounded,
-        iconColor: const Color(0xFFD97706),
+        icon: CoolIcons.star,
+        iconColor: AppColors.iconPrimary,
         titel: 'Laatste beoordeling',
         waarde:
             '${_beoordelingLabel(laatste.beoordeling)} · ${_langeDatum(laatste.datum)}',
@@ -504,17 +506,13 @@ const emptyVoortgangTrends = VoortgangTrendsData(
         huidigOpVijf: null,
         trend: VaardigheidTrend.onbekend),
     CategorieScore(
-        naam: 'Verkeer',
-        huidigOpVijf: null,
-        trend: VaardigheidTrend.onbekend),
+        naam: 'Verkeer', huidigOpVijf: null, trend: VaardigheidTrend.onbekend),
     CategorieScore(
         naam: 'Wegpositie',
         huidigOpVijf: null,
         trend: VaardigheidTrend.onbekend),
     CategorieScore(
-        naam: 'Gedrag',
-        huidigOpVijf: null,
-        trend: VaardigheidTrend.onbekend),
+        naam: 'Gedrag', huidigOpVijf: null, trend: VaardigheidTrend.onbekend),
   ],
   sterkeCompetenties: [],
   aandachtspunten: [],

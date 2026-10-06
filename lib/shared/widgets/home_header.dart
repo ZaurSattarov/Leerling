@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
 import 'klantio_header.dart';
@@ -21,21 +20,34 @@ import 'main_tab_header.dart';
 ///
 /// Avatar-logica (echte foto via CachedNetworkImage, initialen-fallback)
 /// is 1-op-1 overgenomen -- geen mock-avatar, geen nieuwe databron.
+/// Uiterlijk en begroeting (voornaam) gelijk aan de Instructeur-app
+/// (rijschool-planner-flutter/lib/shared/widgets/home_header.dart).
 class HomeHeader extends StatelessWidget {
   final String? avatarUrl;
   final String naam;
+
+  /// Wordt niet meer gebruikt -- de bel leest het aantal zelf uit
+  /// [ongelezenNotificatiesProvider] (MainHeaderNotificatieKnop).
   final int? ongelezenNotificaties;
 
   const HomeHeader({
     super.key,
     required this.avatarUrl,
     required this.naam,
-    required this.ongelezenNotificaties,
+    this.ongelezenNotificaties,
   });
+
+  /// Eerste woord van de volledige naam ("Sara de Vries" -> "Sara") voor
+  /// een natuurlijke, persoonlijke begroeting.
+  String get _voornaam {
+    final delen = naam.trim().split(RegExp(r'\s+'));
+    return delen.first.isNotEmpty ? delen.first : naam;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final initials = naam.isNotEmpty ? naam[0].toUpperCase() : '?';
+    final initials =
+        naam.trim().isNotEmpty ? naam.trim()[0].toUpperCase() : '?';
 
     return KlantioHeaderShell(
       child: Row(
@@ -45,18 +57,14 @@ class HomeHeader extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              naam.isNotEmpty ? 'Hoi, $naam.' : 'Welkom terug.',
+              naam.trim().isNotEmpty ? 'Hoi, $_voornaam.' : 'Welkom terug.',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: klantioHeaderTitleStyle(),
+              style: klantioHeaderTitleStyle(context: context),
             ),
           ),
           const SizedBox(width: 8),
-          MainHeaderIconKnop(
-            icon: Icons.notifications_none_rounded,
-            badgeCount: ongelezenNotificaties,
-            onTap: () => context.go('/notificaties'),
-          ),
+          const MainHeaderNotificatieKnop(),
         ],
       ),
     );
@@ -74,13 +82,9 @@ class _HomeAvatar extends StatelessWidget {
     return Container(
       width: 40,
       height: 40,
-      decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.25),
+      decoration: const BoxDecoration(
+        color: Color(0xFFF1F1F1),
         shape: BoxShape.circle,
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.5),
-          width: 1.5,
-        ),
       ),
       child: ClipOval(
         child: avatarUrl?.isNotEmpty == true
@@ -108,7 +112,7 @@ class _Initials extends StatelessWidget {
       child: Text(
         value,
         style: const TextStyle(
-          color: Colors.white,
+          color: AppColors.primary,
           fontSize: 16,
           fontWeight: FontWeight.w700,
         ),

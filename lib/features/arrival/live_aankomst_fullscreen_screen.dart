@@ -8,6 +8,7 @@ import '../../core/utils/maps_uri.dart';
 import '../../models/les.dart';
 import 'arrival_provider.dart';
 import 'widgets/arrival_live_map.dart';
+import '../../core/constants/cool_icons.dart';
 
 /// Interne kaartweergave voor de ophaallocatie van een les (Feature 2/4) --
 /// ÉÉN gedeeld scherm voor zowel de statische ophaallocatie (geen actieve
@@ -72,8 +73,9 @@ class _LiveAankomstFullscreenScreenState
     // Provider-key is de lesson_id (niet het adres zelf) -- de
     // geocode-pickup Edge Function haalt `locatie` zelf server-side op,
     // RLS-scoped op basis van dat id. Zie geocoding_service.dart.
-    final geocodedAsync =
-        adres.isEmpty ? null : ref.watch(geocodedLocationProvider(widget.les.id));
+    final geocodedAsync = adres.isEmpty
+        ? null
+        : ref.watch(geocodedLocationProvider(widget.les.id));
     final geocoded = geocodedAsync?.valueOrNull;
     final pickupPositie =
         geocoded != null ? LatLng(geocoded.latitude, geocoded.longitude) : null;
@@ -88,7 +90,9 @@ class _LiveAankomstFullscreenScreenState
             Positioned.fill(
               child: ArrivalLiveMap(
                 key: ValueKey(
-                  toonLiveKaart ? 'live-${session.id}' : 'pickup-${widget.les.id}',
+                  toonLiveKaart
+                      ? 'live-${session.id}'
+                      : 'pickup-${widget.les.id}',
                 ),
                 latitude: toonLiveKaart ? location.latitude : null,
                 longitude: toonLiveKaart ? location.longitude : null,
@@ -100,7 +104,7 @@ class _LiveAankomstFullscreenScreenState
               top: 16,
               left: 16,
               child: _RondeKnop(
-                icon: Icons.arrow_back_rounded,
+                icon: CoolIcons.chevronLeft,
                 onTap: () => Navigator.of(context).pop(),
                 semanticsLabel: 'Terug',
               ),
@@ -112,7 +116,7 @@ class _LiveAankomstFullscreenScreenState
                 // Secundaire, expliciete actie -- de hoofdkaart zelf opent
                 // nooit automatisch extern Maps.
                 child: _RondeKnop(
-                  icon: Icons.directions_rounded,
+                  icon: CoolIcons.navigation,
                   onTap: () => MapsUri.open(context, adres),
                   semanticsLabel: 'Route openen in Maps',
                 ),
@@ -160,7 +164,7 @@ class _RondeKnop extends StatelessWidget {
           onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.all(10),
-            child: Icon(icon, color: AppColors.textPrimary, size: 20),
+            child: Icon(icon, color: AppColors.iconPrimary, size: 20),
           ),
         ),
       ),
@@ -185,15 +189,8 @@ class _StatusKaart extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.border, width: 0.75),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
@@ -204,7 +201,7 @@ class _StatusKaart extends StatelessWidget {
               color: AppColors.successBg,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.directions_car_filled_rounded,
+            child: const Icon(CoolIcons.carAuto,
                 color: AppColors.success, size: 19),
           ),
           const SizedBox(width: 12),

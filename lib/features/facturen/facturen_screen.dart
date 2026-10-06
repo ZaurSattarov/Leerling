@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/nav_shell_tokens.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/factuur.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_tab_header.dart';
 import '../../shared/widgets/status_pill.dart';
 import 'facturen_provider.dart';
+import '../../core/constants/cool_icons.dart';
+import '../../shared/widgets/main_scaffold.dart';
 
 // ── Kleurconstanten ───────────────────────────────────────────────────────────
 // Gebruik dezelfde semantische kleuren als voortgang_screen.dart.
@@ -103,7 +104,7 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
                       if (facturen.isEmpty) {
                         return const SliverFillRemaining(
                           child: EmptyState(
-                            icon: Icons.receipt_long_outlined,
+                            icon: CoolIcons.fileDocument,
                             title: 'Geen facturen',
                             subtitle: 'Je hebt nog geen facturen ontvangen.',
                           ),
@@ -115,8 +116,8 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
                           .addPostFrameCallback((_) => _startAnim());
 
                       return SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(
-                            20, 20, 20, NavShellTokens.contentBottomClearance),
+                        padding: EdgeInsets.fromLTRB(20, 20, 20,
+                            MainShellContentInset.bottomOf(context)),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
                             // 1. Gecombineerde statusverdeling +
@@ -145,8 +146,8 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
                       );
                     },
                     loading: () => SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(
-                          20, 20, 20, NavShellTokens.contentBottomClearance),
+                      padding: EdgeInsets.fromLTRB(
+                          20, 20, 20, MainShellContentInset.bottomOf(context)),
                       sliver: SliverList(
                         delegate: SliverChildListDelegate([
                           // Skeleton voor de gecombineerde kaart.
@@ -160,7 +161,7 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
                     ),
                     error: (e, _) => SliverFillRemaining(
                       child: EmptyState(
-                        icon: Icons.wifi_off_rounded,
+                        icon: CoolIcons.cloudOff,
                         title: 'Kon facturen niet laden',
                         subtitle: e.toString(),
                       ),
@@ -279,9 +280,8 @@ class _StatusEnFinanceKaart extends StatelessWidget {
         ),
       if (stats.openstaandAantal > 0)
         _DonutSegment(
-          waarde: totaalRelevant == 0
-              ? 0
-              : stats.openstaandAantal / totaalRelevant,
+          waarde:
+              totaalRelevant == 0 ? 0 : stats.openstaandAantal / totaalRelevant,
           kleur: _oranjeWaarschuwing,
           label: 'Openstaand',
           aantal: stats.openstaandAantal,
@@ -302,15 +302,8 @@ class _StatusEnFinanceKaart extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.border, width: 0.75),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -321,14 +314,10 @@ class _StatusEnFinanceKaart extends StatelessWidget {
               Container(
                 width: 36,
                 height: 36,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF0F2F5),
-                  borderRadius: BorderRadius.circular(10),
-                ),
                 child: const Icon(
-                  Icons.donut_large_rounded,
+                  CoolIcons.chartPie,
                   size: 18,
-                  color: AppColors.textSecondary,
+                  color: AppColors.iconPrimary,
                 ),
               ),
               const SizedBox(width: 12),
@@ -395,7 +384,7 @@ class _StatusEnFinanceKaart extends StatelessWidget {
                 child: _OverzichtStat(
                   label: 'Openstaand',
                   waarde: stats.openstaandLabel,
-                  icon: Icons.schedule_rounded,
+                  icon: CoolIcons.clock,
                   accentKleur:
                       stats.openstaandCents > 0 ? AppColors.primary : null,
                 ),
@@ -405,7 +394,7 @@ class _StatusEnFinanceKaart extends StatelessWidget {
                 child: _OverzichtStat(
                   label: 'Betaald',
                   waarde: stats.betaaldLabel,
-                  icon: Icons.check_circle_outline_rounded,
+                  icon: CoolIcons.circleCheck,
                   accentKleur: stats.betaaldCents > 0 ? _groenStatus : null,
                 ),
               ),
@@ -418,7 +407,7 @@ class _StatusEnFinanceKaart extends StatelessWidget {
                 child: _OverzichtStat(
                   label: 'Facturen',
                   waarde: '${stats.totaalAantal}',
-                  icon: Icons.receipt_long_outlined,
+                  icon: CoolIcons.fileDocument,
                 ),
               ),
               const SizedBox(width: 10),
@@ -426,7 +415,7 @@ class _StatusEnFinanceKaart extends StatelessWidget {
                 child: _OverzichtStat(
                   label: 'Vervaldatum',
                   waarde: vervalLabel,
-                  icon: Icons.event_outlined,
+                  icon: CoolIcons.calendar,
                   accentKleur: heeftVervaldatum ? _roodWaarschuwing : null,
                 ),
               ),
@@ -469,8 +458,8 @@ class _OverzichtStat extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                size: 12,
-                color: accentKleur ?? AppColors.textHint,
+                size: 13,
+                color: AppColors.iconPrimary,
               ),
               const SizedBox(width: 5),
               Text(
@@ -639,7 +628,7 @@ class _LegendeRij extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(999),
-            border: Border.all(color: const Color(0xFFE2E2E7)),
+            border: Border.all(color: AppColors.border),
           ),
           child: Text(
             '${segment.aantal}',
@@ -663,11 +652,7 @@ class _FactuurCard extends StatelessWidget {
 
   // Icon kleur: semantisch maar ingetogen.
   // Verlopen = rood (echte waarschuwing), betaald = groen, rest = neutraal.
-  Color get _iconKleur {
-    if (factuur.isVerlopen) return _roodWaarschuwing;
-    if (factuur.status == FactuurStatus.betaald) return _groenStatus;
-    return AppColors.textSecondary;
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -675,18 +660,14 @@ class _FactuurCard extends StatelessWidget {
       onTap: () => context.push('/facturen/${factuur.id}'),
       child: Row(
         children: [
-          // Icoon container — 40×40, borderRadius 12, zelfde als voortgang
-          Container(
+          // Icoon zonder vlak, in de vaste icoonkleur (Instructeur-app).
+          const SizedBox(
             width: 40,
             height: 40,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F2F5),
-              borderRadius: BorderRadius.circular(12),
-            ),
             child: Icon(
-              Icons.receipt_long_rounded,
-              color: _iconKleur,
-              size: 18,
+              CoolIcons.fileDocument,
+              color: AppColors.iconPrimary,
+              size: 20,
             ),
           ),
           const SizedBox(width: 14),
@@ -720,7 +701,7 @@ class _FactuurCard extends StatelessWidget {
                   Row(
                     children: [
                       Icon(
-                        Icons.event_outlined,
+                        CoolIcons.calendar,
                         size: 11,
                         color: DatumUtils.isVerlopen(factuur.vervaldatum)
                             ? _roodWaarschuwing

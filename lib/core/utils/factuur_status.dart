@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/factuur.dart';
 import '../constants/app_colors.dart';
+import '../constants/cool_icons.dart';
 
 class FactuurStatusUi {
   final String label;
@@ -27,31 +28,27 @@ extension FactuurStatusUiMapper on FactuurStatus {
       FactuurStatus.open =>
         const FactuurStatusUi(
           label: 'Openstaand',
-          backgroundColor: Color(0xFFF0F2F5),
-          textColor: AppColors.warningSolid,
-          borderColor: Color(0xFFE2E2E7),
-          icon: Icons.schedule_rounded,
+          backgroundColor: AppColors.warningSolid,
+          textColor: Colors.white,
+          icon: CoolIcons.clock,
         ),
       FactuurStatus.betaald => const FactuurStatusUi(
           label: 'Betaald',
-          backgroundColor: Color(0xFFF0F2F5),
-          textColor: AppColors.successSolid,
-          borderColor: Color(0xFFE2E2E7),
-          icon: Icons.check_circle_rounded,
+          backgroundColor: AppColors.success,
+          textColor: Colors.white,
+          icon: CoolIcons.circleCheck,
         ),
       FactuurStatus.verlopen || FactuurStatus.teLaat => const FactuurStatusUi(
           label: 'Te laat',
-          backgroundColor: Color(0xFFF0F2F5),
-          textColor: AppColors.dangerSolid,
-          borderColor: Color(0xFFE2E2E7),
-          icon: Icons.warning_amber_rounded,
+          backgroundColor: AppColors.dangerSolid,
+          textColor: Colors.white,
+          icon: CoolIcons.triangleWarning,
         ),
       FactuurStatus.geannuleerd => const FactuurStatusUi(
           label: 'Geannuleerd',
-          backgroundColor: Color(0xFFF0F2F5),
-          textColor: AppColors.textSecondary,
-          borderColor: Color(0xFFE2E2E7),
-          icon: Icons.cancel_outlined,
+          backgroundColor: Color(0x1A222936),
+          textColor: Color(0xFF222936),
+          icon: CoolIcons.closeCircle,
         ),
     };
   }

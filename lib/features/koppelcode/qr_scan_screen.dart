@@ -8,6 +8,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../core/constants/app_colors.dart';
 import 'koppel_flow.dart';
+import '../../core/constants/cool_icons.dart';
 
 /// Full-screen QR-scanner voor de koppel-flow.
 ///
@@ -169,12 +170,12 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen>
             // referentiescreen-afbeelding).
             SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   children: [
                     _RondeIconKnop(
-                      icoon: Icons.arrow_back_rounded,
+                      icoon: CoolIcons.chevronLeft,
                       onTap: () {
                         if (context.canPop()) {
                           context.pop();
@@ -185,9 +186,7 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen>
                     ),
                     const Spacer(),
                     _RondeIconKnop(
-                      icoon: _flashAan
-                          ? Icons.flash_on_rounded
-                          : Icons.flash_off_rounded,
+                      icoon: _flashAan ? CoolIcons.bulb : CoolIcons.bulb,
                       onTap: _toggleFlash,
                     ),
                   ],
@@ -242,9 +241,8 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen>
                       ],
                       const SizedBox(height: 20),
                       TextButton.icon(
-                        onPressed: () =>
-                            context.go('/koppelcode/handmatig'),
-                        icon: const Icon(Icons.keyboard_rounded,
+                        onPressed: () => context.go('/koppelcode/handmatig'),
+                        icon: const Icon(CoolIcons.text,
                             color: Colors.white70, size: 18),
                         label: const Text(
                           'Liever koppelcode intypen',
@@ -312,8 +310,7 @@ class _ScanMaskerPainter extends CustomPainter {
 
     final buiten = Path()..addRect(Offset.zero & size);
     final gat = Path()
-      ..addRRect(
-          RRect.fromRectAndRadius(venster, const Radius.circular(20)));
+      ..addRRect(RRect.fromRectAndRadius(venster, const Radius.circular(20)));
     final masker = Path.combine(PathOperation.difference, buiten, gat);
     canvas.drawPath(masker, maskerVerf);
   }
@@ -331,8 +328,8 @@ class _ScanVenster extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, buiten) {
-        final grootte = _venstergrootte(
-            BoxConstraints.tightFor(width: buiten.maxWidth));
+        final grootte =
+            _venstergrootte(BoxConstraints.tightFor(width: buiten.maxWidth));
         return SizedBox(
           width: grootte,
           height: grootte,
@@ -427,13 +424,11 @@ class _CornerBracketsPainter extends CustomPainter {
     // top-right
     canvas.drawLine(
         Offset(size.width - lengte, 0), Offset(size.width, 0), verf);
-    canvas.drawLine(
-        Offset(size.width, 0), Offset(size.width, lengte), verf);
+    canvas.drawLine(Offset(size.width, 0), Offset(size.width, lengte), verf);
     // bottom-left
     canvas.drawLine(
         Offset(0, size.height - lengte), Offset(0, size.height), verf);
-    canvas.drawLine(
-        Offset(0, size.height), Offset(lengte, size.height), verf);
+    canvas.drawLine(Offset(0, size.height), Offset(lengte, size.height), verf);
     // bottom-right
     canvas.drawLine(Offset(size.width - lengte, size.height),
         Offset(size.width, size.height), verf);
@@ -485,8 +480,7 @@ class _FoutBalk extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.error_outline_rounded,
-              color: Colors.white, size: 20),
+          const Icon(CoolIcons.circleWarning, color: Colors.white, size: 20),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -526,9 +520,8 @@ class _CameraFoutView extends StatelessWidget {
       MobileScannerErrorCode.unsupported =>
         'Dit toestel ondersteunt de QR-scanner niet. Gebruik de handmatige '
             'koppelcode.',
-      _ =>
-        'De camera kon niet worden gestart. Probeer het opnieuw of gebruik '
-            'de handmatige koppelcode.',
+      _ => 'De camera kon niet worden gestart. Probeer het opnieuw of gebruik '
+          'de handmatige koppelcode.',
     };
 
     return Container(
@@ -538,14 +531,13 @@ class _CameraFoutView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.videocam_off_rounded,
-              color: Colors.white70, size: 48),
+          const Icon(CoolIcons.image02, color: Colors.white70, size: 48),
           const SizedBox(height: 16),
           Text(
             vriendelijk,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-                color: Colors.white, fontSize: 14, height: 1.4),
+            style:
+                const TextStyle(color: Colors.white, fontSize: 14, height: 1.4),
           ),
           const SizedBox(height: 20),
           Wrap(

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../features/notificaties/notificaties_provider.dart';
+import 'isomorphic_icons.dart';
 import 'klantio_header.dart';
 
 /// Enige gedeelde hoofdheader voor de hoofdtabs met een gecentreerde
@@ -13,16 +14,17 @@ import 'klantio_header.dart';
 /// een gecentreerde titel -- maar bouwt op dezelfde [KlantioHeaderShell]
 /// zodat de hoogte overal identiek blijft (geen layout-jump bij tabwissel).
 ///
-/// Geen eyebrow-label meer (voorheen een kleine tekst boven de titel,
-/// bv. "PLANNING" boven "Mijn lessen") -- voegde geen noodzakelijke
-/// informatie toe en maakte de header onnodig hoog.
+/// 1-op-1 gelijk aan de Instructeur-app (rijschool-planner-flutter/
+/// lib/shared/widgets/main_tab_header.dart).
 class MainTabHeader extends StatelessWidget {
   final String title;
+  final Widget? leading;
   final List<Widget> actions;
 
   const MainTabHeader({
     super.key,
     required this.title,
+    this.leading,
     this.actions = const [],
   });
 
@@ -31,6 +33,10 @@ class MainTabHeader extends StatelessWidget {
     return KlantioHeaderShell(
       child: KlantioCenteredTitleRow(
         title: title,
+        leading: leading,
+        titleHorizontalPadding: actions.length > 1
+            ? actions.length * 40.0 + (actions.length - 1) * 8 + 8
+            : kKlantioHeaderZoneWidth + 8,
         trailing: actions.isEmpty ? null : _ActionsRow(actions: actions),
       ),
     );
@@ -55,8 +61,8 @@ class _ActionsRow extends StatelessWidget {
   }
 }
 
-/// Gedeelde ronde header-actieknop -- 1-op-1 gelijk aan de Instructeur-app:
-/// cirkel 40x40, wit icoon exact in het midden, badge rechtsboven.
+/// Gedeelde squircle header-actieknop -- zelfde vorm/grootte/kleur als Admin Dashboard:
+/// 40x40 squircle (12px radius) met border en lichte achtergrond.
 class MainHeaderIconKnop extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
@@ -75,28 +81,28 @@ class MainHeaderIconKnop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final knop = Container(
+    final knop = SizedBox(
       width: 40,
       height: 40,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: actief
-            ? AppColors.primary
-            : Colors.white.withValues(alpha: 0.13),
-        shape: BoxShape.circle,
+      child: Center(
+        child: Icon(
+          icon,
+          color: actief ? AppColors.primary : const Color(0xFFF8FAFC),
+          size: iconSize,
+        ),
       ),
-      child: Icon(icon, color: Colors.white, size: iconSize),
     );
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: (badgeCount ?? 0) > 0
           ? Stack(
               clipBehavior: Clip.none,
               children: [
                 knop,
                 Positioned(
-                  right: -4,
-                  top: -4,
+                  right: -2,
+                  top: -2,
                   child: _HeaderBadgePil(count: badgeCount!),
                 ),
               ],
@@ -136,9 +142,9 @@ class _HeaderBadgePil extends StatelessWidget {
   }
 }
 
-/// Meldingenknop gekoppeld aan [ongelezenNotificatiesProvider] -- gebruikt
-/// door alle hoofdtabs zodat elke tab exact dezelfde knop (stijl én
-/// gedrag) toont.
+/// Gedeelde meldingenknop: de geanimeerde bel uit de Instructeur-app,
+/// gekoppeld aan [ongelezenNotificatiesProvider] -- elke hoofdtab toont
+/// exact dezelfde knop (stijl én gedrag).
 class MainHeaderNotificatieKnop extends ConsumerWidget {
   const MainHeaderNotificatieKnop({super.key});
 
@@ -146,10 +152,17 @@ class MainHeaderNotificatieKnop extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ongelezenAantal =
         ref.watch(ongelezenNotificatiesProvider).valueOrNull ?? 0;
-    return MainHeaderIconKnop(
-      icon: Icons.notifications_none_rounded,
-      badgeCount: ongelezenAantal,
-      onTap: () => context.push('/notificaties'),
+
+    return Semantics(
+      button: true,
+      label: ongelezenAantal > 0
+          ? 'Meldingen, $ongelezenAantal ongelezen'
+          : 'Meldingen',
+      child: IsomorphicHeaderBellButton(
+        onTap: () => context.push('/notificaties'),
+        unreadCount: ongelezenAantal,
+        size: 40,
+      ),
     );
   }
 }

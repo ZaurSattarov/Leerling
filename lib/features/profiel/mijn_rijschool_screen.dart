@@ -10,6 +10,7 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'rijschool_provider.dart';
 import 'widgets/profile_info_row.dart';
+import '../../core/constants/cool_icons.dart';
 
 /// Profiel -> Mijn rijschool (Fase 6). Volledig read-only: alle velden komen
 /// uit `instructeur_profielen` via de al bestaande `mijnInstructeurProvider`
@@ -60,7 +61,7 @@ class MijnRijschoolScreen extends ConsumerWidget {
                   children: [
                     const SizedBox(height: 60),
                     EmptyState(
-                      icon: Icons.wifi_off_rounded,
+                      icon: CoolIcons.cloudOff,
                       title: 'Kon rijschool niet laden',
                       subtitle: e.toString(),
                     ),
@@ -72,7 +73,7 @@ class MijnRijschoolScreen extends ConsumerWidget {
                       children: const [
                         SizedBox(height: 60),
                         EmptyState(
-                          icon: Icons.school_outlined,
+                          icon: CoolIcons.bookOpen,
                           title: 'Nog geen rijschool gekoppeld',
                         ),
                       ],
@@ -136,15 +137,15 @@ class _MijnRijschoolBody extends StatelessWidget {
           child: Column(
             children: [
               ProfileInfoRow(
-                icon: Icons.store_outlined,
-                iconColor: AppColors.iconBlue,
+                icon: CoolIcons.building03,
+                iconColor: AppColors.iconPrimary,
                 label: 'Rijschoolnaam',
                 value: instructeur.weergaveNaam,
               ),
               const Divider(height: 20),
               ProfileInfoRow(
-                icon: Icons.location_on_outlined,
-                iconColor: AppColors.iconSlate,
+                icon: CoolIcons.mapPin,
+                iconColor: AppColors.iconPrimary,
                 label: 'Adres',
                 value: _formatAdres(instructeur) ?? _leeg,
                 isEmpty: _formatAdres(instructeur) == null,
@@ -153,8 +154,8 @@ class _MijnRijschoolBody extends StatelessWidget {
               if (instructeur.website?.trim().isNotEmpty == true) ...[
                 const Divider(height: 20),
                 ProfileInfoRow(
-                  icon: Icons.language_outlined,
-                  iconColor: AppColors.iconPurple,
+                  icon: CoolIcons.globe,
+                  iconColor: AppColors.iconPrimary,
                   label: 'Website',
                   value: instructeur.website!.trim(),
                   maxValueLines: 2,
@@ -163,8 +164,8 @@ class _MijnRijschoolBody extends StatelessWidget {
               if (instructeur.kvkNummer?.trim().isNotEmpty == true) ...[
                 const Divider(height: 20),
                 ProfileInfoRow(
-                  icon: Icons.badge_outlined,
-                  iconColor: AppColors.iconDark,
+                  icon: CoolIcons.userCardId,
+                  iconColor: AppColors.iconPrimary,
                   label: 'KvK-nummer',
                   value: instructeur.kvkNummer!.trim(),
                 ),
@@ -180,8 +181,8 @@ class _MijnRijschoolBody extends StatelessWidget {
               ? Column(
                   children: [
                     ProfileInfoRow(
-                      icon: Icons.directions_car_outlined,
-                      iconColor: AppColors.iconBlue,
+                      icon: CoolIcons.carAuto,
+                      iconColor: AppColors.iconPrimary,
                       label: 'Kenteken',
                       value: voertuig!.kenteken?.trim().isNotEmpty == true
                           ? voertuig!.kenteken!.trim()
@@ -190,8 +191,8 @@ class _MijnRijschoolBody extends StatelessWidget {
                     ),
                     const Divider(height: 20),
                     ProfileInfoRow(
-                      icon: Icons.badge_outlined,
-                      iconColor: AppColors.iconSlate,
+                      icon: CoolIcons.userCardId,
+                      iconColor: AppColors.iconPrimary,
                       label: 'Merk / model',
                       value: voertuig!.naam ?? _leeg,
                       isEmpty: voertuig!.naam == null,
@@ -199,12 +200,11 @@ class _MijnRijschoolBody extends StatelessWidget {
                   ],
                 )
               : ProfileInfoRow(
-                  icon: Icons.directions_car_outlined,
-                  iconColor: AppColors.iconSlate,
+                  icon: CoolIcons.carAuto,
+                  iconColor: AppColors.iconPrimary,
                   label: 'Toegewezen voertuig',
-                  value: voertuigLaden
-                      ? 'Laden…'
-                      : 'Nog geen voertuig toegewezen',
+                  value:
+                      voertuigLaden ? 'Laden…' : 'Nog geen voertuig toegewezen',
                   isEmpty: true,
                 ),
         ),
@@ -216,8 +216,8 @@ class _MijnRijschoolBody extends StatelessWidget {
             child: Column(
               children: [
                 ProfileInfoRow(
-                  icon: Icons.person_outline,
-                  iconColor: AppColors.iconGreen,
+                  icon: CoolIcons.user01,
+                  iconColor: AppColors.iconPrimary,
                   label: 'Naam instructeur',
                   value: instructeur.naam?.trim().isNotEmpty == true
                       ? instructeur.naam!.trim()
@@ -227,8 +227,8 @@ class _MijnRijschoolBody extends StatelessWidget {
                 if (instructeur.telefoon?.trim().isNotEmpty == true) ...[
                   const Divider(height: 20),
                   ProfileInfoRow(
-                    icon: Icons.phone_outlined,
-                    iconColor: AppColors.iconAmber,
+                    icon: CoolIcons.phone,
+                    iconColor: AppColors.iconPrimary,
                     label: 'Telefoon',
                     value: instructeur.telefoon!.trim(),
                   ),
@@ -236,8 +236,8 @@ class _MijnRijschoolBody extends StatelessWidget {
                 if (instructeur.email?.trim().isNotEmpty == true) ...[
                   const Divider(height: 20),
                   ProfileInfoRow(
-                    icon: Icons.email_outlined,
-                    iconColor: AppColors.iconPurple,
+                    icon: CoolIcons.mail,
+                    iconColor: AppColors.iconPrimary,
                     label: 'E-mail',
                     value: instructeur.email!.trim(),
                     maxValueLines: 2,
@@ -256,8 +256,8 @@ class _MijnRijschoolBody extends StatelessWidget {
               children: [
                 if (_heeftGeldigTelefoonnummer)
                   _ContactActieRij(
-                    icon: Icons.call_outlined,
-                    iconColor: AppColors.iconGreen,
+                    icon: CoolIcons.phone,
+                    iconColor: AppColors.iconPrimary,
                     label: 'Bellen',
                     waarde: instructeur.telefoon!.trim(),
                     onTap: () => _openUri(
@@ -268,8 +268,8 @@ class _MijnRijschoolBody extends StatelessWidget {
                   const Divider(height: 20),
                 if (_heeftGeldigEmail)
                   _ContactActieRij(
-                    icon: Icons.email_outlined,
-                    iconColor: AppColors.iconPurple,
+                    icon: CoolIcons.mail,
+                    iconColor: AppColors.iconPrimary,
                     label: 'E-mailen',
                     waarde: instructeur.email!.trim(),
                     onTap: () =>
@@ -280,8 +280,8 @@ class _MijnRijschoolBody extends StatelessWidget {
                   const Divider(height: 20),
                 if (_heeftGeldigeWebsite)
                   _ContactActieRij(
-                    icon: Icons.language_outlined,
-                    iconColor: AppColors.iconPurple,
+                    icon: CoolIcons.globe,
+                    iconColor: AppColors.iconPrimary,
                     label: 'Website openen',
                     waarde: instructeur.website!.trim(),
                     onTap: () => _openUri(
@@ -291,8 +291,8 @@ class _MijnRijschoolBody extends StatelessWidget {
                   const Divider(height: 20),
                 if (instructeur.volledigAdres != null)
                   _ContactActieRij(
-                    icon: Icons.directions_outlined,
-                    iconColor: AppColors.iconBlue,
+                    icon: CoolIcons.navigation,
+                    iconColor: AppColors.iconPrimary,
                     label: 'Route openen',
                     waarde: _formatAdres(instructeur)!,
                     onTap: () => _openUri(
@@ -455,8 +455,8 @@ class _ContactActieRij extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(Icons.chevron_right_rounded,
-              color: AppColors.textMuted, size: 20),
+          const Icon(CoolIcons.chevronRight,
+              color: AppColors.iconPrimary, size: 20),
         ],
       ),
     );

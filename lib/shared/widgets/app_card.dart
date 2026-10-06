@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/cool_icons.dart';
 
-class AppCard extends StatelessWidget {
+/// Kaartstijl van het Klantio-design-systeem (Instructeur-app): wit vlak,
+/// 12px radius, 1px rand ([AppColors.border]), geen schaduw. Tikbare kaarten
+/// krijgen dezelfde micro-interactie als de Instructeur-app: kort indrukken
+/// (schaal 0.98) i.p.v. een Material-rimpel.
+class AppCard extends StatefulWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final VoidCallback? onTap;
@@ -15,43 +20,61 @@ class AppCard extends StatelessWidget {
     this.backgroundColor,
   });
 
+  static const double radius = 12;
+
+  @override
+  State<AppCard> createState() => _AppCardState();
+}
+
+class _AppCardState extends State<AppCard> {
+  bool _pressed = false;
+
+  void _setPressed(bool value) {
+    if (_pressed == value) return;
+    setState(() => _pressed = value);
+  }
+
   @override
   Widget build(BuildContext context) {
     final card = Container(
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border, width: 0.75),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        color: widget.backgroundColor ?? AppColors.white,
+        borderRadius: BorderRadius.circular(AppCard.radius),
+        border: Border.all(color: AppColors.border),
       ),
       child: Padding(
-        padding: padding ?? const EdgeInsets.all(16),
-        child: child,
+        padding: widget.padding ?? const EdgeInsets.all(16),
+        child: widget.child,
       ),
     );
 
-    if (onTap != null) {
-      return Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: card,
-        ),
-      );
-    }
-    return card;
+    if (widget.onTap == null) return card;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: widget.onTap,
+      onTapDown: (_) => _setPressed(true),
+      onTapUp: (_) => _setPressed(false),
+      onTapCancel: () => _setPressed(false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.98 : 1,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOutCubic,
+        child: card,
+      ),
+    );
   }
 }
 
+/// Icoon zonder achtergrondvlak -- 1-op-1 zoals `AppIcon` in de
+/// Instructeur-app: alleen het (coolicons-)icoon, gecentreerd in een vaste
+/// tikzone, in de vaste icoonkleur [AppColors.iconPrimary]. Geen grijs of
+/// gekleurd vlak eromheen.
 class IconBadge extends StatelessWidget {
   final IconData icon;
+
+  /// Alleen voor echte statuskleuren (bv. rood bij een fout). Het merkroze
+  /// en de oude icoon-aliassen vallen terug op [AppColors.iconPrimary].
   final Color color;
   final double size;
 
@@ -65,19 +88,12 @@ class IconBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final iconSize = size * 0.5;
-    return Container(
+    final iconColor =
+        color == AppColors.primary ? AppColors.iconPrimary : color;
+    return SizedBox(
       width: size,
       height: size,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: SizedBox(
-        width: iconSize,
-        height: iconSize,
-        child: Icon(icon, color: color, size: iconSize),
-      ),
+      child: Center(child: Icon(icon, color: iconColor, size: iconSize)),
     );
   }
 }
@@ -101,11 +117,12 @@ class SectionHeader extends StatelessWidget {
         Expanded(
           child: Text(
             title.toUpperCase(),
+            // Sectielabel-stijl van de Instructeur-app (_ProfileDesign.sectionTitle).
             style: const TextStyle(
               fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textSecondary,
-              letterSpacing: 1.2,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF7B8089),
+              letterSpacing: 0.5,
             ),
           ),
         ),
@@ -124,8 +141,8 @@ class SectionHeader extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 2),
-                const Icon(Icons.arrow_forward_rounded,
-                    size: 14, color: AppColors.textPrimary),
+                const Icon(CoolIcons.arrowRightMd,
+                    size: 14, color: AppColors.iconPrimary),
               ],
             ),
           ),
@@ -157,11 +174,7 @@ class EmptyState extends StatelessWidget {
             Container(
               width: 72,
               height: 72,
-              decoration: BoxDecoration(
-                color: AppColors.borderLight,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Icon(icon, size: 36, color: AppColors.textHint),
+              child: Icon(icon, size: 40, color: AppColors.iconPrimary),
             ),
             const SizedBox(height: 16),
             Text(
@@ -178,7 +191,8 @@ class EmptyState extends StatelessWidget {
               Text(
                 subtitle!,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                style: const TextStyle(
+                    fontSize: 14, color: AppColors.textSecondary),
               ),
             ],
           ],
@@ -239,9 +253,9 @@ class _SkeletonBoxState extends State<SkeletonBox>
             begin: Alignment(_anim.value - 1, 0),
             end: Alignment(_anim.value + 1, 0),
             colors: const [
-              Color(0xFFE4E8EE),
-              Color(0xFFF5F7FA),
-              Color(0xFFE4E8EE),
+              Color(0xFFEDEDED),
+              Color(0xFFF7F7F7),
+              Color(0xFFEDEDED),
             ],
           ),
         ),

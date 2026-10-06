@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'widgets/profiel_menu_widgets.dart';
+import '../../core/constants/cool_icons.dart';
 
 class AppInstellingenScreen extends StatelessWidget {
   const AppInstellingenScreen({super.key});
@@ -30,7 +31,7 @@ class AppInstellingenScreen extends StatelessWidget {
                   child: ProfielMenuCard(
                     children: [
                       ProfielMenuTile(
-                        icon: Icons.app_settings_alt_outlined,
+                        icon: CoolIcons.settings,
                         label: 'App-machtigingen',
                         subtitle: 'Meldingen, camera en foto\'s',
                         onTap: () => context.push('/profiel/app-machtigingen'),
@@ -45,7 +46,7 @@ class AppInstellingenScreen extends StatelessWidget {
                   child: ProfielMenuCard(
                     children: [
                       ProfielMenuTile(
-                        icon: Icons.shield_outlined,
+                        icon: CoolIcons.shieldCheck,
                         label: 'Beveiliging',
                         subtitle: 'Wachtwoord en accountbeveiliging',
                         onTap: () => context.push('/profiel/beveiliging'),

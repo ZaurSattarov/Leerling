@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/cool_icons.dart';
 
 class NeutralChip extends StatelessWidget {
   final String label;
@@ -48,7 +49,7 @@ class InlineCtaLink extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: TextButton.icon(
         onPressed: onPressed,
-        icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+        icon: const Icon(CoolIcons.arrowRightMd, size: 16),
         label: Text(label),
         style: TextButton.styleFrom(
           foregroundColor: AppColors.textPrimary,

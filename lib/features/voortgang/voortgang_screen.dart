@@ -11,6 +11,8 @@ import 'lespakket_voortgang_provider.dart';
 import 'voortgang_provider.dart';
 import 'voortgang_trends_provider.dart';
 import 'widgets/tijdlijn_card.dart';
+import '../../core/constants/cool_icons.dart';
+import '../../shared/widgets/main_scaffold.dart';
 
 // ── Semantische kleuren (geen pastel) ─────────────────────────────────────────
 
@@ -18,7 +20,7 @@ const _groen = Color(0xFF16A34A);
 const _oranje = Color(0xFFD97706);
 const _blauw = Color(0xFF2563EB);
 const _rood = Color(0xFFE11D48);
-const _mutedSurface = Color(0xFFF0F2F5);
+const _mutedSurface = AppColors.neutralBg;
 
 const _screenPadding = 20.0;
 const _sectionGap = 24.0;
@@ -60,7 +62,7 @@ class VoortgangScreen extends ConsumerWidget {
                       if (profiel == null) {
                         return const SliverFillRemaining(
                           child: EmptyState(
-                            icon: Icons.person_off_outlined,
+                            icon: CoolIcons.userClose,
                             title: 'Geen profiel gevonden',
                           ),
                         );
@@ -71,7 +73,7 @@ class VoortgangScreen extends ConsumerWidget {
                           _screenPadding,
                           16,
                           _screenPadding,
-                          MediaQuery.paddingOf(context).bottom + 96,
+                          MainShellContentInset.bottomOf(context),
                         ),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
@@ -191,7 +193,7 @@ class VoortgangScreen extends ConsumerWidget {
                         _screenPadding,
                         16,
                         _screenPadding,
-                        MediaQuery.paddingOf(context).bottom + 96,
+                        MainShellContentInset.bottomOf(context),
                       ),
                       sliver: SliverList(
                         delegate: SliverChildListDelegate([
@@ -207,7 +209,7 @@ class VoortgangScreen extends ConsumerWidget {
                     ),
                     error: (e, _) => SliverFillRemaining(
                       child: EmptyState(
-                        icon: Icons.wifi_off_rounded,
+                        icon: CoolIcons.cloudOff,
                         title: 'Kon voortgang niet laden',
                         subtitle: e.toString(),
                       ),
@@ -298,8 +300,8 @@ class _TotaleVoortgangCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right_rounded,
-                    color: AppColors.textHint, size: 22),
+                const Icon(CoolIcons.chevronRight,
+                    color: AppColors.iconPrimary, size: 22),
               ],
             ),
             const SizedBox(height: 14),
@@ -381,9 +383,7 @@ class _ExamenReadinessCard extends StatelessWidget {
     final scoreTekst = toonScore ? '${trends.huidigeScore}%' : '—';
     final infoLabel = trends.ontwikkelingTekst.isNotEmpty
         ? trends.ontwikkelingTekst
-        : (toonScore
-            ? 'Geen vorige meting'
-            : 'Nog onvoldoende beoordelingen');
+        : (toonScore ? 'Geen vorige meting' : 'Nog onvoldoende beoordelingen');
 
     return Semantics(
       label:
@@ -467,9 +467,8 @@ class _CbrRadarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectief = categorieen.isEmpty
-        ? const <CategorieScore>[]
-        : categorieen;
+    final effectief =
+        categorieen.isEmpty ? const <CategorieScore>[] : categorieen;
     final labels = effectief.map((c) => _radarLabelVoor(c.naam)).toList();
     final waarden = effectief
         .map((c) => ((c.huidigOpVijf ?? 0) / 5.0).clamp(0.0, 1.0))
@@ -538,8 +537,7 @@ class _CompetentieProgressRow extends StatelessWidget {
   final CategorieScore categorie;
   const _CompetentieProgressRow({required this.categorie});
 
-  double get _pct =>
-      ((categorie.huidigOpVijf ?? 0) / 5.0).clamp(0.0, 1.0);
+  double get _pct => ((categorie.huidigOpVijf ?? 0) / 5.0).clamp(0.0, 1.0);
 
   Color get _kleur {
     if (!categorie.heeftData) return AppColors.textHint;
@@ -553,7 +551,8 @@ class _CompetentieProgressRow extends StatelessWidget {
     final pct = (_pct * 100).round();
     final labelPct = categorie.heeftData ? '$pct%' : '—';
     return Semantics(
-      label: '${categorie.naam}: ${categorie.heeftData ? '$pct procent' : 'nog geen data'}.',
+      label:
+          '${categorie.naam}: ${categorie.heeftData ? '$pct procent' : 'nog geen data'}.',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -628,7 +627,7 @@ class _RadarChartPainter extends CustomPainter {
 
     // Grid ringen
     final gridPaint = Paint()
-      ..color = const Color(0xFFE2E2E7)
+      ..color = AppColors.border
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
@@ -651,7 +650,7 @@ class _RadarChartPainter extends CustomPainter {
 
     // Assen
     final axisPaint = Paint()
-      ..color = const Color(0xFFE2E2E7)
+      ..color = AppColors.border
       ..strokeWidth = 1;
     for (var i = 0; i < n; i++) {
       final angle = -pi / 2 + i * 2 * pi / n;
@@ -773,7 +772,7 @@ class _SterkAandachtRow extends StatelessWidget {
           Expanded(
             child: _PuntenKaart(
               titel: 'Sterke punten',
-              icoon: Icons.check_rounded,
+              icoon: CoolIcons.check,
               kleur: _groen,
               punten: trends.sterkeCompetenties,
             ),
@@ -785,7 +784,7 @@ class _SterkAandachtRow extends StatelessWidget {
           Expanded(
             child: _PuntenKaart(
               titel: 'Aandachtspunten',
-              icoon: Icons.flag_rounded,
+              icoon: CoolIcons.flag,
               kleur: _oranje,
               punten: trends.aandachtspunten,
             ),
@@ -841,9 +840,9 @@ class _PuntenKaart extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(
-                      icoon == Icons.check_rounded
-                          ? Icons.check_circle_rounded
-                          : Icons.flag_circle_rounded,
+                      icoon == CoolIcons.check
+                          ? CoolIcons.circleCheck
+                          : CoolIcons.flag,
                       color: kleur,
                       size: 14,
                     ),
@@ -913,10 +912,6 @@ class _InzichtRij extends StatelessWidget {
         Container(
           width: 34,
           height: 34,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF0F2F5),
-            borderRadius: BorderRadius.circular(10),
-          ),
           child: Icon(item.icon, color: item.iconColor, size: 17),
         ),
         const SizedBox(width: 12),
@@ -964,9 +959,9 @@ class _InzichtRij extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
             decoration: BoxDecoration(
-              color: const Color(0xFFF0F2F5),
+              color: AppColors.neutralBg,
               borderRadius: BorderRadius.circular(999),
-              border: Border.all(color: const Color(0xFFE2E2E7)),
+              border: Border.all(color: AppColors.border),
             ),
             child: Text(
               item.delta!,
@@ -1006,10 +1001,10 @@ class _ScoreChartCard extends StatelessWidget {
   IconData get _trendIcon {
     final trend = trends.sparkline?.trend;
     return switch (trend) {
-      VaardigheidTrend.stijgt => Icons.trending_up_rounded,
-      VaardigheidTrend.daalt => Icons.trending_down_rounded,
-      VaardigheidTrend.stabiel => Icons.trending_flat_rounded,
-      _ => Icons.trending_flat_rounded,
+      VaardigheidTrend.stijgt => CoolIcons.trendingUp,
+      VaardigheidTrend.daalt => CoolIcons.trendingDown,
+      VaardigheidTrend.stabiel => CoolIcons.arrowRightMd,
+      _ => CoolIcons.arrowRightMd,
     };
   }
 
@@ -1027,9 +1022,8 @@ class _ScoreChartCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final sparkline = trends.sparkline;
     final categorieNaam = sparkline?.categorie ?? '—';
-    final huidigPunt = sparkline?.punten.isNotEmpty == true
-        ? sparkline!.punten.last
-        : null;
+    final huidigPunt =
+        sparkline?.punten.isNotEmpty == true ? sparkline!.punten.last : null;
 
     return AppCard(
       child: Column(
@@ -1149,9 +1143,9 @@ class _StatusChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
+        color: AppColors.neutralBg,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: const Color(0xFFE2E2E7)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Text(
         label,
@@ -1244,7 +1238,7 @@ class _MiniStat extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F2F5),
+        color: AppColors.neutralBg,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),

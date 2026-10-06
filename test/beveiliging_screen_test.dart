@@ -56,6 +56,6 @@ void main() {
     expect(rowSource, contains('Semantics('));
     expect(rowSource,
         contains('EdgeInsets.symmetric(horizontal: 18, vertical: 14)'));
-    expect(rowSource, contains('chevron_right_rounded'));
+    expect(rowSource, contains('CoolIcons.chevronRight'));
   });
 }

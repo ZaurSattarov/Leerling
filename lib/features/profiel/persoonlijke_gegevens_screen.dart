@@ -8,6 +8,7 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'profielfoto_editor.dart';
 import 'widgets/profile_info_row.dart';
+import '../../core/constants/cool_icons.dart';
 
 /// Profiel -> Persoonlijke gegevens (Fase 5). Alle getoonde velden komen
 /// rechtstreeks uit `leerlingen` (via het al bestaande mijnProfielProvider /
@@ -53,7 +54,7 @@ class ProfielPersoonlijkeGegevensScreen extends ConsumerWidget {
                   children: [
                     const SizedBox(height: 60),
                     EmptyState(
-                      icon: Icons.wifi_off_rounded,
+                      icon: CoolIcons.cloudOff,
                       title: 'Kon gegevens niet laden',
                       subtitle: e.toString(),
                     ),
@@ -65,7 +66,7 @@ class ProfielPersoonlijkeGegevensScreen extends ConsumerWidget {
                       children: const [
                         SizedBox(height: 60),
                         EmptyState(
-                          icon: Icons.person_off_outlined,
+                          icon: CoolIcons.userClose,
                           title: 'Geen profiel gevonden',
                         ),
                       ],
@@ -105,15 +106,15 @@ class _PersoonlijkeGegevensBody extends StatelessWidget {
           child: Column(
             children: [
               ProfileInfoRow(
-                icon: Icons.badge_outlined,
-                iconColor: AppColors.iconBlue,
+                icon: CoolIcons.userCardId,
+                iconColor: AppColors.iconPrimary,
                 label: 'Naam',
                 value: profiel.volledigeNaam,
               ),
               const Divider(height: 20),
               ProfileInfoRow(
-                icon: Icons.phone_outlined,
-                iconColor: AppColors.iconGreen,
+                icon: CoolIcons.phone,
+                iconColor: AppColors.iconPrimary,
                 label: 'Telefoon',
                 value: profiel.telefoon?.trim().isNotEmpty == true
                     ? profiel.telefoon!
@@ -122,8 +123,8 @@ class _PersoonlijkeGegevensBody extends StatelessWidget {
               ),
               const Divider(height: 20),
               ProfileInfoRow(
-                icon: Icons.email_outlined,
-                iconColor: AppColors.iconPurple,
+                icon: CoolIcons.mail,
+                iconColor: AppColors.iconPrimary,
                 label: 'E-mailadres',
                 value: profiel.email?.trim().isNotEmpty == true
                     ? profiel.email!
@@ -141,16 +142,16 @@ class _PersoonlijkeGegevensBody extends StatelessWidget {
           child: Column(
             children: [
               ProfileInfoRow(
-                icon: Icons.cake_outlined,
-                iconColor: AppColors.iconAmber,
+                icon: CoolIcons.gift,
+                iconColor: AppColors.iconPrimary,
                 label: 'Geboortedatum',
                 value: geboortedatum ?? _leeg,
                 isEmpty: geboortedatum == null,
               ),
               const Divider(height: 20),
               ProfileInfoRow(
-                icon: Icons.location_on_outlined,
-                iconColor: AppColors.iconSlate,
+                icon: CoolIcons.mapPin,
+                iconColor: AppColors.iconPrimary,
                 label: 'Adres',
                 value: profiel.adres?.trim().isNotEmpty == true
                     ? profiel.adres!
@@ -160,8 +161,8 @@ class _PersoonlijkeGegevensBody extends StatelessWidget {
               ),
               const Divider(height: 20),
               ProfileInfoRow(
-                icon: Icons.directions_car_outlined,
-                iconColor: AppColors.iconDark,
+                icon: CoolIcons.carAuto,
+                iconColor: AppColors.iconPrimary,
                 label: 'Rijbewijscategorie',
                 value: profiel.rijbewijsSoort?.trim().isNotEmpty == true
                     ? profiel.rijbewijsSoort!.toUpperCase()
@@ -175,14 +176,13 @@ class _PersoonlijkeGegevensBody extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: const Color(0xFFF0F2F5),
+            color: AppColors.neutralBg,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE2E2E7)),
+            border: Border.all(color: AppColors.border),
           ),
           child: const Row(
             children: [
-              Icon(Icons.info_outline_rounded,
-                  color: AppColors.iconDark, size: 18),
+              Icon(CoolIcons.info, color: AppColors.iconPrimary, size: 18),
               SizedBox(width: 10),
               Expanded(
                 child: Text(

@@ -8,6 +8,7 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'support_provider.dart';
 import 'widgets/support_ui.dart';
+import '../../core/constants/cool_icons.dart';
 
 /// "Mijn supportvragen" -- 1-op-1 poort van de Instructeur-app
 /// (support_inbox_screen.dart). Toont de eigen supportgesprekken van de
@@ -35,8 +36,7 @@ class SupportInboxScreen extends ConsumerWidget {
               IconButton(
                 onPressed: () => context.push('/help?nieuw=1'),
                 tooltip: 'Nieuw ticket',
-                icon: const Icon(Icons.add_comment_outlined,
-                    color: Colors.white),
+                icon: const Icon(CoolIcons.chatAdd, color: Colors.white),
               ),
             ],
           ),
@@ -63,7 +63,7 @@ class SupportInboxScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(20),
                   children: [
                     EmptyState(
-                      icon: Icons.wifi_off_rounded,
+                      icon: CoolIcons.cloudOff,
                       title: 'Gesprekken konden niet worden geladen',
                       subtitle: e.toString(),
                     ),
@@ -81,7 +81,7 @@ class SupportInboxScreen extends ConsumerWidget {
                           child: Column(
                             children: [
                               const IconBadge(
-                                icon: Icons.chat_bubble_outline_rounded,
+                                icon: CoolIcons.chat,
                                 color: SupportUi.accent,
                                 size: 56,
                               ),
@@ -107,8 +107,7 @@ class SupportInboxScreen extends ConsumerWidget {
                               const SizedBox(height: 20),
                               SupportPrimaryButton(
                                 label: 'Nieuw gesprek',
-                                onPressed: () =>
-                                    context.push('/help'),
+                                onPressed: () => context.push('/help'),
                               ),
                             ],
                           ),
@@ -165,7 +164,7 @@ class _ThreadTegel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const IconBadge(
-            icon: Icons.forum_outlined,
+            icon: CoolIcons.chatConversation,
             color: SupportUi.accent,
             size: 38,
           ),

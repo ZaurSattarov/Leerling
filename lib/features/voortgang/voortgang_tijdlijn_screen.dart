@@ -5,6 +5,7 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'voortgang_trends_provider.dart';
 import 'widgets/tijdlijn_card.dart';
+import '../../core/constants/cool_icons.dart';
 
 /// Volledig historisch tijdlijnoverzicht -- bereikbaar via "Zie alles" op
 /// het Voortgang-tabblad. Toont dezelfde [TijdlijnCard]-opbouw als de
@@ -44,7 +45,7 @@ class VoortgangTijdlijnScreen extends ConsumerWidget {
               ),
               error: (e, _) => Center(
                 child: EmptyState(
-                  icon: Icons.wifi_off_rounded,
+                  icon: CoolIcons.cloudOff,
                   title: 'Kon tijdlijn niet laden',
                   subtitle: e.toString(),
                 ),

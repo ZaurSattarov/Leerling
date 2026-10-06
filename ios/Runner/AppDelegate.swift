@@ -26,6 +26,9 @@ import GoogleMaps
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+    // Native iOS 26+ Liquid Glass-navbar (ios/Runner/NativeNavigation/) --
+    // zonder deze registratie viel de app altijd terug op de Flutter-pil.
+    NativeNavigationBridge.shared.register(with: engineBridge)
     replayDidFinishLaunchingForFirebaseMessaging()
   }
 

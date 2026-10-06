@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import '../providers/auth_provider.dart';
+import '../../core/constants/cool_icons.dart';
 
 class StudentProfileGate extends ConsumerWidget {
   const StudentProfileGate({
@@ -79,8 +80,8 @@ class _ProfileGateError extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(
-                  Icons.cloud_off_rounded,
-                  color: AppColors.textSecondary,
+                  CoolIcons.cloudOff,
+                  color: AppColors.iconPrimary,
                   size: 40,
                 ),
                 const SizedBox(height: 16),
@@ -109,7 +110,7 @@ class _ProfileGateError extends StatelessWidget {
                 ElevatedButton.icon(
                   key: const Key('profile-gate-retry'),
                   onPressed: onRetry,
-                  icon: const Icon(Icons.refresh_rounded),
+                  icon: const Icon(CoolIcons.arrowReload02),
                   label: const Text('Opnieuw proberen'),
                 ),
               ],

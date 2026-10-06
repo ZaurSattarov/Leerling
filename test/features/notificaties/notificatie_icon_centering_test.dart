@@ -6,6 +6,7 @@ import 'package:leerling_app/features/notificaties/notificaties_provider.dart';
 import 'package:leerling_app/features/notificaties/notificaties_screen.dart';
 import 'package:leerling_app/models/notificatie.dart';
 import 'package:leerling_app/shared/widgets/app_card.dart';
+import 'package:leerling_app/core/constants/cool_icons.dart';
 
 Notificatie _melding({required bool gelezen}) => Notificatie(
       id: gelezen ? 'mock-gelezen' : 'mock-ongelezen',
@@ -24,14 +25,14 @@ void main() {
     GoogleFonts.config.allowRuntimeFetching = false;
   });
 
-  testWidgets('IconBadge centreert het icoon in een 40x40 rounded-xl vak',
+  testWidgets('IconBadge centreert het icoon in een 40x40-tikzone, zonder vlak',
       (tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
           body: Center(
             child: IconBadge(
-              icon: Icons.rate_review_rounded,
+              icon: CoolIcons.chatDots,
               color: Color(0xFF16A34A),
               size: 40,
             ),
@@ -44,19 +45,18 @@ void main() {
     expect(vak.width, 40);
     expect(vak.height, 40);
 
-    final icoon = tester.getRect(find.byIcon(Icons.rate_review_rounded));
+    final icoon = tester.getRect(find.byIcon(CoolIcons.chatDots));
     expect(icoon.center.dx, closeTo(vak.center.dx, 0.5));
     expect(icoon.center.dy, closeTo(vak.center.dy, 0.5));
 
-    final box = tester.widget<Container>(
+    // Instructeur-app-stijl: alleen het icoon, geen grijs of gekleurd vlak.
+    expect(
       find.descendant(
         of: find.byType(IconBadge),
         matching: find.byType(Container),
       ),
+      findsNothing,
     );
-    final decoration = box.decoration! as BoxDecoration;
-    expect(decoration.borderRadius, BorderRadius.circular(12));
-    expect(decoration.color, const Color(0xFFF0F2F5));
   });
 
   for (final gelezen in [false, true]) {
@@ -82,7 +82,7 @@ void main() {
 
       expect(find.text('Nieuwe lesevaluatie'), findsOneWidget);
       final vak = tester.getRect(find.byType(IconBadge));
-      final icoon = tester.getRect(find.byIcon(Icons.rate_review_rounded));
+      final icoon = tester.getRect(find.byIcon(CoolIcons.chatDots));
       expect(icoon.center.dx, closeTo(vak.center.dx, 0.5));
       expect(icoon.center.dy, closeTo(vak.center.dy, 0.5));
       expect(tester.takeException(), isNull);

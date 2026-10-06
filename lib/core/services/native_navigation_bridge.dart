@@ -5,6 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// Eén navigatie-item zoals Flutter het naar de native Liquid Glass-navbar
+/// stuurt. `route` wordt niet door native gebruikt om te navigeren -- het is
+/// puur metadata; go_router blijft de enige bron van waarheid voor routing.
 @immutable
 class NativeNavItemConfig {
   final String label;
@@ -26,7 +29,13 @@ class NativeNavItemConfig {
 
 @immutable
 class NativeNavigationState {
+  /// True zodra de native laag heeft bevestigd dat iOS 26+ Liquid Glass
+  /// beschikbaar is EN succesvol geïnitialiseerd is. Pas dan mag de
+  /// Flutter-navbar verborgen worden.
   final bool available;
+
+  /// Hoogte (in logische pixels) die Flutter moet reserveren onderaan het
+  /// scherm zodat content nooit achter de native balk verdwijnt.
   final double height;
 
   const NativeNavigationState({this.available = false, this.height = 0});
@@ -38,7 +47,8 @@ class NativeNavigationState {
       );
 }
 
-/// Bridge naar de native iOS 26+ Liquid Glass-navbar (Leerling-app).
+/// Bridge naar de native iOS 26+ Liquid Glass-navbar
+/// (ios/Runner/NativeNavigation/NativeNavigationBridge.swift).
 class NativeNavigationController extends StateNotifier<NativeNavigationState> {
   NativeNavigationController() : super(const NativeNavigationState()) {
     if (Platform.isIOS) {
@@ -51,6 +61,20 @@ class NativeNavigationController extends StateNotifier<NativeNavigationState> {
 
   void Function(int index)? _onNativeTabSelected;
   bool _configureRequested = false;
+
+  /// Standaard verborgen tot Flutter expliciet `setBarVisible(true)` stuurt.
+  bool _barVisible = false;
+  bool? _lastSentVisible;
+
+  String _callerHint() {
+    final frames = StackTrace.current.toString().split('\n');
+    for (final frame in frames.skip(1).take(6)) {
+      final trimmed = frame.trim();
+      if (trimmed.contains('native_navigation_bridge.dart')) continue;
+      return trimmed;
+    }
+    return frames.length > 1 ? frames[1].trim() : 'unknown';
+  }
 
   void setNativeTabSelectedHandler(void Function(int index) handler) {
     _onNativeTabSelected = handler;
@@ -77,6 +101,18 @@ class NativeNavigationController extends StateNotifier<NativeNavigationState> {
     }
   }
 
+  bool? _lastSentDarkMode;
+
+  Future<void> setDarkMode(bool isDark) async {
+    if (!Platform.isIOS || _lastSentDarkMode == isDark) return;
+    _lastSentDarkMode = isDark;
+    try {
+      await _channel.invokeMethod('setDarkMode', {'isDark': isDark});
+    } on PlatformException catch (e) {
+      debugPrint('NativeNavigationBridge.setDarkMode faalde: $e');
+    }
+  }
+
   Future<void> setSelectedIndex(int index) async {
     if (!Platform.isIOS || !state.available) return;
     try {
@@ -86,15 +122,68 @@ class NativeNavigationController extends StateNotifier<NativeNavigationState> {
     }
   }
 
+  /// Verbergt/toont direct via het native kanaal, ook statisch aanroepbaar
+  /// (bv. in pre-auth schermen vóór/zonder Riverpod-ref of tijdens auth-transities).
+  static Future<void> setBarVisibleDirect(bool visible) async {
+    if (!Platform.isIOS) return;
+    try {
+      await _channel.invokeMethod('setVisible', {'visible': visible});
+    } catch (_) {}
+  }
+
+  /// Verbergt/toont uitsluitend de native iOS-overlay. Werkt ook vóór
+  /// `configure()`: native bewaart de state en past die toe bij attach.
+  Future<void> setBarVisible(bool visible, {bool force = false}) async {
+    final previous = _barVisible;
+    final nativeReady = state.available;
+    final dedupSkip = !force && _lastSentVisible == visible;
+    _barVisible = visible;
+    var sentToNative = false;
+    if (!Platform.isIOS) {
+      debugPrint(
+        '[NAVBAR_DART] request visible=$visible previous=$previous '
+        'nativeReady=$nativeReady sentToNative=false '
+        'caller=${_callerHint()} (non-iOS)',
+      );
+      return;
+    }
+    if (!dedupSkip) {
+      _lastSentVisible = visible;
+      try {
+        await _channel.invokeMethod('setVisible', {'visible': visible});
+        sentToNative = true;
+      } on MissingPluginException {
+        // Geen native implementatie.
+      } on PlatformException catch (e) {
+        debugPrint('NativeNavigationBridge.setVisible faalde: $e');
+      }
+    }
+    debugPrint(
+      '[NAVBAR_DART] request visible=$visible previous=$previous '
+      'nativeReady=$nativeReady sentToNative=$sentToNative '
+      'dedupSkip=$dedupSkip caller=${_callerHint()}',
+    );
+  }
+
   Future<void> _handleNativeCall(MethodCall call) async {
     try {
       switch (call.method) {
         case 'nativeReady':
           final args = Map<String, dynamic>.from(call.arguments as Map);
-          state = NativeNavigationState(
-            available: args['available'] as bool? ?? false,
-            height: (args['height'] as num?)?.toDouble() ?? 0,
+          final available = args['available'] as bool? ?? false;
+          final height = (args['height'] as num?)?.toDouble() ?? 0;
+          debugPrint(
+            '[NAVBAR_DART] nativeReady available=$available height=$height '
+            'desiredVisible=$_barVisible lastSent=$_lastSentVisible',
           );
+          state = NativeNavigationState(
+            available: available,
+            height: height,
+          );
+          if (state.available) {
+            _lastSentVisible = null;
+            unawaited(setBarVisible(_barVisible));
+          }
           break;
         case 'heightChanged':
           final args = Map<String, dynamic>.from(call.arguments as Map);

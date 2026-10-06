@@ -40,8 +40,6 @@ class SocialLoginRij extends StatelessWidget {
     return SocialLoginKnop(
       label: 'Doorgaan met Facebook',
       onPressed: facebookAan,
-      // Officieel, herkenbaar Facebook-logo (ingebouwd Material-icoon, geen
-      // los asset nodig) in het officiële Facebook-blauw.
       child: const Icon(
         Icons.facebook,
         size: 26,
@@ -121,8 +119,7 @@ class SocialLoginKnop extends StatelessWidget {
             child: Ink(
               decoration: BoxDecoration(
                 color: AppColors.white,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border),
+                borderRadius: BorderRadius.circular(24),
               ),
               child: Center(child: child),
             ),

@@ -128,7 +128,7 @@ class _DeleteConfirmBodyState extends State<_DeleteConfirmBody> {
                 width: 36,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE2E2E7),
+                  color: AppColors.border,
                   borderRadius: BorderRadius.circular(999),
                 ),
               ),
@@ -177,7 +177,7 @@ class _DeleteConfirmBodyState extends State<_DeleteConfirmBody> {
               decoration: InputDecoration(
                 hintText: 'VERWIJDER',
                 filled: true,
-                fillColor: const Color(0xFFF0F2F5),
+                fillColor: AppColors.neutralBg,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -206,7 +206,7 @@ class _DeleteConfirmBodyState extends State<_DeleteConfirmBody> {
                       AppColors.dangerSolid.withValues(alpha: 0.35),
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(999),
                   ),
                 ),
                 onPressed: bevestigd && !_laden ? _bevestig : null,

@@ -94,7 +94,8 @@ void main() {
     test('onderste content krijgt navbar en safe-area scrollruimte', () {
       final source = screenSource();
 
-      expect(source, contains('MediaQuery.paddingOf(context).bottom + 96'));
+      // Dynamische navbar-eindruimte (native glas of Flutter-pil).
+      expect(source, contains('MainShellContentInset.bottomOf(context)'));
     });
 
     test(

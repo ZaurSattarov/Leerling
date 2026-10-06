@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 /// Eén los splash-onderdeel: een bestaand SVG-asset, ongewijzigd getekend,
-/// met zijn eigen fade/scale-appear-animatie.
+/// met zijn eigen fade/scale-appear-animatie, of met [wipe] een onthulling
+/// van links naar rechts (zelfde als de Instructeur-app gebruikt voor het
+/// woordmerk).
 ///
 /// 1-op-1 dezelfde widget als de Instructeur-app
 /// (rijschool-planner-flutter/lib/features/splash/widgets/splash_svg_element.dart).
@@ -20,6 +22,10 @@ class SplashSvgElement extends StatelessWidget {
   /// Startwaarde van de scale-in (bv. 0.92 voor ICON, 0.97 voor KLANTIO).
   final double appearScaleFrom;
 
+  /// Onthul van links naar rechts met een harde, schone rand in plaats van
+  /// faden.
+  final bool wipe;
+
   const SplashSvgElement({
     required this.elementKey,
     required this.assetPath,
@@ -27,6 +33,7 @@ class SplashSvgElement extends StatelessWidget {
     required this.height,
     required this.appear,
     this.appearScaleFrom = 1.0,
+    this.wipe = false,
     super.key,
   });
 
@@ -37,6 +44,16 @@ class SplashSvgElement extends StatelessWidget {
       child: AnimatedBuilder(
         animation: appear,
         builder: (context, _) {
+          if (wipe) {
+            return ClipRect(
+              clipper: _WipeClipper(appear.value.clamp(0.0, 1.0)),
+              child: SizedBox(
+                width: width,
+                height: height,
+                child: SvgPicture.asset(assetPath, fit: BoxFit.contain),
+              ),
+            );
+          }
           final scale = appearScaleFrom +
               (1.0 - appearScaleFrom) * appear.value.clamp(0.0, 1.0);
           return Opacity(
@@ -54,4 +71,19 @@ class SplashSvgElement extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Onthult het linkerdeel van het element tot [progress] van de breedte.
+/// De layout-grootte verandert niet -- alleen wat er getekend wordt.
+class _WipeClipper extends CustomClipper<Rect> {
+  final double progress;
+
+  const _WipeClipper(this.progress);
+
+  @override
+  Rect getClip(Size size) =>
+      Rect.fromLTRB(0, 0, size.width * progress, size.height);
+
+  @override
+  bool shouldReclip(_WipeClipper oldClipper) => oldClipper.progress != progress;
 }

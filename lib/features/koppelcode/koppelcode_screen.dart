@@ -6,6 +6,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import '../../shared/providers/auth_provider.dart';
 import 'koppel_flow.dart';
+import '../../core/constants/cool_icons.dart';
 
 /// Handmatige koppelcode-invoer. Onderdeel van de bredere koppel-flow --
 /// zie ook [KoppelKeuzeScreen] (de keuze-landing) en [QrScanScreen] (de
@@ -77,8 +78,8 @@ class _KoppelcodeInvoerenScreenState
         elevation: 0,
         leading: Navigator.of(context).canPop()
             ? IconButton(
-                icon: const Icon(Icons.arrow_back_rounded,
-                    color: AppColors.textPrimary),
+                icon: const Icon(CoolIcons.chevronLeft,
+                    color: AppColors.iconPrimary),
                 onPressed: () => context.pop(),
               )
             : null,
@@ -106,12 +107,8 @@ class _KoppelcodeInvoerenScreenState
                 child: Container(
                   width: 72,
                   height: 72,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF0F2F5),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Icon(Icons.keyboard_rounded,
-                      color: AppColors.primary, size: 36),
+                  child: const Icon(CoolIcons.text,
+                      color: AppColors.iconPrimary, size: 36),
                 ),
               ),
               const SizedBox(height: 24),
@@ -139,14 +136,14 @@ class _KoppelcodeInvoerenScreenState
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF0F2F5),
+                    color: AppColors.neutralBg,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE2E2E7)),
+                    border: Border.all(color: AppColors.border),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.error_outline_rounded,
+                      const Icon(CoolIcons.circleWarning,
                           color: AppColors.dangerSolid, size: 18),
                       const SizedBox(width: 10),
                       Expanded(

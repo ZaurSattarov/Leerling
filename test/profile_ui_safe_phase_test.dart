@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leerling_app/core/constants/app_colors.dart';
 import 'package:leerling_app/features/profiel/widgets/profile_info_row.dart';
+import 'package:leerling_app/core/constants/cool_icons.dart';
 
 void main() {
   String read(String path) => File(path).readAsStringSync();
@@ -16,7 +17,7 @@ void main() {
           body: SizedBox(
             width: 280,
             child: ProfileInfoRow(
-              icon: Icons.directions_car_outlined,
+              icon: CoolIcons.carAuto,
               iconColor: AppColors.iconDark,
               label: 'Rijbewijscategorie',
               value: 'een.heel.lang.emailadres.voor.test@example-rijschool.nl',

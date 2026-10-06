@@ -14,6 +14,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:leerling_app/shared/widgets/main_detail_header.dart';
+import 'package:leerling_app/core/constants/cool_icons.dart';
 
 Widget _wrapMetRouter({
   required Widget detailScherm,
@@ -51,7 +52,7 @@ void main() {
 
       expect(find.text('Examenadvies'), findsOneWidget);
       expect(find.byKey(const Key('main_detail_header_back')), findsOneWidget);
-      expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
+      expect(find.byIcon(CoolIcons.chevronLeft), findsOneWidget);
 
       // Geometrisch gecentreerd: het midden van de titel valt samen met het
       // horizontale midden van het SCHERM, niet alleen het midden van de
@@ -76,7 +77,7 @@ void main() {
       expect(find.byType(MainDetailHeader), findsOneWidget);
     });
 
-    testWidgets('achtergrond is de donkerblauwe gradient, geen witte AppBar',
+    testWidgets('achtergrond is de vlakke donkere headerbalk, geen witte AppBar',
         (tester) async {
       GoogleFonts.config.allowRuntimeFetching = false;
       await tester.pumpWidget(_wrapMetRouter(
@@ -94,9 +95,9 @@ void main() {
           )
           .first);
       final decoration = container.decoration as BoxDecoration;
-      expect(decoration.gradient, isNotNull);
-      final gradient = decoration.gradient as LinearGradient;
-      expect(gradient.colors.first, const Color(0xFF141C2B));
+      // Vlakke donkere balk zoals de Instructeur-app (geen gradient meer).
+      expect(decoration.gradient, isNull);
+      expect(decoration.color, const Color(0xFF1E2635));
       // Zelfde bron van waarheid als MainTabHeader: geen afgeronde
       // onderhoeken, geen schaduw.
       expect(decoration.borderRadius, isNull);
@@ -342,7 +343,10 @@ void main() {
         'kind-routes van de ShellRoute meer', () {
       final bron = File('lib/app.dart').readAsStringSync();
       final shellStart = bron.indexOf('ShellRoute(');
-      final shellBlok = bron.substring(shellStart);
+      // Alleen het routeblok zelf, niet de rest van het bestand (daar mogen
+      // commentaren de schermnamen gewoon noemen).
+      final shellEinde = bron.indexOf('globalLeerlingGoRouter = router;');
+      final shellBlok = bron.substring(shellStart, shellEinde);
 
       // Binnen de ShellRoute mogen alleen de vijf echte hoofdtab-schermen
       // nog voorkomen.

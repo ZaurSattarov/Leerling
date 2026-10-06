@@ -1,6 +1,14 @@
 import SwiftUI
 import UIKit
 
+#if DEBUG
+private func nativeNavLog(_ message: String) {
+    print("[NAVBAR_SWIFT] \(message)")
+}
+#else
+private func nativeNavLog(_ message: String) {}
+#endif
+
 @available(iOS 26.0, *)
 final class NativeNavHostingController: UIHostingController<NativeLiquidGlassTabBar> {
     var onLayout: (() -> Void)?
@@ -16,16 +24,30 @@ final class NativeLiquidGlassTabBarFactory {
 
     private weak var parentViewController: UIViewController?
     private var hostingController: NativeNavHostingController?
+    private var isDarkMode = false
     private var navState: NativeNavBarState?
 
     private let onSelect: (Int) -> Void
     private let onHeightChange: (CGFloat) -> Void
 
+    private(set) var isBarVisible: Bool = false
     private(set) var currentHeight: CGFloat = 0
 
     init(onSelect: @escaping (Int) -> Void, onHeightChange: @escaping (CGFloat) -> Void) {
         self.onSelect = onSelect
         self.onHeightChange = onHeightChange
+    }
+
+    private func applyVisibility(to view: UIView, visible: Bool) {
+        if visible {
+            view.isHidden = false
+            view.alpha = 1.0
+            view.isUserInteractionEnabled = true
+        } else {
+            view.isHidden = true
+            view.alpha = 0.0
+            view.isUserInteractionEnabled = false
+        }
     }
 
     @discardableResult
@@ -36,6 +58,7 @@ final class NativeLiquidGlassTabBarFactory {
         accentColor: UIColor
     ) -> Bool {
         if hostingController != nil {
+            setVisible(isBarVisible)
             return true
         }
         guard !items.isEmpty else { return false }
@@ -50,6 +73,7 @@ final class NativeLiquidGlassTabBarFactory {
         }
 
         let hosting = NativeNavHostingController(rootView: content)
+        hosting.overrideUserInterfaceStyle = isDarkMode ? .dark : .light
         hosting.view.backgroundColor = .clear
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -78,11 +102,37 @@ final class NativeLiquidGlassTabBarFactory {
         parent.view.layoutIfNeeded()
         reportHeightIfNeeded(parentView: parent.view, barView: hosting.view)
 
+        // Standaard verborgen; pas zichtbaar na expliciet setVisible(true).
+        isBarVisible = false
+        applyVisibility(to: hosting.view, visible: false)
+
         return true
     }
 
     func updateSelectedIndex(_ index: Int) {
         navState?.selectedIndex = index
+    }
+
+    func setDarkMode(_ isDark: Bool) {
+        isDarkMode = isDark
+        hostingController?.overrideUserInterfaceStyle = isDark ? .dark : .light
+    }
+
+    func setVisible(_ visible: Bool) {
+        isBarVisible = visible
+        guard let view = hostingController?.view else {
+            nativeNavLog(
+                "NAVBAR_NATIVE attached=false hidden=n/a alpha=n/a "
+                + "interaction=n/a frame=n/a (awaiting hosting view, desired=\(visible))"
+            )
+            return
+        }
+        applyVisibility(to: view, visible: visible)
+        nativeNavLog(
+            "NAVBAR_NATIVE attached=true hidden=\(view.isHidden) "
+            + "alpha=\(view.alpha) interaction=\(view.isUserInteractionEnabled) "
+            + "frame=\(view.frame)"
+        )
     }
 
     func detach() {
