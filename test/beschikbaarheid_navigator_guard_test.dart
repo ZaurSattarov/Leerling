@@ -58,7 +58,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 50));
       await tester.pump(const Duration(milliseconds: 50));
 
-      final fab = find.byType(FloatingActionButton);
+      final fab = find.text('Tijd toevoegen');
       expect(fab, findsOneWidget);
 
       // Twee taps zonder pump ertussen -- simuleert een dubbele/snelle tik.

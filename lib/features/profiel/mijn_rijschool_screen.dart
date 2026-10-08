@@ -1,27 +1,28 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../core/constants/app_colors.dart';
+import '../../core/constants/cool_icons.dart';
 import '../../core/utils/contact_uri.dart';
 import '../../models/instructeur.dart';
 import '../../models/leerling_voertuig.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/main_detail_header.dart';
+import '../../shared/widgets/klantio_pressable.dart';
+import '../../shared/widgets/settings_design.dart';
+import '../../shared/widgets/snackbar.dart';
 import 'rijschool_provider.dart';
-import 'widgets/profile_info_row.dart';
-import '../../core/constants/cool_icons.dart';
 
-/// Profiel -> Mijn rijschool (Fase 6). Volledig read-only: alle velden komen
-/// uit `instructeur_profielen` via de al bestaande `mijnInstructeurProvider`
+/// Profiel -> Mijn rijschool. Volledig alleen-lezen: alle velden komen uit
+/// `instructeur_profielen` via de al bestaande `mijnInstructeurProvider`
 /// (StudentService.getMijnInstructeur(), gescoped op leerlingen.
-/// instructeur_id). RLS (leerling_instructeur_profiel_lezen /
-/// student_instructeur_select) laat de leerling uitsluitend de eigen
-/// gekoppelde instructeur lezen, geen UPDATE-policy -- er is dus bewust geen
-/// bewerk-UI. `leerlingen.school_id` is onderzocht als mogelijke tweede bron
-/// maar bleek voor beide bestaande leerlingen NULL en de `schools`-tabel
-/// bevat geen profielvelden en geen leerling-leesrecht -- terecht niet
-/// gebruikt, zie docs/PROFIEL_FASE6_MIJN_RIJSCHOOL.md.
+/// instructeur_id). RLS laat de leerling uitsluitend de eigen gekoppelde
+/// instructeur lezen en er is geen UPDATE-policy -- dus bewust GEEN
+/// bewerk-UI en GEEN groen vinkje. Zie docs/PROFIEL_FASE6_MIJN_RIJSCHOOL.md.
+///
+/// Opbouw 1-op-1 als de Rijschoolgegevens-scherm van de Instructeur-app
+/// ([SettingsScaffold]: label boven een wit alleen-lezen veld). De velden
+/// zijn leerling-eigen.
 class MijnRijschoolScreen extends ConsumerWidget {
   const MijnRijschoolScreen({super.key});
 
@@ -32,64 +33,47 @@ class MijnRijschoolScreen extends ConsumerWidget {
     final instructeurAsync = ref.watch(mijnInstructeurProvider);
     final voertuigAsync = ref.watch(mijnVoertuigProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      body: Column(
+    return instructeurAsync.when(
+      loading: () => const SettingsScaffold(
+        titel: 'Mijn rijschool',
         children: [
-          const MainDetailHeader(
-            title: 'Mijn rijschool',
-          ),
-          Expanded(
-            child: RefreshIndicator(
-              color: AppColors.primary,
-              onRefresh: () async {
-                ref.invalidate(mijnInstructeurProvider);
-                ref.invalidate(mijnVoertuigProvider);
-              },
-              child: instructeurAsync.when(
-                loading: () => ListView(
-                  padding: const EdgeInsets.all(20),
-                  children: const [
-                    SkeletonBox(height: 100, radius: 18),
-                    SizedBox(height: 14),
-                    SkeletonCard(),
-                    SizedBox(height: 10),
-                    SkeletonCard(),
-                  ],
-                ),
-                error: (e, _) => ListView(
-                  children: [
-                    const SizedBox(height: 60),
-                    EmptyState(
-                      icon: CoolIcons.cloudOff,
-                      title: 'Kon rijschool niet laden',
-                      subtitle: e.toString(),
-                    ),
-                  ],
-                ),
-                data: (instructeur) {
-                  if (instructeur == null) {
-                    return ListView(
-                      children: const [
-                        SizedBox(height: 60),
-                        EmptyState(
-                          icon: CoolIcons.bookOpen,
-                          title: 'Nog geen rijschool gekoppeld',
-                        ),
-                      ],
-                    );
-                  }
-                  return _MijnRijschoolBody(
-                    instructeur: instructeur,
-                    voertuig: voertuigAsync.valueOrNull,
-                    voertuigLaden: voertuigAsync.isLoading,
-                  );
-                },
-              ),
-            ),
+          SkeletonBox(height: 56, radius: 16),
+          SizedBox(height: 16),
+          SkeletonBox(height: 56, radius: 16),
+          SizedBox(height: 16),
+          SkeletonBox(height: 56, radius: 16),
+        ],
+      ),
+      error: (e, _) => SettingsScaffold(
+        titel: 'Mijn rijschool',
+        children: [
+          const SizedBox(height: 60),
+          EmptyState(
+            icon: CoolIcons.cloudOff,
+            title: 'Kon rijschool niet laden',
+            subtitle: e.toString(),
           ),
         ],
       ),
+      data: (instructeur) {
+        if (instructeur == null) {
+          return const SettingsScaffold(
+            titel: 'Mijn rijschool',
+            children: [
+              SizedBox(height: 60),
+              EmptyState(
+                icon: CoolIcons.bookOpen,
+                title: 'Nog geen rijschool gekoppeld',
+              ),
+            ],
+          );
+        }
+        return _MijnRijschoolBody(
+          instructeur: instructeur,
+          voertuig: voertuigAsync.valueOrNull,
+          voertuigLaden: voertuigAsync.isLoading,
+        );
+      },
     );
   }
 }
@@ -105,6 +89,8 @@ class _MijnRijschoolBody extends StatelessWidget {
   });
 
   static const _leeg = MijnRijschoolScreen._leeg;
+  static const _gat = SizedBox(height: 14);
+  static const _groepGat = SizedBox(height: 24);
 
   bool get _heeftGeldigeWebsite => _isValidHttpsUrl(instructeur.website);
 
@@ -113,314 +99,118 @@ class _MijnRijschoolBody extends StatelessWidget {
 
   bool get _heeftGeldigEmail => _isValidEmail(instructeur.email);
 
-  bool get _heeftInstructeurSectie =>
-      instructeur.naam?.trim().isNotEmpty == true ||
-      instructeur.telefoon?.trim().isNotEmpty == true ||
-      instructeur.email?.trim().isNotEmpty == true;
-
   bool get _heeftContactSectie =>
       _heeftGeldigTelefoonnummer ||
       _heeftGeldigEmail ||
       _heeftGeldigeWebsite ||
       instructeur.volledigAdres != null;
 
+  String _of(String? v) => v?.trim().isNotEmpty == true ? v!.trim() : _leeg;
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(20),
+    final contactRijen = <Widget>[
+      if (_heeftGeldigTelefoonnummer)
+        _ContactActieRij(
+          label: 'Bellen',
+          waarde: instructeur.telefoon!.trim(),
+          onTap: () => _openUri(context, ContactUri.tel(instructeur.telefoon)!),
+        ),
+      if (_heeftGeldigEmail)
+        _ContactActieRij(
+          label: 'E-mailen',
+          waarde: instructeur.email!.trim(),
+          onTap: () => _openUri(context, ContactUri.email(instructeur.email)!),
+        ),
+      if (_heeftGeldigeWebsite)
+        _ContactActieRij(
+          label: 'Website openen',
+          waarde: instructeur.website!.trim(),
+          onTap: () =>
+              _openUri(context, Uri.parse(instructeur.website!.trim())),
+        ),
+      if (instructeur.volledigAdres != null)
+        _ContactActieRij(
+          label: 'Route openen',
+          waarde: _formatAdres(instructeur)!.replaceAll('\n', ', '),
+          onTap: () => _openUri(context, _routeUri(_formatAdres(instructeur)!)),
+        ),
+    ];
+
+    return SettingsScaffold(
+      titel: 'Mijn rijschool',
       children: [
-        _RijschoolKaart(instructeur: instructeur),
-        const SizedBox(height: 22),
-        const SectionHeader(title: 'Rijschool'),
-        const SizedBox(height: 12),
-        AppCard(
-          child: Column(
-            children: [
-              ProfileInfoRow(
-                icon: CoolIcons.building03,
-                iconColor: AppColors.iconPrimary,
-                label: 'Rijschoolnaam',
-                value: instructeur.weergaveNaam,
-              ),
-              const Divider(height: 20),
-              ProfileInfoRow(
-                icon: CoolIcons.mapPin,
-                iconColor: AppColors.iconPrimary,
-                label: 'Adres',
-                value: _formatAdres(instructeur) ?? _leeg,
-                isEmpty: _formatAdres(instructeur) == null,
-                maxValueLines: 3,
-              ),
-              if (instructeur.website?.trim().isNotEmpty == true) ...[
-                const Divider(height: 20),
-                ProfileInfoRow(
-                  icon: CoolIcons.globe,
-                  iconColor: AppColors.iconPrimary,
-                  label: 'Website',
-                  value: instructeur.website!.trim(),
-                  maxValueLines: 2,
-                ),
-              ],
-              if (instructeur.kvkNummer?.trim().isNotEmpty == true) ...[
-                const Divider(height: 20),
-                ProfileInfoRow(
-                  icon: CoolIcons.userCardId,
-                  iconColor: AppColors.iconPrimary,
-                  label: 'KvK-nummer',
-                  value: instructeur.kvkNummer!.trim(),
-                ),
-              ],
-            ],
-          ),
+        // ── Rijschool ──
+        SettingsWaarde(
+            label: 'Rijschoolnaam', waarde: instructeur.weergaveNaam),
+        _gat,
+        SettingsWaarde(
+          label: 'Adres',
+          waarde: _formatAdres(instructeur) ?? _leeg,
+          maxLines: 3,
         ),
-        const SizedBox(height: 22),
-        const SectionHeader(title: 'Voertuig'),
-        const SizedBox(height: 12),
-        AppCard(
-          child: voertuig != null
-              ? Column(
-                  children: [
-                    ProfileInfoRow(
-                      icon: CoolIcons.carAuto,
-                      iconColor: AppColors.iconPrimary,
-                      label: 'Kenteken',
-                      value: voertuig!.kenteken?.trim().isNotEmpty == true
-                          ? voertuig!.kenteken!.trim()
-                          : _leeg,
-                      isEmpty: voertuig!.kenteken?.trim().isNotEmpty != true,
-                    ),
-                    const Divider(height: 20),
-                    ProfileInfoRow(
-                      icon: CoolIcons.userCardId,
-                      iconColor: AppColors.iconPrimary,
-                      label: 'Merk / model',
-                      value: voertuig!.naam ?? _leeg,
-                      isEmpty: voertuig!.naam == null,
-                    ),
-                  ],
-                )
-              : ProfileInfoRow(
-                  icon: CoolIcons.carAuto,
-                  iconColor: AppColors.iconPrimary,
-                  label: 'Toegewezen voertuig',
-                  value:
-                      voertuigLaden ? 'Laden…' : 'Nog geen voertuig toegewezen',
-                  isEmpty: true,
-                ),
-        ),
-        if (_heeftInstructeurSectie) ...[
-          const SizedBox(height: 22),
-          const SectionHeader(title: 'Jouw instructeur'),
-          const SizedBox(height: 12),
-          AppCard(
-            child: Column(
-              children: [
-                ProfileInfoRow(
-                  icon: CoolIcons.user01,
-                  iconColor: AppColors.iconPrimary,
-                  label: 'Naam instructeur',
-                  value: instructeur.naam?.trim().isNotEmpty == true
-                      ? instructeur.naam!.trim()
-                      : _leeg,
-                  isEmpty: instructeur.naam?.trim().isNotEmpty != true,
-                ),
-                if (instructeur.telefoon?.trim().isNotEmpty == true) ...[
-                  const Divider(height: 20),
-                  ProfileInfoRow(
-                    icon: CoolIcons.phone,
-                    iconColor: AppColors.iconPrimary,
-                    label: 'Telefoon',
-                    value: instructeur.telefoon!.trim(),
-                  ),
-                ],
-                if (instructeur.email?.trim().isNotEmpty == true) ...[
-                  const Divider(height: 20),
-                  ProfileInfoRow(
-                    icon: CoolIcons.mail,
-                    iconColor: AppColors.iconPrimary,
-                    label: 'E-mail',
-                    value: instructeur.email!.trim(),
-                    maxValueLines: 2,
-                  ),
-                ],
-              ],
-            ),
-          ),
+        if (instructeur.website?.trim().isNotEmpty == true) ...[
+          _gat,
+          SettingsWaarde(label: 'Website', waarde: instructeur.website!.trim()),
         ],
+        if (instructeur.kvkNummer?.trim().isNotEmpty == true) ...[
+          _gat,
+          SettingsWaarde(
+              label: 'KvK-nummer', waarde: instructeur.kvkNummer!.trim()),
+        ],
+
+        // ── Voertuig ──
+        _groepGat,
+        if (voertuig != null) ...[
+          SettingsWaarde(label: 'Kenteken', waarde: _of(voertuig!.kenteken)),
+          _gat,
+          SettingsWaarde(label: 'Merk / model', waarde: _of(voertuig!.naam)),
+        ] else
+          SettingsWaarde(
+            label: 'Toegewezen voertuig',
+            waarde: voertuigLaden ? 'Laden…' : 'Nog geen voertuig toegewezen',
+          ),
+
+        // ── Jouw instructeur ──
+        _groepGat,
+        SettingsWaarde(
+            label: 'Naam instructeur', waarde: _of(instructeur.naam)),
+        if (instructeur.telefoon?.trim().isNotEmpty == true) ...[
+          _gat,
+          SettingsWaarde(
+              label: 'Telefoon instructeur',
+              waarde: instructeur.telefoon!.trim()),
+        ],
+        if (instructeur.email?.trim().isNotEmpty == true) ...[
+          _gat,
+          SettingsWaarde(
+              label: 'E-mail instructeur', waarde: instructeur.email!.trim()),
+        ],
+
+        // ── Contact (tikbare acties) ──
         if (_heeftContactSectie) ...[
-          const SizedBox(height: 22),
-          const SectionHeader(title: 'Contact'),
-          const SizedBox(height: 12),
-          AppCard(
-            child: Column(
-              children: [
-                if (_heeftGeldigTelefoonnummer)
-                  _ContactActieRij(
-                    icon: CoolIcons.phone,
-                    iconColor: AppColors.iconPrimary,
-                    label: 'Bellen',
-                    waarde: instructeur.telefoon!.trim(),
-                    onTap: () => _openUri(
-                        context, ContactUri.tel(instructeur.telefoon)!),
-                  ),
-                if (_heeftGeldigTelefoonnummer &&
-                    (_heeftGeldigEmail || instructeur.volledigAdres != null))
-                  const Divider(height: 20),
-                if (_heeftGeldigEmail)
-                  _ContactActieRij(
-                    icon: CoolIcons.mail,
-                    iconColor: AppColors.iconPrimary,
-                    label: 'E-mailen',
-                    waarde: instructeur.email!.trim(),
-                    onTap: () =>
-                        _openUri(context, ContactUri.email(instructeur.email)!),
-                  ),
-                if (_heeftGeldigEmail &&
-                    (_heeftGeldigeWebsite || instructeur.volledigAdres != null))
-                  const Divider(height: 20),
-                if (_heeftGeldigeWebsite)
-                  _ContactActieRij(
-                    icon: CoolIcons.globe,
-                    iconColor: AppColors.iconPrimary,
-                    label: 'Website openen',
-                    waarde: instructeur.website!.trim(),
-                    onTap: () => _openUri(
-                        context, Uri.parse(instructeur.website!.trim())),
-                  ),
-                if (_heeftGeldigeWebsite && instructeur.volledigAdres != null)
-                  const Divider(height: 20),
-                if (instructeur.volledigAdres != null)
-                  _ContactActieRij(
-                    icon: CoolIcons.navigation,
-                    iconColor: AppColors.iconPrimary,
-                    label: 'Route openen',
-                    waarde: _formatAdres(instructeur)!,
-                    onTap: () => _openUri(
-                      context,
-                      Uri.parse(
-                        'https://maps.google.com/?q=${Uri.encodeComponent(_formatAdres(instructeur)!)}',
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
+          _groepGat,
+          SettingsCard(children: [
+            for (var i = 0; i < contactRijen.length; i++) ...[
+              if (i > 0) const SettingsDivider(),
+              contactRijen[i],
+            ],
+          ]),
         ],
-        const SizedBox(height: 24),
+        const SizedBox(height: 12),
       ],
     );
   }
 }
 
-class _RijschoolKaart extends StatelessWidget {
-  final Instructeur instructeur;
-  const _RijschoolKaart({required this.instructeur});
-
-  @override
-  Widget build(BuildContext context) {
-    final logoUrl = instructeur.logoUrl?.trim();
-    return AppCard(
-      child: Row(
-        children: [
-          _RijschoolLogo(logoUrl: logoUrl, naam: instructeur.weergaveNaam),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  instructeur.weergaveNaam,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                if (instructeur.naam?.trim().isNotEmpty == true) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    instructeur.naam!.trim(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontSize: 12, color: AppColors.textSecondary),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RijschoolLogo extends StatelessWidget {
-  final String? logoUrl;
-  final String naam;
-  const _RijschoolLogo({required this.logoUrl, required this.naam});
-
-  @override
-  Widget build(BuildContext context) {
-    final initiaal =
-        naam.trim().isNotEmpty ? naam.trim()[0].toUpperCase() : '?';
-    Widget content;
-    if (logoUrl?.isNotEmpty == true) {
-      content = CachedNetworkImage(
-        imageUrl: logoUrl!,
-        fit: BoxFit.cover,
-        placeholder: (_, __) => Center(
-          child: Text(initiaal,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800)),
-        ),
-        errorWidget: (_, __, ___) => Center(
-          child: Text(initiaal,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800)),
-        ),
-      );
-    } else {
-      content = Center(
-        child: Text(initiaal,
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.w800)),
-      );
-    }
-    return Container(
-      width: 64,
-      height: 64,
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border, width: 1),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(13),
-        child: content,
-      ),
-    );
-  }
-}
-
+/// Tikbare actie in dezelfde rij-stijl als de Instructeur-instellingen
+/// ([SettingsDesign.titleStyle]/[SettingsDesign.subtitleStyle]).
 class _ContactActieRij extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
   final String label;
   final String waarde;
   final VoidCallback onTap;
 
   const _ContactActieRij({
-    required this.icon,
-    required this.iconColor,
     required this.label,
     required this.waarde,
     required this.onTap,
@@ -428,36 +218,32 @@ class _ContactActieRij extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return KlantioPressable(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Row(
-        children: [
-          IconBadge(icon: icon, color: iconColor, size: 34),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label,
-                    style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary)),
-                const SizedBox(height: 2),
-                Text(
-                  waarde,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      fontSize: 12, color: AppColors.textSecondary),
-                ),
-              ],
+      child: Padding(
+        padding: SettingsDesign.rowPadding,
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: SettingsDesign.titleStyle),
+                  const SizedBox(height: 4),
+                  Text(
+                    waarde,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: SettingsDesign.subtitleStyle,
+                  ),
+                ],
+              ),
             ),
-          ),
-          const Icon(CoolIcons.chevronRight,
-              color: AppColors.iconPrimary, size: 20),
-        ],
+            const SizedBox(width: 12),
+            Icon(CoolIcons.chevronRight,
+                color: SettingsDesign.chevron, size: 20),
+          ],
+        ),
       ),
     );
   }
@@ -501,10 +287,31 @@ bool _isValidEmail(String? email) {
   return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(trimmed);
 }
 
-/// Normaliseert naar een veilige `tel:`-URI, of null als er geen bruikbaar
-/// nummer is. Strip alles behalve cijfers en een optioneel leidend '+'.
+/// Opent [uri] in de bijbehorende app (bellen, mail, browser, kaart). Zonder
+/// eerst `canLaunchUrl` te vragen: op iOS geeft dat false voor schema's die
+/// niet in LSApplicationQueriesSchemes staan, terwijl het openen zelf prima
+/// werkt. Lukt het niet (bv. simulator zonder Telefoon-app), dan volgt een
+/// duidelijke melding i.p.v. dat er niets gebeurt.
 Future<void> _openUri(BuildContext context, Uri uri) async {
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  var gelukt = false;
+  try {
+    gelukt = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  } catch (_) {
+    gelukt = false;
   }
+  if (!gelukt && context.mounted) {
+    showAppSnackBar(
+      context,
+      'Openen lukt niet op dit toestel.',
+      isError: true,
+    );
+  }
+}
+
+/// Kaart-URL: Apple Plans op iOS, Google Maps elders.
+Uri _routeUri(String adres) {
+  final q = Uri.encodeComponent(adres.replaceAll('\n', ', '));
+  return Platform.isIOS
+      ? Uri.parse('https://maps.apple.com/?daddr=$q&dirflg=d')
+      : Uri.parse('https://www.google.com/maps/dir/?api=1&destination=$q');
 }

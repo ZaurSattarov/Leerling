@@ -4,12 +4,12 @@ import '../../core/constants/cool_icons.dart';
 
 class NeutralChip extends StatelessWidget {
   final String label;
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
-  const NeutralChip({
+  NeutralChip({
     super.key,
     required this.label,
-    this.backgroundColor = AppColors.neutralBg,
+    this.backgroundColor,
   });
 
   @override
@@ -17,13 +17,13 @@ class NeutralChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: backgroundColor ?? AppColors.neutralBg,
         borderRadius: BorderRadius.circular(999),
         border: Border.all(color: AppColors.border),
       ),
       child: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
           color: AppColors.textSecondary,

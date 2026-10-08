@@ -136,7 +136,7 @@ class _DeleteConfirmBodyState extends State<_DeleteConfirmBody> {
             const SizedBox(height: 18),
             Text(
               'Account verwijderen',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
@@ -151,7 +151,7 @@ class _DeleteConfirmBodyState extends State<_DeleteConfirmBody> {
               'en facturen, kunnen langer bewaard blijven als dat wettelijk '
               'of administratief nodig is. Die gegevens worden ontkoppeld van '
               'jouw naam.',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 height: 1.5,
                 color: AppColors.textSecondary,
@@ -160,7 +160,7 @@ class _DeleteConfirmBodyState extends State<_DeleteConfirmBody> {
             const SizedBox(height: 16),
             Text(
               'Typ VERWIJDER om te bevestigen. Deze actie is definitief.',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
@@ -174,12 +174,18 @@ class _DeleteConfirmBodyState extends State<_DeleteConfirmBody> {
               autofocus: true,
               textCapitalization: TextCapitalization.characters,
               onChanged: (_) => setState(() {}),
+              style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary),
               decoration: InputDecoration(
                 hintText: 'VERWIJDER',
+                hintStyle:
+                    TextStyle(fontSize: 15, color: AppColors.textHint),
                 filled: true,
                 fillColor: AppColors.neutralBg,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide.none,
                 ),
               ),
@@ -229,7 +235,7 @@ class _DeleteConfirmBodyState extends State<_DeleteConfirmBody> {
                 onPressed: _laden ? null : () => Navigator.pop(context, false),
                 child: Text(
                   'Annuleren',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
                   ),

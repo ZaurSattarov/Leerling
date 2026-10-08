@@ -407,6 +407,45 @@ class StudentService {
   // INSTRUCTEUR (read-only, via leerling.instructeur_id)
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+  /// Leerling past zelf een beperkte set profielvelden aan (productbeslissing
+  /// 2026-10-07): voornaam, achternaam, telefoon, geboortedatum en adres.
+  /// NIET rijbewijscategorie of e-mailadres. Loopt uitsluitend via de RPC
+  /// `update_leerling_profiel` (zie Instructeur-repo,
+  /// supabase/migrations/20261007120000_update_leerling_profiel_zelf.sql);
+  /// de kolombeveiligingstrigger op `leerlingen` blijft voor rechtstreekse
+  /// updates fail-closed.
+  ///
+  /// `null` = veld ongewijzigd laten. Voor [telefoon] en [adres] wist een
+  /// lege string de waarde.
+  static Future<void> updateMijnProfiel({
+    String? voornaam,
+    String? achternaam,
+    String? telefoon,
+    DateTime? geboortedatum,
+    String? adres,
+  }) async {
+    String? datum;
+    if (geboortedatum != null) {
+      datum = '${geboortedatum.year.toString().padLeft(4, '0')}-'
+          '${geboortedatum.month.toString().padLeft(2, '0')}-'
+          '${geboortedatum.day.toString().padLeft(2, '0')}';
+    }
+    final raw = await client.rpc(
+      'update_leerling_profiel',
+      params: {
+        if (voornaam != null) 'p_voornaam': voornaam.trim(),
+        if (achternaam != null) 'p_achternaam': achternaam.trim(),
+        if (telefoon != null) 'p_telefoon': telefoon.trim(),
+        if (datum != null) 'p_geboortedatum': datum,
+        if (adres != null) 'p_adres': adres.trim(),
+      },
+    );
+    final result = Map<String, dynamic>.from(raw as Map);
+    if (result['succes'] != true) {
+      throw Exception(result['fout'] ?? 'Opslaan mislukt');
+    }
+  }
+
   static Future<String> uploadMijnProfielfoto({
     required String leerlingId,
     required Uint8List bytes,

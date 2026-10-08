@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/services/native_navigation_bridge.dart';
 import '../../core/services/push_service.dart';
 import '../../core/services/student_service.dart';
 import 'splash_layout.dart';
@@ -39,6 +40,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   void initState() {
     super.initState();
+    unawaited(NativeNavigationController.setBarVisibleDirect(false));
 
     _ctrl = AnimationController(
       vsync: this,

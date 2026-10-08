@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../core/constants/nav_shell_tokens.dart';
-import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/main_detail_header.dart';
-import 'account_deletion_flow.dart';
+import '../../shared/widgets/settings_design.dart';
 import 'widgets/profiel_menu_widgets.dart';
 import '../../core/constants/cool_icons.dart';
 
@@ -14,31 +10,15 @@ class PrivacyJuridischScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surface,
+    return SettingsBodyScaffold(
+      titel: 'Privacy, gegevens & juridisch',
       body: Column(
         children: [
-          MainDetailHeader(
-            title: 'Privacy, gegevens & juridisch',
-            onBack: () => context.pop(),
-            fallbackRoute: '/profiel',
-          ),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
               children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(8, 0, 8, 10),
-                  child: Text(
-                    'JURIDISCHE DOCUMENTEN',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                      color: Color(0xFF7B8089),
-                    ),
-                  ),
-                ),
+                const SettingsKop('JURIDISCHE DOCUMENTEN'),
                 ProfielMenuCard(
                   children: [
                     ProfielMenuTile(
@@ -57,60 +37,7 @@ class PrivacyJuridischScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 22),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(8, 0, 8, 10),
-                  child: Text(
-                    'PRIVACY & MIJN GEGEVENS',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                      color: Color(0xFF7B8089),
-                    ),
-                  ),
-                ),
-                AppCard(
-                  padding: EdgeInsets.zero,
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 8,
-                    ),
-                    leading: Container(
-                      width: 36,
-                      height: 36,
-                      child: const Icon(
-                        CoolIcons.trashFull,
-                        color: Color(0xFFE11D48),
-                        size: 18,
-                      ),
-                    ),
-                    title: const Text(
-                      'Account verwijderen',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    subtitle: const Text(
-                      'Verwijder je Klantio-account en persoonlijke profiel',
-                      style: TextStyle(
-                        fontSize: 13,
-                        height: 1.5,
-                        color: Color(0xFF7B8089),
-                      ),
-                    ),
-                    trailing: const Icon(
-                      CoolIcons.chevronRight,
-                      color: Color(0x52222936),
-                      size: 17,
-                    ),
-                    onTap: () => AccountDeletionFlow.start(context),
-                  ),
-                ),
-                SizedBox(height: NavShellTokens.contentBottomClearance),
+                const SizedBox(height: 24),
               ],
             ),
           ),

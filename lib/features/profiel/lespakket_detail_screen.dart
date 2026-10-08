@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/lespakket_detail.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/main_detail_header.dart';
+import '../../shared/widgets/settings_design.dart';
+import '../../shared/widgets/status_badge.dart';
 import '../voortgang/lespakket_detail_provider.dart';
 import '../../core/constants/cool_icons.dart';
 
@@ -20,13 +21,11 @@ class ProfielLespakketScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final detailAsync = ref.watch(lespakketDetailProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.surface,
+    // Alleen-lezen (pakketgegevens komen van de rijschool): dus geen vinkje.
+    return SettingsBodyScaffold(
+      titel: 'Lespakket',
       body: Column(
         children: [
-          const MainDetailHeader(
-            title: 'Lespakket',
-          ),
           Expanded(
             child: RefreshIndicator(
               color: AppColors.primary,
@@ -102,22 +101,22 @@ class _LespakketDetailBody extends StatelessWidget {
         _KopKaart(detail: detail),
         const SizedBox(height: 14),
         _VoortgangKaart(detail: detail),
-        const SizedBox(height: 22),
-        const SectionHeader(title: 'Pakketvoorwaarden'),
-        const SizedBox(height: 12),
+        SizedBox(height: 22),
+        SectionHeader(title: 'Pakketvoorwaarden'),
+        SizedBox(height: 12),
         _VoorwaardenKaart(detail: detail),
         if (detail.praktijkexamenInbegrepen ||
             detail.tussentijdseToetsInbegrepen) ...[
-          const SizedBox(height: 22),
-          const SectionHeader(title: 'Inbegrepen'),
-          const SizedBox(height: 12),
+          SizedBox(height: 22),
+          SectionHeader(title: 'Inbegrepen'),
+          SizedBox(height: 12),
           _InbegrepenKaart(detail: detail),
         ],
         if (!detail.heeftSnapshot) ...[
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           _LegacyMelding(),
         ],
-        const SizedBox(height: 24),
+        SizedBox(height: 24),
       ],
     );
   }
@@ -125,7 +124,7 @@ class _LespakketDetailBody extends StatelessWidget {
 
 class _KopKaart extends StatelessWidget {
   final LespakketDetail detail;
-  const _KopKaart({required this.detail});
+  _KopKaart({required this.detail});
 
   Color get _statusKleur {
     switch (detail.statusLabel) {
@@ -136,7 +135,7 @@ class _KopKaart extends StatelessWidget {
       case 'Actief':
         return AppColors.successSolid;
       default:
-        return AppColors.textSecondary;
+        return AppColors.dark3;
     }
   }
 
@@ -147,32 +146,32 @@ class _KopKaart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const IconBadge(
+              IconBadge(
                 icon: CoolIcons.archive,
                 color: AppColors.primary,
                 size: 44,
               ),
-              const SizedBox(width: 14),
+              SizedBox(width: 14),
               Expanded(
                 child: Text(
                   detail.pakketnaam,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               // Statusbadge rechtsboven -- zelfde neutrale/gebordeerde
               // stijl als StatusPill/FactuurStatusUi elders in de app
               // (geen pastel-getinte achtergrond meer).
               _StatusBadge(label: detail.statusLabel, kleur: _statusKleur),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Wrap(
             spacing: 8,
             runSpacing: 6,
@@ -199,55 +198,26 @@ class _KopKaart extends StatelessWidget {
   }
 }
 
-/// Statusbadge (bv. "Actief") -- zelfde neutrale/gebordeerde badge-stijl als
-/// [StatusPill]/`FactuurStatusUi` elders in de app (grijze achtergrond,
-/// dunne rand, solide semantische tekstkleur) i.p.v. een fletse pastel-
-/// getinte achtergrond in de statuskleur zelf.
+/// Statusbadge (bv. "Actief"): dezelfde solide [StatusBadge] als de rest van
+/// de app (1-op-1 Instructeur-app): vol kleurvlak, witte hoofdletters.
 class _StatusBadge extends StatelessWidget {
   final String label;
   final Color kleur;
-  const _StatusBadge({required this.label, required this.kleur});
+  _StatusBadge({required this.label, required this.kleur});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.neutralBg,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 7,
-            height: 7,
-            decoration: BoxDecoration(color: kleur, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: kleur,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      StatusBadge(label: label, backgroundColor: kleur);
 }
 
 class _Badge extends StatelessWidget {
   final String label;
-  const _Badge({required this.label});
+  _Badge({required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
         color: AppColors.neutralBg,
         borderRadius: BorderRadius.circular(999),
@@ -255,7 +225,7 @@ class _Badge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w700,
           color: AppColors.textSecondary,
@@ -267,7 +237,7 @@ class _Badge extends StatelessWidget {
 
 class _VoortgangKaart extends StatelessWidget {
   final LespakketDetail detail;
-  const _VoortgangKaart({required this.detail});
+  _VoortgangKaart({required this.detail});
 
   @override
   Widget build(BuildContext context) {
@@ -277,55 +247,53 @@ class _VoortgangKaart extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Text(
+              Text(
                 'Voortgang',
                 style: TextStyle(
                   fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
                 ),
               ),
-              const Spacer(),
+              Spacer(),
               Text(
                 '${detail.percentageLabel}%',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.primary,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(99),
             child: LinearProgressIndicator(
               value: detail.percentageAfgerond,
               minHeight: 9,
               backgroundColor: AppColors.borderLight,
-              valueColor: const AlwaysStoppedAnimation(AppColors.primary),
+              valueColor: AlwaysStoppedAnimation(AppColors.primary),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Row(
             children: [
               Expanded(
                 child: _MetricTile(label: 'Totaal', value: detail.totaalLabel),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(
                 child: _MetricTile(
                   label: 'Gevolgd',
                   value: detail.gevolgdLabel,
-                  color: AppColors.successSolid,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(
                 child: _MetricTile(
                   label: 'Resterend',
                   value: detail.resterendLabel,
-                  color: AppColors.primary,
                 ),
               ),
             ],
@@ -339,12 +307,12 @@ class _VoortgangKaart extends StatelessWidget {
 class _MetricTile extends StatelessWidget {
   final String label;
   final String value;
-  final Color color;
+  final Color? color;
 
-  const _MetricTile({
+  _MetricTile({
     required this.label,
     required this.value,
-    this.color = AppColors.textPrimary,
+    this.color,
   });
 
   @override
@@ -352,9 +320,11 @@ class _MetricTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FA),
+        color: AppTheme.isDark(context)
+            ? const Color(0xFF283244)
+            : const Color(0xFFF8F9FA),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border, width: 0.75),
+        border: Border.all(color: AppTheme.border(context), width: 0.75),
       ),
       child: Column(
         children: [
@@ -363,14 +333,14 @@ class _MetricTile extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w900,
-              color: color,
+              fontWeight: FontWeight.w700,
+              color: color ?? AppTheme.textPrimary(context),
             ),
           ),
           const SizedBox(height: 4),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w600,
               color: AppColors.textHint,
@@ -422,7 +392,7 @@ class _VoorwaardenKaart extends StatelessWidget {
     }
 
     if (rijen.isEmpty) {
-      return const AppCard(
+      return AppCard(
         child: Text(
           'Geen aanvullende voorwaarden bekend.',
           style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
@@ -462,12 +432,12 @@ class _VoorwaardeRij extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: Text(label,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 13, color: AppColors.textSecondary)),
         ),
         Text(
           waarde,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimary),
@@ -518,7 +488,7 @@ class _InbegrepenRij extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary),
@@ -539,7 +509,7 @@ class _LegacyMelding extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
-      child: const Row(
+      child: Row(
         children: [
           Icon(CoolIcons.info, color: AppColors.iconPrimary, size: 18),
           SizedBox(width: 10),

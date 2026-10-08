@@ -12,7 +12,7 @@ void main() {
   testWidgets('ProfileInfoRow toont rijbewijscategorie en lange waarden',
       (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(
+      MaterialApp(
         home: Scaffold(
           body: SizedBox(
             width: 280,
@@ -39,8 +39,11 @@ void main() {
         read('lib/features/profiel/persoonlijke_gegevens_screen.dart');
     final rijschool = read('lib/features/profiel/mijn_rijschool_screen.dart');
 
-    expect(persoonlijk, contains('ProfileInfoRow'));
-    expect(rijschool, contains('ProfileInfoRow'));
+    // Sinds 2026-10-06: alleen-lezen velden in de stijl van de Instructeur-app.
+    // Persoonlijke gegevens is bewerkbaar (SettingsVeld + groen vinkje).
+    expect(persoonlijk, contains('SettingsVeld'));
+    expect(persoonlijk, contains('updateMijnProfiel'));
+    expect(rijschool, contains('SettingsWaarde'));
     expect(persoonlijk, isNot(contains('class _GegevensRij')));
     expect(rijschool, isNot(contains('class _GegevensRij')));
   });
@@ -77,12 +80,12 @@ void main() {
 
   test('Examenstatussen gepland geslaagd gezakt hebben semantische badges', () {
     final source = read('lib/features/examens/examens_screen.dart');
-    expect(source, contains('AppColors.infoBg'));
-    expect(source, contains('AppColors.successBg'));
-    expect(source, contains('AppColors.dangerBg'));
-    expect(source, contains('ExamenStatus.gepland'));
-    expect(source, contains('ExamenStatus.geslaagd'));
-    expect(source, contains('ExamenStatus.gezakt'));
+    // Sinds 2026-10-07: dezelfde examenbadges als de Instructeur-app.
+    expect(source, contains('StatusPill.examen'));
+    final pill = read('lib/shared/widgets/status_pill.dart');
+    expect(pill, contains('ExamenStatus.gepland'));
+    expect(pill, contains('ExamenStatus.geslaagd'));
+    expect(pill, contains('ExamenStatus.gezakt'));
   });
 
   test('Contactsheet toont bellen whatsapp en email met ContactUri', () {
@@ -120,12 +123,10 @@ void main() {
     expect(source, contains('Het versturen van de resetlink is mislukt'));
   });
 
-  test('Profiel heeft aparte PRIVACY-sectie en account-delete GAP', () {
+  test('Profiel biedt account verwijderen via de echte verwijderflow', () {
     final source = read('lib/features/profiel/profiel_screen.dart');
-    expect(source, contains("Text('PRIVACY'"));
     expect(source, contains('Account verwijderen'));
-    expect(source, contains('_toonAccountVerwijderenGap'));
-    expect(source, contains('geen veilige leerling-accountverwijderflow'));
+    expect(source, contains('AccountDeletionFlow.start'));
   });
 
   test('Juridische routes openen in-app pagina met conceptcontent', () {

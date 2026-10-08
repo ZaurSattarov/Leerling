@@ -71,7 +71,7 @@ class _ProfileGateError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -79,7 +79,7 @@ class _ProfileGateError extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                Icon(
                   CoolIcons.cloudOff,
                   color: AppColors.iconPrimary,
                   size: 40,
@@ -90,14 +90,14 @@ class _ProfileGateError extends StatelessWidget {
                       ? 'Koppeling behouden'
                       : 'Profiel tijdelijk niet beschikbaar',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'Controleer je internetverbinding en probeer het opnieuw. Je hoeft geen koppelcode opnieuw in te voeren.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -127,8 +127,8 @@ class _ProfileGateLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: AppColors.surface,
+    return Scaffold(
+      backgroundColor: AppColors.pageBg,
       body: Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),

@@ -82,8 +82,8 @@ class _HomeAvatar extends StatelessWidget {
     return Container(
       width: 40,
       height: 40,
-      decoration: const BoxDecoration(
-        color: Color(0xFFF1F1F1),
+      decoration: BoxDecoration(
+        color: AppColors.neutralBg,
         shape: BoxShape.circle,
       ),
       child: ClipOval(

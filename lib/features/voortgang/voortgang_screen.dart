@@ -13,6 +13,7 @@ import 'voortgang_trends_provider.dart';
 import 'widgets/tijdlijn_card.dart';
 import '../../core/constants/cool_icons.dart';
 import '../../shared/widgets/main_scaffold.dart';
+import '../../shared/widgets/status_badge.dart';
 
 // ── Semantische kleuren (geen pastel) ─────────────────────────────────────────
 
@@ -20,7 +21,7 @@ const _groen = Color(0xFF16A34A);
 const _oranje = Color(0xFFD97706);
 const _blauw = Color(0xFF2563EB);
 const _rood = Color(0xFFE11D48);
-const _mutedSurface = AppColors.neutralBg;
+get _mutedSurface => AppColors.neutralBg;
 
 const _screenPadding = 20.0;
 const _sectionGap = 24.0;
@@ -40,7 +41,7 @@ class VoortgangScreen extends ConsumerWidget {
     final trendsAsync = ref.watch(voortgangTrendsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           const MainTabHeader(
@@ -258,10 +259,10 @@ class _TotaleVoortgangCard extends StatelessWidget {
                     children: [
                       Text(
                         'Pakketvoortgang',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 14,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -269,7 +270,7 @@ class _TotaleVoortgangCard extends StatelessWidget {
                         totaal > 0
                             ? '${data.afgerondeLessen} van $totaal lessen'
                             : '${data.afgerondeLessen} lessen',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 24,
                           fontWeight: FontWeight.w900,
@@ -279,7 +280,7 @@ class _TotaleVoortgangCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         '$percentage% afgerond',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 13,
                         ),
@@ -290,7 +291,7 @@ class _TotaleVoortgangCard extends StatelessWidget {
                           data.pakketLabel,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.textHint,
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -300,7 +301,7 @@ class _TotaleVoortgangCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(CoolIcons.chevronRight,
+                Icon(CoolIcons.chevronRight,
                     color: AppColors.iconPrimary, size: 22),
               ],
             ),
@@ -396,11 +397,11 @@ class _ExamenReadinessCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Examenadvies',
                     style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,
                     ),
                   ),
@@ -425,7 +426,7 @@ class _ExamenReadinessCard extends StatelessWidget {
                             trends.statusLabel,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.textPrimary,
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
@@ -487,7 +488,7 @@ class _CbrRadarCard extends StatelessWidget {
           children: [
             LayoutBuilder(
               builder: (context, constraints) {
-                final chartSize = min(constraints.maxWidth, 260.0);
+                final chartSize = min(constraints.maxWidth, 300.0);
                 return Center(
                   child: SizedBox.square(
                     dimension: chartSize,
@@ -572,7 +573,7 @@ class _CompetentieProgressRow extends StatelessWidget {
               Expanded(
                 child: Text(
                   categorie.naam,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
@@ -588,7 +589,7 @@ class _CompetentieProgressRow extends StatelessWidget {
                   textAlign: TextAlign.right,
                   style: TextStyle(
                     fontSize: 13,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     color: _kleur,
                     height: 1.25,
                   ),
@@ -621,7 +622,7 @@ class _RadarChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = min(size.width, size.height) / 2 * 0.62;
+    final radius = min(size.width, size.height) / 2 * 0.58;
     final n = waarden.length;
     if (n == 0) return;
 
@@ -698,7 +699,7 @@ class _RadarChartPainter extends CustomPainter {
     // Labels
     for (var i = 0; i < n; i++) {
       final angle = -pi / 2 + i * 2 * pi / n;
-      final labelRadius = radius * 1.22;
+      final labelRadius = radius * 1.12;
       final labelCenter = Offset(
         center.dx + labelRadius * cos(angle),
         center.dy + labelRadius * sin(angle),
@@ -712,7 +713,7 @@ class _RadarChartPainter extends CustomPainter {
           children: [
             TextSpan(
               text: '$kortLabel\n',
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: 9,
                 fontWeight: FontWeight.w500,
@@ -737,13 +738,19 @@ class _RadarChartPainter extends CustomPainter {
         textAlign: TextAlign.center,
       )..layout(maxWidth: 60);
 
+      // Label buiten de punt: schuif op basis van de hoek zodat de tekst
+      // niet over de datapunten valt.
+      final dx = labelCenter.dx +
+          cos(angle) * textPainter.width / 2 -
+          textPainter.width / 2;
+      final dy = labelCenter.dy +
+          sin(angle) * textPainter.height / 2 -
+          textPainter.height / 2;
       textPainter.paint(
         canvas,
         Offset(
-          (labelCenter.dx - textPainter.width / 2)
-              .clamp(0, size.width - textPainter.width),
-          (labelCenter.dy - textPainter.height / 2)
-              .clamp(0, size.height - textPainter.height),
+          dx.clamp(0, size.width - textPainter.width),
+          dy.clamp(0, size.height - textPainter.height),
         ),
       );
     }
@@ -762,11 +769,17 @@ class _SterkAandachtRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (trends.sterkeCompetenties.isEmpty && trends.aandachtspunten.isEmpty) {
+    // Een competentie is nooit tegelijk sterk én aandachtspunt; max 3.
+    final aandacht = trends.aandachtspunten
+        .where((p) => !trends.sterkeCompetenties.contains(p))
+        .take(3)
+        .toList();
+    if (trends.sterkeCompetenties.isEmpty && aandacht.isEmpty) {
       return const SizedBox.shrink();
     }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return IntrinsicHeight(
+        child: Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (trends.sterkeCompetenties.isNotEmpty)
           Expanded(
@@ -777,20 +790,19 @@ class _SterkAandachtRow extends StatelessWidget {
               punten: trends.sterkeCompetenties,
             ),
           ),
-        if (trends.sterkeCompetenties.isNotEmpty &&
-            trends.aandachtspunten.isNotEmpty)
+        if (trends.sterkeCompetenties.isNotEmpty && aandacht.isNotEmpty)
           const SizedBox(width: 10),
-        if (trends.aandachtspunten.isNotEmpty)
+        if (aandacht.isNotEmpty)
           Expanded(
             child: _PuntenKaart(
               titel: 'Aandachtspunten',
               icoon: CoolIcons.flag,
               kleur: _oranje,
-              punten: trends.aandachtspunten,
+              punten: aandacht,
             ),
           ),
       ],
-    );
+    ));
   }
 }
 
@@ -812,7 +824,7 @@ class _PuntenKaart extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.panel,
         borderRadius: BorderRadius.circular(_cardRadius),
         border: Border.all(color: AppColors.border, width: 0.75),
       ),
@@ -821,8 +833,6 @@ class _PuntenKaart extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icoon, color: kleur, size: 16),
-              const SizedBox(width: 6),
               Text(
                 titel,
                 style: TextStyle(
@@ -850,7 +860,7 @@ class _PuntenKaart extends StatelessWidget {
                     Expanded(
                       child: Text(
                         p,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           color: AppColors.textPrimary,
                           fontWeight: FontWeight.w500,
@@ -880,7 +890,7 @@ class _InzichtenCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (trends.inzichten.isEmpty)
-            const Text(
+            Text(
               'Volg meer lessen om inzichten te zien.',
               style: TextStyle(
                 fontSize: 13,
@@ -921,7 +931,7 @@ class _InzichtRij extends StatelessWidget {
             children: [
               Text(
                 item.titel,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   color: AppColors.textPrimary,
                   height: 1.25,
@@ -932,7 +942,7 @@ class _InzichtRij extends StatelessWidget {
                 const SizedBox(height: 3),
                 Text(
                   '${item.oudeWaarde} → ${item.nieuweWaarde}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
                     height: 1.25,
@@ -943,7 +953,7 @@ class _InzichtRij extends StatelessWidget {
                 const SizedBox(height: 3),
                 Text(
                   item.waarde!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
                     height: 1.25,
@@ -1037,20 +1047,20 @@ class _ScoreChartCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Examenadviestrend',
                       style: TextStyle(
                         fontSize: 14,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
                       trends.scoreHistorie.length >= 2
                           ? 'Categorie: $categorieNaam'
                           : 'Nog niet genoeg meetpunten voor een lijn',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
                         height: 1.3,
@@ -1065,7 +1075,7 @@ class _ScoreChartCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           if (trends.scoreHistorie.length >= 2)
             SizedBox(
               height: 110,
@@ -1077,7 +1087,7 @@ class _ScoreChartCard extends StatelessWidget {
           else
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+              padding: EdgeInsets.symmetric(vertical: 18, horizontal: 12),
               decoration: BoxDecoration(
                 color: _mutedSurface,
                 borderRadius: BorderRadius.circular(12),
@@ -1088,14 +1098,14 @@ class _ScoreChartCard extends StatelessWidget {
                     ? 'Nog geen meetpunten beschikbaar.'
                     : 'Eén meetpunt beschikbaar: ${trends.huidigeScore}%.',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Row(
             children: [
               Expanded(
@@ -1104,7 +1114,7 @@ class _ScoreChartCard extends StatelessWidget {
                   value: categorieNaam,
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Expanded(
                 child: _MiniStat(
                   label: 'Huidig',
@@ -1113,7 +1123,7 @@ class _ScoreChartCard extends StatelessWidget {
                       : '${huidigPunt.toStringAsFixed(1)}/5',
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Expanded(
                 child: _MiniStat(
                   label: 'Trend',
@@ -1136,37 +1146,21 @@ class _ScoreChartCard extends StatelessWidget {
 class _StatusChip extends StatelessWidget {
   final String label;
   final Color color;
-  const _StatusChip({required this.label, required this.color});
+  _StatusChip({required this.label, required this.color});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.neutralBg,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          color: color,
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      StatusBadge(label: label, backgroundColor: color);
 }
 
 class _NeutralBadge extends StatelessWidget {
   final String label;
-  const _NeutralBadge({required this.label});
+  _NeutralBadge({required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
         color: _mutedSurface,
         borderRadius: BorderRadius.circular(999),
@@ -1174,7 +1168,7 @@ class _NeutralBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w700,
           color: AppColors.textSecondary,
@@ -1189,7 +1183,7 @@ class _StatPill extends StatelessWidget {
   final String value;
   final Color valueColor;
 
-  const _StatPill({
+  _StatPill({
     required this.label,
     required this.value,
     required this.valueColor,
@@ -1208,10 +1202,10 @@ class _StatPill extends StatelessWidget {
             height: 1,
           ),
         ),
-        const SizedBox(height: 3),
+        SizedBox(height: 3),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w600,
             color: AppColors.textHint,
@@ -1225,12 +1219,12 @@ class _StatPill extends StatelessWidget {
 class _MiniStat extends StatelessWidget {
   final String label;
   final String value;
-  final Color valueColor;
+  final Color? valueColor;
 
-  const _MiniStat({
+  _MiniStat({
     required this.label,
     required this.value,
-    this.valueColor = AppColors.textPrimary,
+    this.valueColor,
   });
 
   @override
@@ -1248,15 +1242,15 @@ class _MiniStat extends StatelessWidget {
           Text(label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 10, color: AppColors.textHint)),
+              style: TextStyle(fontSize: 10, color: AppColors.textHint)),
           const SizedBox(height: 4),
           Text(value,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w900,
-                  color: valueColor)),
+                  fontWeight: FontWeight.w700,
+                  color: valueColor ?? AppColors.textPrimary)),
         ],
       ),
     );
@@ -1293,7 +1287,7 @@ class _CircularProgressWidget extends StatelessWidget {
             Center(
               child: Text(
                 '${(value * 100).round()}%',
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: 19,
                   fontWeight: FontWeight.w900,
@@ -1412,7 +1406,7 @@ class _LineChartPainter extends CustomPainter {
       final textPainter = TextPainter(
         text: TextSpan(
           text: '${points[i].score}%',
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.textSecondary,
             fontSize: 9,
             fontWeight: FontWeight.w700,

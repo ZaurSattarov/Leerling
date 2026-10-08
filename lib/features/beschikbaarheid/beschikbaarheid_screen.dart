@@ -7,7 +7,6 @@ import '../../models/leerling_beschikbaarheid.dart';
 import '../../models/leerling_profiel.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/main_detail_header.dart';
 import '../../shared/widgets/snackbar.dart';
 import '../../core/constants/cool_icons.dart';
 
@@ -154,110 +153,170 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
     }
   }
 
+  /// Compacte bottom sheet (geen volledig scherm): de hoogte volgt de
+  /// inhoud, tot maximaal 88% van het scherm; daarboven scrolt de lijst.
   @override
   Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    final maxHoogte = media.size.height * 0.88;
+
     return Scaffold(
-      backgroundColor: AppColors.surface,
-      floatingActionButton: _laden
-          ? null
-          : FloatingActionButton.extended(
-              onPressed: () => _toonFormulier(),
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              elevation: 0,
-              icon: const Icon(CoolIcons.addPlus, size: 20),
-              label: const Text('Tijd toevoegen',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
-            ),
-      body: Column(
+      backgroundColor: Colors.transparent,
+      // De sheet zelf hoeft niet mee te krimpen met het toetsenbord; het
+      // formulier (eigen modal) regelt dat zelf.
+      resizeToAvoidBottomInset: false,
+      body: Stack(
         children: [
-          const MainDetailHeader(
-            title: 'Mijn tijden',
+          // Tik buiten de sheet = sluiten.
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => Navigator.of(context).maybePop(),
+            ),
           ),
-          Expanded(
-            child: _laden
-                ? const Center(
-                    child: CircularProgressIndicator(color: AppColors.primary))
-                : _fout != null
-                    ? _FoutWeergave(fout: _fout!, onRetry: _laadData)
-                    : RefreshIndicator(
-                        color: AppColors.primary,
-                        onRefresh: _refresh,
-                        child: CustomScrollView(
-                          slivers: [
-                            // Info banner
-                            SliverToBoxAdapter(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(20, 20, 20, 12),
-                                child: AppCard(
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width: 34,
-                                        height: 34,
-                                        child: const Icon(CoolIcons.info,
-                                            color: AppColors.iconPrimary,
-                                            size: 17),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      const Expanded(
-                                        child: Text(
-                                          'Geef aan wanneer je meestal rijles kunt volgen. '
-                                          'Je instructeur gebruikt deze tijden voor de weekplanning.',
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              height: 1.4,
-                                              color: AppColors.textSecondary),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              constraints: BoxConstraints(maxHeight: maxHoogte),
+              decoration: BoxDecoration(
+                color: AppColors.pageBg,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 10),
+                    Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: AppColors.border,
+                        borderRadius: BorderRadius.circular(99),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 14, 8, 4),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Mijn tijden',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.textPrimary,
                               ),
                             ),
-
-                            // Lege staat
-                            if (_items == null || _items!.isEmpty)
-                              const SliverFillRemaining(
-                                hasScrollBody: false,
-                                child: EmptyState(
-                                  icon: CoolIcons.clock,
-                                  title:
-                                      'Je hebt nog geen beschikbaarheid toegevoegd.',
-                                  subtitle:
-                                      'Tik op "Tijd toevoegen" om tijdblokken in te vullen.',
-                                ),
-                              )
-                            else
-                              SliverPadding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(20, 8, 20, 100),
-                                sliver: SliverList(
-                                  delegate: SliverChildBuilderDelegate(
-                                    (ctx, i) => Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 10),
-                                      child: _BeschikbaarheidTegel(
-                                        item: _items![i],
-                                        onBewerk: () =>
-                                            _toonFormulier(_items![i]),
-                                        onVerwijder: () =>
-                                            _verwijder(_items![i]),
-                                      ),
-                                    ),
-                                    childCount: _items!.length,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
+                          ),
+                          IconButton(
+                            icon: Icon(CoolIcons.closeMd,
+                                size: 20, color: AppColors.iconPrimary),
+                            onPressed: () => Navigator.of(context).maybePop(),
+                          ),
+                        ],
                       ),
+                    ),
+                    Flexible(child: _inhoud()),
+                    if (!_laden)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                        child: _toevoegKnop(),
+                      ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _toevoegKnop() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        onPressed: () => _toonFormulier(),
+        icon: const Icon(CoolIcons.addPlus, size: 19),
+        label: const Text('Tijd toevoegen'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          minimumSize: const Size.fromHeight(52),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999),
+          ),
+          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
+  Widget _inhoud() {
+    if (_laden) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 48),
+        child: Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
+      );
+    }
+    if (_fout != null) {
+      return _FoutWeergave(fout: _fout!, onRetry: _laadData);
+    }
+    final items = _items ?? const <LeerlingBeschikbaarheid>[];
+    return ListView(
+      shrinkWrap: true,
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+      children: [
+        AppCard(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 34,
+                height: 34,
+                child: Icon(CoolIcons.info,
+                    color: AppColors.iconPrimary, size: 17),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Geef aan wanneer je meestal rijles kunt volgen. '
+                  'Je instructeur gebruikt deze tijden voor de weekplanning.',
+                  style: TextStyle(
+                      fontSize: 13,
+                      height: 1.4,
+                      color: AppColors.textSecondary),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (items.isEmpty)
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              'Je hebt nog geen beschikbaarheid toegevoegd.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+            ),
+          )
+        else
+          for (final item in items)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _BeschikbaarheidTegel(
+                item: item,
+                onBewerk: () => _toonFormulier(item),
+                onVerwijder: () => _verwijder(item),
+              ),
+            ),
+      ],
     );
   }
 }
@@ -292,9 +351,9 @@ class _BeschikbaarheidTegel extends StatelessWidget {
             child: Center(
               child: Text(
                 item.dagNaam.substring(0, 2),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
               ),
@@ -309,7 +368,7 @@ class _BeschikbaarheidTegel extends StatelessWidget {
               children: [
                 Text(
                   item.dagNaam,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
@@ -318,7 +377,7 @@ class _BeschikbaarheidTegel extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   '${item.startTijdKort} – ${item.eindTijdKort}',
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 13, color: AppColors.textSecondary),
                 ),
               ],
@@ -331,7 +390,9 @@ class _BeschikbaarheidTegel extends StatelessWidget {
             children: List.generate(
               5,
               (i) => Icon(
-                i < item.voorkeurScore ? CoolIcons.star : CoolIcons.star,
+                i < item.voorkeurScore
+                    ? Icons.star_rounded
+                    : Icons.star_outline_rounded,
                 size: 14,
                 color: i < item.voorkeurScore
                     ? AppColors.warningSolid
@@ -342,7 +403,7 @@ class _BeschikbaarheidTegel extends StatelessWidget {
 
           // Verwijder knop
           IconButton(
-            icon: const Icon(CoolIcons.trashEmpty,
+            icon: Icon(CoolIcons.trashEmpty,
                 color: AppColors.iconPrimary, size: 20),
             onPressed: onVerwijder,
             style: IconButton.styleFrom(
@@ -385,24 +446,12 @@ class _BeschikbaarheidFormulierState
   String? _fout;
 
   // Begin/Einde zijn nu rechtstreeks in dit formulier bewerkbaar -- geen
-  // los tweede sheet meer. `_actiefVeld` bepaalt welk van de twee net is
-  // aangeraakt (zichtbaar via de solide accentkleur) en dus welk veld een
-  // "Snelle keuze"-tik bijwerkt. Eén bron van waarheid: _startTijd/
-  // _eindTijd; de controllers zijn alleen de tekstweergave daarvan.
-  _ActiefTijdVeld _actiefVeld = _ActiefTijdVeld.begin;
+  // los tweede sheet meer. Eén bron van waarheid: _startTijd/_eindTijd; de
+  // controllers zijn alleen de tekstweergave daarvan.
   late final TextEditingController _startCtrl;
   late final TextEditingController _eindCtrl;
   late final FocusNode _startFocus;
   late final FocusNode _eindFocus;
-
-  static const _quickTimes = [
-    TimeOfDay(hour: 8, minute: 0),
-    TimeOfDay(hour: 9, minute: 0),
-    TimeOfDay(hour: 10, minute: 0),
-    TimeOfDay(hour: 13, minute: 0),
-    TimeOfDay(hour: 17, minute: 0),
-    TimeOfDay(hour: 19, minute: 0),
-  ];
 
   @override
   void initState() {
@@ -418,18 +467,8 @@ class _BeschikbaarheidFormulierState
     }
     _startCtrl = TextEditingController(text: _formatTijd(_startTijd));
     _eindCtrl = TextEditingController(text: _formatTijd(_eindTijd));
-    _startFocus = FocusNode()
-      ..addListener(() {
-        if (_startFocus.hasFocus) {
-          setState(() => _actiefVeld = _ActiefTijdVeld.begin);
-        }
-      });
-    _eindFocus = FocusNode()
-      ..addListener(() {
-        if (_eindFocus.hasFocus) {
-          setState(() => _actiefVeld = _ActiefTijdVeld.eind);
-        }
-      });
+    _startFocus = FocusNode();
+    _eindFocus = FocusNode();
   }
 
   @override
@@ -472,19 +511,6 @@ class _BeschikbaarheidFormulierState
         }
       }
       if (_fout != null) _fout = null;
-    });
-  }
-
-  void _kiesSnelleTijd(TimeOfDay time) {
-    setState(() {
-      if (_actiefVeld == _ActiefTijdVeld.begin) {
-        _startTijd = time;
-        _startCtrl.text = _formatTijd(time);
-      } else {
-        _eindTijd = time;
-        _eindCtrl.text = _formatTijd(time);
-      }
-      _fout = null;
     });
   }
 
@@ -550,7 +576,7 @@ class _BeschikbaarheidFormulierState
         margin: const EdgeInsets.all(16),
         padding: EdgeInsets.fromLTRB(24, 24, 24, 24 + insets.bottom),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: AppColors.panel,
           borderRadius: BorderRadius.circular(24),
         ),
         child: SingleChildScrollView(
@@ -563,14 +589,14 @@ class _BeschikbaarheidFormulierState
                 widget.bestaand != null
                     ? 'Tijdblok bewerken'
                     : 'Tijdblok toevoegen',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
+              Text(
                 'Geef aan wanneer je rijles kunt volgen.',
                 style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
               ),
@@ -578,7 +604,7 @@ class _BeschikbaarheidFormulierState
               const SizedBox(height: 20),
 
               // Dag
-              const Text('Dag',
+              Text('Dag',
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -630,38 +656,15 @@ class _BeschikbaarheidFormulierState
               ),
 
               const SizedBox(height: 16),
-              const Text('Snelle keuzes',
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textSecondary)),
-              const SizedBox(height: 10),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final time in _quickTimes)
-                    _SnelleTijdChip(
-                      label: _formatTijd(time),
-                      selected: _formatTijd(time) ==
-                          _formatTijd(_actiefVeld == _ActiefTijdVeld.begin
-                              ? _startTijd
-                              : _eindTijd),
-                      onTap: _opslaan ? null : () => _kiesSnelleTijd(time),
-                    ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
 
               // Voorkeur score
-              const Text('Voorkeur',
+              Text('Voorkeur',
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textSecondary)),
               const SizedBox(height: 4),
-              const Text(
+              Text(
                 'Hoe goed past dit tijdstip?',
                 style: TextStyle(fontSize: 12, color: AppColors.textHint),
               ),
@@ -675,7 +678,9 @@ class _BeschikbaarheidFormulierState
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Icon(
-                        (i + 1) <= _score ? CoolIcons.star : CoolIcons.star,
+                        (i + 1) <= _score
+                            ? Icons.star_rounded
+                            : Icons.star_outline_rounded,
                         size: 34,
                         color: (i + 1) <= _score
                             ? AppColors.warningSolid
@@ -688,7 +693,7 @@ class _BeschikbaarheidFormulierState
               const SizedBox(height: 6),
               Text(
                 '$_score van 5 - voorkeur',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   color: AppColors.textSecondary,
                   fontWeight: FontWeight.w600,
@@ -736,10 +741,7 @@ class _BeschikbaarheidFormulierState
 
 // ─── Begin/Einde -- inline in het formulier, geen los sheet meer ────
 //
-// `_actiefVeld` bepaalt welk van de twee velden net is aangeraakt en dus
-// het doel is van de "Snelle keuzes"-chips -- zichtbaar via Flutter's eigen
-// focus-rand op het aangetikte veld (zie _TijdVeldKaart), geen verborgen
-// state. Bron van waarheid is _startTijd/_eindTijd in
+// Bron van waarheid is _startTijd/_eindTijd in
 // _BeschikbaarheidFormulierState hierboven.
 
 enum _ActiefTijdVeld { begin, eind }
@@ -782,7 +784,7 @@ class _TijdVeldKaart extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
             color: AppColors.textSecondary,
@@ -796,7 +798,7 @@ class _TijdVeldKaart extends StatelessWidget {
           keyboardType: TextInputType.number,
           inputFormatters: const [TimeInputFormatter()],
           cursorColor: AppColors.primary,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w800,
             color: AppColors.textPrimary,
@@ -804,9 +806,9 @@ class _TijdVeldKaart extends StatelessWidget {
           decoration: InputDecoration(
             isDense: true,
             filled: true,
-            fillColor: AppColors.white,
+            fillColor: AppColors.panel,
             hintText: '--:--',
-            hintStyle: const TextStyle(
+            hintStyle: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
               color: AppColors.textHint,
@@ -827,63 +829,12 @@ class _TijdVeldKaart extends StatelessWidget {
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.borderLight),
+              borderSide: BorderSide(color: AppColors.borderLight),
             ),
           ),
           onChanged: onChanged,
         ),
       ],
-    );
-  }
-}
-
-// Snelle-keuze chip: actief = solide primary-vulling + witte tekst/vinkje
-// (NOOIT pastel roze). Inactief = witte achtergrond, donkere tekst,
-// subtiele rand.
-class _SnelleTijdChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final VoidCallback? onTap;
-
-  const _SnelleTijdChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(999),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 120),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.primary : AppColors.white,
-          borderRadius: BorderRadius.circular(999),
-          border: Border.all(
-            color: selected ? AppColors.primary : AppColors.border,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (selected) ...[
-              const Icon(CoolIcons.check, size: 14, color: Colors.white),
-              const SizedBox(width: 4),
-            ],
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: selected ? Colors.white : AppColors.textPrimary,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -905,7 +856,7 @@ class _FoutWeergave extends StatelessWidget {
             const Icon(CoolIcons.cloudOff,
                 size: 48, color: AppColors.dangerSolid),
             const SizedBox(height: 16),
-            const Text('Kon gegevens niet laden',
+            Text('Kon gegevens niet laden',
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -913,7 +864,7 @@ class _FoutWeergave extends StatelessWidget {
             const SizedBox(height: 6),
             Text(fout,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 13, color: AppColors.textSecondary)),
             const SizedBox(height: 20),
             ElevatedButton(

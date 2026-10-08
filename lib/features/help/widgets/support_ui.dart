@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../models/support_thread.dart';
+import '../../../shared/widgets/status_badge.dart';
 
 /// Gedeelde helpers voor de supportchat-schermen -- 1-op-1 stijl-poort van
 /// de Instructeur-app (support_ui.dart). Kaartstijl zelf komt uit de
@@ -13,7 +14,7 @@ class SupportUi {
   SupportUi._();
 
   static const iconBox = 36.0;
-  static const iconBg = AppColors.neutralBg;
+  static get iconBg => AppColors.neutralBg;
   static const accent = Color(0xFF5645D4);
 
   static String formatWhen(DateTime value) {
@@ -36,39 +37,14 @@ class SupportStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (bg, fg) = switch (status) {
-      SupportThreadStatus.waitingForSupport => (
-          AppColors.neutralBg,
-          AppColors.textSecondary,
-        ),
-      SupportThreadStatus.waitingForUser => (
-          AppColors.infoSolid.withValues(alpha: 0.12),
-          AppColors.infoSolid,
-        ),
-      SupportThreadStatus.closed => (
-          AppColors.neutralBg,
-          AppColors.textHint,
-        ),
-      SupportThreadStatus.open => (
-          AppColors.neutralBg,
-          AppColors.textSecondary,
-        ),
+    // Solide StatusBadge, 1-op-1 de Instructeur-app (vol kleurvlak, wit).
+    final kleur = switch (status) {
+      SupportThreadStatus.waitingForSupport => AppColors.warningSolid,
+      SupportThreadStatus.waitingForUser => AppColors.infoSolid,
+      SupportThreadStatus.closed => const Color(0xFF64748B),
+      SupportThreadStatus.open => AppColors.dark3,
     };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        status.label,
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          color: fg,
-        ),
-      ),
-    );
+    return StatusBadge(label: status.label, backgroundColor: kleur);
   }
 }
 

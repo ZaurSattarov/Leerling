@@ -61,8 +61,7 @@ final homeCoachProvider =
         (examenadvies?.categorieen.any((c) => c.heeftData) ?? false) ||
         (laatsteLes?.feedback.isNotEmpty ?? false),
     heeftBetrouwbareScore: examenadvies?.heeftBetrouwbareScore ?? false,
-    ontwikkeling: examenadvies == null
-        ? null
-        : bouwOntwikkelingSparkline(examenadvies),
+    ontwikkeling:
+        examenadvies == null ? null : bouwOntwikkelingSparkline(examenadvies),
   );
 });

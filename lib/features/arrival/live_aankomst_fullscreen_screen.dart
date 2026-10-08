@@ -65,8 +65,8 @@ class _LiveAankomstFullscreenScreenState
           Navigator.of(context).pop();
         }
       });
-      return const Scaffold(
-          backgroundColor: AppColors.surface, body: SizedBox.shrink());
+      return Scaffold(
+          backgroundColor: AppColors.pageBg, body: SizedBox.shrink());
     }
 
     final adres = (widget.les.locatie ?? '').trim();
@@ -83,7 +83,7 @@ class _LiveAankomstFullscreenScreenState
         !toonLiveKaart && (geocodedAsync?.isLoading ?? false);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: SafeArea(
         child: Stack(
           children: [
@@ -155,7 +155,7 @@ class _RondeKnop extends StatelessWidget {
       button: true,
       label: semanticsLabel,
       child: Material(
-        color: AppColors.white,
+        color: AppColors.panel,
         shape: const CircleBorder(),
         elevation: 2,
         shadowColor: const Color(0xFF0F172A).withValues(alpha: 0.15),
@@ -188,21 +188,16 @@ class _StatusKaart extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.panel,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
-          Container(
+          const SizedBox(
             width: 36,
             height: 36,
-            decoration: BoxDecoration(
-              color: AppColors.successBg,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(CoolIcons.carAuto,
-                color: AppColors.success, size: 19),
+            child: Icon(CoolIcons.carAuto, color: AppColors.success, size: 21),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -211,7 +206,7 @@ class _StatusKaart extends StatelessWidget {
               children: [
                 Text(
                   titel,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
@@ -223,7 +218,7 @@ class _StatusKaart extends StatelessWidget {
                     laden ? '$locatie · locatie zoeken…' : locatie,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 12,
                     ),

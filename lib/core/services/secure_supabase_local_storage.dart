@@ -21,8 +21,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// voorkomen dat een test-fixture per ongeluk de andere app raakt.
 
 /// Sleutel waaronder de Supabase-sessie versleuteld wordt opgeslagen.
-const String kSupabaseSecureSessionKey =
-    'klantio-leerling-supabase-session';
+const String kSupabaseSecureSessionKey = 'klantio-leerling-supabase-session';
 
 /// Minimale sleutel/waarde-opslag zodat [SecureSupabaseLocalStorage] getest
 /// kan worden zonder platformkanalen.

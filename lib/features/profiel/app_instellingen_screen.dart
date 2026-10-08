@@ -1,61 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_colors.dart';
-import '../../shared/widgets/main_detail_header.dart';
-import 'widgets/profiel_menu_widgets.dart';
 import '../../core/constants/cool_icons.dart';
+import '../../shared/widgets/isomorphic_icons.dart';
+import '../../shared/widgets/settings_design.dart';
+import 'widgets/profiel_menu_widgets.dart';
 
-class AppInstellingenScreen extends StatelessWidget {
+/// Profiel -> App-instellingen.
+/// Bevat app-voorkeuren zoals donkere modus.
+class AppInstellingenScreen extends ConsumerWidget {
   const AppInstellingenScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.paddingOf(context).bottom + 96;
-
-    return Scaffold(
-      backgroundColor: AppColors.pageBg,
-      body: Column(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return SettingsBodyScaffold(
+      titel: 'App-instellingen',
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 40),
         children: [
-          const MainDetailHeader(
-            title: 'App-instellingen',
-            fallbackRoute: '/profiel',
-          ),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.fromLTRB(0, 20, 0, bottomPadding),
-              children: [
-                const ProfielSectionTitle('MACHTIGINGEN'),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: ProfielMenuCard(
-                    children: [
-                      ProfielMenuTile(
-                        icon: CoolIcons.settings,
-                        label: 'App-machtigingen',
-                        subtitle: 'Meldingen, camera en foto\'s',
-                        onTap: () => context.push('/profiel/app-machtigingen'),
+          ProfielMenuCard(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 36,
+                      height: 36,
+                      child: Icon(CoolIcons.moon, size: 18),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Donkere modus',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              height: 1.3,
+                              color: isDark
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            'Schakel tussen lichte en donkere weergave',
+                            style: TextStyle(
+                              fontSize: 13,
+                              height: 1.4,
+                              color: isDark
+                                  ? AppColors.darkTextSecondary
+                                  : const Color(0xFF7B8089),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    const IsomorphicDarkModeToggle(),
+                  ],
                 ),
-                const SizedBox(height: 22),
-                const ProfielSectionTitle('BEVEILIGING'),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: ProfielMenuCard(
-                    children: [
-                      ProfielMenuTile(
-                        icon: CoolIcons.shieldCheck,
-                        label: 'Beveiliging',
-                        subtitle: 'Wachtwoord en accountbeveiliging',
-                        onTap: () => context.push('/profiel/beveiliging'),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

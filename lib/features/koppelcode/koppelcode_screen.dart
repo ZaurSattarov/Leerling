@@ -72,13 +72,13 @@ class _KoppelcodeInvoerenScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       appBar: AppBar(
-        backgroundColor: AppColors.surface,
+        backgroundColor: AppColors.pageBg,
         elevation: 0,
         leading: Navigator.of(context).canPop()
             ? IconButton(
-                icon: const Icon(CoolIcons.chevronLeft,
+                icon: Icon(CoolIcons.chevronLeft,
                     color: AppColors.iconPrimary),
                 onPressed: () => context.pop(),
               )
@@ -87,7 +87,7 @@ class _KoppelcodeInvoerenScreenState
         actions: [
           TextButton(
             onPressed: _uitloggen,
-            child: const Text(
+            child: Text(
               'Uitloggen',
               style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
@@ -107,13 +107,13 @@ class _KoppelcodeInvoerenScreenState
                 child: Container(
                   width: 72,
                   height: 72,
-                  child: const Icon(CoolIcons.text,
+                  child: Icon(CoolIcons.text,
                       color: AppColors.iconPrimary, size: 36),
                 ),
               ),
               const SizedBox(height: 24),
 
-              const Text(
+              Text(
                 'Koppelcode invoeren',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -124,7 +124,7 @@ class _KoppelcodeInvoerenScreenState
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'Voer de 8-tekens koppelcode in die je van je rijinstructeur hebt ontvangen.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -148,7 +148,7 @@ class _KoppelcodeInvoerenScreenState
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(_error!,
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: AppColors.dangerText, fontSize: 13)),
                       ),
                     ],
@@ -165,7 +165,7 @@ class _KoppelcodeInvoerenScreenState
                       controller: _codeCtrl,
                       textCapitalization: TextCapitalization.characters,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 6,
@@ -173,7 +173,7 @@ class _KoppelcodeInvoerenScreenState
                       ),
                       decoration: InputDecoration(
                         hintText: 'XXXXXXXX',
-                        hintStyle: const TextStyle(
+                        hintStyle: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 6,
@@ -183,11 +183,11 @@ class _KoppelcodeInvoerenScreenState
                             vertical: 20, horizontal: 16),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(color: AppColors.border),
+                          borderSide: BorderSide(color: AppColors.border),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(color: AppColors.border),
+                          borderSide: BorderSide(color: AppColors.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -195,7 +195,7 @@ class _KoppelcodeInvoerenScreenState
                               color: AppColors.primary, width: 1.5),
                         ),
                         filled: true,
-                        fillColor: AppColors.white,
+                        fillColor: AppColors.panel,
                       ),
                       onFieldSubmitted: (_) => _koppel(),
                       validator: (v) {
@@ -225,7 +225,7 @@ class _KoppelcodeInvoerenScreenState
               ),
 
               const SizedBox(height: 32),
-              const Center(
+              Center(
                 child: Text(
                   'Geen code? Neem contact op met je rijinstructeur.',
                   textAlign: TextAlign.center,

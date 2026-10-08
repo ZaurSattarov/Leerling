@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:leerling_app/shared/widgets/framer_toggle.dart';
 import 'package:leerling_app/features/notificaties/notificatie_instellingen_provider.dart';
 import 'package:leerling_app/features/notificaties/notificatie_instellingen_screen.dart';
 import 'package:leerling_app/models/leerling_notificatie_voorkeuren.dart';
@@ -149,7 +150,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.descendant(
         of: find.byKey(const Key('toggle_nieuwe_les')),
-        matching: find.byType(Switch),
+        matching: find.byType(FramerToggle),
       ));
       await tester.pumpAndSettle();
 
@@ -204,14 +205,17 @@ void main() {
       expect(profile, contains("'/profiel/notificatie-instellingen'"));
       expect(profile, contains("label: 'App-instellingen'"));
       expect(profile, contains("'/profiel/app-instellingen'"));
-      expect(profile, contains('Machtigingen en beveiliging'));
+      expect(profile, contains('Donkere modus en voorkeuren'));
       expect(profile, isNot(contains("label: 'App-machtigingen'")));
       expect(profile, isNot(contains("label: 'Beveiliging'")));
       expect(settings, isNot(contains("label: 'Notificatie-instellingen'")));
       expect(settings, isNot(contains("'/profiel/notificatie-instellingen'")));
-      expect(settings, contains("'/profiel/app-machtigingen'"));
-      expect(settings, contains("'/profiel/beveiliging'"));
-      expect(profile, contains("label: 'Privacy'"));
+      expect(settings, isNot(contains("label: 'App-machtigingen'")));
+      expect(settings, isNot(contains("label: 'Beveiliging'")));
+      expect(settings, contains('Donkere modus'));
+      // Sectietitels zijn weg (Instructeur-app-profiel heeft er geen); de
+      // privacy-tegel zelf bestaat nog.
+      expect(profile, contains("label: 'Privacy, gegevens & juridisch'"));
       expect(app, contains("path: '/profiel/app-machtigingen'"));
       expect(app, contains("path: '/profiel/beveiliging'"));
       expect(app, contains("path: '/profiel/app-instellingen'"));

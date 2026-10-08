@@ -101,8 +101,7 @@ void main() {
 
       expect(settings, isNot(contains("label: 'Notificatie-instellingen'")));
       expect(settings, isNot(contains("'/profiel/notificatie-instellingen'")));
-      expect(settings, contains("label: 'App-machtigingen'"));
-      expect(settings, contains("label: 'Beveiliging'"));
+      expect(settings, contains('Donkere modus'));
     });
   });
 }

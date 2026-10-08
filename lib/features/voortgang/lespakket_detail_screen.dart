@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/les.dart';
@@ -17,7 +19,7 @@ class LespakketDetailScreen extends ConsumerWidget {
     final dataAsync = ref.watch(lespakketVoortgangProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           const MainDetailHeader(
@@ -82,7 +84,7 @@ class _LespakketDetailBody extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Lespakket',
                             style: TextStyle(
                               fontSize: 12,
@@ -93,9 +95,9 @@ class _LespakketDetailBody extends ConsumerWidget {
                           const SizedBox(height: 3),
                           Text(
                             data.pakketLabel,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                               color: AppColors.textPrimary,
                             ),
                           ),
@@ -122,7 +124,8 @@ class _LespakketDetailBody extends ConsumerWidget {
                     valueColor: const AlwaysStoppedAnimation(AppColors.primary),
                   ),
                 ),
-                const SizedBox(height: 16),
+                if (!data.heeftPakket || data.heeftExtraLessen)
+                  const SizedBox(height: 16),
                 if (!data.heeftPakket)
                   const _InlineNotice(
                     icon: CoolIcons.info,
@@ -137,49 +140,49 @@ class _LespakketDetailBody extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 14),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 1.75,
-            children: [
-              _MetricTile(label: 'Totaal', value: '${data.totaalLessen}'),
-              _MetricTile(
-                label: 'Afgerond',
-                value: '${data.afgerondeLessen}',
-                color: AppColors.successSolid,
-              ),
-              _MetricTile(
-                label: 'Gepland',
-                value: '${data.geplandeLessen}',
-                color: AppColors.infoSolid,
-              ),
-              _MetricTile(
-                label: 'Resterend',
-                value: '${data.nogTeGebruiken}',
-                color: AppColors.primary,
-              ),
-              _MetricTile(
-                label: 'Nog in te plannen',
-                value: '${data.nogInTePlannen}',
-                color: AppColors.primary,
-              ),
-            ],
+          const SizedBox(height: 10),
+          _MetricRij(
+            links: _MetricTile(label: 'Totaal', value: '${data.totaalLessen}'),
+            rechts: _MetricTile(
+              label: 'Afgerond',
+              value: '${data.afgerondeLessen}',
+              color: AppColors.successSolid,
+            ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
+          _MetricRij(
+            links: _MetricTile(
+              label: 'Gepland',
+              value: '${data.geplandeLessen}',
+              color: AppColors.infoSolid,
+            ),
+            rechts: _MetricTile(
+              label: 'Resterend',
+              value: '${data.nogTeGebruiken}',
+              color: AppColors.primary,
+            ),
+          ),
+          // Alleen tonen als het afwijkt van "Resterend" -- anders dubbel.
+          if (data.nogInTePlannen != data.nogTeGebruiken) ...[
+            const SizedBox(height: 10),
+            _MetricTile(
+              label: 'Nog in te plannen',
+              value: '${data.nogInTePlannen}',
+              color: AppColors.primary,
+              breed: true,
+            ),
+          ],
+          const SizedBox(height: 10),
           AppCard(
             backgroundColor: AppColors.neutralBg,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Zo rekenen we',
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -191,7 +194,7 @@ class _LespakketDetailBody extends ConsumerWidget {
                   'Afgerond komt uit de servergegevens van je instructeur. '
                   'Alleen geplande pakketlessen tellen apart als "Gepland". '
                   'Geannuleerd, verzet en geen toon tellen niet als verbruikt.',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     height: 1.45,
                     color: AppColors.textSecondary,
@@ -226,15 +229,38 @@ class _LespakketDetailBody extends ConsumerWidget {
   }
 }
 
+class _MetricRij extends StatelessWidget {
+  final Widget links;
+  final Widget rechts;
+
+  const _MetricRij({required this.links, required this.rechts});
+
+  @override
+  Widget build(BuildContext context) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(child: links),
+          const SizedBox(width: 10),
+          Expanded(child: rechts),
+        ],
+      ),
+    );
+  }
+}
+
 class _MetricTile extends StatelessWidget {
   final String label;
   final String value;
-  final Color color;
+  final Color? color;
+  final bool breed;
 
   const _MetricTile({
     required this.label,
     required this.value,
-    this.color = AppColors.dark3,
+    this.color,
+    this.breed = false,
   });
 
   @override
@@ -243,14 +269,14 @@ class _MetricTile extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             value,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w900,
-              color: color,
+              color: color ?? AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 2),
@@ -258,7 +284,7 @@ class _MetricTile extends StatelessWidget {
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               color: AppColors.textSecondary,
               fontWeight: FontWeight.w600,
@@ -292,7 +318,7 @@ class _InlineNotice extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
@@ -313,6 +339,10 @@ class _LesTimelineCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCard(
+      onTap: () {
+        HapticFeedback.selectionClick();
+        context.push('/planning/${les.id}');
+      },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -331,9 +361,9 @@ class _LesTimelineCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         DatumUtils.langeDatum(les.datum),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                           color: AppColors.textPrimary,
                         ),
                       ),
@@ -344,7 +374,7 @@ class _LesTimelineCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   '${les.starttijd} - ${les.eindtijd}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
                   ),
@@ -353,7 +383,7 @@ class _LesTimelineCard extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(
                     les.instructeurNaam!,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       color: AppColors.textHint,
                     ),

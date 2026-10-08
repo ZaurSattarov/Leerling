@@ -14,7 +14,6 @@ import 'auth_design.dart';
 import 'social_login_widgets.dart';
 import '../../core/constants/cool_icons.dart';
 import '../../shared/widgets/app_error_banner.dart';
-import '../../shared/widgets/klantio_aurora_background.dart';
 
 /// Apple-login alleen op iOS. Op Android en web nooit tonen of aanroepen.
 @visibleForTesting
@@ -225,238 +224,235 @@ class _LoginScreenState extends State<LoginScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: AppColors.pageBg,
-        body: KlantioAuroraBackground(
-          child: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 8),
-                  Center(
-                    child: Image.asset(
-                      'assets/Inlogassets/Login-bro.png',
-                      height:
-                          MediaQuery.sizeOf(context).height < 700 ? 150 : 180,
-                      fit: BoxFit.contain,
-                    ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 8),
+                Center(
+                  child: Image.asset(
+                    'assets/Inlogassets/Login-bro.png',
+                    height: MediaQuery.sizeOf(context).height < 700 ? 150 : 180,
+                    fit: BoxFit.contain,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Welkom terug',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                      letterSpacing: -0.5,
-                    ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Welkom terug',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -0.5,
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Log in met je leerling account',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      color: AppColors.textSecondary,
-                      height: 1.5,
-                    ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Log in met je leerling account',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                    height: 1.5,
                   ),
-                  const SizedBox(height: 22),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        _Veld(
-                          controller: _emailCtrl,
-                          hint: 'E-mailadres',
-                          suffixIcon: CoolIcons.mail,
-                          keyboardType: TextInputType.emailAddress,
-                          validator: AuthDesign.validateEmail,
-                        ),
-                        const SizedBox(height: 14),
-                        _WachtwoordVeld(
-                          controller: _wachtwoordCtrl,
-                          hint: 'Wachtwoord',
-                          zichtbaar: _wachtwoordZichtbaar,
-                          onToggle: () => setState(() =>
-                              _wachtwoordZichtbaar = !_wachtwoordZichtbaar),
-                          validator: (v) {
-                            if (v == null || v.isEmpty) {
-                              return 'Vul je wachtwoord in';
-                            }
-                            return null;
-                          },
-                          onSubmit: _inloggen,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      final grotereTekst =
-                          MediaQuery.textScalerOf(context).scale(13) > 15;
-                      final onderElkaar =
-                          constraints.maxWidth < 300 || grotereTekst;
-
-                      final onthoudMij = Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            borderRadius: BorderRadius.circular(10),
-                            onTap: () =>
-                                setState(() => _onthoudenMij = !_onthoudenMij),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: Checkbox(
-                                  value: _onthoudenMij,
-                                  activeColor: AppColors.primary,
-                                  checkColor: Colors.white,
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  visualDensity: VisualDensity.compact,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5)),
-                                  onChanged: (v) => setState(
-                                      () => _onthoudenMij = v ?? false),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 2),
-                          Text(
-                            'Onthoud mij',
-                            style: GoogleFonts.inter(
-                                fontSize: 13, color: AppColors.textSecondary),
-                          ),
-                        ],
-                      );
-
-                      final wachtwoordVergeten = TextButton(
-                        onPressed: () => context.go('/wachtwoord-vergeten'),
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        child: Text(
-                          'Wachtwoord vergeten?',
-                          textAlign: TextAlign.end,
-                          softWrap: true,
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      );
-
-                      if (onderElkaar) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: onthoudMij,
-                            ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: wachtwoordVergeten,
-                            ),
-                          ],
-                        );
-                      }
-
-                      return Row(
-                        children: [
-                          onthoudMij,
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: wachtwoordVergeten,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  if (_fout != null) ...[
-                    const SizedBox(height: 16),
-                    AppErrorBanner(
-                      message: _fout!,
-                      onDismiss: () => setState(() => _fout = null),
-                    ),
-                  ],
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    height: 52,
-                    child: ElevatedButton(
-                      style: AuthDesign.primaryButtonStyle(),
-                      onPressed: _laden ? null : _inloggen,
-                      child: _laden
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                  strokeWidth: 2, color: Colors.white),
-                            )
-                          : Text(
-                              'Inloggen ›',
-                              style: GoogleFonts.inter(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const OfScheiding(),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Of ga verder met',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  SocialLoginRij(
-                    googleAan: _laden ? null : _meldAanMetGoogle,
-                    facebookAan: _laden ? null : _meldAanMetFacebook,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                const SizedBox(height: 22),
+                Form(
+                  key: _formKey,
+                  child: Column(
                     children: [
-                      Text(
-                        'Nieuw hier? ',
-                        style: GoogleFonts.inter(
-                            fontSize: 13, color: AppColors.textSecondary),
+                      _Veld(
+                        controller: _emailCtrl,
+                        hint: 'E-mailadres',
+                        suffixIcon: CoolIcons.mail,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: AuthDesign.validateEmail,
                       ),
-                      GestureDetector(
-                        onTap: () => context.go('/registreer'),
-                        child: Text(
-                          'Registreer nu',
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
-                          ),
-                        ),
+                      const SizedBox(height: 14),
+                      _WachtwoordVeld(
+                        controller: _wachtwoordCtrl,
+                        hint: 'Wachtwoord',
+                        zichtbaar: _wachtwoordZichtbaar,
+                        onToggle: () => setState(
+                            () => _wachtwoordZichtbaar = !_wachtwoordZichtbaar),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) {
+                            return 'Vul je wachtwoord in';
+                          }
+                          return null;
+                        },
+                        onSubmit: _inloggen,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                ),
+                const SizedBox(height: 10),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final grotereTekst =
+                        MediaQuery.textScalerOf(context).scale(13) > 15;
+                    final onderElkaar =
+                        constraints.maxWidth < 300 || grotereTekst;
+
+                    final onthoudMij = Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          borderRadius: BorderRadius.circular(10),
+                          onTap: () =>
+                              setState(() => _onthoudenMij = !_onthoudenMij),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: Checkbox(
+                                value: _onthoudenMij,
+                                activeColor: AppColors.primary,
+                                checkColor: Colors.white,
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                                visualDensity: VisualDensity.compact,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)),
+                                onChanged: (v) =>
+                                    setState(() => _onthoudenMij = v ?? false),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          'Onthoud mij',
+                          style: GoogleFonts.inter(
+                              fontSize: 13, color: AppColors.textSecondary),
+                        ),
+                      ],
+                    );
+
+                    final wachtwoordVergeten = TextButton(
+                      onPressed: () => context.go('/wachtwoord-vergeten'),
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        'Wachtwoord vergeten?',
+                        textAlign: TextAlign.end,
+                        softWrap: true,
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    );
+
+                    if (onderElkaar) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: onthoudMij,
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: wachtwoordVergeten,
+                          ),
+                        ],
+                      );
+                    }
+
+                    return Row(
+                      children: [
+                        onthoudMij,
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: wachtwoordVergeten,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                if (_fout != null) ...[
+                  const SizedBox(height: 16),
+                  AppErrorBanner(
+                    message: _fout!,
+                    onDismiss: () => setState(() => _fout = null),
+                  ),
                 ],
-              ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  height: 52,
+                  child: ElevatedButton(
+                    style: AuthDesign.primaryButtonStyle(),
+                    onPressed: _laden ? null : _inloggen,
+                    child: _laden
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: Colors.white),
+                          )
+                        : Text(
+                            'Inloggen ›',
+                            style: GoogleFonts.inter(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const OfScheiding(),
+                const SizedBox(height: 16),
+                Text(
+                  'Of ga verder met',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SocialLoginRij(
+                  googleAan: _laden ? null : _meldAanMetGoogle,
+                  facebookAan: _laden ? null : _meldAanMetFacebook,
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Nieuw hier? ',
+                      style: GoogleFonts.inter(
+                          fontSize: 13, color: AppColors.textSecondary),
+                    ),
+                    GestureDetector(
+                      onTap: () => context.go('/registreer'),
+                      child: Text(
+                        'Registreer nu',
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+              ],
             ),
           ),
         ),

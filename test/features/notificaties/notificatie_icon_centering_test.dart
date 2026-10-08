@@ -6,6 +6,7 @@ import 'package:leerling_app/features/notificaties/notificaties_provider.dart';
 import 'package:leerling_app/features/notificaties/notificaties_screen.dart';
 import 'package:leerling_app/models/notificatie.dart';
 import 'package:leerling_app/shared/widgets/app_card.dart';
+import 'package:leerling_app/shared/widgets/isomorphic_icons.dart';
 import 'package:leerling_app/core/constants/cool_icons.dart';
 
 Notificatie _melding({required bool gelezen}) => Notificatie(
@@ -81,8 +82,16 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Nieuwe lesevaluatie'), findsOneWidget);
-      final vak = tester.getRect(find.byType(IconBadge));
-      final icoon = tester.getRect(find.byIcon(CoolIcons.chatDots));
+      // Instructeur-stijl: dock-icoon in een vast 40x40-vak, gecentreerd.
+      final icoon = tester.getRect(find.byType(IsomorphicDockNotificationIcon));
+      final vak = tester.getRect(find
+          .ancestor(
+            of: find.byType(IsomorphicDockNotificationIcon),
+            matching: find.byType(SizedBox),
+          )
+          .first);
+      expect(vak.width, 40);
+      expect(vak.height, 40);
       expect(icoon.center.dx, closeTo(vak.center.dx, 0.5));
       expect(icoon.center.dy, closeTo(vak.center.dy, 0.5));
       expect(tester.takeException(), isNull);

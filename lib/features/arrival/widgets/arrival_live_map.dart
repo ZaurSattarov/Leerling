@@ -161,8 +161,7 @@ class _ArrivalLiveMapState extends State<ArrivalLiveMap> {
       markers.add(Marker(
         markerId: const MarkerId('ophaallocatie'),
         position: pickup,
-        icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueAzure),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
       ));
     }
 
@@ -220,12 +219,12 @@ class ArrivalLiveMapFallback extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.panel,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppColors.successBorder, width: 0.75),
       ),
       alignment: Alignment.center,
-      child: const Padding(
+      child: Padding(
         padding: EdgeInsets.all(16),
         child: Text(
           'Live locatie tijdelijk niet beschikbaar',

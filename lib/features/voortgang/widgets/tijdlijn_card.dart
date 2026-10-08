@@ -9,8 +9,9 @@ import '../../../core/constants/cool_icons.dart';
 const _groen = Color(0xFF16A34A);
 const _oranje = Color(0xFFD97706);
 const _rood = Color(0xFFE11D48);
-const _mutedSurface = AppColors.neutralBg;
-const _softSurface = Color(0xFFF8F8FA);
+get _mutedSurface => AppColors.neutralBg;
+Color get _softSurface =>
+    AppColors.isDarkMode ? const Color(0xFF283244) : const Color(0xFFF8F8FA);
 
 /// Gedeelde "Voortgang tijdlijn"-kaart -- gebruikt zowel op de hoofdpagina
 /// van Voortgang (alleen de laatste les) als op het volledige
@@ -81,7 +82,7 @@ class _TijdlijnRij extends StatelessWidget {
                 Container(
                   width: 28,
                   height: 28,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: AppColors.neutralBg,
                     shape: BoxShape.circle,
                   ),
@@ -114,9 +115,9 @@ class _TijdlijnRij extends StatelessWidget {
                       Expanded(
                         child: Text(
                           _eventLabel,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w700,
                             color: AppColors.textPrimary,
                             height: 1.25,
                           ),
@@ -132,7 +133,7 @@ class _TijdlijnRij extends StatelessWidget {
                   Text(
                     '${item.datumLabel} · ${item.tijdLabel}'
                     '${item.lesType != null ? ' · ${item.lesType}' : ''}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       color: AppColors.textSecondary,
@@ -165,7 +166,7 @@ class _TijdlijnRij extends StatelessWidget {
                   // Geoefende onderwerpen
                   if (item.onderwerpen.isNotEmpty) ...[
                     const SizedBox(height: 10),
-                    const Text(
+                    Text(
                       'Geoefend',
                       style: TextStyle(
                         fontSize: 11,
@@ -176,7 +177,7 @@ class _TijdlijnRij extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       item.onderwerpen.join(', '),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
                         height: 1.35,
@@ -187,7 +188,7 @@ class _TijdlijnRij extends StatelessWidget {
                   // Instructeur feedback
                   if (item.feedback.isNotEmpty) ...[
                     const SizedBox(height: 10),
-                    const Text(
+                    Text(
                       'Opmerking',
                       style: TextStyle(
                         fontSize: 11,
@@ -207,7 +208,7 @@ class _TijdlijnRij extends StatelessWidget {
                       ),
                       child: Text(
                         item.feedback,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,
                           height: 1.4,
@@ -244,7 +245,7 @@ class _TijdlijnScoreRij extends StatelessWidget {
         Expanded(
           child: Text(
             score.naam,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,

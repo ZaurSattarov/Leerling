@@ -20,7 +20,7 @@ class VoortgangTijdlijnScreen extends ConsumerWidget {
     final trendsAsync = ref.watch(voortgangTrendsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           const MainDetailHeader(

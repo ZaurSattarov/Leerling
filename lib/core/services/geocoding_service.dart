@@ -74,7 +74,8 @@ class BackendGeocodingService implements GeocodingService {
       final lng = data['longitude'];
       if (lat is! num || lng is! num) return null;
 
-      return GeocodedLocation(latitude: lat.toDouble(), longitude: lng.toDouble());
+      return GeocodedLocation(
+          latitude: lat.toDouble(), longitude: lng.toDouble());
     } catch (_) {
       // Netwerkfout, FunctionException (4xx/5xx), timeout, onverwachte
       // payload, ... -- nooit een crash, nooit een technische foutmelding:

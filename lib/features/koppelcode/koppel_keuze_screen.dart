@@ -28,15 +28,15 @@ class KoppelKeuzeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       appBar: AppBar(
-        backgroundColor: AppColors.surface,
+        backgroundColor: AppColors.pageBg,
         elevation: 0,
         automaticallyImplyLeading: false,
         actions: [
           TextButton(
             onPressed: () => _uitloggen(context, ref),
-            child: const Text(
+            child: Text(
               'Uitloggen',
               style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
@@ -54,12 +54,12 @@ class KoppelKeuzeScreen extends ConsumerWidget {
                 child: Container(
                   width: 72,
                   height: 72,
-                  child: const Icon(CoolIcons.bookOpen,
+                  child: Icon(CoolIcons.bookOpen,
                       color: AppColors.iconPrimary, size: 36),
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
+              Text(
                 'Koppel je account',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -70,7 +70,7 @@ class KoppelKeuzeScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'Je rijinstructeur heeft een QR-code en een koppelcode voor '
                 'je klaargezet. Kies hieronder hoe je wilt koppelen.',
                 textAlign: TextAlign.center,
@@ -89,7 +89,7 @@ class KoppelKeuzeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               Row(
-                children: const [
+                children: [
                   Expanded(child: Divider(color: AppColors.border)),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12),
@@ -112,7 +112,7 @@ class KoppelKeuzeScreen extends ConsumerWidget {
                 onTap: () => context.push('/koppelcode/handmatig'),
               ),
               const SizedBox(height: 32),
-              const Center(
+              Center(
                 child: Text(
                   'Geen code? Neem contact op met je rijinstructeur.',
                   textAlign: TextAlign.center,
@@ -145,7 +145,7 @@ class _KoppelOptieKaart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.white,
+      color: AppColors.panel,
       borderRadius: BorderRadius.circular(20),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
@@ -175,7 +175,7 @@ class _KoppelOptieKaart extends StatelessWidget {
                       children: [
                         Text(
                           titel,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
                             color: AppColors.textPrimary,
@@ -206,7 +206,7 @@ class _KoppelOptieKaart extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       omschrijving,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12.5,
                         color: AppColors.textSecondary,
                         height: 1.35,
@@ -216,7 +216,7 @@ class _KoppelOptieKaart extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(CoolIcons.chevronRight, color: AppColors.iconPrimary),
+              Icon(CoolIcons.chevronRight, color: AppColors.iconPrimary),
             ],
           ),
         ),

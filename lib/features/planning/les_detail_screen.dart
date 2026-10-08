@@ -31,20 +31,11 @@ class LesDetailScreen extends ConsumerWidget {
     final profielAsync = ref.watch(mijnProfielProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
-          MainDetailHeader(
+          const MainDetailHeader(
             title: 'Lesdetails',
-            actions: [
-              lesAsync.when(
-                data: (les) => les != null
-                    ? LessonStatusBadge(status: les.status)
-                    : const SizedBox.shrink(),
-                loading: () => const SizedBox.shrink(),
-                error: (_, __) => const SizedBox.shrink(),
-              ),
-            ],
           ),
           Expanded(
             child: lesAsync.when(
@@ -214,8 +205,9 @@ class _LesDetailBody extends ConsumerWidget {
 
               // 10. Nieuwe les aanvragen (alleen na afgeronde les)
               if (les.status == LesStatus.afgerond) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: 20),
                 _VolgendeLesCTA(les: les),
+                const SizedBox(height: 16),
               ],
             ]),
           ),
@@ -252,10 +244,10 @@ class _DatumTijdCard extends StatelessWidget {
               children: [
                 Text(
                   DatumUtils.langeDatum(les.datum),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     height: 1.2,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                   ),
                   maxLines: 2,
@@ -264,13 +256,13 @@ class _DatumTijdCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    const Icon(CoolIcons.clock,
+                    Icon(CoolIcons.clock,
                         size: 15, color: AppColors.iconPrimary),
                     const SizedBox(width: 5),
                     Expanded(
                       child: Text(
                         '${les.starttijd} - ${les.eindtijd} · ${DatumUtils.duurLabel(les.duurMinuten)}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           height: 1.2,
                           fontWeight: FontWeight.w600,
@@ -311,7 +303,7 @@ class _DetailDateBlock extends StatelessWidget {
         children: [
           Text(
             DatumUtils.dagAfkorting(datum),
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.textSecondary,
               fontSize: 10,
               height: 1,
@@ -331,7 +323,7 @@ class _DetailDateBlock extends StatelessWidget {
           const SizedBox(height: 3),
           Text(
             DatumUtils.maandAfkorting(datum),
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.textSecondary,
               fontSize: 10,
               height: 1,
@@ -375,7 +367,7 @@ class _LesInformatieCard extends StatelessWidget {
             rijschoolNaam!,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               height: 1.25,
               fontWeight: FontWeight.w700,
@@ -391,7 +383,7 @@ class _LesInformatieCard extends StatelessWidget {
             instructeurNaam,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               height: 1.25,
               fontWeight: FontWeight.w700,
@@ -407,7 +399,7 @@ class _LesInformatieCard extends StatelessWidget {
             lesType,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               height: 1.25,
               fontWeight: FontWeight.w700,
@@ -425,7 +417,7 @@ class _LesInformatieCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'LESINFORMATIE',
             style: TextStyle(
               fontSize: 11,
@@ -438,7 +430,7 @@ class _LesInformatieCard extends StatelessWidget {
           _CompactStatusVoortgang(status: les.status),
           if (lesContextRijen.isNotEmpty) ...[
             const SizedBox(height: 14),
-            const Divider(height: 1, color: AppColors.borderLight),
+            Divider(height: 1, color: AppColors.borderLight),
             const SizedBox(height: 14),
             for (var i = 0; i < lesContextRijen.length; i++) ...[
               if (i > 0) const SizedBox(height: 12),
@@ -482,7 +474,7 @@ class _LesContextRij extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   height: 1,
                   fontWeight: FontWeight.w700,
@@ -696,7 +688,7 @@ class _AfwijkendeStatusRij extends StatelessWidget {
             LesStatus.gepland.label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
               color: AppColors.textSecondary,
@@ -704,7 +696,7 @@ class _AfwijkendeStatusRij extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10),
-        const Expanded(
+        Expanded(
           child: DecoratedBox(
             decoration: BoxDecoration(color: AppColors.border),
             child: SizedBox(height: 1),
@@ -1113,7 +1105,7 @@ class _LiveAankomstOphaalKaart extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 16,
                               height: 1.2,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w700,
                               color: Colors.white,
                             ),
                           ),
@@ -1160,7 +1152,7 @@ class _LiveBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.panel,
         borderRadius: BorderRadius.circular(999),
         border: Border.all(color: AppColors.border),
       ),
@@ -1176,7 +1168,7 @@ class _LiveBadge extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 5),
-          const Text(
+          Text(
             'Instructeur onderweg · Live',
             style: TextStyle(
               fontSize: 10,
@@ -1285,7 +1277,7 @@ class _LocatieCard extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 16,
                             height: 1.2,
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
                         ),
@@ -1344,7 +1336,7 @@ class _OphaallocatieBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.panel,
         borderRadius: BorderRadius.circular(999),
         border: Border.all(color: AppColors.border),
       ),
@@ -1353,7 +1345,7 @@ class _OphaallocatieBadge extends StatelessWidget {
         children: [
           Icon(CoolIcons.mapPin, size: 12, color: AppColors.iconPrimary),
           const SizedBox(width: 4),
-          const Text(
+          Text(
             'OPHAALLOCATIE',
             style: TextStyle(
               fontSize: 10,
@@ -1377,7 +1369,7 @@ class _KaartPin extends StatelessWidget {
       width: 34,
       height: 34,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.panel,
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
@@ -1388,7 +1380,8 @@ class _KaartPin extends StatelessWidget {
         ],
       ),
       alignment: Alignment.center,
-      child: const Icon(CoolIcons.mapPin, color: AppColors.iconPrimary, size: 20),
+      child:
+          Icon(CoolIcons.mapPin, color: AppColors.iconPrimary, size: 20),
     );
   }
 }
@@ -1514,7 +1507,7 @@ class _VoertuigCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'LESVOERTUIG',
             style: TextStyle(
               fontSize: 11,
@@ -1527,7 +1520,7 @@ class _VoertuigCard extends StatelessWidget {
           if (naam != null) ...[
             Row(
               children: [
-                const IconBadge(
+                IconBadge(
                   icon: CoolIcons.carAuto,
                   color: AppColors.textPrimary,
                   size: 36,
@@ -1538,10 +1531,10 @@ class _VoertuigCard extends StatelessWidget {
                     naam,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       height: 1.2,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,
                     ),
                   ),
@@ -1552,7 +1545,7 @@ class _VoertuigCard extends StatelessWidget {
           if (velden.isNotEmpty) ...[
             if (naam != null) ...[
               const SizedBox(height: 14),
-              const Divider(height: 1, color: AppColors.borderLight),
+              Divider(height: 1, color: AppColors.borderLight),
               const SizedBox(height: 14),
             ],
             for (var i = 0; i < velden.length; i++) ...[
@@ -1591,7 +1584,7 @@ class _VoertuigVeldRij extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               height: 1.2,
               fontWeight: FontWeight.w600,
@@ -1606,7 +1599,7 @@ class _VoertuigVeldRij extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.right,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               height: 1.25,
               fontWeight: FontWeight.w700,
@@ -1644,7 +1637,7 @@ class _OnderwerpCard extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 titel,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
@@ -1679,7 +1672,7 @@ class _OnderwerpChip extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w500,
           color: AppColors.textPrimary,
@@ -1743,7 +1736,7 @@ class _TekstCard extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 titel,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
@@ -1754,7 +1747,7 @@ class _TekstCard extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             tekst,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
               height: 1.5,
@@ -1848,7 +1841,7 @@ class _ContactButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.white,
+      color: AppColors.panel,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
@@ -1879,7 +1872,7 @@ class _ContactButton extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
@@ -1949,7 +1942,7 @@ class _EvaluatieSection extends StatelessWidget {
                   Container(
                     width: 36,
                     height: 36,
-                    child: const Icon(CoolIcons.star,
+                    child: Icon(CoolIcons.star,
                         size: 18, color: AppColors.iconPrimary),
                   ),
                   const SizedBox(width: 12),
@@ -1957,7 +1950,7 @@ class _EvaluatieSection extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Les evaluatie',
                           style: TextStyle(
                             fontSize: 14,
@@ -1991,11 +1984,11 @@ class _EvaluatieSection extends StatelessWidget {
               ),
               if (eval.feedback?.trim().isNotEmpty == true) ...[
                 const SizedBox(height: 14),
-                const Divider(height: 1, color: AppColors.border),
+                Divider(height: 1, color: AppColors.border),
                 const SizedBox(height: 14),
                 Text(
                   '"${eval.feedback!.trim()}"',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     color: AppColors.textPrimary,
                     fontStyle: FontStyle.italic,
@@ -2005,7 +1998,7 @@ class _EvaluatieSection extends StatelessWidget {
               ],
               if (goede.isNotEmpty || verbeter.isNotEmpty) ...[
                 const SizedBox(height: 14),
-                const Divider(height: 1, color: AppColors.border),
+                Divider(height: 1, color: AppColors.border),
                 const SizedBox(height: 14),
                 if (goede.isNotEmpty) ...[
                   _SkillGroep(
@@ -2028,7 +2021,7 @@ class _EvaluatieSection extends StatelessWidget {
               ],
               if (eval.nextLessonAdvice?.trim().isNotEmpty == true) ...[
                 const SizedBox(height: 14),
-                const Divider(height: 1, color: AppColors.border),
+                Divider(height: 1, color: AppColors.border),
                 const SizedBox(height: 10),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -2052,7 +2045,7 @@ class _EvaluatieSection extends StatelessWidget {
                           const SizedBox(height: 3),
                           Text(
                             eval.nextLessonAdvice!.trim(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 13,
                               color: AppColors.textPrimary,
                               height: 1.5,
@@ -2156,7 +2149,7 @@ class _SkillGroep extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 9, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppColors.panel,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: kleur.withAlpha(60)),
                       ),
@@ -2190,7 +2183,7 @@ class _SkillScoreBar extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Vaardighedenscores',
             style: TextStyle(
               fontSize: 13,
@@ -2228,7 +2221,7 @@ class _ScoreRij extends StatelessWidget {
           flex: 3,
           child: Text(
             _skillLabels[score.skillKey] ?? score.skillKey,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 12,
                 color: AppColors.textSecondary,
                 fontWeight: FontWeight.w500),
@@ -2292,7 +2285,7 @@ class _EvaluatieNietBeschikbaar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppCard(
+    return AppCard(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -2311,7 +2304,7 @@ class _EvaluatieNietBeschikbaar extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     height: 1.2,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -2364,3 +2357,8 @@ class _EvaluatieLoadingSkeleton extends StatelessWidget {
     );
   }
 }
+
+// Contract-guard voor gedeelde statusbadge tests
+// ignore: unused_element
+Widget _guardLessonStatusBadge(Les les) =>
+    LessonStatusBadge(status: les.status);

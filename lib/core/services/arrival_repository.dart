@@ -52,8 +52,7 @@ abstract class ArrivalRepository {
 
   /// Realtime-subscription op wijzigingen aan de locatie voor deze sessie.
   /// Zelfde principe: callback triggert alleen een verse [fetchLocation].
-  RealtimeChannel subscribeLocation(
-      String sessionId, void Function() onChange);
+  RealtimeChannel subscribeLocation(String sessionId, void Function() onChange);
 
   Future<void> removeChannel(RealtimeChannel channel);
 }

@@ -6,7 +6,10 @@ import '../../core/services/student_service.dart';
 import '../../models/notificatie.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/isomorphic_icons.dart';
+import '../../shared/widgets/klantio_pressable.dart';
 import '../../shared/widgets/main_detail_header.dart';
+import '../../shared/widgets/main_scaffold.dart' show MainShellContentInset;
 import '../../shared/widgets/snackbar.dart';
 import 'notificaties_provider.dart';
 import '../../core/constants/cool_icons.dart';
@@ -19,26 +22,20 @@ class NotificatiesScreen extends ConsumerWidget {
     final notificatiesAsync = ref.watch(notificatiesProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           MainDetailHeader(
-            title: 'Mijn meldingen',
+            title: 'Notificaties',
+            titleHorizontalPadding: 130,
             actions: [
-              notificatiesAsync.when(
-                data: (list) {
-                  final heeftOngelezen = list.any((n) => !n.gelezen);
-                  if (!heeftOngelezen) return const SizedBox.shrink();
-                  return TextButton(
-                    onPressed: () => _markeerAlles(context, ref),
-                    child: const Text('Alles gelezen',
-                        style: TextStyle(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w600)),
-                  );
-                },
-                loading: () => const SizedBox.shrink(),
-                error: (_, __) => const SizedBox.shrink(),
+              AllesGelezenKnop(
+                onPressed: notificatiesAsync.valueOrNull?.any(
+                          (n) => !n.gelezen,
+                        ) ==
+                        true
+                    ? () => _markeerAlles(context, ref)
+                    : null,
               ),
             ],
           ),
@@ -61,26 +58,26 @@ class NotificatiesScreen extends ConsumerWidget {
                       }
                       final groepen = _groepeerNotificaties(notificaties);
                       return SliverPadding(
-                        padding: const EdgeInsets.all(20),
+                        padding: EdgeInsets.fromLTRB(
+                          16,
+                          8,
+                          16,
+                          MainShellContentInset.bottomOf(context),
+                        ),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
-                            for (final groep in groepen) ...[
-                              SectionHeader(title: groep.label),
-                              const SizedBox(height: 12),
-                              for (final notificatie in groep.items)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: _NotificatieCard(
-                                      notificatie: notificatie, ref: ref),
-                                ),
-                              const SizedBox(height: 12),
-                            ],
+                            for (final groep in groepen)
+                              _MeldingSectie(
+                                label: groep.label,
+                                items: groep.items,
+                                ref: ref,
+                              ),
                           ]),
                         ),
                       );
                     },
                     loading: () => SliverPadding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (_, __) => const Padding(
@@ -161,170 +158,195 @@ List<_NotificatieGroep> _groepeerNotificaties(List<Notificatie> notificaties) {
   ];
 }
 
+class _MeldingSectie extends StatelessWidget {
+  final String label;
+  final List<Notificatie> items;
+  final WidgetRef ref;
+
+  const _MeldingSectie({
+    required this.label,
+    required this.items,
+    required this.ref,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(2, 8, 2, 8),
+            child: Row(
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    color: Color(0xFF64748B),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  '${items.length}',
+                  style: const TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          for (final n in items)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: _NotificatieCard(notificatie: n, ref: ref),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 class _NotificatieCard extends ConsumerWidget {
   final Notificatie notificatie;
   final WidgetRef ref;
 
   const _NotificatieCard({required this.notificatie, required this.ref});
 
-  IconData get _icon {
-    switch (notificatie.type) {
-      case 'les':
-      case 'les_reminder':
-      case 'lesson_planned':
-      case 'lesson_changed':
-      case 'lesson_cancelled':
-        return CoolIcons.carAuto;
-      case 'voorbereiding':
-        return CoolIcons.circleCheck;
-      case 'feedback':
-      case 'lesson_feedback':
-        return CoolIcons.chatDots;
-      case 'factuur':
-      case 'invoice_created':
-      case 'invoice_paid':
-        return CoolIcons.fileDocument;
-      case 'package_almost_empty':
-        return CoolIcons.archive;
-      case 'exam_scheduled':
-        return CoolIcons.calendar;
-      case 'exam_result':
-        return CoolIcons.star;
-      case 'voortgang':
-      case 'examenadvies':
-        return CoolIcons.chartBarVertical01;
-      case 'arrival_started':
-      case 'arrival_available':
-        return CoolIcons.navigation;
-      case 'support_antwoord':
-        return CoolIcons.chat;
-      default:
-        return CoolIcons.bell;
-    }
-  }
-
-  Color get _color {
-    switch (notificatie.type) {
-      case 'les':
-      case 'les_reminder':
-      case 'lesson_planned':
-      case 'lesson_changed':
-      case 'lesson_cancelled':
-        return AppColors.infoSolid;
-      case 'voorbereiding':
-        return AppColors.dark3;
-      case 'feedback':
-      case 'lesson_feedback':
-      case 'invoice_paid':
-        return AppColors.successSolid;
-      case 'factuur':
-      case 'invoice_created':
-      case 'package_almost_empty':
-        return AppColors.primary;
-      case 'exam_scheduled':
-        return const Color(0xFF5645D4);
-      case 'exam_result':
-        return AppColors.successSolid;
-      case 'voortgang':
-      case 'examenadvies':
-        return AppColors.successSolid;
-      case 'arrival_started':
-      case 'arrival_available':
-        return AppColors.infoSolid;
-      case 'support_antwoord':
-        return AppColors.primary;
-      default:
-        return AppColors.dark3;
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AppCard(
-      onTap: () async {
-        if (!notificatie.gelezen && !notificatie.isMock) {
-          final profiel = await ref.read(mijnProfielProvider.future);
-          if (profiel != null) {
-            await StudentService.markeerGelezen(notificatie.id, profiel.id);
-            ref.invalidate(notificatiesProvider);
+    final isOngelezen = !notificatie.gelezen;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () async {
+          if (!notificatie.gelezen && !notificatie.isMock) {
+            final profiel = await ref.read(mijnProfielProvider.future);
+            if (profiel != null) {
+              await StudentService.markeerGelezen(notificatie.id, profiel.id);
+              ref.invalidate(notificatiesProvider);
+            }
           }
-        }
-        if (context.mounted) {
-          await openLeerlingNotificatie(notificatie, context: context);
-        }
-      },
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          IconBadge(icon: _icon, color: _color, size: 40),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        notificatie.titel,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: notificatie.gelezen
-                              ? FontWeight.w500
-                              : FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
+          if (context.mounted) {
+            await openLeerlingNotificatie(notificatie, context: context);
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+          decoration: BoxDecoration(
+            color: AppColors.panel,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border, width: 1),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x080F172A),
+                blurRadius: 6,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 3,
+                height: 40,
+                child: Center(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 160),
+                    width: 3,
+                    height: isOngelezen ? 22 : 0,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(999),
                     ),
-                    if (!notificatie.gelezen)
-                      Container(
-                        width: 9,
-                        height: 9,
-                        margin: const EdgeInsets.only(left: 8, top: 4),
-                        decoration: const BoxDecoration(
-                          color: AppColors.primary,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                  ],
-                ),
-                if (notificatie.tekst?.isNotEmpty == true) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    notificatie.tekst!,
-                    style: const TextStyle(
-                        fontSize: 13,
-                        color: AppColors.textSecondary,
-                        height: 1.4),
                   ),
-                ],
-                const SizedBox(height: 6),
-                Row(
+                ),
+              ),
+              const SizedBox(width: 10),
+              SizedBox(
+                width: 40,
+                height: 40,
+                child: Center(
+                  child: IsomorphicDockNotificationIcon(
+                    type: notificatie.type,
+                    title: notificatie.titel,
+                    detail: notificatie.tekst ?? '',
+                    size: 38,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      _tijdGeleden(notificatie.aangemaaktOp),
-                      style: const TextStyle(
-                          fontSize: 11, color: AppColors.textHint),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            notificatie.titel,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 13.5,
+                              height: 1.25,
+                              fontWeight: isOngelezen
+                                  ? FontWeight.w700
+                                  : FontWeight.w600,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          _tijdGeleden(notificatie.aangemaaktOp),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF64748B),
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
                     ),
-                    if (_absoluteDatum(notificatie.aangemaaktOp)
-                        .isNotEmpty) ...[
-                      const SizedBox(width: 6),
-                      const Text('·',
-                          style: TextStyle(
-                              fontSize: 11, color: AppColors.textHint)),
-                      const SizedBox(width: 6),
+                    if (notificatie.tekst?.trim().isNotEmpty == true) ...[
+                      const SizedBox(height: 3),
                       Text(
-                        _absoluteDatum(notificatie.aangemaaktOp),
+                        notificatie.tekst!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                            fontSize: 11, color: AppColors.textHint),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          height: 1.38,
+                          color: Color(0xFF64748B),
+                        ),
                       ),
                     ],
                   ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 6),
+              if (isOngelezen)
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF2563EB),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -333,22 +355,41 @@ class _NotificatieCard extends ConsumerWidget {
     try {
       final dt = DateTime.parse(ts).toLocal();
       final diff = DateTime.now().difference(dt);
-      if (diff.inMinutes < 1) return 'Zojuist';
-      if (diff.inMinutes < 60) return '${diff.inMinutes} min geleden';
-      if (diff.inHours < 24) return '${diff.inHours} uur geleden';
+      if (diff.inMinutes < 1) return 'Nu';
+      if (diff.inMinutes < 60) return '${diff.inMinutes}m';
+      if (diff.inHours < 24) return '${diff.inHours}u';
       if (diff.inDays == 1) return 'Gisteren';
-      return '${diff.inDays} dagen geleden';
+      if (diff.inDays < 7) return '${diff.inDays}d';
+      return '${dt.day}-${dt.month}-${dt.year}';
     } catch (_) {
       return '';
     }
   }
+}
 
-  String _absoluteDatum(String ts) {
-    try {
-      final dt = DateTime.parse(ts).toLocal();
-      return '${dt.day.toString().padLeft(2, '0')}-${dt.month.toString().padLeft(2, '0')}-${dt.year}';
-    } catch (_) {
-      return '';
-    }
+/// Check-all knop rechtsboven in de header (zelfde als Instructeur).
+class AllesGelezenKnop extends StatelessWidget {
+  final VoidCallback? onPressed;
+
+  const AllesGelezenKnop({super.key, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    final actief = onPressed != null;
+    return KlantioPressable(
+      onTap: onPressed,
+      child: SizedBox(
+        width: 40,
+        height: 40,
+        child: Center(
+          child: Icon(
+            CoolIcons.checkAll,
+            size: 22,
+            color:
+                const Color(0xFFF8FAFC).withValues(alpha: actief ? 1.0 : 0.35),
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -16,7 +16,7 @@ class LegalDocumentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           MainDetailHeader(
@@ -32,7 +32,7 @@ class LegalDocumentScreen extends StatelessWidget {
                     children: [
                       Text(
                         document.title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w800,
                           color: AppColors.textPrimary,
@@ -59,16 +59,16 @@ class LegalDocumentScreen extends StatelessWidget {
                       children: [
                         Text(
                           section.title,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w700,
                             color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
                         SelectableText(
                           section.body,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
                             height: 1.5,
                             color: AppColors.textSecondary,
@@ -99,13 +99,13 @@ class _MetaPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.pageBg,
         borderRadius: BorderRadius.circular(999),
         border: Border.all(color: AppColors.border),
       ),
       child: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w700,
           color: AppColors.textSecondary,

@@ -105,7 +105,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       appBar: AppBar(
         title: const Text('Nieuw wachtwoord'),
         leading: IconButton(
@@ -136,7 +136,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(22),
                       decoration: BoxDecoration(
-                        color: AppColors.white,
+                        color: AppColors.panel,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: AppColors.border),
                       ),
@@ -144,7 +144,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text(
+                          Text(
                             'Kies een nieuw wachtwoord',
                             style: TextStyle(
                               fontSize: 22,
@@ -153,7 +153,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          const Text(
+                          Text(
                             'Gebruik minimaal 8 tekens en kies een wachtwoord dat je niet op andere plekken gebruikt.',
                             style: TextStyle(
                               color: AppColors.textSecondary,

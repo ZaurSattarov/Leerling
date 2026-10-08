@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../models/leerling_notificatie_voorkeuren.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/main_detail_header.dart';
+import '../../shared/widgets/framer_toggle.dart';
+import '../../shared/widgets/settings_design.dart';
 import '../../shared/widgets/snackbar.dart';
 import 'notificatie_instellingen_provider.dart';
 import '../../core/constants/cool_icons.dart';
@@ -17,14 +18,12 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
     final state = ref.watch(notificatieInstellingenProvider);
     final bottomPadding = MediaQuery.paddingOf(context).bottom + 112;
 
-    return Scaffold(
-      backgroundColor: AppColors.pageBg,
+    // Opbouw 1-op-1 als de Instructeur-app (SettingsBodyScaffold). Schakelaars
+    // worden direct opgeslagen -- dus geen groen vinkje op dit scherm.
+    return SettingsBodyScaffold(
+      titel: 'Notificaties',
       body: Column(
         children: [
-          const MainDetailHeader(
-            title: 'Notificaties',
-            fallbackRoute: '/profiel',
-          ),
           Expanded(
             child: state.when(
               loading: () => const _LoadingState(),
@@ -43,33 +42,6 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                     key: const Key('notificatie_instellingen_lijst'),
                     padding: EdgeInsets.fromLTRB(20, 20, 20, bottomPadding),
                     children: [
-                      const AppCard(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            IconBadge(
-                              icon: CoolIcons.info,
-                              color: AppColors.iconPrimary,
-                            ),
-                            SizedBox(width: 14),
-                            Expanded(
-                              child: Text(
-                                'Stel per categorie in welke pushmeldingen je wilt ontvangen. '
-                                'Systeemtoestemming voor meldingen op je telefoon stel je in via '
-                                'App-machtigingen — dat is los van deze Klantio-voorkeuren. '
-                                'Berichten onder Altijd actief kun je niet uitzetten.',
-                                style: TextStyle(
-                                  color: AppColors.textSecondary,
-                                  fontSize: 13,
-                                  height: 1.35,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 22),
                       const SectionHeader(title: 'Lessen'),
                       const SizedBox(height: 10),
                       AppCard(
@@ -375,7 +347,7 @@ class _SwitchRow extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
       child: Row(
         children: [
-          IconBadge(icon: icon, color: AppColors.iconPrimary, size: 40),
+          Icon(icon, size: 20),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -383,8 +355,8 @@ class _SwitchRow extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: AppTheme.textPrimary(context),
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                   ),
@@ -392,7 +364,7 @@ class _SwitchRow extends StatelessWidget {
                 const SizedBox(height: 3),
                 Text(
                   subtitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 13,
                     height: 1.25,
@@ -402,7 +374,8 @@ class _SwitchRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Switch(
+          // Zelfde schakelaar als de Instructeur-app (FramerToggle).
+          FramerToggle(
             value: value,
             onChanged: onChanged,
           ),
@@ -429,7 +402,7 @@ class _LockedRow extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       child: Row(
         children: [
-          IconBadge(icon: icon, color: AppColors.iconPrimary, size: 40),
+          Icon(icon, size: 20),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -437,8 +410,8 @@ class _LockedRow extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: AppTheme.textPrimary(context),
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                   ),
@@ -446,7 +419,7 @@ class _LockedRow extends StatelessWidget {
                 const SizedBox(height: 3),
                 Text(
                   subtitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 13,
                     height: 1.25,
@@ -463,7 +436,7 @@ class _LockedRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(999),
               border: Border.all(color: AppColors.border),
             ),
-            child: const Text(
+            child: Text(
               'Altijd actief',
               style: TextStyle(
                 color: AppColors.textSecondary,

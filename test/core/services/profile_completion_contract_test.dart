@@ -56,10 +56,12 @@ void main() {
     expect(source, contains('selected ? Colors.white : AppColors.textPrimary'));
   });
 
-  test('"Profiel afronden" gebruikt het bestaande ElevatedButton-thema', () {
+  test('"Profiel afronden" slaat op via het groene vinkje (Instructeur-stijl)',
+      () {
     final source = File('lib/features/profiel/profiel_afronden_screen.dart')
         .readAsStringSync();
-    expect(source, contains('ElevatedButton('));
+    expect(source, contains('CoolIcons.check'));
+    expect(source, contains('SettingsDesign.switchOn'));
     expect(source, isNot(contains('FilledButton(')));
   });
 

@@ -38,9 +38,9 @@ class _AppCardState extends State<AppCard> {
   Widget build(BuildContext context) {
     final card = Container(
       decoration: BoxDecoration(
-        color: widget.backgroundColor ?? AppColors.white,
+        color: widget.backgroundColor ?? AppTheme.card(context),
         borderRadius: BorderRadius.circular(AppCard.radius),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppTheme.border(context)),
       ),
       child: Padding(
         padding: widget.padding ?? const EdgeInsets.all(16),
@@ -118,10 +118,12 @@ class SectionHeader extends StatelessWidget {
           child: Text(
             title.toUpperCase(),
             // Sectielabel-stijl van de Instructeur-app (_ProfileDesign.sectionTitle).
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF7B8089),
+              color: AppTheme.isDark(context)
+                  ? AppColors.darkTextPrimary
+                  : const Color(0xFF7B8089),
               letterSpacing: 0.5,
             ),
           ),
@@ -134,15 +136,15 @@ class SectionHeader extends StatelessWidget {
               children: [
                 Text(
                   action!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.textPrimary,
+                    color: AppTheme.textPrimary(context),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(width: 2),
-                const Icon(CoolIcons.arrowRightMd,
-                    size: 14, color: AppColors.iconPrimary),
+                Icon(CoolIcons.arrowRightMd,
+                    size: 14, color: AppTheme.textPrimary(context)),
               ],
             ),
           ),
@@ -174,16 +176,16 @@ class EmptyState extends StatelessWidget {
             Container(
               width: 72,
               height: 72,
-              child: Icon(icon, size: 40, color: AppColors.iconPrimary),
+              child: Icon(icon, size: 40),
             ),
             const SizedBox(height: 16),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: AppTheme.textPrimary(context),
               ),
             ),
             if (subtitle != null) ...[
@@ -191,7 +193,7 @@ class EmptyState extends StatelessWidget {
               Text(
                 subtitle!,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 14, color: AppColors.textSecondary),
               ),
             ],
@@ -252,11 +254,17 @@ class _SkeletonBoxState extends State<SkeletonBox>
           gradient: LinearGradient(
             begin: Alignment(_anim.value - 1, 0),
             end: Alignment(_anim.value + 1, 0),
-            colors: const [
-              Color(0xFFEDEDED),
-              Color(0xFFF7F7F7),
-              Color(0xFFEDEDED),
-            ],
+            colors: AppColors.isDarkMode
+                ? const [
+                    Color(0xFF283244),
+                    Color(0xFF334155),
+                    Color(0xFF283244),
+                  ]
+                : const [
+                    Color(0xFFEDEDED),
+                    Color(0xFFF7F7F7),
+                    Color(0xFFEDEDED),
+                  ],
           ),
         ),
       ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
-import '../../../shared/widgets/app_card.dart';
 
 class ProfileInfoRow extends StatelessWidget {
   final IconData icon;
@@ -26,11 +25,14 @@ class ProfileInfoRow extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final compact = constraints.maxWidth < 340;
+        final isDark = AppTheme.isDark(context);
         final textStyle = TextStyle(
           fontSize: 13,
           height: 1.35,
           fontWeight: FontWeight.w700,
-          color: isEmpty ? AppColors.textHint : AppColors.textPrimary,
+          color: isEmpty
+              ? (isDark ? AppColors.darkTextHint : AppColors.textHint)
+              : AppTheme.textPrimary(context),
           fontStyle: isEmpty ? FontStyle.italic : FontStyle.normal,
         );
 
@@ -40,7 +42,15 @@ class ProfileInfoRow extends StatelessWidget {
             crossAxisAlignment:
                 compact ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: [
-              IconBadge(icon: icon, color: iconColor, size: 34),
+              Icon(
+                icon,
+                size: 18,
+                color: iconColor == AppColors.iconPrimary
+                    ? (isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.iconPrimary)
+                    : iconColor,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: compact
@@ -95,10 +105,10 @@ class _Label extends StatelessWidget {
       label,
       softWrap: false,
       overflow: TextOverflow.visible,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 13,
         height: 1.3,
-        color: AppColors.textSecondary,
+        color: AppTheme.textSecondary(context),
       ),
     );
   }

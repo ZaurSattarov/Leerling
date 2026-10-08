@@ -26,7 +26,7 @@ class LesvoorbereidingScreen extends ConsumerWidget {
     final voorbereidingAsync = ref.watch(lesvoorbereidingProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           const MainDetailHeader(
@@ -140,7 +140,7 @@ class _LesvoorbereidingSliver extends StatelessWidget {
               accent: AppColors.textSecondary,
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Op basis van je beoordeling uit deze les',
               style: TextStyle(
                 fontSize: 13,
@@ -252,7 +252,7 @@ class _LesMomentKop extends StatelessWidget {
                 titel,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textSecondary,
@@ -265,9 +265,9 @@ class _LesMomentKop extends StatelessWidget {
                   _lesDatumLabel(datum),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -278,7 +278,7 @@ class _LesMomentKop extends StatelessWidget {
                   tijdRegel,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textSecondary,
@@ -368,7 +368,7 @@ class _SkillLijstKaart extends StatelessWidget {
         children: [
           Text(
             titel.toUpperCase(),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
               color: AppColors.textSecondary,
@@ -378,7 +378,7 @@ class _SkillLijstKaart extends StatelessWidget {
           const SizedBox(height: 10),
           for (var i = 0; i < items.length; i++) ...[
             if (i > 0)
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: Divider(height: 1, color: AppColors.borderLight),
               ),
@@ -389,7 +389,7 @@ class _SkillLijstKaart extends StatelessWidget {
                     items[i].label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
@@ -401,7 +401,7 @@ class _SkillLijstKaart extends StatelessWidget {
                   '${items[i].score}/5',
                   style: TextStyle(
                     fontSize: 13,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     color: kleur,
                   ),
                 ),
@@ -409,7 +409,7 @@ class _SkillLijstKaart extends StatelessWidget {
             ),
           ],
           if (beoordelingLabel != null) ...[
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 10),
               child: Divider(height: 1, color: AppColors.borderLight),
             ),
@@ -436,7 +436,7 @@ class _BeoordelingRij extends StatelessWidget {
             'ALGEMENE BEOORDELING',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
               color: AppColors.textSecondary,
@@ -455,7 +455,7 @@ class _BeoordelingRij extends StatelessWidget {
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w800,
               color: AppColors.textPrimary,

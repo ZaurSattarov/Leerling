@@ -6,9 +6,13 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
+  /// Wordt door de root van de app gezet (zie app.dart) zodat alle
+  /// thema-afhankelijke tokens hieronder de actieve helderheid volgen.
+  static bool isDarkMode = false;
+
   // Brand primary accent
   static const Color primary = Color(0xFFD72F62);
-  static const Color primaryLight = Color(0xFFFFF0F4);
+  static Color get primaryLight => isDarkMode ? const Color(0xFF3A1B28) : const Color(0xFFFFF0F4);
   static const Color primaryDark = Color(0xFFC02856);
   static const Color accent = Color(0xFF1A2332);
 
@@ -22,12 +26,16 @@ class AppColors {
   static const Color splashBackground = Color(0xFF1C2636);
 
   // Light theme backgrounds (Klantio Admin Dashboard 1-op-1: pure white canvas)
-  static const Color surface = Color(0xFFFFFFFF);
-  static const Color pageBg = Color(0xFFF5F5F5);
-  static const Color cardBg = Color(0xFFFFFFFF);
+  static Color get surface => isDarkMode ? darkSurface : const Color(0xFFFFFFFF);
+  static Color get pageBg => isDarkMode ? darkBackground : const Color(0xFFF5F5F5);
+  static Color get cardBg => isDarkMode ? darkCard : const Color(0xFFFFFFFF);
   static const Color white = Color(0xFFFFFFFF);
-  static const Color border = Color(0xFFE5E7EB);
-  static const Color borderLight = Color(0xFFF1F1F1);
+
+  /// Wit vlak (kaart/pil/knop) in licht thema, kaartkleur in donker thema.
+  /// Gebruik [white] alleen voor tekst/iconen op gekleurde vlakken.
+  static Color get panel => isDarkMode ? darkCard : white;
+  static Color get border => isDarkMode ? darkBorder : const Color(0xFFE5E7EB);
+  static Color get borderLight => isDarkMode ? const Color(0xFF263042) : const Color(0xFFF1F1F1);
   static const Color shadow = Color(0x0C0F172A);
 
   // Dark theme tokens (Klantio Admin Dashboard .dark 1-op-1)
@@ -41,39 +49,39 @@ class AppColors {
   static const Color darkTextMuted = Color(0xFF475569);
 
   // Text (Klantio Admin Dashboard 1-op-1)
-  static const Color textPrimary = Color(0xFF111111);
-  static const Color textSecondary = Color(0xFF8A8A8E);
-  static const Color textHint = Color(0xFF9CA3AF);
-  static const Color textMuted = Color(0xFFD1D5DB);
+  static Color get textPrimary => isDarkMode ? darkTextPrimary : const Color(0xFF111111);
+  static Color get textSecondary => isDarkMode ? darkTextSecondary : const Color(0xFF8A8A8E);
+  static Color get textHint => isDarkMode ? darkTextHint : const Color(0xFF9CA3AF);
+  static Color get textMuted => isDarkMode ? darkTextMuted : const Color(0xFFD1D5DB);
 
   // Thema-icoon accent — vervangt rode primary voor icon-only gebruik (#1C2938)
   static const Color iconAccent = Color(0xFF1C2938);
 
   // Icon colors
-  static const Color iconPrimary = Color(0xFF111827);
-  static const Color iconBlue = Color(0xFF111827);
-  static const Color iconGreen = Color(0xFF111827);
-  static const Color iconOrange = Color(0xFF111827);
-  static const Color iconRed = Color(0xFF111827);
-  static const Color iconDark = Color(0xFF111827);
-  static const Color iconTeal = Color(0xFF111827);
-  static const Color iconPurple = Color(0xFF111827);
-  static const Color iconAmber = Color(0xFF111827);
-  static const Color iconSlate = Color(0xFF111827);
+  static Color get iconPrimary => isDarkMode ? const Color(0xFFE2E8F0) : const Color(0xFF111827);
+  static Color get iconBlue => isDarkMode ? const Color(0xFFE2E8F0) : const Color(0xFF111827);
+  static Color get iconGreen => isDarkMode ? const Color(0xFFE2E8F0) : const Color(0xFF111827);
+  static Color get iconOrange => isDarkMode ? const Color(0xFFE2E8F0) : const Color(0xFF111827);
+  static Color get iconRed => isDarkMode ? const Color(0xFFE2E8F0) : const Color(0xFF111827);
+  static Color get iconDark => isDarkMode ? const Color(0xFFE2E8F0) : const Color(0xFF111827);
+  static Color get iconTeal => isDarkMode ? const Color(0xFFE2E8F0) : const Color(0xFF111827);
+  static Color get iconPurple => isDarkMode ? const Color(0xFFE2E8F0) : const Color(0xFF111827);
+  static Color get iconAmber => isDarkMode ? const Color(0xFFE2E8F0) : const Color(0xFF111827);
+  static Color get iconSlate => isDarkMode ? const Color(0xFFE2E8F0) : const Color(0xFF111827);
 
   // Soft icon surfaces for the global SaaS visual language (Admin dashboard title/table bar: #F1F1F1)
-  static const Color iconPrimaryBg = Color(0xFFF1F1F1);
-  static const Color iconBlueBg = Color(0xFFF1F1F1);
-  static const Color iconGreenBg = Color(0xFFF1F1F1);
-  static const Color iconOrangeBg = Color(0xFFF1F1F1);
-  static const Color iconRedBg = Color(0xFFF1F1F1);
-  static const Color iconNeutralBg = Color(0xFFF1F1F1);
+  static Color get iconPrimaryBg => isDarkMode ? const Color(0xFF283244) : const Color(0xFFF1F1F1);
+  static Color get iconBlueBg => isDarkMode ? const Color(0xFF283244) : const Color(0xFFF1F1F1);
+  static Color get iconGreenBg => isDarkMode ? const Color(0xFF283244) : const Color(0xFFF1F1F1);
+  static Color get iconOrangeBg => isDarkMode ? const Color(0xFF283244) : const Color(0xFFF1F1F1);
+  static Color get iconRedBg => isDarkMode ? const Color(0xFF283244) : const Color(0xFFF1F1F1);
+  static Color get iconNeutralBg => isDarkMode ? const Color(0xFF283244) : const Color(0xFFF1F1F1);
 
   // Status: success
   static const Color success = Color(0xFF16A34A);
-  static const Color successBg = Color(0xFFECFDF5);
-  static const Color successText = Color(0xFF065F46);
-  static const Color successBorder = Color(0xFFD1FAE5);
+  static Color get successBg => isDarkMode ? const Color(0xFF12332A) : const Color(0xFFECFDF5);
+  static Color get successText => isDarkMode ? const Color(0xFF6EE7B7) : const Color(0xFF065F46);
+  static Color get successBorder => isDarkMode ? const Color(0xFF1F4D3E) : const Color(0xFFD1FAE5);
 
   static const Color successSolid =
       Color(0xFF16A34A); // alias for badge semantic clarity
@@ -81,27 +89,26 @@ class AppColors {
   // Status: danger
   static const Color dangerSolid =
       Color(0xFFDC2626); // solid red for danger badges/chips
-  static const Color dangerBg = Color(0xFFFEF2F2); // soft crisp danger bg
-  static const Color dangerText =
-      Color(0xFF991B1B); // deep readable crimson text
-  static const Color dangerBorder = Color(0xFFFECACA); // soft elegant border
-  static const Color dangerBorderSubtle = Color(0xFFFEE2E2);
+  static Color get dangerBg => isDarkMode ? const Color(0xFF3A1D22) : const Color(0xFFFEF2F2);
+  static Color get dangerText => isDarkMode ? const Color(0xFFFCA5A5) : const Color(0xFF991B1B);
+  static Color get dangerBorder => isDarkMode ? const Color(0xFF5C2A31) : const Color(0xFFFECACA);
+  static Color get dangerBorderSubtle => isDarkMode ? const Color(0xFF4A2329) : const Color(0xFFFEE2E2);
 
   // Status: warning
-  static const Color warningBg = Color(0xFFFFF9EC);
-  static const Color warningText = Color(0xFF92400E);
-  static const Color warningBorder = Color(0xFFFEF3C7);
+  static Color get warningBg => isDarkMode ? const Color(0xFF3A2E14) : const Color(0xFFFFF9EC);
+  static Color get warningText => isDarkMode ? const Color(0xFFFCD34D) : const Color(0xFF92400E);
+  static Color get warningBorder => isDarkMode ? const Color(0xFF54421A) : const Color(0xFFFEF3C7);
   static const Color warningSolid = Color(0xFFF59E0B);
 
   // Status: info
-  static const Color infoBg = Color(0xFFEFF6FF);
-  static const Color infoText = Color(0xFF1D4ED8);
-  static const Color infoBorder = Color(0xFFDEEBFF);
+  static Color get infoBg => isDarkMode ? const Color(0xFF16294A) : const Color(0xFFEFF6FF);
+  static Color get infoText => isDarkMode ? const Color(0xFF93C5FD) : const Color(0xFF1D4ED8);
+  static Color get infoBorder => isDarkMode ? const Color(0xFF1E3A66) : const Color(0xFFDEEBFF);
   static const Color infoSolid = Color(0xFF3B82F6);
 
   // Status: neutral (Single unified grey title/header bar: #F1F1F1)
-  static const Color neutralBg = Color(0xFFF1F1F1);
-  static const Color neutralText = Color(0xFF6B7280);
+  static Color get neutralBg => isDarkMode ? const Color(0xFF283244) : const Color(0xFFF1F1F1);
+  static Color get neutralText => isDarkMode ? darkTextSecondary : const Color(0xFF6B7280);
 
   // WhatsApp
   static const Color whatsapp = Color(0xFF25D366);

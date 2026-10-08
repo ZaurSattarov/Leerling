@@ -64,6 +64,18 @@ class NativeNavigationController extends StateNotifier<NativeNavigationState> {
 
   /// Standaard verborgen tot Flutter expliciet `setBarVisible(true)` stuurt.
   bool _barVisible = false;
+
+  /// Splash, login en de andere schermen vóór de shell. Zolang dit aan staat
+  /// negeert de balk elk verzoek om zichtbaar te worden (ook `nativeReady`,
+  /// dat anders de laatste zichtbaarheid opnieuw toepast).
+  bool _verborgenTotIngelogd = true;
+
+  void setVerborgenTotIngelogd(bool verborgen) {
+    _verborgenTotIngelogd = verborgen;
+    if (verborgen) {
+      unawaited(setBarVisible(false, force: true));
+    }
+  }
   bool? _lastSentVisible;
 
   String _callerHint() {
@@ -134,6 +146,7 @@ class NativeNavigationController extends StateNotifier<NativeNavigationState> {
   /// Verbergt/toont uitsluitend de native iOS-overlay. Werkt ook vóór
   /// `configure()`: native bewaart de state en past die toe bij attach.
   Future<void> setBarVisible(bool visible, {bool force = false}) async {
+    if (visible && _verborgenTotIngelogd) visible = false;
     final previous = _barVisible;
     final nativeReady = state.available;
     final dedupSkip = !force && _lastSentVisible == visible;

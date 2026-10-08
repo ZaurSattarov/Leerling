@@ -4,7 +4,8 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/examen.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/main_detail_header.dart';
+import '../../shared/widgets/settings_design.dart';
+import '../../shared/widgets/status_pill.dart';
 import 'examens_provider.dart';
 import '../../core/constants/cool_icons.dart';
 
@@ -47,13 +48,11 @@ class _ExamensScreenState extends ConsumerState<ExamensScreen> {
     final examensAsync = ref.watch(examensProvider);
     final highlightId = widget.highlightExamId?.trim();
 
-    return Scaffold(
-      backgroundColor: AppColors.surface,
+    // Vanuit Profiel bereikt: zelfde subscherm-opbouw als de rest van Profiel.
+    return SettingsBodyScaffold(
+      titel: 'Mijn examens',
       body: Column(
         children: [
-          const MainDetailHeader(
-            title: 'Mijn examens',
-          ),
           Expanded(
             child: RefreshIndicator(
               color: AppColors.primary,
@@ -77,47 +76,37 @@ class _ExamensScreenState extends ConsumerState<ExamensScreen> {
                         );
                       }
 
-                      final gepland = examens
-                          .where((e) => e.status == ExamenStatus.gepland)
-                          .toList();
-                      final afgerond = examens
-                          .where((e) => e.status != ExamenStatus.gepland)
-                          .toList();
+                      // Gegroepeerd per type: de typenaam is de sectiekop (zoals
+                      // de rest van Profiel), niet meer een titel in elke kaart.
+                      final groepen = <ExamenType, List<Examen>>{};
+                      for (final e in examens) {
+                        groepen.putIfAbsent(e.type, () => []).add(e);
+                      }
+                      const volgorde = [
+                        ExamenType.praktijk,
+                        ExamenType.theorie,
+                        ExamenType.ttt,
+                      ];
 
                       return SliverPadding(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 40),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
-                            if (gepland.isNotEmpty) ...[
-                              const SectionHeader(title: 'Gepland'),
-                              const SizedBox(height: 12),
-                              ...gepland.map(
-                                (examen) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: _ExamenCard(
-                                    key: _keyForExamen(examen.id),
-                                    examen: examen,
-                                    highlighted: examen.id == highlightId,
+                            for (final type in volgorde)
+                              if (groepen[type]?.isNotEmpty == true) ...[
+                                SettingsKop(type.label),
+                                ...groepen[type]!.map(
+                                  (examen) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: _ExamenCard(
+                                      key: _keyForExamen(examen.id),
+                                      examen: examen,
+                                      highlighted: examen.id == highlightId,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 20),
-                            ],
-                            if (afgerond.isNotEmpty) ...[
-                              const SectionHeader(title: 'Resultaten'),
-                              const SizedBox(height: 12),
-                              ...afgerond.map(
-                                (examen) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: _ExamenCard(
-                                    key: _keyForExamen(examen.id),
-                                    examen: examen,
-                                    highlighted: examen.id == highlightId,
-                                  ),
-                                ),
-                              ),
-                            ],
-                            const SizedBox(height: 16),
+                                const SizedBox(height: 14),
+                              ],
                           ]),
                         ),
                       );
@@ -162,34 +151,12 @@ class _ExamenCard extends StatelessWidget {
     this.highlighted = false,
   });
 
-  Color get _statusColor {
-    switch (examen.status) {
-      case ExamenStatus.geslaagd:
-        return AppColors.successSolid;
-      case ExamenStatus.gezakt:
-        return AppColors.dangerSolid;
-      case ExamenStatus.gepland:
-        return AppColors.infoSolid;
-    }
-  }
-
-  IconData get _typeIcon {
-    switch (examen.type) {
-      case ExamenType.praktijk:
-        return CoolIcons.carAuto;
-      case ExamenType.theorie:
-        return CoolIcons.bookOpen;
-      case ExamenType.ttt:
-        return CoolIcons.fileEdit;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: highlighted
           ? BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.primary, width: 2),
             )
           : null,
@@ -200,81 +167,58 @@ class _ExamenCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                IconBadge(icon: _typeIcon, color: _statusColor, size: 44),
-                const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        examen.type.label,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
                         DatumUtils.langeDatum(examen.datum),
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: AppColors.textSecondary,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                     ],
                   ),
                 ),
-                _StatusBadge(status: examen.status),
+                StatusPill.examen(examen.status),
               ],
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 6),
             Row(
               children: [
                 if (examen.tijdstip?.isNotEmpty == true) ...[
-                  const Icon(CoolIcons.clock,
-                      size: 14, color: AppColors.iconPrimary),
-                  const SizedBox(width: 4),
                   Text(
-                    examen.tijdstip!,
-                    style: const TextStyle(
-                        fontSize: 12, color: AppColors.textSecondary),
+                    // 09:00:00 -> 09:00
+                    examen.tijdstip!.length >= 5
+                        ? examen.tijdstip!.substring(0, 5)
+                        : examen.tijdstip!,
+                    style: TextStyle(
+                        fontSize: 13, color: AppColors.textSecondary),
                   ),
                   const SizedBox(width: 16),
                 ],
                 if (examen.locatie?.isNotEmpty == true) ...[
-                  const Icon(CoolIcons.mapPin,
-                      size: 14, color: AppColors.iconPrimary),
-                  const SizedBox(width: 4),
                   Expanded(
                     child: Text(
                       examen.locatie!,
-                      style: const TextStyle(
-                          fontSize: 12, color: AppColors.textSecondary),
+                      style: TextStyle(
+                          fontSize: 13, color: AppColors.textSecondary),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
               ],
             ),
-            if (examen.pogingNummer > 1) ...[
-              const SizedBox(height: 8),
-              Text(
-                'Poging ${examen.pogingNummer}',
-                style: const TextStyle(fontSize: 12, color: AppColors.textHint),
-              ),
-            ],
             if (examen.foutpunten != null) ...[
               const SizedBox(height: 8),
               Row(
                 children: [
-                  const Icon(CoolIcons.circleWarning,
-                      size: 14, color: AppColors.iconPrimary),
-                  const SizedBox(width: 4),
                   Text(
                     '${examen.foutpunten} foutpunten',
-                    style: const TextStyle(
-                        fontSize: 12, color: AppColors.textSecondary),
+                    style: TextStyle(
+                        fontSize: 13, color: AppColors.textSecondary),
                   ),
                 ],
               ),
@@ -283,7 +227,7 @@ class _ExamenCard extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 examen.notities!,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   height: 1.4,
                   color: AppColors.textSecondary,
@@ -291,54 +235,6 @@ class _ExamenCard extends StatelessWidget {
               ),
             ],
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  final ExamenStatus status;
-
-  const _StatusBadge({required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    final Color backgroundColor;
-    final Color borderColor;
-    final Color textColor;
-    switch (status) {
-      case ExamenStatus.geslaagd:
-        backgroundColor = AppColors.successBg;
-        borderColor = AppColors.successBorder;
-        textColor = AppColors.successSolid;
-        break;
-      case ExamenStatus.gezakt:
-        backgroundColor = AppColors.dangerBg;
-        borderColor = AppColors.dangerBorder;
-        textColor = AppColors.dangerSolid;
-        break;
-      case ExamenStatus.gepland:
-        backgroundColor = AppColors.infoBg;
-        borderColor = AppColors.infoBorder;
-        textColor = AppColors.infoText;
-        break;
-    }
-
-    return Container(
-      constraints: const BoxConstraints(minHeight: 28),
-      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: borderColor, width: 0.75),
-      ),
-      child: Text(
-        status.label,
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          color: textColor,
         ),
       ),
     );

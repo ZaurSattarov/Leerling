@@ -59,8 +59,7 @@ const leerlingOptionalPreferenceToggles = <LeerlingPreferenceToggle>[
     uiLabel: 'Betaling verwerkt',
     dbKey: 'betaling_ontvangen',
     canonicalTypes: ['invoice_paid'],
-    subtitle:
-        'Bevestiging wanneer je betaling is ontvangen en verwerkt.',
+    subtitle: 'Bevestiging wanneer je betaling is ontvangen en verwerkt.',
   ),
   LeerlingPreferenceToggle(
     uiLabel: 'Factuurherinneringen',
@@ -123,8 +122,7 @@ const leerlingSystemLockedNotifications = <LeerlingSystemLockedNotification>[
   LeerlingSystemLockedNotification(
     uiLabel: 'Les start binnenkort',
     canonicalTypes: ['les_reminder'],
-    subtitle:
-        'Korte verplichte melding vlak voor aanvang van je rijles.',
+    subtitle: 'Korte verplichte melding vlak voor aanvang van je rijles.',
   ),
   LeerlingSystemLockedNotification(
     uiLabel: 'Bericht van je instructeur',

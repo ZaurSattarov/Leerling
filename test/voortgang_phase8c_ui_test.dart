@@ -42,7 +42,7 @@ void main() {
       expect(source, isNot(contains('class _CompetentieLegendaItem')));
       expect(source, isNot(contains('_kortLabel')));
       expect(source, isNot(contains('substring')));
-      expect(source, contains("SizedBox(\n          width: 44,"));
+      expect(source, contains('width: 44,'));
     });
 
     test(

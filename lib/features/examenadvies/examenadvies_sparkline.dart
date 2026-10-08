@@ -14,7 +14,7 @@ class ExamenadviesSparkline extends StatelessWidget {
   Widget build(BuildContext context) {
     final chart = data;
     if (chart == null || !chart.heeftChart) {
-      return const Text(
+      return Text(
         'Na meerdere beoordelingen zie je hier je ontwikkeling.',
         style: TextStyle(
           fontSize: 12,

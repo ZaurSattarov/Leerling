@@ -12,20 +12,20 @@ void main() {
   test('beveiligingsheader en passwordkaart gebruiken auth-data', () {
     // Sinds de header-refactor (klantio_header_test.dart) heeft
     // MainDetailHeader geen eyebrowText-parameter meer.
-    expect(source, contains("title: 'Beveiliging'"));
+    // Sinds 2026-10-06: SettingsScaffold (Instructeur-app), e-mailadres als
+    // alleen-lezen veld.
+    expect(source, contains("titel: 'Beveiliging'"));
     expect(source, contains('StudentService.currentUser?.email'));
-    expect(source, contains('maxLines: 2'));
+    expect(source, contains("label: 'E-mailadres'"));
     expect(source, isNot(contains('@gmail.com')));
     expect(source, contains('Wachtwoord herstellen'));
   });
 
-  test('resetknop is compact en responsive', () {
-    expect(source, contains('LayoutBuilder'));
-    expect(source, contains('constraints.maxWidth * 0.62'));
-    expect(source, contains('constraints.maxWidth >= 300'));
-    expect(source, contains('OutlinedButton.icon'));
-    expect(source, contains('minimumSize: const Size(0, 52)'));
-    expect(source, contains('CircularProgressIndicator'));
+  test('wachtwoord herstellen is een tegel met laadstatus (geen losse knop)',
+      () {
+    expect(source, contains("title: 'Wachtwoord herstellen'"));
+    expect(source, contains('Resetlink wordt verstuurd'));
+    expect(source, isNot(contains('OutlinedButton.icon')));
   });
 
   test('resetkaart en resetrij gebruiken dezelfde resetmethode', () {
@@ -33,10 +33,7 @@ void main() {
       RegExp(r'StudentService\.stuurWachtwoordReset').allMatches(source),
       hasLength(1),
     );
-    expect(
-      source,
-      contains('onTap: email == null || _resetLaden ? null : _stuurReset'),
-    );
+    expect(source, contains('email == null || _resetLaden ? null : _stuurReset'));
     expect(source, contains('De resetlink is verstuurd'));
     expect(source, contains('Het versturen van de resetlink is mislukt'));
   });
@@ -54,8 +51,7 @@ void main() {
   test('settingsrij is gedeeld en toegankelijk', () {
     expect(rowSource, contains('class SettingsActionRow'));
     expect(rowSource, contains('Semantics('));
-    expect(rowSource,
-        contains('EdgeInsets.symmetric(horizontal: 18, vertical: 14)'));
-    expect(rowSource, contains('CoolIcons.chevronRight'));
+    // Delegeert aan ProfielMenuTile (zelfde tegel als het Profiel-hoofdscherm).
+    expect(rowSource, contains('ProfielMenuTile('));
   });
 }

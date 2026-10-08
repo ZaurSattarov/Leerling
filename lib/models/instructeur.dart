@@ -27,8 +27,9 @@ class Instructeur {
     this.kvkNummer,
   });
 
-  String get weergaveNaam =>
-      (rijschoolNaam?.isNotEmpty == true) ? rijschoolNaam! : (naam ?? 'Rijschool');
+  String get weergaveNaam => (rijschoolNaam?.isNotEmpty == true)
+      ? rijschoolNaam!
+      : (naam ?? 'Rijschool');
 
   String? get volledigAdres {
     if (adres == null && stad == null) return null;

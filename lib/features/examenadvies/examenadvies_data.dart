@@ -11,8 +11,8 @@ enum VaardigheidTrend { stijgt, stabiel, daalt, onbekend }
 class ExamenadviesRules {
   ExamenadviesRules._();
 
-/// UI-schaal 1–5. Canonical drempels/score staan in Postgres
-/// `klantio_bereken_examenadvies`, niet in deze class.
+  /// UI-schaal 1–5. Canonical drempels/score staan in Postgres
+  /// `klantio_bereken_examenadvies`, niet in deze class.
 
   /// Minimaal aantal categorieën met echte scores.
   static const int minCategorieenVoorAdvies = 3;
@@ -21,8 +21,8 @@ class ExamenadviesRules {
   /// voor het huidige niveau (wel voor trend).
   static const int recencyVenster = 5;
 
-/// Drempels en scoring staan in Postgres `klantio_bereken_examenadvies`.
-/// Dit bestand is alleen DTO/UI.
+  /// Drempels en scoring staan in Postgres `klantio_bereken_examenadvies`.
+  /// Dit bestand is alleen DTO/UI.
   static const int drempelKlaarVoorExamen = 80;
   static const int drempelBijnaKlaar = 65;
   static const int drempelNogOefenen = 40;
@@ -271,8 +271,9 @@ List<CategorieScore> _categorieen(Object? raw) {
     final trendRaw = json['trend'] as String?;
     return CategorieScore(
       naam: (json['naam'] as String?) ?? '',
-      huidigOpVijf:
-          json['huidigOpVijf'] is num ? (json['huidigOpVijf'] as num).toDouble() : null,
+      huidigOpVijf: json['huidigOpVijf'] is num
+          ? (json['huidigOpVijf'] as num).toDouble()
+          : null,
       trend: switch (trendRaw) {
         'stijgt' => VaardigheidTrend.stijgt,
         'daalt' => VaardigheidTrend.daalt,

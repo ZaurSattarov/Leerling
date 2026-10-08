@@ -43,7 +43,7 @@ Future<void> _openFormulier(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 50));
   await tester.pump(const Duration(milliseconds: 50));
 
-  await tester.tap(find.byType(FloatingActionButton));
+  await tester.tap(find.text('Tijd toevoegen'));
   await tester.pumpAndSettle();
 }
 
@@ -65,7 +65,7 @@ void main() {
       expect(find.byType(BottomSheet).evaluate().length, 1);
       expect(find.text('Begin'), findsOneWidget);
       expect(find.text('Einde'), findsOneWidget);
-      expect(find.text('Snelle keuzes'), findsOneWidget);
+      expect(find.text('Snelle keuzes'), findsNothing);
       // Geen spoor meer van het oude tweede-sheet-scherm.
       expect(find.text('Tijd gebruiken'), findsNothing);
       expect(find.text('Tijd kiezen'), findsNothing);
@@ -82,8 +82,7 @@ void main() {
           '10:15');
     });
 
-    testWidgets('Eindtijd (Einde) kan handmatig getypt worden',
-        (tester) async {
+    testWidgets('Eindtijd (Einde) kan handmatig getypt worden', (tester) async {
       await _openFormulier(tester);
 
       await tester.enterText(_tijdVelden().at(1), '18:30');
@@ -91,40 +90,6 @@ void main() {
 
       expect(tester.widget<TextField>(_tijdVelden().at(1)).controller!.text,
           '18:30');
-    });
-  });
-
-  group('Tijdblok toevoegen -- snelle keuzes contextueel', () {
-    testWidgets('snelle keuze past Begin aan wanneer Begin actief is',
-        (tester) async {
-      await _openFormulier(tester);
-      // Begin is standaard het actieve veld.
-
-      await tester.tap(find.text('13:00'));
-      await tester.pump();
-
-      final velden = _tijdVelden();
-      expect(tester.widget<TextField>(velden.at(0)).controller!.text,
-          '13:00');
-      expect(tester.widget<TextField>(velden.at(1)).controller!.text,
-          '12:00');
-    });
-
-    testWidgets('snelle keuze past Einde aan wanneer Einde actief is',
-        (tester) async {
-      await _openFormulier(tester);
-
-      // Tik in het Einde-veld -- FocusNode-listener maakt Einde actief.
-      await tester.tap(_tijdVelden().at(1));
-      await tester.pump();
-      await tester.tap(find.text('17:00'));
-      await tester.pump();
-
-      final velden = _tijdVelden();
-      expect(tester.widget<TextField>(velden.at(0)).controller!.text,
-          '09:00');
-      expect(tester.widget<TextField>(velden.at(1)).controller!.text,
-          '17:00');
     });
   });
 
@@ -147,8 +112,7 @@ void main() {
           final decoration = container.decoration;
           if (decoration is BoxDecoration) {
             expect(decoration.color, isNull,
-                reason:
-                    '$label: geen los Container-vlak met een eigen kleur '
+                reason: '$label: geen los Container-vlak met een eigen kleur '
                     'om het TextField heen (dubbele doos).');
           }
         }
@@ -204,8 +168,7 @@ void main() {
       }
     });
 
-    test('bronbestand gebruikt AppColors.primaryLight nergens als vulling',
-        () {
+    test('bronbestand gebruikt AppColors.primaryLight nergens als vulling', () {
       final bron =
           File('lib/features/beschikbaarheid/beschikbaarheid_screen.dart')
               .readAsStringSync();
@@ -262,15 +225,15 @@ void main() {
       // Begin < Einde, dus de flow komt voorbij de eigen validatie door
       // naar de (in dit testmilieu zonder Supabase onvermijdelijke)
       // netwerkfoutafhandeling.
-      expect(
-          find.text('Gebruik 24-uursnotatie, bijvoorbeeld 09:00.'),
+      expect(find.text('Gebruik 24-uursnotatie, bijvoorbeeld 09:00.'),
           findsNothing);
       expect(find.text('Starttijd moet vóór eindtijd zijn.'), findsNothing);
     });
   });
 
   group('Tijdblok toevoegen -- toetsenbord', () {
-    testWidgets('zichtbaar toetsenbord (viewInsets) veroorzaakt geen '
+    testWidgets(
+        'zichtbaar toetsenbord (viewInsets) veroorzaakt geen '
         'layoutfout', (tester) async {
       await _openFormulier(tester);
 
@@ -286,7 +249,8 @@ void main() {
 
   group('beschikbaarheid_screen.dart -- bestaande Supabase-save ongewijzigd',
       () {
-    test('_opslaanFormulier gebruikt nog steeds dezelfde StudentService-'
+    test(
+        '_opslaanFormulier gebruikt nog steeds dezelfde StudentService-'
         'aanroepen met dag/startTijd/eindTijd/voorkeurScore', () {
       final bron =
           File('lib/features/beschikbaarheid/beschikbaarheid_screen.dart')

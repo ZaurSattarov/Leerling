@@ -18,7 +18,7 @@ class ExamenadviesScreen extends ConsumerWidget {
     final async = ref.watch(examenadviesProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           const MainDetailHeader(
@@ -128,9 +128,9 @@ class _ScoreCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const IconBadge(
+              IconBadge(
                 icon: CoolIcons.bookOpen,
-                color: AppColors.dark3,
+                color: AppColors.iconPrimary,
                 size: 44,
               ),
               const SizedBox(width: 12),
@@ -138,11 +138,11 @@ class _ScoreCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Ben ik klaar voor examen?',
                       style: TextStyle(
                         fontSize: 15,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,
                       ),
                     ),
@@ -190,11 +190,11 @@ class _VaardighedenCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Vaardigheden',
             style: TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
             ),
           ),
@@ -229,9 +229,9 @@ class _CategorieRij extends StatelessWidget {
             Expanded(
               child: Text(
                 categorie.naam,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
               ),
@@ -287,18 +287,18 @@ class _OntwikkelingCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Ontwikkeling',
                       style: TextStyle(
                         fontSize: 14,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 6),
                     Text(
                       tekst,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         height: 1.45,
                         color: AppColors.textSecondary,
@@ -344,16 +344,16 @@ class _TextCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   body,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     height: 1.45,
                     color: AppColors.textSecondary,
@@ -393,9 +393,9 @@ class _BulletListCard extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
               ),
@@ -421,7 +421,7 @@ class _BulletListCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       item,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         height: 1.35,
                         color: AppColors.textSecondary,
@@ -449,11 +449,11 @@ class _BasedOnCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Gebaseerd op',
             style: TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
             ),
           ),

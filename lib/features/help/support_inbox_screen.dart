@@ -22,7 +22,7 @@ class SupportInboxScreen extends ConsumerWidget {
     final threadsAsync = ref.watch(supportThreadsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           MainDetailHeader(
@@ -86,7 +86,7 @@ class SupportInboxScreen extends ConsumerWidget {
                                 size: 56,
                               ),
                               const SizedBox(height: 16),
-                              const Text(
+                              Text(
                                 'Nog geen gesprekken',
                                 style: TextStyle(
                                   fontSize: 16,
@@ -95,7 +95,7 @@ class SupportInboxScreen extends ConsumerWidget {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              const Text(
+                              Text(
                                 'Stuur ons een bericht. We reageren in dit gesprek.',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -204,7 +204,7 @@ class _ThreadTegel extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   '${thread.ticketLabel}${categorieLabel == null ? '' : ' · $categorieLabel'}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textHint,
@@ -217,7 +217,7 @@ class _ThreadTegel extends StatelessWidget {
                       : thread.lastMessagePreview,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     color: AppColors.textSecondary,
                   ),
@@ -229,7 +229,7 @@ class _ThreadTegel extends StatelessWidget {
                     const Spacer(),
                     Text(
                       SupportUi.formatWhen(thread.lastMessageAt),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: AppColors.textHint,
                       ),

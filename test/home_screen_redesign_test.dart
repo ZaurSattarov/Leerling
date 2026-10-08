@@ -21,6 +21,7 @@ import 'package:leerling_app/core/constants/app_colors.dart';
 import 'package:leerling_app/features/home/home_coach_provider.dart';
 import 'package:leerling_app/features/home/home_provider.dart';
 import 'package:leerling_app/features/home/home_screen.dart';
+import 'package:leerling_app/features/home/home_voorbereiding_carousel.dart';
 import 'package:leerling_app/features/lesvoorbereiding/lesvoorbereiding_provider.dart';
 import 'package:leerling_app/models/factuur.dart';
 import 'package:leerling_app/models/leerling_profiel.dart';
@@ -162,7 +163,8 @@ void main() {
   }
 
   group('HomeScreen -- widget-gedrag via ProviderScope-overrides', () {
-    testWidgets('toont kerncijfers: lessen, voortgang% en aantal facturen',
+    testWidgets(
+        'toont de examenvoorbereiding-carousel i.p.v. losse kerncijfer-tegels',
         (tester) async {
       gebruikRuimeViewport(tester);
       await tester.pumpWidget(_bouwHomeScherm(
@@ -174,14 +176,15 @@ void main() {
           recenteNotificaties: const [],
         ),
       ));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.text('13/20'), findsOneWidget);
-      // 65% komt bewust 2x voor: de kerncijfer-tegel én de Mijn
-      // voortgang-kaart tonen dezelfde afgeleide waarde (geen dubbele
-      // databron, gewoon dezelfde bestaande voortgangPercent op 2 plekken).
-      expect(find.text('65%'), findsNWidgets(2));
-      expect(find.text('1'), findsOneWidget); // Facturen-tegel
+      expect(find.byType(HomeVoorbereidingCarousel), findsOneWidget);
+      expect(find.text('BANDEN EN WIELEN'), findsOneWidget);
+      // De oude kerncijfer-tegels zijn weg; 65% staat alleen nog in de
+      // Mijn voortgang-kaart.
+      expect(find.text('13/20'), findsNothing);
+      expect(find.text('65%'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
       expect(tester.takeException(), isNull);
     });
 
@@ -233,7 +236,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Examenadvies'), findsOneWidget);
-      expect(find.text('Bijna klaar'), findsOneWidget);
+      expect(find.text('BIJNA KLAAR'), findsOneWidget);
       expect(find.text('79%'), findsOneWidget);
 
       await tester.tap(find.text('Examenadvies'));
@@ -266,7 +269,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('27%'), findsOneWidget);
-      expect(find.text('Nog niet klaar'), findsOneWidget);
+      expect(find.text('NOG NIET KLAAR'), findsOneWidget);
       expect(find.text('Examenadvies'), findsOneWidget);
       expect(find.text('Voertuigbeheersing'), findsOneWidget);
 
@@ -294,7 +297,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.text('Nog onvoldoende data'), findsOneWidget);
+      expect(find.text('NOG ONVOLDOENDE DATA'), findsOneWidget);
       expect(find.text('—'), findsOneWidget);
       expect(find.text('27%'), findsNothing);
 

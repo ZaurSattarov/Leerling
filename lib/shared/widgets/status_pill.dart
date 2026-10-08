@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/factuur_status.dart';
 import '../../models/les.dart';
+import '../../models/examen.dart';
 import '../../models/factuur.dart';
 import 'status_badge.dart';
 
@@ -45,6 +46,28 @@ class StatusPill extends StatelessWidget {
       LesStatus.geen_toon => const StatusPill(
           label: 'No show',
           backgroundColor: Color(0xFF991B1B),
+          textColor: Colors.white,
+        ),
+    };
+  }
+
+  /// Zelfde examenstatus-kleuren als de Instructeur-app (StatusPill.examen):
+  /// gepland neutraal grijs, geslaagd groen, gezakt rood.
+  factory StatusPill.examen(ExamenStatus status) {
+    return switch (status) {
+      ExamenStatus.gepland => StatusPill(
+          label: 'Gepland',
+          backgroundColor: AppColors.neutralBg,
+          textColor: AppColors.neutralText,
+        ),
+      ExamenStatus.geslaagd => const StatusPill(
+          label: 'Geslaagd',
+          backgroundColor: AppColors.success,
+          textColor: Colors.white,
+        ),
+      ExamenStatus.gezakt => const StatusPill(
+          label: 'Gezakt',
+          backgroundColor: Color(0xFFE11D48),
           textColor: Colors.white,
         ),
     };

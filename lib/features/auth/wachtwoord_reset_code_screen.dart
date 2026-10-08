@@ -183,7 +183,7 @@ class _WachtwoordResetCodeScreenState extends State<WachtwoordResetCodeScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.surface,
+        backgroundColor: AppColors.pageBg,
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(CoolIcons.chevronLeft),
@@ -384,7 +384,7 @@ class _OtpVeldState extends State<_OtpVeld> {
         duration: const Duration(milliseconds: 150),
         curve: Curves.easeOut,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.panel,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: heeftFocus ? AuthDesign.focusBorder : AuthDesign.border,

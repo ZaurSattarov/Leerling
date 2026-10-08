@@ -42,14 +42,14 @@ class AccountGeblokkeerdScreen extends StatelessWidget {
                 Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text(
+                Text(
                   'Neem contact op met Klantio Support.',
                   textAlign: TextAlign.center,
                   style:

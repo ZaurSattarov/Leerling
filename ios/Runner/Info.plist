@@ -29,6 +29,11 @@
 
 	<!-- Camera: uitsluitend voor de QR-scanner op /koppelcode/scan.
 	     Wordt door iOS opgevraagd zodra de scanner-camera wordt gestart. -->
+	<!-- De app vraagt zelf geen locatie op (myLocationEnabled staat uit); de
+	     Google Maps-SDK bevat echter locatiecode, waardoor Apple deze tekst
+	     verplicht stelt. -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Klantio gebruikt je locatie alleen om de kaart van Live Aankomst en de route naar je les weer te geven.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Klantio gebruikt je camera om de QR-code te scannen die je van je rijinstructeur hebt gekregen, zodat je account gekoppeld kan worden aan de juiste rijschool.</string>
 
@@ -60,6 +65,13 @@
 		<string>fbapi</string>
 		<string>fbauth2</string>
 		<string>fb-messenger-share-api</string>
+		<!-- Bellen, mailen, WhatsApp en links openen (canLaunchUrl) -->
+		<string>tel</string>
+		<string>mailto</string>
+		<string>sms</string>
+		<string>whatsapp</string>
+		<string>https</string>
+		<string>http</string>
 	</array>
 
 	<key>UIApplicationSceneManifest</key>
@@ -110,14 +122,6 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>leerlingplanner</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb$(FACEBOOK_APP_ID)</string>
 			</array>
 		</dict>
 	</array>

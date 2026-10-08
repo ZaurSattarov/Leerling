@@ -104,8 +104,7 @@ class LespakketDetail {
     return bijnaOp ? 'Bijna op' : 'Actief';
   }
 
-  String get prijsLabel =>
-      pakketprijs != null ? _euroLabel(pakketprijs!) : '';
+  String get prijsLabel => pakketprijs != null ? _euroLabel(pakketprijs!) : '';
 
   static String _euroLabel(double value) {
     final rounded = value.round();
@@ -217,8 +216,7 @@ class LespakketDetail {
     // weergave in de Instructeur-app).
     final gevolgdeLessen =
         profiel.lessenGevolgd < 0 ? 0 : profiel.lessenGevolgd;
-    final totaalLessen =
-        profiel.lessenTotaal < 0 ? 0 : profiel.lessenTotaal;
+    final totaalLessen = profiel.lessenTotaal < 0 ? 0 : profiel.lessenTotaal;
     final resterendeLessen = (totaalLessen - gevolgdeLessen).clamp(0, 9999);
 
     // ── Minuten-modus: pakket_minuten_verbruikt wordt server-side exact

@@ -28,7 +28,8 @@ const pushTapMaxFrameRetries = 60;
 /// tray-notification als het opgegeven kanaal niet bestaat. Native kant (Application/
 /// MainActivity/ContentProvider) roept dit al aan; deze call is een extra, veilige
 /// no-op-bij-falen safeguard vanaf de Dart-kant.
-const _notificationsChannel = MethodChannel('com.klantio.leerling/notifications');
+const _notificationsChannel =
+    MethodChannel('com.klantio.leerling/notifications');
 
 abstract class PushService {
   static bool _listenersAttached = false;

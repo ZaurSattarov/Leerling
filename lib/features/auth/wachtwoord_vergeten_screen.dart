@@ -75,7 +75,7 @@ class _WachtwoordVergetenScreenState extends State<WachtwoordVergetenScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(CoolIcons.chevronLeft),
@@ -104,7 +104,7 @@ class _WachtwoordVergetenScreenState extends State<WachtwoordVergetenScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       'Wachtwoord vergeten?',
                       style: TextStyle(
                         fontSize: 24,
@@ -113,7 +113,7 @@ class _WachtwoordVergetenScreenState extends State<WachtwoordVergetenScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       'Voer je e-mailadres in en we sturen je een herstelcode.',
                       style: TextStyle(
                         color: AppColors.textSecondary,

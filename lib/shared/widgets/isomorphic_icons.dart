@@ -83,13 +83,16 @@ class IsomorphicDuotoneNotificationIcon extends StatelessWidget {
   }) {
     final lower = '$type $title $detail'.toLowerCase();
 
-    if (lower.contains('annul') || lower.contains('geannuleerd')) {
+    if (lower.contains('annul') ||
+        lower.contains('cancel') ||
+        lower.contains('geannuleerd')) {
       return IsomorphicDuotoneNotificationIcon(
         type: IsomorphicNotificationType.geannuleerd,
         size: size,
       );
     }
     if (lower.contains('factuur') ||
+        lower.contains('invoice') ||
         lower.contains('betaald') ||
         lower.contains('betaling')) {
       return IsomorphicDuotoneNotificationIcon(
@@ -98,6 +101,7 @@ class IsomorphicDuotoneNotificationIcon extends StatelessWidget {
       );
     }
     if (lower.contains('les') ||
+        lower.contains('lesson') ||
         lower.contains('agenda') ||
         lower.contains('planning') ||
         lower.contains('verzet') ||
@@ -113,7 +117,9 @@ class IsomorphicDuotoneNotificationIcon extends StatelessWidget {
         size: size,
       );
     }
-    if (lower.contains('examen') || lower.contains('theorie')) {
+    if (lower.contains('examen') ||
+        lower.contains('exam_') ||
+        lower.contains('theorie')) {
       return IsomorphicDuotoneNotificationIcon(
         type: IsomorphicNotificationType.examen,
         size: size,
@@ -222,7 +228,9 @@ class IsomorphicDockNotificationIcon extends StatelessWidget {
 
   String get assetPath {
     final lower = '$type $title $detail'.toLowerCase();
-    if (lower.contains('annul') || lower.contains('geannuleerd')) {
+    if (lower.contains('annul') ||
+        lower.contains('cancel') ||
+        lower.contains('geannuleerd')) {
       return 'assets/images/dock/evaluaties-dock.png';
     }
     if (lower.contains('factuur') ||
@@ -250,7 +258,7 @@ class IsomorphicDockNotificationIcon extends StatelessWidget {
     if (lower.contains('voertuig') || lower.contains('auto')) {
       return 'assets/images/dock/voertuigen-dock.png';
     }
-    if (lower.contains('pakket')) {
+    if (lower.contains('pakket') || lower.contains('package')) {
       return 'assets/images/dock/lespakketten-dock.png';
     }
     if (lower.contains('rit')) {

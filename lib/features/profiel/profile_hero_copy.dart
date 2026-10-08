@@ -30,8 +30,7 @@ LearnerProfileHeroCopy buildLearnerProfileHeroCopy({
   required Instructeur? instructeur,
 }) {
   final name = profiel?.volledigeNaam.trim();
-  final primary =
-      (name != null && name.isNotEmpty) ? name : 'Mijn profiel';
+  final primary = (name != null && name.isNotEmpty) ? name : 'Mijn profiel';
 
   final school = instructeur?.rijschoolNaam?.trim();
   final instructorName = instructeur?.naam?.trim();

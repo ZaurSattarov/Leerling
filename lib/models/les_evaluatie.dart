@@ -53,8 +53,9 @@ class LesEvaluatie {
       interventionCount: json['intervention_count'] as String? ?? 'geen',
       nextLessonAdvice: json['next_lesson_advice'] as String?,
       createdAt: json['created_at'] as String? ?? '',
-      skillScores:
-          scoresRaw.map((s) => LesSkillScore.fromJson(s as Map<String, dynamic>)).toList(),
+      skillScores: scoresRaw
+          .map((s) => LesSkillScore.fromJson(s as Map<String, dynamic>))
+          .toList(),
     );
   }
 

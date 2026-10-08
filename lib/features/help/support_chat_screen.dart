@@ -58,7 +58,7 @@ class _SupportChatScreenState extends ConsumerState<SupportChatScreen> {
     final activeAsync = ref.watch(activeSupportThreadProvider);
     return activeAsync.when(
       loading: () => Scaffold(
-        backgroundColor: AppColors.surface,
+        backgroundColor: AppColors.pageBg,
         body: Column(
           children: [
             const MainDetailHeader(title: 'Support', fallbackRoute: '/home'),
@@ -78,7 +78,7 @@ class _SupportChatScreenState extends ConsumerState<SupportChatScreen> {
         ),
       ),
       error: (e, _) => Scaffold(
-        backgroundColor: AppColors.surface,
+        backgroundColor: AppColors.pageBg,
         body: Column(
           children: [
             const MainDetailHeader(title: 'Support', fallbackRoute: '/home'),
@@ -126,7 +126,7 @@ class _ClosedView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           MainDetailHeader(
@@ -153,7 +153,7 @@ class _ClosedView extends StatelessWidget {
                       size: 56,
                     ),
                     const SizedBox(height: 20),
-                    const Text(
+                    Text(
                       'Je vorige gesprek is afgesloten.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -163,7 +163,7 @@ class _ClosedView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       'Heb je nog hulp nodig? Start een nieuw gesprek.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -238,7 +238,7 @@ class _EmptyComposerViewState extends ConsumerState<_EmptyComposerView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           MainDetailHeader(
@@ -446,7 +446,7 @@ class _ThreadViewState extends ConsumerState<_ThreadView> {
     final messagesAsync = ref.watch(supportMessagesProvider(widget.threadId));
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           threadAsync.when(
@@ -480,7 +480,7 @@ class _ThreadViewState extends ConsumerState<_ThreadView> {
                 children: [
                   Text(
                     threadAsync.requireValue.ticketLabel,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textSecondary,
@@ -509,7 +509,7 @@ class _ThreadViewState extends ConsumerState<_ThreadView> {
                           }
                         }
                       },
-                      child: const Text(
+                      child: Text(
                         'E-mail opnieuw',
                         style: TextStyle(color: AppColors.textPrimary),
                       ),
@@ -527,7 +527,7 @@ class _ThreadViewState extends ConsumerState<_ThreadView> {
                   SkeletonCard(),
                 ],
               ),
-              error: (_, __) => const Padding(
+              error: (_, __) => Padding(
                 padding: EdgeInsets.all(20),
                 child: Text(
                   'Berichten konden niet worden geladen.',
@@ -557,7 +557,7 @@ class _ThreadViewState extends ConsumerState<_ThreadView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Text(
+                        Text(
                           'Dit gesprek is afgerond. Open een nieuw gesprek als je opnieuw hulp nodig hebt.',
                           style: TextStyle(
                               fontSize: 12.5, color: AppColors.textSecondary),
@@ -624,7 +624,7 @@ Future<void> _showAttachmentSheet(
 ) async {
   await showModalBottomSheet<void>(
     context: context,
-    backgroundColor: Colors.white,
+    backgroundColor: AppColors.panel,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
@@ -635,7 +635,8 @@ Future<void> _showAttachmentSheet(
           children: [
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(CoolIcons.image02, color: AppColors.iconPrimary),
+              leading:
+                  Icon(CoolIcons.image02, color: AppColors.iconPrimary),
               title: const Text('Maak een foto'),
               onTap: () async {
                 Navigator.of(sheetContext).pop();
@@ -644,7 +645,8 @@ Future<void> _showAttachmentSheet(
               },
             ),
             ListTile(
-              leading: const Icon(CoolIcons.image01, color: AppColors.iconPrimary),
+              leading:
+                  Icon(CoolIcons.image01, color: AppColors.iconPrimary),
               title: const Text('Kies uit galerij'),
               onTap: () async {
                 Navigator.of(sheetContext).pop();
@@ -679,7 +681,7 @@ class _Composer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
-      color: AppColors.surface,
+      color: AppColors.pageBg,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -707,7 +709,7 @@ class _Composer extends StatelessWidget {
                         onTap: () => onPickedChanged(null),
                         child: Container(
                           padding: const EdgeInsets.all(3),
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.textPrimary,
                             shape: BoxShape.circle,
                           ),
@@ -757,21 +759,27 @@ class _Composer extends StatelessWidget {
                   maxLines: 5,
                   enabled: !bezig,
                   textCapitalization: TextCapitalization.sentences,
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textPrimary),
                   decoration: InputDecoration(
+                    hintStyle: TextStyle(
+                        fontSize: 15, color: AppColors.textHint),
                     hintText: 'Typ een bericht',
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: AppColors.panel,
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 14,
                       vertical: 12,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(color: AppColors.border),
+                      borderSide: BorderSide(color: AppColors.border),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(color: AppColors.border),
+                      borderSide: BorderSide(color: AppColors.border),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -949,7 +957,8 @@ class _AttachmentPreview extends StatelessWidget {
                 width: 180,
                 height: 180,
                 color: SupportUi.iconBg,
-                child: const Icon(CoolIcons.image01, color: AppColors.iconPrimary),
+                child:
+                    Icon(CoolIcons.image01, color: AppColors.iconPrimary),
               ),
             ),
           ),

@@ -34,19 +34,12 @@ class FactuurDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final factuurAsync = ref.watch(factuurDetailProvider(id));
 
-    final factuur = factuurAsync.valueOrNull;
-
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          MainDetailHeader(
-            title: 'Factuur',
-            actions: [
-              if (factuur != null) StatusPill.factuur(factuur.status),
-            ],
-          ),
+          const MainDetailHeader(title: 'Factuur'),
           Expanded(
             child: factuurAsync.when(
               data: (f) {
@@ -179,7 +172,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
               ),
               child: Row(
                 children: [
-                  const SizedBox(
+                  SizedBox(
                     width: 16,
                     height: 16,
                     child: CircularProgressIndicator(
@@ -219,7 +212,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.panel,
               borderRadius: BorderRadius.circular(18),
               border: Border.all(color: AppColors.border, width: 1),
             ),
@@ -228,13 +221,13 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
               children: [
                 Row(
                   children: [
-                    const Icon(CoolIcons.fileDocument,
+                    Icon(CoolIcons.fileDocument,
                         color: AppColors.iconPrimary, size: 16),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         factuur.factuurnummer,
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: AppColors.textSecondary, fontSize: 13),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -246,7 +239,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
                 const SizedBox(height: 14),
                 Text(
                   factuur.bedragEuro,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 34,
                     fontWeight: FontWeight.w900,
@@ -257,7 +250,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
                   factuur.beschrijving.isNotEmpty
                       ? factuur.beschrijving
                       : 'Geen omschrijving toegevoegd',
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: AppColors.textSecondary, fontSize: 14),
                 ),
               ],
@@ -334,7 +327,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Omschrijving',
                   style: TextStyle(
                     fontSize: 14,
@@ -347,7 +340,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
                   factuur.beschrijving.isNotEmpty
                       ? factuur.beschrijving
                       : 'Geen omschrijving toegevoegd.',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
                     height: 1.45,
@@ -357,7 +350,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
                   const Divider(height: 24),
                   Text(
                     factuur.notities!,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,
                       height: 1.45,
@@ -407,7 +400,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
             icon: const Icon(CoolIcons.show, size: 18),
             label: const Text('Factuur bekijken'),
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.dark,
+              foregroundColor: AppColors.textPrimary,
               disabledForegroundColor: AppColors.textHint,
               minimumSize: const Size.fromHeight(52),
             ),
@@ -416,18 +409,18 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
           OutlinedButton.icon(
             onPressed: _pdfBezig ? null : () => _downloadFactuurPdf(context),
             icon: _pdfBezig
-                ? const SizedBox(
+                ? SizedBox(
                     width: 18,
                     height: 18,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: AppColors.dark,
+                      color: AppColors.textPrimary,
                     ),
                   )
                 : const Icon(CoolIcons.download, size: 18),
             label: const Text('Download PDF'),
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.dark,
+              foregroundColor: AppColors.textPrimary,
               disabledForegroundColor: AppColors.textHint,
               minimumSize: const Size.fromHeight(52),
             ),
@@ -571,7 +564,7 @@ class _ActionHint extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8),
       child: Text(
         text,
-        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+        style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
       ),
     );
   }
@@ -592,7 +585,7 @@ class _DetailRow extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               color: AppColors.textSecondary,
             ),

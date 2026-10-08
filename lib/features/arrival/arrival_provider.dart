@@ -103,7 +103,8 @@ class ArrivalController extends StateNotifier<ArrivalState> {
     await _refreshSession(lessonId, isEersteLaad: true);
   }
 
-  Future<void> _refreshSession(String lessonId, {bool isEersteLaad = false}) async {
+  Future<void> _refreshSession(String lessonId,
+      {bool isEersteLaad = false}) async {
     if (_disposed || _lessonId != lessonId) return;
     ArrivalSession? session;
     try {
@@ -155,7 +156,8 @@ class ArrivalController extends StateNotifier<ArrivalState> {
     }
     if (_disposed || state.session?.id != sessionId) return;
 
-    _setState(state.copyWith(location: location, clearLocation: location == null));
+    _setState(
+        state.copyWith(location: location, clearLocation: location == null));
 
     if (location == null) {
       _startPollingIfNeeded(sessionId);

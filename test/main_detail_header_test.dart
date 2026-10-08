@@ -277,7 +277,8 @@ void main() {
       'Lesvoorbereiding':
           'lib/features/lesvoorbereiding/lesvoorbereiding_screen.dart',
       'Meldingen': 'lib/features/notificaties/notificaties_screen.dart',
-      'Mijn tijden': 'lib/features/beschikbaarheid/beschikbaarheid_screen.dart',
+      // 'Mijn tijden' is bewust een compacte bottom sheet (geen
+      // volledig detailscherm met header) en staat daarom niet in deze lijst.
     };
 
     for (final entry in schermen.entries) {

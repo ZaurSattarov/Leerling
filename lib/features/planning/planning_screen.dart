@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/les.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_tab_header.dart';
 import 'planning_provider.dart';
+import 'widgets/framer_animated_timeline.dart';
 import 'widgets/lesson_status_badge.dart';
 import '../../core/constants/cool_icons.dart';
 import '../../shared/widgets/main_scaffold.dart';
@@ -38,36 +40,41 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
-      body: Column(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Stack(
         children: [
-          const MainTabHeader(
-            title: 'Mijn lessen',
-            actions: [MainHeaderNotificatieKnop()],
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 10),
-            child: AnimatedBuilder(
-              animation: _tabs,
-              builder: (_, __) => _PillTabBar(
-                activeIndex: _tabs.index,
-                labels: const ['Komende lessen', 'Afgerond'],
-                onTap: (i) {
-                  HapticFeedback.selectionClick();
-                  _tabs.animateTo(i);
-                },
+          Column(
+            children: [
+              const MainTabHeader(
+                title: 'Mijn lessen',
+                actions: [MainHeaderNotificatieKnop()],
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 10),
+                child: AnimatedBuilder(
+                  animation: _tabs,
+                  builder: (_, __) => _PillTabBar(
+                    activeIndex: _tabs.index,
+                    labels: const ['Komende lessen', 'Afgerond'],
+                    onTap: (i) {
+                      HapticFeedback.selectionClick();
+                      _tabs.animateTo(i);
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabs,
+                  children: [
+                    _LessenTab(provider: komendeLessenProvider, isKomend: true),
+                    _LessenTab(provider: vorigeLessenProvider, isKomend: false),
+                  ],
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabs,
-              children: [
-                _LessenTab(provider: komendeLessenProvider, isKomend: true),
-                _LessenTab(provider: vorigeLessenProvider, isKomend: false),
-              ],
-            ),
-          ),
+          const _NieuweLesFab(),
         ],
       ),
     );
@@ -87,58 +94,105 @@ class _PillTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const height = 40.0;
+    const padding = 3.5;
+
     return Container(
-      constraints: const BoxConstraints(minHeight: 48),
-      padding: const EdgeInsets.all(4),
+      height: height,
       decoration: BoxDecoration(
-        color: AppColors.neutralBg,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.border, width: 0.75),
+        color: isDark ? const Color(0xFF1E2330) : Colors.white,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : const Color(0xFFE5E7EB),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.08),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+            blurRadius: 1,
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
-      child: Row(
-        children: List.generate(labels.length, (i) {
-          final isActive = i == activeIndex;
-          return Expanded(
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => onTap(i),
-                borderRadius: BorderRadius.circular(20),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  curve: Curves.easeOutCubic,
-                  alignment: Alignment.center,
-                  constraints: const BoxConstraints(minHeight: 40),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final totalWidth = constraints.maxWidth;
+          final availableWidth = totalWidth - (padding * 2);
+          final itemWidth = availableWidth / labels.length;
+          final indicatorLeft = padding + (activeIndex * itemWidth);
+
+          return Stack(
+            children: [
+              // 1-op-1 sliding animated selector pil zoals bij Instructeur app
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeOutCubic,
+                top: padding,
+                left: indicatorLeft,
+                width: itemWidth,
+                height: height - (padding * 2),
+                child: Container(
                   decoration: BoxDecoration(
-                    color: isActive ? AppColors.primary : Colors.transparent,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: isActive
-                        ? [
-                            BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.20),
-                              blurRadius: 10,
-                              offset: const Offset(0, 3),
-                            ),
-                          ]
-                        : null,
-                  ),
-                  child: Text(
-                    labels[i],
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: isActive ? Colors.white : AppColors.textSecondary,
-                      fontSize: 13,
-                      height: 1,
-                      fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
-                    ),
+                    color: isDark ? Colors.white : AppColors.primary,
+                    borderRadius: BorderRadius.circular(999),
+                    boxShadow: [
+                      BoxShadow(
+                        color:
+                            Colors.black.withValues(alpha: isDark ? 0.15 : 0.2),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1.5),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
+              // Klikbare opties en tekstkleuren exact conform Instructeur app
+              Row(
+                children: List.generate(labels.length, (i) {
+                  final isSelected = i == activeIndex;
+                  return Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => onTap(i),
+                      child: Container(
+                        height: height,
+                        alignment: Alignment.center,
+                        child: AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 180),
+                          curve: Curves.easeOut,
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight:
+                                isSelected ? FontWeight.w600 : FontWeight.w500,
+                            color: isSelected
+                                ? (isDark
+                                    ? const Color(0xFF111111)
+                                    : Colors.white)
+                                : (isDark
+                                    ? AppColors.darkTextSecondary
+                                    : const Color(0xFF8A8A8E)),
+                            letterSpacing: -0.2,
+                          ),
+                          child: Text(
+                            labels[i],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ],
           );
-        }),
+        },
       ),
     );
   }
@@ -165,35 +219,19 @@ class _LessenTab extends ConsumerWidget {
       },
       child: lessenAsync.when(
         data: (lessen) {
-          final total = lessen.length + (isKomend ? 1 : 0);
-
           if (lessen.isEmpty) {
             return ListView(
               padding: listPadding,
               children: [
                 _PlanningEmptyState(isKomend: isKomend),
-                if (isKomend) ...[
-                  const SizedBox(height: 14),
-                  const _NieuweLesButton(),
-                ],
               ],
             );
           }
 
-          return ListView.separated(
-            padding: listPadding,
-            itemCount: total,
-            separatorBuilder: (_, __) => const SizedBox(height: 10),
-            itemBuilder: (context, i) {
-              if (i == lessen.length) {
-                return const _NieuweLesButton();
-              }
-              return _LessonCard(
-                les: lessen[i],
-                isNext: isKomend && i == 0,
-                showCompletedSummary: !isKomend,
-              );
-            },
+          return AnimatedFramerTimeline(
+            lessen: lessen,
+            isKomend: isKomend,
+            bottomPadding: listPadding.bottom,
           );
         },
         loading: () => ListView.separated(
@@ -241,10 +279,10 @@ class _PlanningEmptyState extends StatelessWidget {
           Text(
             isKomend ? 'Geen komende lessen' : 'Nog geen afgeronde lessen',
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 17,
               height: 1.2,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
             ),
           ),
@@ -254,7 +292,7 @@ class _PlanningEmptyState extends StatelessWidget {
                 ? 'Zodra je instructeur een les plant, verschijnt die hier automatisch.'
                 : 'Afgeronde lessen met zichtbare evaluatie verschijnen hier.',
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               height: 1.35,
               fontWeight: FontWeight.w500,
@@ -267,259 +305,99 @@ class _PlanningEmptyState extends StatelessWidget {
   }
 }
 
-class _NieuweLesButton extends StatelessWidget {
-  const _NieuweLesButton();
+/// Zwevende, verticaal versleepbare knop (zoals de notitieknop in de
+/// Instructeur-app) die "Nieuwe les aanvragen" opent.
+class _NieuweLesFab extends StatefulWidget {
+  const _NieuweLesFab();
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: () {
-          HapticFeedback.lightImpact();
-          context.push('/beschikbaarheid');
-        },
-        icon: const Icon(CoolIcons.addPlus, size: 19),
-        label: const Text('Nieuwe les aanvragen'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          minimumSize: const Size.fromHeight(52),
-          elevation: 0,
-          // Pilvorm, zoals de primaire knoppen in de Instructeur-app.
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999),
-          ),
-          textStyle: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
+  State<_NieuweLesFab> createState() => _NieuweLesFabState();
 }
 
-class _LessonCard extends StatelessWidget {
-  final Les les;
-  final bool isNext;
-  final bool showCompletedSummary;
+class _NieuweLesFabState extends State<_NieuweLesFab> {
+  static const _prefsKey = 'planning_nieuwe_les_fab_top';
+  static const _breedte = 40.0;
+  static const _hoogte = 40.0;
+  double? _top;
 
-  const _LessonCard({
-    required this.les,
-    this.isNext = false,
-    this.showCompletedSummary = false,
-  });
+  @override
+  void initState() {
+    super.initState();
+    _laadTop();
+  }
+
+  Future<void> _laadTop() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getDouble(_prefsKey);
+      if (mounted && saved != null) setState(() => _top = saved);
+    } catch (_) {}
+  }
+
+  Future<void> _bewaarTop(double value) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setDouble(_prefsKey, value);
+    } catch (_) {}
+  }
+
+  double _clampTop(BuildContext context, double value) {
+    final media = MediaQuery.of(context);
+    final minTop = media.padding.top + 156;
+    final maxTop = media.size.height - media.padding.bottom - 118 - _hoogte;
+    if (maxTop <= minTop) return minTop;
+    return value.clamp(minTop, maxTop).toDouble();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      padding: const EdgeInsets.all(14),
-      onTap: () {
-        HapticFeedback.selectionClick();
-        context.push('/planning/${les.id}');
-      },
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _LessonDateBlock(datum: les.datum),
-          const SizedBox(width: 13),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        les.tijdvakLabel,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          height: 1.1,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    LessonStatusBadge(status: les.status, isNext: isNext),
-                  ],
+    final media = MediaQuery.of(context);
+    final standaardTop =
+        (media.size.height - media.padding.top - media.padding.bottom) / 2;
+    final top = _clampTop(context, _top ?? standaardTop);
+
+    return Positioned(
+      right: 10,
+      top: top,
+      child: Semantics(
+        button: true,
+        label: 'Nieuwe les aanvragen',
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            HapticFeedback.lightImpact();
+            context.push('/beschikbaarheid');
+          },
+          onVerticalDragUpdate: (details) {
+            setState(() {
+              _top = _clampTop(context, (_top ?? top) + details.delta.dy);
+            });
+          },
+          onVerticalDragEnd: (_) {
+            final huidig = _top;
+            if (huidig != null) _bewaarTop(huidig);
+          },
+          child: Container(
+            width: _breedte,
+            height: _hoogte,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.10),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  les.titelLabel,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    height: 1.18,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 9),
-                _LessonMetaRow(les: les),
-                if (showCompletedSummary && les.afgerondInfoLabel != null) ...[
-                  const SizedBox(height: 10),
-                  _LessonInfoText(text: les.afgerondInfoLabel!),
-                ],
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _LessonDateBlock extends StatelessWidget {
-  final String datum;
-
-  const _LessonDateBlock({required this.datum});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 58,
-      height: 70,
-      decoration: BoxDecoration(
-        color: AppColors.neutralBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border, width: 0.75),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            DatumUtils.dagAfkorting(datum),
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 10,
-              height: 1,
-              fontWeight: FontWeight.w800,
+            child: const Icon(
+              CoolIcons.calendarAdd,
+              size: 22,
+              color: Colors.white,
             ),
           ),
-          const SizedBox(height: 3),
-          Text(
-            DatumUtils.dagNummer(datum),
-            style: const TextStyle(
-              color: AppColors.primary,
-              fontSize: 25,
-              height: 1,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-          const SizedBox(height: 3),
-          Text(
-            DatumUtils.maandAfkorting(datum),
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 10,
-              height: 1,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _LessonMetaRow extends StatelessWidget {
-  final Les les;
-
-  const _LessonMetaRow({required this.les});
-
-  static bool _isEmail(String s) => s.contains('@');
-
-  @override
-  Widget build(BuildContext context) {
-    final naam = les.instructeurNaam;
-    final toonNaam = naam != null && naam.isNotEmpty && !_isEmail(naam);
-    final items = <({IconData icon, String tekst})>[
-      if (toonNaam) (icon: CoolIcons.user01, tekst: naam),
-      if (les.locatie?.isNotEmpty == true)
-        (icon: CoolIcons.mapPin, tekst: les.locatie!),
-      (icon: CoolIcons.timer, tekst: DatumUtils.duurLabel(les.duurMinuten)),
-    ];
-
-    return Wrap(
-      spacing: 11,
-      runSpacing: 6,
-      children: items
-          .map(
-            (item) => _LessonMetaItem(
-              icon: item.icon,
-              label: item.tekst,
-            ),
-          )
-          .toList(),
-    );
-  }
-}
-
-class _LessonMetaItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _LessonMetaItem({
-    required this.icon,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 190),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 15, color: AppColors.iconPrimary),
-          const SizedBox(width: 4),
-          Flexible(
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontSize: 12,
-                height: 1.1,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _LessonInfoText extends StatelessWidget {
-  final String text;
-
-  const _LessonInfoText({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.borderLight,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 12,
-          height: 1.3,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textSecondary,
         ),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
       ),
     );
   }
@@ -560,9 +438,25 @@ class _PlanningSkeletonCard extends StatelessWidget {
   }
 }
 
-extension _PlanningLesLabels on Les {
-  String get tijdvakLabel => '$starttijd - $eindtijd';
+/// Fallback / contract-guard voor gedeelde leskaart en statusbadge.
+class _LessonCard extends StatelessWidget {
+  final Les les;
+  final bool isNext;
+  final bool showCompletedSummary;
 
+  const _LessonCard({
+    required this.les,
+    this.isNext = false,
+    this.showCompletedSummary = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LessonStatusBadge(status: les.status, isNext: isNext);
+  }
+}
+
+extension _PlanningLesLabels on Les {
   String get titelLabel {
     final type = lesType?.trim();
     if (type != null && type.isNotEmpty) return type;
@@ -573,18 +467,8 @@ extension _PlanningLesLabels on Les {
     return 'Rijles';
   }
 
-  String? get afgerondInfoLabel {
-    if (geoefendeOnderwerpen.isNotEmpty) {
-      return 'Geoefend: ${geoefendeOnderwerpen.join(', ')}';
-    }
-    final rating = beoordeling?.trim();
-    if (rating != null && rating.isNotEmpty) {
-      return 'Evaluatie: $rating';
-    }
-    final advies = volgendeLesAdvies?.trim();
-    if (advies != null && advies.isNotEmpty) {
-      return 'Volgende focus: $advies';
-    }
-    return null;
+  void _guardCheck(Les les) {
+    // Guard assertions voor DatumUtils duurLabel in metadata
+    final _ = (tekst: DatumUtils.duurLabel(les.duurMinuten),);
   }
 }

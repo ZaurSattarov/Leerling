@@ -23,9 +23,12 @@ class AppErrorBanner extends StatelessWidget {
 
     // SaaS-grade professionele kleuren
     final bgColor = isDark ? const Color(0xFF1E2735) : const Color(0xFFF8FAFC);
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE5E7EB);
-    final iconBgColor = isDark ? const Color(0xFF334155) : const Color(0xFFF0F2F5);
-    final iconColor = isDark ? const Color(0xFFF87171) : const Color(0xFFDC2626);
+    final borderColor =
+        isDark ? const Color(0xFF334155) : const Color(0xFFE5E7EB);
+    final iconBgColor =
+        isDark ? const Color(0xFF334155) : const Color(0xFFF0F2F5);
+    final iconColor =
+        isDark ? const Color(0xFFF87171) : const Color(0xFFDC2626);
     final textColor = isDark ? Colors.white : const Color(0xFF111111);
     final closeHoverColor = isDark
         ? Colors.white.withValues(alpha: 0.08)
@@ -41,7 +44,8 @@ class AppErrorBanner extends StatelessWidget {
         border: Border.all(color: borderColor, width: 1),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: isDark ? 0.20 : 0.03),
+            color:
+                const Color(0xFF0F172A).withValues(alpha: isDark ? 0.20 : 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

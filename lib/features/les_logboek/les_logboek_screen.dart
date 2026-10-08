@@ -9,6 +9,7 @@ import '../../shared/providers/auth_provider.dart';
 import 'les_logboek_item.dart';
 import 'les_logboek_provider.dart';
 import '../../core/constants/cool_icons.dart';
+import '../../shared/widgets/settings_design.dart';
 
 class LesLogboekScreen extends ConsumerWidget {
   const LesLogboekScreen({super.key});
@@ -18,7 +19,7 @@ class LesLogboekScreen extends ConsumerWidget {
     final lessenAsync = ref.watch(lesLogboekProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           const MainDetailHeader(
@@ -140,9 +141,9 @@ class _LogboekLesCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const IconBadge(
+              IconBadge(
                 icon: CoolIcons.listChecklist,
-                color: AppColors.dark3,
+                color: AppColors.iconPrimary,
                 size: 40,
               ),
               const SizedBox(width: 12),
@@ -152,16 +153,16 @@ class _LogboekLesCard extends StatelessWidget {
                   children: [
                     Text(
                       item.datumLabel,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 3),
                     Text(
                       '${item.tijdLabel}  ·  ${item.instructeur}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
                       ),
@@ -180,7 +181,7 @@ class _LogboekLesCard extends StatelessWidget {
             children: item.onderwerpen
                 .map((label) => NeutralChip(
                       label: label,
-                      backgroundColor: AppColors.white,
+                      backgroundColor: AppColors.panel,
                     ))
                 .toList(),
           ),
@@ -195,7 +196,7 @@ class _LogboekLesCard extends StatelessWidget {
             ),
             child: Text(
               item.feedback,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 height: 1.4,
                 color: AppColors.textSecondary,
@@ -208,14 +209,14 @@ class _LogboekLesCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: AppColors.panel,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.border),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Mijn notitie',
                     style: TextStyle(
                       fontSize: 12,
@@ -226,7 +227,7 @@ class _LogboekLesCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     item.leerlingNotitie!,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       height: 1.4,
                       color: AppColors.textSecondary,
@@ -252,7 +253,7 @@ class _LogboekLesCard extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   textStyle: const TextStyle(
                     fontSize: 13,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -313,8 +314,8 @@ class _LesNotitieSheetState extends State<_LesNotitieSheet> {
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.white,
+        decoration: BoxDecoration(
+          color: AppColors.panel,
           borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
@@ -335,16 +336,16 @@ class _LesNotitieSheetState extends State<_LesNotitieSheet> {
                 ),
               ),
               const SizedBox(height: 18),
-              const Text(
+              Text(
                 'Mijn notitie',
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'Schrijf kort wat je zelf wilt onthouden voor de volgende les.',
                 style: TextStyle(
                   fontSize: 13,
@@ -357,17 +358,23 @@ class _LesNotitieSheetState extends State<_LesNotitieSheet> {
                 controller: _controller,
                 maxLines: 4,
                 textInputAction: TextInputAction.newline,
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary),
                 decoration: InputDecoration(
+                  hintStyle: TextStyle(
+                      fontSize: 15, color: SettingsDesign.fieldLabel),
                   hintText:
                       'Bijvoorbeeld: Volgende keer extra letten op spiegelen bij rotondes.',
                   filled: true,
                   fillColor: AppColors.neutralBg,
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: AppColors.border),
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: AppColors.border),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(16),
                     borderSide:
                         const BorderSide(color: AppColors.primary, width: 1.4),
                   ),
@@ -425,7 +432,7 @@ class _AssessmentPill extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w700,
           color: AppColors.textSecondary,

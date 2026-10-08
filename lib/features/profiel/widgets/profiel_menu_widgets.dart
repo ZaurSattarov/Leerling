@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/cool_icons.dart';
 
 class ProfielMenuCard extends StatelessWidget {
   final List<Widget> children;
@@ -10,11 +10,14 @@ class ProfielMenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: isDark ? AppColors.darkCard : AppColors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : AppColors.border,
+        ),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
@@ -31,15 +34,16 @@ class ProfielSectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 10),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w600,
           letterSpacing: 0.5,
-          color: Color(0xFF7B8089),
+          color: isDark ? AppColors.darkTextPrimary : const Color(0xFF7B8089),
         ),
       ),
     );
@@ -52,16 +56,25 @@ class ProfielMenuTile extends StatelessWidget {
   final String? subtitle;
   final VoidCallback? onTap;
 
+  /// Alleen voor een bewuste statuskleur (bv. rood bij verwijderen).
+  final Color? iconColor;
+
   const ProfielMenuTile({
     super.key,
     required this.icon,
     required this.label,
     this.subtitle,
     this.onTap,
+    this.iconColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final titleColor =
+        isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
+    final subtitleColor =
+        isDark ? AppColors.darkTextSecondary : const Color(0xFF7B8089);
     return InkWell(
       onTap: onTap,
       overlayColor: WidgetStateProperty.resolveWith((states) {
@@ -77,7 +90,7 @@ class ProfielMenuTile extends StatelessWidget {
             Container(
               width: 36,
               height: 36,
-              child: Icon(icon, color: AppColors.iconPrimary, size: 18),
+              child: Icon(icon, size: 18, color: iconColor),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -87,10 +100,10 @@ class ProfielMenuTile extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      color: titleColor,
                       height: 1.3,
                     ),
                   ),
@@ -98,11 +111,11 @@ class ProfielMenuTile extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       subtitle!,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         height: 1.5,
                         fontWeight: FontWeight.w400,
-                        color: Color(0xFF7B8089),
+                        color: subtitleColor,
                       ),
                     ),
                   ],
@@ -111,13 +124,40 @@ class ProfielMenuTile extends StatelessWidget {
             ),
             if (onTap != null) ...[
               const SizedBox(width: 6),
-              const Icon(
-                CoolIcons.chevronRight,
-                color: Color(0x52222936),
-                size: 17,
-              ),
+              const _ProfielNavArrow(),
             ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Zelfde navigatiepijl als de instructeur-app: donkere cirkel, witte pijl.
+class _ProfielNavArrow extends StatelessWidget {
+  const _ProfielNavArrow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 22,
+      height: 22,
+      decoration: BoxDecoration(
+        color: const Color(0xFF1C2938),
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Center(
+        child: SvgPicture.string(
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M 12.175 9 L 0 9 L 0 7 L 12.175 7 L 6.575 1.4 L 8 0 L 16 8 L 8 16 L 6.575 14.6 Z" fill="#FFFFFF"/></svg>',
+          width: 10,
+          height: 10,
         ),
       ),
     );

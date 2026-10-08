@@ -7,6 +7,7 @@ import '../../core/services/avatar_service.dart';
 import '../../core/services/student_service.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../core/constants/cool_icons.dart';
+import '../../shared/widgets/settings_design.dart';
 
 class ProfielAfrondenScreen extends ConsumerStatefulWidget {
   const ProfielAfrondenScreen({super.key});
@@ -16,7 +17,6 @@ class ProfielAfrondenScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _achternaam = TextEditingController();
   final _adres = TextEditingController();
   DateTime? _geboortedatum;
@@ -48,7 +48,10 @@ class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
   }
 
   Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (_achternaam.text.trim().isEmpty) {
+      setState(() => _error = 'Achternaam is verplicht.');
+      return;
+    }
     if (_geboortedatum == null) {
       setState(() => _error = 'Kies je geboortedatum.');
       return;
@@ -103,63 +106,107 @@ class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
       final rawDate = profile.geboortedatum;
       if (rawDate != null) _geboortedatum = DateTime.tryParse(rawDate);
     }
+    // Opbouw 1-op-1 als de bewerkschermen in de Instructeur-app: label boven
+    // het veld, gecentreerde titel en het groene vinkje rechtsboven om op te
+    // slaan (i.p.v. een losse knop onderaan).
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: SettingsDesign.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surface,
+        backgroundColor: SettingsDesign.background,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: true,
         automaticallyImplyLeading: false,
-        title: const Text('Maak je profiel af'),
+        title: Text(
+          'Maak je profiel af',
+          style: TextStyle(
+              color: SettingsDesign.title,
+              fontSize: 20,
+              fontWeight: FontWeight.w600),
+        ),
+        leading: IconButton(
+          tooltip: 'Uitloggen',
+          icon: Icon(CoolIcons.logOut,
+              color: SettingsDesign.iconDark, size: 22),
+          onPressed: _saving
+              ? null
+              : () async {
+                  await StudentService.uitloggen();
+                  ref.invalidate(mijnProfielProvider);
+                  if (context.mounted) context.go('/login');
+                },
+        ),
         actions: [
-          TextButton(
-              onPressed: _saving
-                  ? null
-                  : () async {
-                      await StudentService.uitloggen();
-                      ref.invalidate(mijnProfielProvider);
-                      if (context.mounted) context.go('/login');
-                    },
-              child: const Text('Uitloggen'))
+          IconButton(
+            onPressed: _saving ? null : _save,
+            icon: _saving
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(CoolIcons.check,
+                    color: SettingsDesign.switchOn, size: 28),
+          ),
         ],
       ),
       body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: ListView(padding: const EdgeInsets.all(20), children: [
-            const Text('Nog een paar gegevens',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+        child: ListView(
+          padding: SettingsDesign.screenPadding,
+          children: [
+            Text(
+              'Je profiel is al gekoppeld. Vul de ontbrekende gegevens aan om Klantio te gebruiken.',
+              style: TextStyle(
+                fontSize: 14,
+                height: 1.4,
+                color: SettingsDesign.readOnlyText,
+              ),
+            ),
+            const SizedBox(height: 24),
+            SettingsVeld(
+              controller: _achternaam,
+              label: 'Achternaam',
+              hint: 'Achternaam',
+            ),
+            const SizedBox(height: 14),
+            SettingsWaarde(label: 'E-mailadres', waarde: email),
+            const SizedBox(height: 14),
+            const SettingsSectieLabel('Geboortedatum'),
             const SizedBox(height: 6),
-            const Text(
-                'Je profiel is al gekoppeld. Vul de ontbrekende gegevens aan om Klantio te gebruiken.',
-                style: TextStyle(color: AppColors.textSecondary, height: 1.4)),
-            const SizedBox(height: 20),
-            TextFormField(
-                controller: _achternaam,
-                textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(labelText: 'Achternaam'),
-                validator: (v) => v?.trim().isEmpty == true
-                    ? 'Achternaam is verplicht'
-                    : null),
+            GestureDetector(
+              onTap: _pickDate,
+              child: Container(
+                height: 48,
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: AppColors.panel,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Text(
+                  _geboortedatum == null
+                      ? 'Kies geboortedatum'
+                      : '${_geboortedatum!.day}-${_geboortedatum!.month}-${_geboortedatum!.year}',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: _geboortedatum == null
+                        ? SettingsDesign.fieldLabel
+                        : SettingsDesign.title,
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 14),
-            InputDecorator(
-                decoration: const InputDecoration(labelText: 'E-mailadres'),
-                child: Text(email,
-                    style: const TextStyle(fontWeight: FontWeight.w600))),
+            SettingsVeld(
+              controller: _adres,
+              label: 'Adres',
+              hint: 'Adres',
+            ),
             const SizedBox(height: 14),
-            OutlinedButton.icon(
-                onPressed: _pickDate,
-                icon: const Icon(CoolIcons.gift),
-                label: Text(_geboortedatum == null
-                    ? 'Kies geboortedatum'
-                    : '${_geboortedatum!.day}-${_geboortedatum!.month}-${_geboortedatum!.year}')),
-            const SizedBox(height: 14),
-            TextFormField(
-                controller: _adres,
-                textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(labelText: 'Adres')),
-            const SizedBox(height: 14),
-            const Text('Geslacht',
-                style: TextStyle(fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
+            const SettingsSectieLabel('Geslacht'),
+            const SizedBox(height: 6),
             Row(children: [
               Expanded(
                 child: _GeslachtOptie(
@@ -177,9 +224,8 @@ class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
                 ),
               ),
             ]),
-            const SizedBox(height: 20),
-            const Text('Kies een avatar',
-                style: TextStyle(fontWeight: FontWeight.w800)),
+            const SizedBox(height: 24),
+            const SettingsSectieLabel('Kies een avatar'),
             const SizedBox(height: 10),
             GridView.builder(
               shrinkWrap: true,
@@ -210,18 +256,11 @@ class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
             ),
             if (_error != null) ...[
               const SizedBox(height: 14),
-              Text(_error!, style: const TextStyle(color: AppColors.dangerText))
+              Text(_error!,
+                  style: TextStyle(
+                      fontSize: 14, color: AppColors.dangerText))
             ],
-            const SizedBox(height: 24),
-            // Probleem 4 (aanmeld herstelronde, vervolg): ElevatedButton
-            // gebruikt het bestaande elevatedButtonTheme (AppColors.primary +
-            // witte tekst) — een ongethematiseerde FilledButton viel terug op
-            // colorScheme.primary (via ColorScheme.fromSeed niet exact
-            // AppColors.primary), vandaar de afwijkende bruin/rode kleur.
-            ElevatedButton(
-                onPressed: _saving ? null : _save,
-                child: Text(_saving ? 'Opslaan…' : 'Profiel afronden')),
-          ]),
+          ],
         ),
       ),
     );
@@ -248,23 +287,21 @@ class _GeslachtOptie extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: selected ? AppColors.primary : AppColors.white,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
           height: 48,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: selected ? AppColors.primary : AppColors.border,
-            ),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
             label,
             style: TextStyle(
-              fontWeight: FontWeight.w700,
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
               color: selected ? Colors.white : AppColors.textPrimary,
             ),
           ),

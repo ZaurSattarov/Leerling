@@ -27,10 +27,15 @@ class EditableProfielAvatar extends ConsumerStatefulWidget {
   final LeerlingProfiel? profiel;
   final double size;
 
+  /// Toon de camera-badge (standaard). De profielkaart bovenaan Profiel
+  /// toont, net als de Instructeur-app, geen badge.
+  final bool toonBadge;
+
   const EditableProfielAvatar({
     super.key,
     required this.profiel,
     this.size = 66,
+    this.toonBadge = true,
   });
 
   @override
@@ -130,6 +135,7 @@ class _EditableProfielAvatarState extends ConsumerState<EditableProfielAvatar> {
         size: widget.size,
         onTap: _busy ? null : _kiesProfielfoto,
         busy: _busy,
+        toonBadge: widget.toonBadge,
       ),
     );
   }
@@ -142,6 +148,7 @@ class ProfileAvatar extends StatelessWidget {
   final VoidCallback? onTap;
   final double size;
   final bool busy;
+  final bool toonBadge;
 
   const ProfileAvatar({
     super.key,
@@ -149,6 +156,7 @@ class ProfileAvatar extends StatelessWidget {
     required this.onTap,
     this.size = 66,
     this.busy = false,
+    this.toonBadge = true,
   });
 
   @override
@@ -202,35 +210,28 @@ class ProfileAvatar extends StatelessWidget {
               ),
               child: ClipOval(child: avatarContent),
             ),
-            if (onTap != null)
+            if (onTap != null && toonBadge)
               Positioned(
                 right: -2,
                 bottom: -2,
+                // Camera-badge 1-op-1 uit de Instructeur-app (_EditProfielScreen):
+                // donkere cirkel (#1C2938), witte rand, wit icoon.
                 child: Container(
-                  width: 25,
-                  height: 25,
+                  width: size >= 80 ? 28 : 25,
+                  height: size >= 80 ? 28 : 25,
                   decoration: BoxDecoration(
-                    // Mirror van _ProfileDesign.card/hairlineStrong/secondary
-                    // in profiel_screen.dart (private daar, dus hier als
-                    // letterlijke waarde herhaald i.p.v. die klasse publiek
-                    // te maken).
-                    color: const Color(0xFFFFFFFF),
+                    color: const Color(0xFF1C2938),
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: const Color(0xFFD2D5DA),
-                      width: 1,
-                    ),
+                    border: Border.all(color: Colors.white, width: 2),
                   ),
                   child: busy
                       ? const Padding(
-                          padding: EdgeInsets.all(5),
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          padding: EdgeInsets.all(6),
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white),
                         )
-                      : const Icon(
-                          CoolIcons.image02,
-                          color: AppColors.iconPrimary,
-                          size: 13,
-                        ),
+                      : const Icon(CoolIcons.image02,
+                          color: Colors.white, size: 13),
                 ),
               ),
           ],
@@ -290,14 +291,14 @@ class PhotoSourceTile extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
               ),
             ),
-            const Icon(
+            Icon(
               CoolIcons.chevronRight,
               color: AppColors.iconPrimary,
             ),

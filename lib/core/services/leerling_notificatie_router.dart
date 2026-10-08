@@ -17,8 +17,7 @@ Future<bool> openLeerlingNotificatie(
   try {
     if (router != null) {
       router.go(route);
-      final after =
-          router.routerDelegate.currentConfiguration.uri.toString();
+      final after = router.routerDelegate.currentConfiguration.uri.toString();
       return after.contains(Uri.parse(route).path);
     }
     if (context != null && context.mounted) {

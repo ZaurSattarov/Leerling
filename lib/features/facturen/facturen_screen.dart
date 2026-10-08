@@ -20,7 +20,9 @@ import '../../shared/widgets/main_scaffold.dart';
 const _groenStatus = Color(0xFF16A34A); // Betaald
 const _roodWaarschuwing = Color(0xFFDC2626); // Verlopen
 const _oranjeWaarschuwing = Color(0xFFF59E0B); // Openstaand
-const _ringNeutraal = Color(0xFFE4E7EC); // Donut achtergrond ring
+Color get _ringNeutraal => AppColors.isDarkMode
+    ? const Color(0xFF334155)
+    : const Color(0xFFE4E7EC); // Donut achtergrond ring
 
 // ── Hoofd scherm ──────────────────────────────────────────────────────────────
 
@@ -82,7 +84,7 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
     final facturenAsync = ref.watch(facturenProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           const MainTabHeader(
@@ -301,7 +303,7 @@ class _StatusEnFinanceKaart extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.panel,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -314,18 +316,18 @@ class _StatusEnFinanceKaart extends StatelessWidget {
               Container(
                 width: 36,
                 height: 36,
-                child: const Icon(
+                child: Icon(
                   CoolIcons.chartPie,
                   size: 18,
                   color: AppColors.iconPrimary,
                 ),
               ),
               const SizedBox(width: 12),
-              const Text(
+              Text(
                 'Factuurstatus verdeling',
                 style: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
               ),
@@ -373,7 +375,7 @@ class _StatusEnFinanceKaart extends StatelessWidget {
           // Visuele scheiding tussen statusverdeling en financiële samenvatting
           // — houdt de gecombineerde kaart rustig i.p.v. alles tegen elkaar.
           const SizedBox(height: 18),
-          const Divider(height: 1, thickness: 0.75, color: AppColors.border),
+          Divider(height: 1, thickness: 0.75, color: AppColors.border),
           const SizedBox(height: 18),
 
           // Financiële samenvatting — zelfde bron (`_FactuurStats`) en
@@ -447,7 +449,9 @@ class _OverzichtStat extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FA),
+        color: AppColors.isDarkMode
+            ? const Color(0xFF283244)
+            : const Color(0xFFF8F9FA),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppColors.border, width: 0.75),
       ),
@@ -464,7 +468,7 @@ class _OverzichtStat extends StatelessWidget {
               const SizedBox(width: 5),
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
                   color: AppColors.textHint,
@@ -477,9 +481,9 @@ class _OverzichtStat extends StatelessWidget {
           // Waarde altijd donker — geen gekleurde bedragen
           Text(
             waarde,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 17,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
               height: 1.0,
             ),
@@ -561,14 +565,14 @@ class _DonutPainter extends CustomPainter {
         children: [
           TextSpan(
             text: '$totalAantal\n',
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 20,
               fontWeight: FontWeight.w900,
               height: 1.1,
             ),
           ),
-          const TextSpan(
+          TextSpan(
             text: 'facturen',
             style: TextStyle(
               color: AppColors.textHint,
@@ -615,7 +619,7 @@ class _LegendeRij extends StatelessWidget {
         Expanded(
           child: Text(
             segment.label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500,
               color: AppColors.textPrimary,
@@ -626,13 +630,13 @@ class _LegendeRij extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.panel,
             borderRadius: BorderRadius.circular(999),
             border: Border.all(color: AppColors.border),
           ),
           child: Text(
             '${segment.aantal}',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
@@ -653,7 +657,6 @@ class _FactuurCard extends StatelessWidget {
   // Icon kleur: semantisch maar ingetogen.
   // Verlopen = rood (echte waarschuwing), betaald = groen, rest = neutraal.
 
-
   @override
   Widget build(BuildContext context) {
     return AppCard(
@@ -661,7 +664,7 @@ class _FactuurCard extends StatelessWidget {
       child: Row(
         children: [
           // Icoon zonder vlak, in de vaste icoonkleur (Instructeur-app).
-          const SizedBox(
+          SizedBox(
             width: 40,
             height: 40,
             child: Icon(
@@ -681,7 +684,7 @@ class _FactuurCard extends StatelessWidget {
                   factuur.beschrijving.isNotEmpty
                       ? factuur.beschrijving
                       : factuur.factuurnummer,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
@@ -691,7 +694,7 @@ class _FactuurCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   factuur.factuurnummer,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
                     color: AppColors.textHint,
                   ),
@@ -732,9 +735,9 @@ class _FactuurCard extends StatelessWidget {
             children: [
               Text(
                 factuur.bedragEuro,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
               ),

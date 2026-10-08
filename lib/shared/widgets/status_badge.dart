@@ -17,6 +17,9 @@ class StatusBadge extends StatelessWidget {
   final IconData? icon;
   final bool uppercase;
 
+  /// Zachte gekleurde gloed onder de badge; uit voor een vlakke badge.
+  final bool glow;
+
   const StatusBadge({
     super.key,
     required this.label,
@@ -27,6 +30,7 @@ class StatusBadge extends StatelessWidget {
     this.borderRadius = 8,
     this.icon,
     this.uppercase = true,
+    this.glow = true,
   });
 
   factory StatusBadge.les(LesStatus status, {String? label}) =>
@@ -137,13 +141,15 @@ class StatusBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(borderRadius),
-        boxShadow: [
-          BoxShadow(
-            color: backgroundColor.withValues(alpha: 0.22),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: glow
+            ? [
+                BoxShadow(
+                  color: backgroundColor.withValues(alpha: 0.22),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : null,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -152,14 +158,18 @@ class StatusBadge extends StatelessWidget {
             Icon(icon, color: textColor, size: fontSize + 2),
             const SizedBox(width: 4),
           ],
-          Text(
-            uppercase ? label.toUpperCase() : label,
-            style: GoogleFonts.inter(
-              fontSize: fontSize,
-              height: 1,
-              fontWeight: FontWeight.w700,
-              color: textColor,
-              letterSpacing: 0.2,
+          Flexible(
+            child: Text(
+              uppercase ? label.toUpperCase() : label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.inter(
+                fontSize: fontSize,
+                height: 1,
+                fontWeight: FontWeight.w700,
+                color: textColor,
+                letterSpacing: 0.2,
+              ),
             ),
           ),
         ],

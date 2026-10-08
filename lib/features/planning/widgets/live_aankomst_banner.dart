@@ -32,7 +32,7 @@ class LiveAankomstBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (icoon, iconBg, iconColor, titel, tekst) = switch (status) {
+    final (icoon, _, _, titel, tekst) = switch (status) {
       LiveAankomstBannerStatus.voorVenster => (
           CoolIcons.mapPin,
           AppColors.neutralBg,
@@ -67,14 +67,18 @@ class LiveAankomstBanner extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            // Icoon zonder vlak, vaste icoonkleur (Instructeur-app); alleen de
+            // actieve staat houdt de statuskleur groen.
+            SizedBox(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(
-                color: iconBg,
-                borderRadius: BorderRadius.circular(12),
+              child: Icon(
+                icoon,
+                color: status == LiveAankomstBannerStatus.actief
+                    ? AppColors.success
+                    : AppColors.iconPrimary,
+                size: 22,
               ),
-              child: Icon(icoon, color: iconColor, size: 20),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -83,7 +87,7 @@ class LiveAankomstBanner extends StatelessWidget {
                 children: [
                   Text(
                     titel,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,
@@ -92,7 +96,7 @@ class LiveAankomstBanner extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     tekst,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       color: AppColors.textSecondary,
                       height: 1.4,

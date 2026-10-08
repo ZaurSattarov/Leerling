@@ -18,6 +18,7 @@ import 'profielfoto_editor.dart';
 import 'rijschool_provider.dart';
 import 'widgets/profiel_menu_widgets.dart';
 import '../../core/constants/cool_icons.dart';
+import '../../shared/widgets/isomorphic_icons.dart';
 import '../../shared/widgets/main_scaffold.dart';
 
 // ── Design tokens ────────────────────────────────────────────────────────────
@@ -29,10 +30,9 @@ import '../../shared/widgets/main_scaffold.dart';
 class _ProfileDesign {
   const _ProfileDesign._();
 
-  static const background = AppColors.surface;
   static const card = Color(0xFFFFFFFF);
-  static const text = AppColors.textPrimary;
-  static const secondary = AppColors.textSecondary;
+  static Color get text => AppColors.textPrimary;
+  static Color get secondary => AppColors.textSecondary;
   static const muted = Color(0xFF7B8089);
   static const arrow = Color(0x52222936);
   static const pressed = Color(0x08222936);
@@ -44,14 +44,7 @@ class _ProfileDesign {
   static const cardRadius = 12.0;
   static const smallRadius = 12.0;
 
-  static const sectionTitle = TextStyle(
-    fontSize: 11,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0.5,
-    color: muted,
-  );
-
-  static const cardTitle = TextStyle(
+  static final cardTitle = TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.w600,
     color: text,
@@ -76,7 +69,7 @@ class ProfielScreen extends ConsumerWidget {
     final profielAsync = ref.watch(mijnProfielProvider);
 
     return Scaffold(
-      backgroundColor: _ProfileDesign.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           const MainTabHeader(
@@ -158,14 +151,11 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
   }
 
   Future<void> _toonContactActies(Instructeur instructeur) async {
-    await metNativeNavAfgedekt<void>(
-      context,
-      () => showModalBottomSheet<void>(
-        context: context,
-        backgroundColor: Colors.transparent,
-        barrierColor: Colors.black54,
-        isScrollControlled: true,
-        builder: (ctx) => _ContactActiesSheet(instructeur: instructeur),
+    await showKlantioNavbarSafeSheet<void>(
+      context: context,
+      builder: (ctx, bottom) => _ContactActiesSheet(
+        instructeur: instructeur,
+        bottom: bottom,
       ),
     );
   }
@@ -174,7 +164,6 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
   Widget build(BuildContext context) {
     final p = widget.profiel;
     final instructeurAsync = ref.watch(mijnInstructeurProvider);
-    const sectionStyle = _ProfileDesign.sectionTitle;
 
     return RefreshIndicator(
       color: AppColors.primary,
@@ -192,10 +181,6 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           const SizedBox(height: _ProfileDesign.sectionGap),
 
           // ── PERSOONLIJKE GEGEVENS ─────────────────────────────────────────
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
-            child: Text('PERSOONLIJKE GEGEVENS', style: sectionStyle),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
@@ -210,10 +195,6 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           const SizedBox(height: _ProfileDesign.sectionGap),
 
           // ── MIJN RIJSCHOOL ─────────────────────────────────────────────────
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
-            child: Text('MIJN RIJSCHOOL', style: sectionStyle),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
@@ -228,10 +209,6 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           const SizedBox(height: _ProfileDesign.sectionGap),
 
           // ── RIJOPLEIDING ─────────────────────────────────────────────────
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
-            child: Text('RIJOPLEIDING', style: sectionStyle),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
@@ -249,15 +226,6 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
               ),
               const Divider(height: 1, indent: 62),
               ProfielMenuTile(
-                icon: CoolIcons.trendingUp,
-                label: 'Mijn voortgang',
-                subtitle: p != null
-                    ? '${p.lessenGevolgd}/${p.lessenTotaal} lessen gevolgd'
-                    : null,
-                onTap: () => context.go('/voortgang'),
-              ),
-              const Divider(height: 1, indent: 62),
-              ProfielMenuTile(
                 icon: CoolIcons.circleHelp,
                 label: 'Mijn examens',
                 subtitle: 'Examenstatus & resultaten',
@@ -268,10 +236,6 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           const SizedBox(height: _ProfileDesign.sectionGap),
 
           // ── COMMUNICATIE ─────────────────────────────────────────────────
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
-            child: Text('COMMUNICATIE', style: sectionStyle),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
@@ -293,29 +257,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           ),
           const SizedBox(height: _ProfileDesign.sectionGap),
 
-          // ── FACTUREN ─────────────────────────────────────────────────────
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
-            child: Text('FACTUREN', style: sectionStyle),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: ProfielMenuCard(children: [
-              ProfielMenuTile(
-                icon: CoolIcons.fileDocument,
-                label: 'Mijn facturen',
-                subtitle: 'Bekijk en betaal facturen',
-                onTap: () => context.go('/facturen'),
-              ),
-            ]),
-          ),
-          const SizedBox(height: _ProfileDesign.sectionGap),
-
           // ── INSTELLINGEN ─────────────────────────────────────────────────
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
-            child: Text('INSTELLINGEN', style: sectionStyle),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
@@ -329,24 +271,20 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
               ProfielMenuTile(
                 icon: CoolIcons.settings,
                 label: 'App-instellingen',
-                subtitle: 'Machtigingen en beveiliging',
+                subtitle: 'Donkere modus en voorkeuren',
                 onTap: () => context.push('/profiel/app-instellingen'),
               ),
             ]),
           ),
           const SizedBox(height: _ProfileDesign.sectionGap),
 
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
-            child: Text('PRIVACY', style: sectionStyle),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
               ProfielMenuTile(
                 icon: CoolIcons.shieldCheck,
                 label: 'Privacy, gegevens & juridisch',
-                subtitle: 'Documenten, gegevens en account',
+                subtitle: 'Documenten, gegevens en toestemmingen',
                 onTap: () => context.push('/profiel/privacy'),
               ),
             ]),
@@ -354,10 +292,6 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           const SizedBox(height: _ProfileDesign.sectionGap),
 
           // ── HELP ─────────────────────────────────────────────────────────
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
-            child: Text('HELP', style: sectionStyle),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ProfielMenuCard(children: [
@@ -377,18 +311,17 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           const SizedBox(height: _ProfileDesign.sectionGap),
 
           // ── ACCOUNT ACTIES ───────────────────────────────────────────────
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24, 0, 24, 10),
-            child: Text('ACCOUNT ACTIES', style: sectionStyle),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
+                // Uitloggen is geen gevaar: grijze variant, 1-op-1 de
+                // Instructeur-app. Account verwijderen blijft rood.
                 _DangerRow(
                   icon: CoolIcons.logOut,
                   label: 'Uitloggen',
                   onTap: _uitloggen,
+                  neutraal: true,
                 ),
                 const SizedBox(height: 14),
                 _DangerRow(
@@ -444,114 +377,209 @@ class _ProfielIdentiteitskaart extends StatelessWidget {
       instructeur: instructeur,
     );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: _ProfileDesign.horizontalPadding,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Tokens 1-op-1 uit FramerCmsProfileCard (Instructeur-app).
+    final cardBg = isDark ? AppColors.darkCard : Colors.white;
+    final borderColor = isDark ? AppColors.darkBorder : const Color(0xFFE5E7EB);
+    final textPrimary =
+        isDark ? AppColors.darkTextPrimary : const Color(0xFF111827);
+    final textSecondary =
+        isDark ? const Color(0xFFE2E8F0) : const Color(0xFF4B5563);
+    final textMuted =
+        isDark ? AppColors.darkTextSecondary : const Color(0xFF9CA3AF);
+
+    final lessen = p == null ? 0 : p.lessenGevolgd;
+    final voortgang = p == null ? 0 : (p.voortgangPercent * 100).round();
+    final adres = p?.adres?.trim();
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: borderColor, width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.4)
+                : Colors.black.withValues(alpha: 0.04),
+            blurRadius: 18,
+            offset: const Offset(0, 6),
           ),
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
-            decoration: BoxDecoration(
-              color: _ProfileDesign.card,
-              borderRadius: BorderRadius.circular(_ProfileDesign.cardRadius),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                EditableProfielAvatar(profiel: p),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              copy.primaryTitle,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: _ProfileDesign.text,
-                                fontSize: 18,
-                                height: 1.2,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: -0.35,
-                              ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 1. Avatar links, naam + rol rechts
+          Row(
+            children: [
+              Stack(
+                children: [
+                  Container(
+                    width: 58,
+                    height: 58,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isDark
+                            ? const Color(0xFF2E2E33)
+                            : const Color(0xFFE5E7EB),
+                        width: 2,
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(2),
+                    child: ClipOval(
+                      child: EditableProfielAvatar(
+                        profiel: p,
+                        size: 52,
+                        toonBadge: false,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 1,
+                    bottom: 1,
+                    child: Container(
+                      width: 14,
+                      height: 14,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF10B981),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: cardBg, width: 2.5),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            copy.primaryTitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.3,
+                              color: textPrimary,
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          _HeroStatusBadge(
-                            label: copy.statusLabel,
-                            tone: copy.statusTone,
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          width: 18,
+                          height: 18,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF10B981),
+                            shape: BoxShape.circle,
                           ),
-                        ],
-                      ),
-                      if (copy.schoolLine != null) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          copy.schoolLine!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: _ProfileDesign.secondary,
-                            fontSize: 13,
-                            height: 1.3,
-                            fontWeight: FontWeight.w500,
+                          child: const Center(
+                            child: Icon(CoolIcons.check,
+                                size: 12, color: Colors.white),
                           ),
                         ),
                       ],
+                    ),
+                    if (copy.schoolLine != null) ...[
+                      const SizedBox(height: 3),
+                      Text(
+                        copy.schoolLine!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w500,
+                          color: textSecondary,
+                        ),
+                      ),
                     ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          // 2. Locatie
+          if (adres != null && adres.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Icon(CoolIcons.mapPin, size: 14, color: textMuted),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    adres,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: textSecondary,
+                    ),
                   ),
                 ),
               ],
             ),
+          ],
+
+          const SizedBox(height: 20),
+
+          // 3. Cijfers, gelijk verdeeld met een verticale scheidingslijn
+          Row(
+            children: [
+              Expanded(
+                  child: _KaartCijfer(
+                      '$lessen', 'LESSEN', textPrimary, textMuted)),
+              Container(width: 1, height: 36, color: borderColor),
+              Expanded(
+                  child: _KaartCijfer(
+                      '$voortgang%', 'VOORTGANG', textPrimary, textMuted)),
+            ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
-class _HeroStatusBadge extends StatelessWidget {
+class _KaartCijfer extends StatelessWidget {
+  final String waarde;
   final String label;
-  final LearnerHeroBadgeTone tone;
-
-  const _HeroStatusBadge({
-    required this.label,
-    required this.tone,
-  });
+  final Color kleur;
+  final Color gedempt;
+  const _KaartCijfer(this.waarde, this.label, this.kleur, this.gedempt);
 
   @override
   Widget build(BuildContext context) {
-    final background = switch (tone) {
-      LearnerHeroBadgeTone.success => AppColors.success,
-      LearnerHeroBadgeTone.ink => AppColors.accent,
-      LearnerHeroBadgeTone.warning => AppColors.warningSolid,
-    };
-
-    return Container(
-      padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        label,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          height: 1.15,
+    return Column(
+      children: [
+        Text(
+          waarde,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.5,
+            color: kleur,
+          ),
         ),
-      ),
+        const SizedBox(height: 3),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.8,
+            color: gedempt,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -562,11 +590,13 @@ class _DangerRow extends StatefulWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final bool neutraal;
 
   const _DangerRow({
     required this.icon,
     required this.label,
     required this.onTap,
+    this.neutraal = false,
   });
 
   @override
@@ -583,28 +613,47 @@ class _DangerRowState extends State<_DangerRow> {
 
   @override
   Widget build(BuildContext context) {
-    final background = _pressed ? _ProfileDesign.danger : _ProfileDesign.card;
-    final foreground = _pressed ? Colors.white : _ProfileDesign.danger;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final neutraal = widget.neutraal;
+    final basis = isDark ? AppColors.darkCard : _ProfileDesign.card;
+    final ingedrukt =
+        isDark ? const Color(0xFF283244) : const Color(0xFFF1F1F1);
+
+    final background =
+        _pressed ? (neutraal ? ingedrukt : _ProfileDesign.danger) : basis;
+    final foreground = neutraal
+        ? (isDark ? AppColors.darkTextPrimary : const Color(0xFF374151))
+        : (_pressed ? Colors.white : _ProfileDesign.danger);
+    final iconColor = neutraal
+        ? (isDark ? AppColors.darkTextSecondary : const Color(0xFF8A8A8E))
+        : foreground;
+    final borderColor = _pressed && !neutraal
+        ? _ProfileDesign.danger
+        : (isDark ? AppColors.darkBorder : AppColors.border);
 
     return Material(
       color: background,
       shape: RoundedRectangleBorder(
         borderRadius:
             const BorderRadius.all(Radius.circular(_ProfileDesign.smallRadius)),
-        side: const BorderSide(color: _ProfileDesign.hairline),
+        side: BorderSide(color: borderColor),
       ),
       child: InkWell(
         onTap: widget.onTap,
         onHighlightChanged: _setPressed,
         borderRadius:
             const BorderRadius.all(Radius.circular(_ProfileDesign.smallRadius)),
-        splashColor: _ProfileDesign.danger.withValues(alpha: 0.08),
-        highlightColor: _ProfileDesign.danger.withValues(alpha: 0.08),
+        splashColor: neutraal
+            ? ingedrukt
+            : _ProfileDesign.danger.withValues(alpha: 0.08),
+        highlightColor: neutraal
+            ? ingedrukt
+            : _ProfileDesign.danger.withValues(alpha: 0.08),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 17),
           child: Row(
             children: [
-              Icon(widget.icon, color: foreground, size: 20),
+              Icon(widget.icon, color: iconColor, size: 20),
               const SizedBox(width: 14),
               Text(
                 widget.label,
@@ -626,7 +675,11 @@ class _DangerRowState extends State<_DangerRow> {
 
 class _ContactActiesSheet extends StatelessWidget {
   final Instructeur instructeur;
-  const _ContactActiesSheet({required this.instructeur});
+  final double bottom;
+  const _ContactActiesSheet({
+    required this.instructeur,
+    required this.bottom,
+  });
 
   Future<void> _launch(BuildContext context, Uri uri) async {
     if (await canLaunchUrl(uri)) {
@@ -651,116 +704,98 @@ class _ContactActiesSheet extends StatelessWidget {
     final heeftActies =
         telUri != null || whatsappUri != null || emailUri != null;
 
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          16,
-          0,
-          16,
-          16 + MediaQuery.viewInsetsOf(context).bottom,
-        ),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.12),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final titleColor =
+        isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
+    final subColor =
+        isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(20, 12, 20, bottom + 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 42,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(999),
               ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 42,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.border,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                const Text(
-                  'Contact met je instructeur',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                if (instructeur.naam?.trim().isNotEmpty == true) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    instructeur.naam!.trim(),
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 18),
-                if (telUri != null)
-                  _ContactSheetAction(
-                    icon: CoolIcons.phone,
-                    iconColor: AppColors.iconPrimary,
-                    label: 'Bellen',
-                    value: instructeur.telefoon!.trim(),
-                    onTap: () async {
-                      Navigator.pop(context);
-                      await _launch(context, telUri);
-                    },
-                  ),
-                if (telUri != null && (whatsappUri != null || emailUri != null))
-                  const Divider(height: 18),
-                if (whatsappUri != null)
-                  _ContactSheetAction(
-                    icon: CoolIcons.chat,
-                    iconColor: AppColors.iconPrimary,
-                    label: 'WhatsApp',
-                    value: (instructeur.whatsappNummer ?? instructeur.telefoon)!
-                        .trim(),
-                    onTap: () async {
-                      Navigator.pop(context);
-                      await _launch(context, whatsappUri);
-                    },
-                  ),
-                if (whatsappUri != null && emailUri != null)
-                  const Divider(height: 18),
-                if (emailUri != null)
-                  _ContactSheetAction(
-                    icon: CoolIcons.mail,
-                    iconColor: AppColors.iconPrimary,
-                    label: 'E-mail',
-                    value: instructeur.email!.trim(),
-                    onTap: () async {
-                      Navigator.pop(context);
-                      await _launch(context, emailUri);
-                    },
-                  ),
-                if (!heeftActies)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    child: Text(
-                      'Geen geldige contactgegevens bekend voor je instructeur.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        height: 1.4,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ),
-              ],
             ),
           ),
-        ),
+          const SizedBox(height: 18),
+          Text(
+            'Contact met je instructeur',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: titleColor,
+            ),
+          ),
+          if (instructeur.naam?.trim().isNotEmpty == true) ...[
+            const SizedBox(height: 4),
+            Text(
+              instructeur.naam!.trim(),
+              style: TextStyle(
+                fontSize: 13,
+                color: subColor,
+              ),
+            ),
+          ],
+          const SizedBox(height: 18),
+          if (telUri != null)
+            _ContactSheetAction(
+              icon: CoolIcons.phone,
+              iconColor: titleColor,
+              label: 'Bellen',
+              value: instructeur.telefoon!.trim(),
+              onTap: () async {
+                Navigator.pop(context);
+                await _launch(context, telUri);
+              },
+            ),
+          if (telUri != null && (whatsappUri != null || emailUri != null))
+            const Divider(height: 18),
+          if (whatsappUri != null)
+            _ContactSheetAction(
+              icon: CoolIcons.chat,
+              iconColor: titleColor,
+              label: 'WhatsApp',
+              value:
+                  (instructeur.whatsappNummer ?? instructeur.telefoon)!.trim(),
+              onTap: () async {
+                Navigator.pop(context);
+                await _launch(context, whatsappUri);
+              },
+            ),
+          if (whatsappUri != null && emailUri != null)
+            const Divider(height: 18),
+          if (emailUri != null)
+            _ContactSheetAction(
+              icon: CoolIcons.mail,
+              iconColor: titleColor,
+              label: 'E-mail',
+              value: instructeur.email!.trim(),
+              onTap: () async {
+                Navigator.pop(context);
+                await _launch(context, emailUri);
+              },
+            ),
+          if (!heeftActies)
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Text(
+                'Geen geldige contactgegevens bekend voor je instructeur.',
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.4,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -798,10 +833,10 @@ class _ContactSheetAction extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w700,
+                      color: iconColor,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -809,7 +844,7 @@ class _ContactSheetAction extends StatelessWidget {
                     value,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       color: AppColors.textSecondary,
                     ),
@@ -817,16 +852,13 @@ class _ContactSheetAction extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(CoolIcons.chevronRight,
-                color: AppColors.iconPrimary, size: 20),
+            Icon(CoolIcons.chevronRight, color: iconColor, size: 20),
           ],
         ),
       ),
     );
   }
 }
-
-// ── Shimmer laadstatus ────────────────────────────────────────────────────────
 
 class _ProfielShimmer extends StatelessWidget {
   const _ProfielShimmer();

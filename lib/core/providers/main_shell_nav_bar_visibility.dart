@@ -5,12 +5,12 @@ import '../../core/services/native_navigation_bridge.dart';
 
 /// True zolang een startup-splash-overlay zichtbaar is.
 ///
-/// Leerling-app: de splash is een eigen route (`/splash`) buiten de shell,
-/// geen overlay boven de shell zoals in de Instructeur-app. De navbar wordt
-/// daar al verborgen omdat [mainShellMountedProvider] dan nog false is --
-/// daarom staat dit hier standaard op false.
+/// Leerling-app: de splash is een eigen route (`/splash`) buiten de shell.
+/// Standaard aan, zodat de navbar verborgen blijft tot [LeerlingApp] bevestigt
+/// dat de gebruiker voorbij splash/login is. De native balk is een
+/// venster-overlay en blijft anders op die schermen liggen.
 final klantioStartupSplashBlockingProvider = StateProvider<bool>(
-  (ref) => false,
+  (ref) => true,
 );
 
 /// Aantal actieve bootstrap-/loading-blokkades binnen de main shell

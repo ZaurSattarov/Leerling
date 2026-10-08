@@ -29,7 +29,8 @@ class CommunicationService {
     required String to,
   }) {
     final email = to.trim();
-    debugPrint('[email] sendPasswordChangedSecurityEmail(to: ${_maskEmail(email)})');
+    debugPrint(
+        '[email] sendPasswordChangedSecurityEmail(to: ${_maskEmail(email)})');
     if (email.isEmpty) {
       lastEmailError = 'Geen e-mailadres voor securitymail';
       return Future.value(false);
@@ -48,8 +49,8 @@ class CommunicationService {
     String? subject,
   }) async {
     lastEmailError = null;
-    final url = Uri.parse(
-        '${StudentService.supabaseUrl}/functions/v1/send-email');
+    final url =
+        Uri.parse('${StudentService.supabaseUrl}/functions/v1/send-email');
     // Security (2026-09-24): geen fallback meer naar de publishable/anon-key
     // als er geen sessie is. Die fallback was zowel een AVG-risico (een
     // unauthenticated caller kon e-mails triggeren) áls stuk sinds de
