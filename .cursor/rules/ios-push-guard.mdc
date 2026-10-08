@@ -1,0 +1,31 @@
+---
+description: Hard guard — never silence iOS push or drop APNs→FCM bridging
+alwaysApply: true
+---
+
+# iOS Push Guard — HARD RULE (2026-10-08)
+
+Incident (Instructeur + Leerling): push leek “dood” op een echte iPhone doordat
+(1) `willPresent` banners expres uitzette via `completionHandler([])`, en
+(2) het APNs-token werd weggegooid als Firebase nog niet klaar was (geen buffer).
+
+## Verboden (zonder expliciete productbeslissing van de gebruiker)
+
+- In `ios/Runner/AppDelegate.swift`: `willPresent` → `completionHandler([])`
+  voor remote/FCM-push (ook niet “alleen in foreground”, ook niet “geen grijs vlak”).
+- `pendingApnsDeviceToken` verwijderen of APNs alleen zetten binnen
+  `if FirebaseApp.app() != nil { ... }` **zonder** het token te bufferen wanneer
+  Firebase nog `nil` is.
+- Push-wijzigingen begraven in `chore: sync local changes` of vergelijkbare
+  anonieme sync-commits.
+
+## Verplicht
+
+- `willPresent` moet zichtbare opties geven: minimaal
+  `[.banner, .list, .sound, .badge]` (of equivalent).
+- APNs-token altijd bufferen tot `FirebaseApp.app() != nil`, daarna opnieuw
+  toepassen na engine-init / korte retries.
+- Na wijziging aan `AppDelegate.swift` of `**/push_service.dart`: smoke-test op
+  **echte iPhone**, niet alleen simulator.
+
+Zelfde guard staat in de Instructeur-repo.

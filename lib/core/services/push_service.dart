@@ -19,7 +19,8 @@ import 'leerling_notificatie_router.dart';
 import 'student_service.dart';
 
 const _devicePrefKey = 'klantio_push_device_id_v1';
-const apnsTokenMaxRetries = 5;
+/// Echte iPhone: APNs→Firebase-koppeling kan enkele seconden na cold start duren.
+const apnsTokenMaxRetries = 12;
 const apnsTokenRetryDelay = Duration(seconds: 1);
 const pushTapMaxFrameRetries = 60;
 

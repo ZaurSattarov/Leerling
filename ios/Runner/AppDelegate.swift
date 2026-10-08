@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import UserNotifications
 import FirebaseCore
 import FirebaseMessaging
 import GoogleMaps
@@ -8,6 +9,11 @@ import GoogleMaps
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   /// Bewaar launchOptions voor FLTFirebaseMessagingPlugin na deferred plugin-registratie.
   private var storedLaunchOptions: [UIApplication.LaunchOptionsKey: Any]?
+  // AGENT LOCK (2026-10-08) — DO NOT REMOVE.
+  // APNs kan vóór Firebase.initializeApp() (Dart) binnenkomen. Zonder buffer
+  // raakt Messaging.apnsToken zoek → geen FCM-token → geen push. Zie
+  // .cursor/rules/ios-push-guard.mdc.
+  private var pendingApnsDeviceToken: Data?
 
   override func application(
     _ application: UIApplication,
@@ -30,6 +36,20 @@ import GoogleMaps
     // zonder deze registratie viel de app altijd terug op de Flutter-pil.
     NativeNavigationBridge.shared.register(with: engineBridge)
     replayDidFinishLaunchingForFirebaseMessaging()
+    applyPendingApnsToken()
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+      self?.applyPendingApnsToken()
+      UIApplication.shared.registerForRemoteNotifications()
+    }
+    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+      self?.applyPendingApnsToken()
+    }
+  }
+
+  private func applyPendingApnsToken() {
+    guard let token = pendingApnsDeviceToken, FirebaseApp.app() != nil else { return }
+    Messaging.messaging().apnsToken = token
+    NSLog("[AppDelegate] APNS token gekoppeld aan Firebase Messaging")
   }
 
   /// Live Aankomst (Feature 2, Fase 3): Google Maps SDK for iOS.
@@ -73,10 +93,9 @@ import GoogleMaps
     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
   ) {
     // Expliciete APNs→FCM-koppeling: FirebaseApp.configure() gebeurt vanuit Dart;
-    // swizzling kan later klaar zijn dan didRegister.
-    if FirebaseApp.app() != nil {
-      Messaging.messaging().apnsToken = deviceToken
-    }
+    // swizzling kan later klaar zijn dan didRegister. Token bufferen tot Firebase klaar is.
+    pendingApnsDeviceToken = deviceToken
+    applyPendingApnsToken()
     super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
   }
 
@@ -86,5 +105,17 @@ import GoogleMaps
   ) {
     NSLog("[AppDelegate] APNS_REGISTER_FAILED: %@", error.localizedDescription)
     super.application(application, didFailToRegisterForRemoteNotificationsWithError: error)
+  }
+
+  // AGENT LOCK (2026-10-08) — DO NOT silence banners.
+  // Nooit completionHandler([]) voor remote push: dat maakte push “dood”
+  // terwijl de app open was. Productkeuze nodig vóór enige suppressie.
+  // Zie .cursor/rules/ios-push-guard.mdc.
+  override func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    willPresent notification: UNNotification,
+    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+  ) {
+    completionHandler([.banner, .list, .sound, .badge])
   }
 }

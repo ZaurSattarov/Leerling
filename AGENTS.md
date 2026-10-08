@@ -14,6 +14,10 @@ Before making code changes:
 7. Show compact `KLANTIO PREFLIGHT`.
 8. Only then modify code.
 
+**iOS push guard (HARD, 2026-10-08):** never silence remote push via
+`willPresent` → `completionHandler([])`; always buffer APNs until Firebase is
+ready. Full rule: `.cursor/rules/ios-push-guard.mdc` (also in Instructeur repo).
+
 If Obsidian, database/RLS and code conflict: STOP and report ARCHITECTUURCONFLICT.
 
 Canonical migrations live in the Instructor repo.

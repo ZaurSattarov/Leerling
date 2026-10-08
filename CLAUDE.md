@@ -38,6 +38,18 @@ Codex: `AGENTS.md`. Cursor: `.cursor/rules/klantio-workflow.mdc` (`alwaysApply: 
 
 Canonical Supabase-migrations: Instructeur-repo. Geen tweede migration-tree hier.
 
+## Absolute Regels — iOS Push (2026-10-08)
+
+1. **Nooit** remote push stilzetten via `willPresent` → `completionHandler([])`
+   (ook niet “alleen in de voorgrond”).
+2. APNs-token altijd bufferen (`pendingApnsDeviceToken`) tot Firebase klaar is —
+   nooit stilzwijgend weggooien.
+3. Push-wijzigingen niet begraven in `chore: sync`-commits.
+4. Na wijziging aan `ios/Runner/AppDelegate.swift` of `**/push_service.dart`:
+   smoke-test op **echte iPhone**, niet alleen simulator.
+
+Volledige guard: `.cursor/rules/ios-push-guard.mdc` (zelfde regel in Instructeur).
+
 ## Graphify MCP — Verplichte Workflow
 
 Dit project heeft een geïndexeerde code-graph via de Graphify MCP-server **`graphify-leerling`**
