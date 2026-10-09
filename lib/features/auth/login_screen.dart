@@ -142,6 +142,33 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _meldAanMetApple() async {
+    if (_laden) return;
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _laden = true;
+      _fout = null;
+    });
+
+    try {
+      final response = await StudentService.meldAanMetApple();
+      if (response == null) return; // gebruiker annuleerde
+      if (!mounted) return;
+      final profiel = await StudentService.getMijnProfiel();
+      if (mounted) context.go(profiel != null ? '/home' : '/koppelcode');
+    } on AuthException catch (e) {
+      if (mounted) setState(() => _fout = _vriendelijkeFout(e.message));
+    } catch (e) {
+      debugPrint('[login][apple] fout: $e');
+      if (mounted) {
+        setState(
+            () => _fout = 'Apple-login mislukt. Controleer je verbinding.');
+      }
+    } finally {
+      if (mounted) setState(() => _laden = false);
+    }
+  }
+
   Future<void> _meldAanMetFacebook() async {
     if (_laden) return;
     FocusScope.of(context).unfocus();
@@ -231,11 +258,19 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 8),
+                // Bij een foutmelding wordt de illustratie kleiner, zodat het
+                // hele scherm zonder scrollen zichtbaar blijft.
                 Center(
-                  child: Image.asset(
-                    'assets/Inlogassets/Login-bro.png',
-                    height: MediaQuery.sizeOf(context).height < 700 ? 150 : 180,
-                    fit: BoxFit.contain,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeOut,
+                    height: _fout != null
+                        ? 80
+                        : (MediaQuery.sizeOf(context).height < 700 ? 150 : 180),
+                    child: Image.asset(
+                      'assets/Inlogassets/Login-bro.png',
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -383,13 +418,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 ),
                 if (_fout != null) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   AppErrorBanner(
                     message: _fout!,
                     onDismiss: () => setState(() => _fout = null),
                   ),
                 ],
-                const SizedBox(height: 24),
+                SizedBox(height: _fout != null ? 16 : 24),
                 SizedBox(
                   height: 52,
                   child: ElevatedButton(
@@ -428,6 +463,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SocialLoginRij(
                   googleAan: _laden ? null : _meldAanMetGoogle,
                   facebookAan: _laden ? null : _meldAanMetFacebook,
+                  appleAan: _laden ? null : _meldAanMetApple,
                 ),
                 const SizedBox(height: 20),
                 Row(

@@ -1,5 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
+
+import 'package:crypto/crypto.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -231,6 +235,44 @@ class StudentService {
     return client.auth.signInWithOAuth(
       OAuthProvider.facebook,
       redirectTo: 'leerlingplanner://auth/facebook-callback',
+    );
+  }
+
+  // ── APPLE-LOGIN (native iOS, Sign in with Apple) ─────────────────────────
+  // Vereist door App Store-richtlijn 4.8 zodra er andere sociale logins zijn.
+  // Native Apple-credential -> Supabase signInWithIdToken (Apple-provider moet
+  // in het Supabase-dashboard aan staan met de bundle-ID als Client ID).
+  // Een nonce wordt als SHA-256 aan Apple meegegeven en rauw aan Supabase.
+  // `null` betekent: de gebruiker annuleerde het Apple-scherm.
+  static Future<AuthResponse?> meldAanMetApple() async {
+    final random = Random.secure();
+    final rawNonce = base64UrlEncode(
+      List<int>.generate(32, (_) => random.nextInt(256)),
+    );
+    final hashedNonce = sha256.convert(utf8.encode(rawNonce)).toString();
+
+    final AuthorizationCredentialAppleID credential;
+    try {
+      credential = await SignInWithApple.getAppleIDCredential(
+        scopes: const [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: hashedNonce,
+      );
+    } on SignInWithAppleAuthorizationException catch (e) {
+      if (e.code == AuthorizationErrorCode.canceled) return null;
+      rethrow;
+    }
+
+    final idToken = credential.identityToken;
+    if (idToken == null) {
+      throw StateError('Apple leverde geen identityToken.');
+    }
+    return client.auth.signInWithIdToken(
+      provider: OAuthProvider.apple,
+      idToken: idToken,
+      nonce: rawNonce,
     );
   }
 

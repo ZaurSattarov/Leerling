@@ -34,6 +34,11 @@ dependencies:
   # ingeschakeld in het Supabase-dashboard (Authentication > Providers).
   flutter_facebook_auth: ^7.1.1
 
+  # Sign in with Apple (App Store-richtlijn 4.8): native Apple-ID-credential ->
+  # Supabase signInWithIdToken. crypto: SHA-256 van de nonce.
+  sign_in_with_apple: ^6.1.4
+  crypto: ^3.0.3
+
   # Live Aankomst (Feature 2, Fase 3): Google Maps als basemap voor de
   # lesauto-marker -- uitsluitend deze app; de Instructeur-app toont in V1
   # geen kaart. Vereist native API-key-configuratie, zie

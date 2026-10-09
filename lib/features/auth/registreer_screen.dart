@@ -127,6 +127,27 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
     }
   }
 
+  Future<void> _meldAanMetApple() async {
+    if (_laden) return;
+    FocusScope.of(context).unfocus();
+    setState(() => _laden = true);
+
+    try {
+      final response = await StudentService.meldAanMetApple();
+      if (response == null) return; // gebruiker annuleerde
+      if (!mounted) return;
+      final profiel = await StudentService.getMijnProfiel();
+      if (mounted) context.go(profiel != null ? '/home' : '/koppelcode');
+    } on AuthException catch (e) {
+      _toonFout(_vriendelijkeFout(e.message));
+    } catch (e) {
+      debugPrint('[registratie][apple] fout: $e');
+      _toonFout('Apple-login mislukt. Controleer je verbinding.');
+    } finally {
+      if (mounted) setState(() => _laden = false);
+    }
+  }
+
   Future<void> _meldAanMetFacebook() async {
     if (_laden) return;
     FocusScope.of(context).unfocus();
@@ -330,6 +351,7 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
                 SocialLoginRij(
                   googleAan: _laden ? null : _meldAanMetGoogle,
                   facebookAan: _laden ? null : _meldAanMetFacebook,
+                  appleAan: _laden ? null : _meldAanMetApple,
                 ),
                 const SizedBox(height: 16),
                 Row(

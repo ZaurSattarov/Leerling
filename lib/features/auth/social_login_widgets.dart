@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -17,12 +18,27 @@ import '../../core/constants/app_colors.dart';
 class SocialLoginRij extends StatelessWidget {
   final VoidCallback? googleAan;
   final VoidCallback? facebookAan;
+  final VoidCallback? appleAan;
 
   const SocialLoginRij({
     super.key,
     required this.googleAan,
     required this.facebookAan,
+    this.appleAan,
   });
+
+  Widget _appleKnop(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return SocialLoginKnop(
+      label: 'Doorgaan met Apple',
+      onPressed: appleAan,
+      child: Icon(
+        Icons.apple,
+        size: 26,
+        color: dark ? Colors.white : Colors.black,
+      ),
+    );
+  }
 
   Widget _googleKnop() {
     return SocialLoginKnop(
@@ -50,13 +66,16 @@ class SocialLoginRij extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Google en Facebook altijd naast elkaar, op zowel Android als iOS --
-    // zelfde rij-opbouw/styling als voorheen (Expanded + 12px tussenruimte).
+    // iOS: Apple + Google (Facebook verborgen; App Store-richtlijn 4.8).
+    // Android: Google + Facebook, zoals voorheen.
+    final isIOS = !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+    final links = isIOS ? _appleKnop(context) : _googleKnop();
+    final rechts = isIOS ? _googleKnop() : _facebookKnop();
     return Row(
       children: [
-        Expanded(child: _googleKnop()),
+        Expanded(child: links),
         const SizedBox(width: 12),
-        Expanded(child: _facebookKnop()),
+        Expanded(child: rechts),
       ],
     );
   }
