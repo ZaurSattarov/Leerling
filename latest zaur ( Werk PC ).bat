@@ -23,6 +23,8 @@ if not exist "%PROJECT_DIR%pubspec.yaml" (
 if not exist "%FLUTTER%" (
     if exist "%FLUTTER_LOCAL%" (
         set "FLUTTER=%FLUTTER_LOCAL%"
+    ) else if exist "C:\dev\flutter\bin\flutter.bat" (
+        set "FLUTTER=C:\dev\flutter\bin\flutter.bat"
     ) else (
         set "FLUTTER=flutter"
     )
@@ -48,7 +50,9 @@ if errorlevel 1 (
 )
 
 set "AVD_NAME="
-for /f "tokens=* usebackq" %%A in (`"%ADB%" -s emulator-5554 emu avd name 2^>nul ^| findstr /v /r "^OK$"`) do (
+rem Eerste regel van "emu avd name" is de AVD-naam, de tweede is "OK".
+rem (Geen "| findstr" in de for-opdracht: die pipe gaf "De syntaxis van de bestandsnaam ... is onjuist".)
+for /f "tokens=* usebackq" %%A in (`"%ADB%" -s emulator-5554 emu avd name 2^>nul`) do (
     if not defined AVD_NAME set "AVD_NAME=%%A"
 )
 if not defined AVD_NAME set "AVD_NAME=Pixel_10_Pro"

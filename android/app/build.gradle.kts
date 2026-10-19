@@ -29,15 +29,23 @@ val localProperties = Properties()
 if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
 }
+val isReleaseBuild = gradle.startParameter.taskNames.any {
+    it.contains("Release", ignoreCase = true)
+}
 val mapsApiKey: String =
     (localProperties.getProperty("MAPS_API_KEY") ?: System.getenv("MAPS_API_KEY"))
         ?.takeIf { it.isNotBlank() }
-        ?: throw GradleException(
-            "Google Maps API-key ontbreekt. Voeg 'MAPS_API_KEY=<jouw-key>' toe aan " +
-                "android/local.properties (lokaal, al gitignored), of zet de " +
-                "omgevingsvariabele MAPS_API_KEY (CI). Zie AGENTS.md/CLAUDE.md " +
-                "voor welke key dit moet zijn (Android Leerling, com.klantio.leerling)."
-        )
+        ?: if (isReleaseBuild) {
+            throw GradleException(
+                "Google Maps API-key ontbreekt. Voeg 'MAPS_API_KEY=<jouw-key>' toe aan " +
+                    "android/local.properties (lokaal, al gitignored), of zet de " +
+                    "omgevingsvariabele MAPS_API_KEY (CI). Zie AGENTS.md/CLAUDE.md " +
+                    "voor welke key dit moet zijn (Android Leerling, com.klantio.leerling)."
+            )
+        } else {
+            println("WARNING: MAPS_API_KEY ontbreekt — lege placeholder voor debug. Release-build vereist de echte key.")
+            ""
+        }
 
 // Facebook-login (App ID + Client Token van de Meta for Developers-app,
 // "Facebook Login"-product) -- NOOIT hardcoded en NOOIT gecommit. Lokaal:
@@ -73,10 +81,10 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = keyProperties["keyAlias"] as String
-            keyPassword = keyProperties["keyPassword"] as String
-            storeFile = keyPropertiesFile.parentFile.resolve(keyProperties["storeFile"] as String)
-            storePassword = keyProperties["storePassword"] as String
+            keyAlias = keyProperties["keyAlias"] as String?
+            keyPassword = keyProperties["keyPassword"] as String?
+            storeFile = (keyProperties["storeFile"] as String?)?.let { keyPropertiesFile.parentFile.resolve(it) }
+            storePassword = keyProperties["storePassword"] as String?
         }
     }
 
