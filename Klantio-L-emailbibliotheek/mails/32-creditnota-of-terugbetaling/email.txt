@@ -1,0 +1,22 @@
+Creditnota of terugbetaling
+
+Hoi {{student_name}},
+
+Er is een wijziging geregistreerd bij je rijschoolfactuur. Hieronder staat of het om een creditnota of een bevestigde terugbetaling gaat.
+
+Bekijk de aanpassing: {{action_url}}
+
+Rijschool: {{school_name}}
+Factuur: {{invoice_number}}
+Type wijziging: {{adjustment_type}}
+Referentie: {{adjustment_reference}}
+Bedrag: {{invoice_amount}}
+Datum: {{changed_at}}
+
+Een creditnota is een administratieve correctie. Dat betekent niet automatisch dat er geld is teruggestort.
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

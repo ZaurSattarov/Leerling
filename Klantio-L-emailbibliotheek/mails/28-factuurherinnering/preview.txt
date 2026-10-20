@@ -1,0 +1,21 @@
+Factuurherinnering
+
+Hoi Amir Voorbeeld,
+
+De betaaltermijn van deze openstaande rijschoolfactuur loopt binnenkort af. Bekijk de actuele gegevens voordat je betaalt.
+
+Bekijk je factuur: ../../actie-demo.html?mail=28
+
+Rijschool: Rijschool Voorbeeld
+Factuurnummer: DEMO-2026-0142
+Bedrag: € 180,00
+Vervaldatum: vrijdag 30 oktober 2026
+Betaalstatus: Openstaand
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: ../../actie-demo.html?type=website
+E-mailvoorkeuren: ../../voorkeuren.html

@@ -1,0 +1,78 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": "nieuwe-factuur.html",
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 27,
+  "category": "betalingen",
+  "name": "Nieuwe factuur",
+  "subject": "Er staat een nieuwe factuur voor je klaar",
+  "preheader": "Bekijk de factuur van je rijschool.",
+  "intro": "Hoi {{student_name}},<br><br>{{school_name}} heeft een factuur voor je klaargezet. Bekijk de gegevens en betaal via de mogelijkheid die je rijschool aanbiedt.",
+  "theme": "betaling",
+  "cta": "Bekijk je factuur",
+  "rows": [
+    [
+      "Rijschool",
+      "{{school_name}}"
+    ],
+    [
+      "Factuurnummer",
+      "{{invoice_number}}"
+    ],
+    [
+      "Bedrag",
+      "{{invoice_amount}}"
+    ],
+    [
+      "Vervaldatum",
+      "{{invoice_due_date}}"
+    ],
+    [
+      "Betaalstatus",
+      "{{payment_status}}"
+    ]
+  ],
+  "event": "student.invoice_issued",
+  "slug": "27-nieuwe-factuur",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "school_name",
+    "action_url",
+    "illustration_url",
+    "invoice_number",
+    "invoice_amount",
+    "invoice_due_date",
+    "payment_status",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Er staat een nieuwe factuur voor je klaar",
+  "preheaderExample": "Bekijk de factuur van je rijschool.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

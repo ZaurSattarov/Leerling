@@ -1,0 +1,19 @@
+Uitnodiging voor Klantio L
+
+Hoi {{student_name}},
+
+{{school_name}} nodigt je uit om Klantio L te gebruiken. Bekijk de uitnodiging en koppel je account via de bestaande veilige koppelingsactie.
+
+Bekijk de uitnodiging: {{action_url}}
+
+Rijschool: {{school_name}}
+Uitnodigende instructeur: {{instructor_name}}
+Geldig tot: {{valid_until}}
+
+Verwacht je deze uitnodiging niet? Dan hoef je niets te doen.
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+Noodzakelijke melding over je account of toegang.

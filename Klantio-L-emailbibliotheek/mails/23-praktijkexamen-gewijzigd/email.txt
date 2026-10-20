@@ -1,0 +1,20 @@
+Praktijkexamen gewijzigd
+
+Hoi {{student_name}},
+
+Je geregistreerde examenafspraak is aangepast. Bekijk de nieuwe datum, tijd en locatie.
+
+Bekijk de wijziging: {{action_url}}
+
+Vorige afspraak: {{old_exam_moment}}
+Nieuwe afspraak: {{exam_moment}}
+Vorige locatie: {{old_exam_location}}
+Nieuwe locatie: {{exam_location}}
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

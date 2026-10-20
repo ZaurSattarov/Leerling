@@ -1,0 +1,73 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": true,
+  "debounce": false,
+  "variants": [],
+  "legacy": null,
+  "customerNote": "Uitgebreide financiële details blijven in je beveiligde factuuroverzicht.",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 36,
+  "category": "overzichten",
+  "name": "Maandoverzicht",
+  "subject": "Jouw maand met Klantio L",
+  "preheader": "Je lessen en voortgang samengevat.",
+  "intro": "Hoi {{student_name}},<br><br>Bekijk je afgeronde lessen en vrijgegeven voortgang van de afgelopen maand. Je actuele factuurstatus vind je in de app.",
+  "theme": "voortgang",
+  "cta": "Bekijk je maandoverzicht",
+  "rows": [
+    [
+      "Maand",
+      "{{month}}"
+    ],
+    [
+      "Afgeronde lessen",
+      "{{completed_lessons}}"
+    ],
+    [
+      "Voortgang",
+      "{{progress_summary}}"
+    ],
+    [
+      "Factuurstatus",
+      "{{invoice_summary}}"
+    ]
+  ],
+  "event": "student.digest_month",
+  "slug": "36-maandoverzicht",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "month",
+    "completed_lessons",
+    "progress_summary",
+    "invoice_summary",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Jouw maand met Klantio L",
+  "preheaderExample": "Je lessen en voortgang samengevat.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

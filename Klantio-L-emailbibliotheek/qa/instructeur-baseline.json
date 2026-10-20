@@ -1,0 +1,2194 @@
+[
+  {
+    "file": "actie-demo.html",
+    "sha256": "2f3f771dd7654d534ab12777e7e2bbaae3ff8f1ac8e00addb4eb947f7a0edaa7"
+  },
+  {
+    "file": "assets/abonnement.png",
+    "sha256": "dcf82247dae39e70974d0cd6f9965dcee4a2f2402b2139c7d93186be3671a38f"
+  },
+  {
+    "file": "assets/abonnement.svg",
+    "sha256": "87fc0ed0ad88487219686e1e8ac913093da0e3ca584e7e00c03d4f291c3e8499"
+  },
+  {
+    "file": "assets/betaling.png",
+    "sha256": "768825c8583f931b8054ff6aafe8970238065782122fdeb63cdf1a34c8d507d1"
+  },
+  {
+    "file": "assets/betaling.svg",
+    "sha256": "765c7a1fdf658dc4bb1fe3b7a75e092350076da1a5f58223ba8f49d98d397086"
+  },
+  {
+    "file": "assets/beveiliging.png",
+    "sha256": "f71a5b92465023f5e4c5d0b55b258a3b2a93ce445bb7dd6ccfb2ad5ce6097161"
+  },
+  {
+    "file": "assets/beveiliging.svg",
+    "sha256": "bca76d50eaed8237c992eee241164aa3faa0bfca1dd6eb49840dcafc3fa8c63d"
+  },
+  {
+    "file": "assets/documenten.png",
+    "sha256": "40e86db22884c3768770b4036b9f18d1522c22261cf672de95a1858ecbd40402"
+  },
+  {
+    "file": "assets/documenten.svg",
+    "sha256": "d46c1251bea0ee70b896fc83ffc65c9f2bfeb149436f487d60c40a190922e336"
+  },
+  {
+    "file": "assets/kalender.png",
+    "sha256": "44c26d8c975be17be89813a2a37b7177e9debda52c0ae9e99e70f36e1fc0b22d"
+  },
+  {
+    "file": "assets/kalender.svg",
+    "sha256": "7486daa3b7612ba74311f9bc0444a770512f497f527b62da2631af4063d1c831"
+  },
+  {
+    "file": "assets/klantio-wordmark.png",
+    "sha256": "fb575014c421f1c8f58d633b8cf89cf42526251e3bb20c8b278f4d5fae3a06a5"
+  },
+  {
+    "file": "assets/leerling.png",
+    "sha256": "1ce7fbe9c39fe4742450e0152e0b4213c07e53bef20ac94c583b5e03a1d13290"
+  },
+  {
+    "file": "assets/leerling.svg",
+    "sha256": "1319699e02e06149361cedc288f880d4f3fd2f7afbb1c4809fbb923030e41c5f"
+  },
+  {
+    "file": "assets/les-geannuleerd.png",
+    "sha256": "fb3d2fb75432131c78d46a5198d1dab28374994342cac1987ff207b43837447b"
+  },
+  {
+    "file": "assets/les-geannuleerd.svg",
+    "sha256": "0201a14adeb4dafdba56429c8e7f0d2c2ebef370fdc51c7b46fbab404e4186cb"
+  },
+  {
+    "file": "assets/les-gepland.png",
+    "sha256": "f70e2fa37d8b7a81bc4c65f7f1e7adf8354958c4cb82edd8ca41f29c8923d919"
+  },
+  {
+    "file": "assets/les-gepland.svg",
+    "sha256": "eed2eb13ec85d3b14c53d85ac68fbbfddf4d4a0eab3c6ce5d2d38ba7cba80cee"
+  },
+  {
+    "file": "assets/les-gewijzigd.png",
+    "sha256": "42dac7cea30a6c7745a34246eea678a5c33aa6c7747b31f029aebfc6ff7d42a4"
+  },
+  {
+    "file": "assets/les-gewijzigd.svg",
+    "sha256": "068a306e6b5b1321777dd59cbc5e7aecf98701c9bc3506cf47de9cef33003e8a"
+  },
+  {
+    "file": "assets/samenwerking.png",
+    "sha256": "f018f8a48f5795fcb9e679373444142b4b3f1d72eaa8582d1f5f0ef8c453be8f"
+  },
+  {
+    "file": "assets/samenwerking.svg",
+    "sha256": "89e3879c23c38b63aa0045960fe730c1c691051089762967a58a3afba243b623"
+  },
+  {
+    "file": "assets/uitnodiging.png",
+    "sha256": "4eed324a34ad68a03a5e12c85b7c68aa9809c44d3f751a6b4eafb3c55bb25a0e"
+  },
+  {
+    "file": "assets/uitnodiging.svg",
+    "sha256": "6bc93c9279cc15d2922792462e0fe21c0198a68448c51bd0b1ef658668ebfe19"
+  },
+  {
+    "file": "assets/welkom.png",
+    "sha256": "97e81a5f885b9a332b8d9778a2f7d564aa886c1b3d31f09b800a13b020dad471"
+  },
+  {
+    "file": "assets/welkom.svg",
+    "sha256": "0ea1cf3b373e4a8a48a3feb43b6ed85368f606e893c1eb061074c2b2b6aec7c1"
+  },
+  {
+    "file": "backend/ADAPTER-CONTRACT.md",
+    "sha256": "84adcf3c670d07d62b430537ad69b646d4ef972b96acc6148f8b3d16fcd747d6"
+  },
+  {
+    "file": "backend/notification-policy.mjs",
+    "sha256": "5c90cff256e39f16851b44cf3517eaa79b727e9fee3f043dc51dba435f541c66"
+  },
+  {
+    "file": "backend/render-delivery.mjs",
+    "sha256": "3cc56b4ab228261dabf94da56dbf45a539d6a90db4bf8e7accdd6f140006cdb7"
+  },
+  {
+    "file": "catalogus.json",
+    "sha256": "6c9293d0ecd6a6332a8237bd38839366d35ffd9a9cf8cb5cc837c902aaed3007"
+  },
+  {
+    "file": "index.html",
+    "sha256": "62bcce81c8a4c51c632e55751e09e514573781d39986bfde39d54f901daac55c"
+  },
+  {
+    "file": "inventarisatie-20-templates.json",
+    "sha256": "273c8a33dacf6347ea788dd0dfdfb57d77d037bdc9ffcc4dc3675015aabb82b3"
+  },
+  {
+    "file": "mails/01-welkom-bij-klantio/email.html",
+    "sha256": "66c5957f567ffc7769063a173f184db2e844defd68add85821a65732f9d4509a"
+  },
+  {
+    "file": "mails/01-welkom-bij-klantio/email.txt",
+    "sha256": "39b294cad195f0422670a7b927634fb78300b566e4d9189b6fb2dedd8d7a4dc4"
+  },
+  {
+    "file": "mails/01-welkom-bij-klantio/metadata.json",
+    "sha256": "e8fa69b70b30341250ef04f9abf1144a5e2705dc8865985a3e61d24fd42542d1"
+  },
+  {
+    "file": "mails/01-welkom-bij-klantio/onderwerp.txt",
+    "sha256": "21a6800450fe9a408fb192b32dbe4129fbc25e16d42b9f6602fd6ec5c1b7f0af"
+  },
+  {
+    "file": "mails/01-welkom-bij-klantio/preview.html",
+    "sha256": "d663e92e9c56861b21546f447a67073144dd2907b4a0f077a426c1e1f8f0894e"
+  },
+  {
+    "file": "mails/01-welkom-bij-klantio/preview.txt",
+    "sha256": "65135435f5f6c53b6cd5c2d592b5ba0623535709a335bb006f79e171641dec12"
+  },
+  {
+    "file": "mails/01-welkom-bij-klantio/voorbeeld.json",
+    "sha256": "e99bc85ea06aa3ce43a6517ba7b8d673df9f92ad58ea9b44eb76e8c559fe8697"
+  },
+  {
+    "file": "mails/02-e-mailadres-bevestigen/email.html",
+    "sha256": "1097980aa561369e9ded5828a5a6761846dc95695a3d2ec35f19c5c0aa4557c6"
+  },
+  {
+    "file": "mails/02-e-mailadres-bevestigen/email.txt",
+    "sha256": "5a21c4f59cc3b78798c039071a1734b3f0e637a0a5f9654d5826ce72aaf05ee4"
+  },
+  {
+    "file": "mails/02-e-mailadres-bevestigen/metadata.json",
+    "sha256": "017351052d41690c49ae3922acc018e2346785f727badc530300e300e60e4b0a"
+  },
+  {
+    "file": "mails/02-e-mailadres-bevestigen/onderwerp.txt",
+    "sha256": "d637e8f656ae39d3122c89ab7ccc7ae8b5ff1af39ec758e3873bea3c57de5f52"
+  },
+  {
+    "file": "mails/02-e-mailadres-bevestigen/preview.html",
+    "sha256": "fe0366aa62a402bee98fec28c461440656e33aebb01a173f03da8a2ef586d2bb"
+  },
+  {
+    "file": "mails/02-e-mailadres-bevestigen/preview.txt",
+    "sha256": "705cae2a422c54a400f39f2eee155902572932a8c3b73cb183bd9f5ec6941fb6"
+  },
+  {
+    "file": "mails/02-e-mailadres-bevestigen/voorbeeld.json",
+    "sha256": "ad97c4def05d6b14fbc86d81c004f2069c64fea5b58313d1d044b05edc70d2e9"
+  },
+  {
+    "file": "mails/03-wachtwoord-opnieuw-instellen/email.html",
+    "sha256": "d92544d4284743b54538c1d5ff6d0379628c01dd696a4c253b3d3b9cf46f95b6"
+  },
+  {
+    "file": "mails/03-wachtwoord-opnieuw-instellen/email.txt",
+    "sha256": "439d568903b582dff81fc77c1de0a28059eea0038c24f7f43f3b0b777d2d90e8"
+  },
+  {
+    "file": "mails/03-wachtwoord-opnieuw-instellen/metadata.json",
+    "sha256": "2e9880ac687bc10175b38927b5c20556a5aac5a06d8bdfce39521bb77e32628e"
+  },
+  {
+    "file": "mails/03-wachtwoord-opnieuw-instellen/onderwerp.txt",
+    "sha256": "236be98b99a1c7b3552d893e2c2d24004efc9cde526b82beccb2daae1e2f44a7"
+  },
+  {
+    "file": "mails/03-wachtwoord-opnieuw-instellen/preview.html",
+    "sha256": "b3bf63cda92ddcd4bba2ce471ec364836fd0a47e48ab8fadc8b2002a031925ae"
+  },
+  {
+    "file": "mails/03-wachtwoord-opnieuw-instellen/preview.txt",
+    "sha256": "11b4579f29e30864a1730b83b84a027c7e1f9b7a93b63ce5c0db7ecd89f8845f"
+  },
+  {
+    "file": "mails/03-wachtwoord-opnieuw-instellen/voorbeeld.json",
+    "sha256": "45a6229297183afec2132b4661a3a999c6adac164bb7604feb9090f85247b34f"
+  },
+  {
+    "file": "mails/04-wachtwoord-gewijzigd/email.html",
+    "sha256": "31eae26eb5176ede4200364c0a561239e2fcb062baa04d05efb2023ef83ec06b"
+  },
+  {
+    "file": "mails/04-wachtwoord-gewijzigd/email.txt",
+    "sha256": "9403fe76623e486a0c601393a50d22ffb2d26f02bfcd4c7269ed0ff037e95b54"
+  },
+  {
+    "file": "mails/04-wachtwoord-gewijzigd/metadata.json",
+    "sha256": "455bcb1edbef5cd8d7595655136689f195db18663ad73eac462634d7218b32d8"
+  },
+  {
+    "file": "mails/04-wachtwoord-gewijzigd/onderwerp.txt",
+    "sha256": "7024f8e189af0e2402aae010d9a7a857a6493fed3c76357e3e3baf9ca49680cb"
+  },
+  {
+    "file": "mails/04-wachtwoord-gewijzigd/preview.html",
+    "sha256": "40d44b659bb3e933389504f6a24abf61d5bfb3707cbf17b3b8354d1d74dd7f24"
+  },
+  {
+    "file": "mails/04-wachtwoord-gewijzigd/preview.txt",
+    "sha256": "ce88a3f475a0b8eb852453ba72249aae7fb8d86cf04a5ac4ffc2938049bf0712"
+  },
+  {
+    "file": "mails/04-wachtwoord-gewijzigd/voorbeeld.json",
+    "sha256": "b5dc8d75c0ad800815257d2acf2c9153b3995d5517547ed702b1603f873a95d9"
+  },
+  {
+    "file": "mails/05-e-mailadres-gewijzigd/email.html",
+    "sha256": "2ab73157c6e68b86dcc6c26de6cccf7cb01c5d2c5313e72e2cef4a2ae6a0df18"
+  },
+  {
+    "file": "mails/05-e-mailadres-gewijzigd/email.txt",
+    "sha256": "11613b38380655ec9f31622a97375efaff2a0bec23369485752c693dcaaf043e"
+  },
+  {
+    "file": "mails/05-e-mailadres-gewijzigd/metadata.json",
+    "sha256": "5eac3548a3b5b79044b8ebe32cb6c10b716bbcb0ce5de6fa29f8fdff853c7ab1"
+  },
+  {
+    "file": "mails/05-e-mailadres-gewijzigd/onderwerp.txt",
+    "sha256": "09121425cd6814fab956ef8ba48c130bc80bf6c6f79f0b1fe7a7185c47b1a70e"
+  },
+  {
+    "file": "mails/05-e-mailadres-gewijzigd/preview.html",
+    "sha256": "725761f8d5b9fa0096cf091c31d94769bbc77afef37ab63a04fc850da5bb7227"
+  },
+  {
+    "file": "mails/05-e-mailadres-gewijzigd/preview.txt",
+    "sha256": "48d1fb7632e32116c47addd5370968dfa3c42dd8e2c58dc3f0885b81d346de38"
+  },
+  {
+    "file": "mails/05-e-mailadres-gewijzigd/voorbeeld.json",
+    "sha256": "ed2d178d1210af4391ec224520f972644389f11ac9eb01e3051b21ff20c4648f"
+  },
+  {
+    "file": "mails/06-beveiligingswaarschuwing/email.html",
+    "sha256": "31975eed77f4a8ca44ba95ffc6db9e7292b96bf9ffd95ad8ae43f112d6e52911"
+  },
+  {
+    "file": "mails/06-beveiligingswaarschuwing/email.txt",
+    "sha256": "c60ee62d2151824fb573dae6a1e4488085d8dd71847c980b5bb45991a1be0243"
+  },
+  {
+    "file": "mails/06-beveiligingswaarschuwing/metadata.json",
+    "sha256": "6c3439408cc883bc15e64ed96408e74720ca3ddaca5ab4c5c486742f18389d48"
+  },
+  {
+    "file": "mails/06-beveiligingswaarschuwing/onderwerp.txt",
+    "sha256": "8b6a2bc40079abde8d46ec106246b847746b30094446297158d67a79f723d7c7"
+  },
+  {
+    "file": "mails/06-beveiligingswaarschuwing/preview.html",
+    "sha256": "cd19fd1541178a072f7a940289d5c2d142343fb4547286a15099b3c542e067a8"
+  },
+  {
+    "file": "mails/06-beveiligingswaarschuwing/preview.txt",
+    "sha256": "ee60ce674ee0528ec379fd6ad7c8ea05ebac5096e4eab9b62d47cfab4f8aea0a"
+  },
+  {
+    "file": "mails/06-beveiligingswaarschuwing/voorbeeld.json",
+    "sha256": "ccf6c579dffa3316c826745fdafd202b9665324e87ea47e339a4f12ac44d33da"
+  },
+  {
+    "file": "mails/07-account-gedeactiveerd/email.html",
+    "sha256": "96e4e5b847b84c51a82f939d331b5eb3ca729ac0c1e8c28622362abb945b9b48"
+  },
+  {
+    "file": "mails/07-account-gedeactiveerd/email.txt",
+    "sha256": "7aa84c41ea0238e5d2f6fd9dca339678a32a6891238018bba83322aaeb81fa41"
+  },
+  {
+    "file": "mails/07-account-gedeactiveerd/metadata.json",
+    "sha256": "38be271614a2a59c10e81c5364ddb1cc25c08c1a03330ffede527573a479fa89"
+  },
+  {
+    "file": "mails/07-account-gedeactiveerd/onderwerp.txt",
+    "sha256": "dd7c69ed91121a2868eccaaebf038ca3c6dbce0462bd36352e9cf5771e4180af"
+  },
+  {
+    "file": "mails/07-account-gedeactiveerd/preview.html",
+    "sha256": "2fd9b76eb06bfa2f902f91765200967ff128c5f103be7f3501ae968dcf52b204"
+  },
+  {
+    "file": "mails/07-account-gedeactiveerd/preview.txt",
+    "sha256": "f56981b895610bfac9b54226aaa74310b27d2afd76f61a45cb33b3711c9e5f2d"
+  },
+  {
+    "file": "mails/07-account-gedeactiveerd/voorbeeld.json",
+    "sha256": "3030dcbdef286bcc782d239b0053080c6298f16c6f4f1b0d083f1c921a65bfd7"
+  },
+  {
+    "file": "mails/08-uitnodiging-voor-rijschoolteam/email.html",
+    "sha256": "f04bb4c0642c85095799dc97d567ea110fe32b61d887da69ea695d941a65cac5"
+  },
+  {
+    "file": "mails/08-uitnodiging-voor-rijschoolteam/email.txt",
+    "sha256": "b908abeed21a9037412ab71f719820922dc4fdf3739a873e93a22fd1c9e76508"
+  },
+  {
+    "file": "mails/08-uitnodiging-voor-rijschoolteam/metadata.json",
+    "sha256": "fc04d3fa490fdaf22bd438e081a0d6fb40ca51bc136f22e6f45201afe6c2c639"
+  },
+  {
+    "file": "mails/08-uitnodiging-voor-rijschoolteam/onderwerp.txt",
+    "sha256": "7c65369fa435ef574e6efdbb0d2cca927217eb566f444ef082ae42f6f7b53053"
+  },
+  {
+    "file": "mails/08-uitnodiging-voor-rijschoolteam/preview.html",
+    "sha256": "2fb84e43a0b16bff38297a9466a798d42cba29b4697ab96d990bcd87e0c99258"
+  },
+  {
+    "file": "mails/08-uitnodiging-voor-rijschoolteam/preview.txt",
+    "sha256": "dc38e54617698dabbcec411ebc40bda215d555eccf44bf59ed0becbd695bc099"
+  },
+  {
+    "file": "mails/08-uitnodiging-voor-rijschoolteam/voorbeeld.json",
+    "sha256": "2484504839302581f5d51a75487066a41733cc9626535a10b1f36b2a035998fd"
+  },
+  {
+    "file": "mails/09-teamuitnodiging-geaccepteerd/email.html",
+    "sha256": "4d6ea36d7122a1a7b88bfa0a30841c0c186cad7641e166691a81ff85928a45f9"
+  },
+  {
+    "file": "mails/09-teamuitnodiging-geaccepteerd/email.txt",
+    "sha256": "4a6f6483f8c891407f2108dc5a9a411db220371febea4c076a969266e1e7b40a"
+  },
+  {
+    "file": "mails/09-teamuitnodiging-geaccepteerd/metadata.json",
+    "sha256": "1b95e1cec1a8992e1dba72b7dc246896da3eb1f2b7d0d27d572fc9412391abca"
+  },
+  {
+    "file": "mails/09-teamuitnodiging-geaccepteerd/onderwerp.txt",
+    "sha256": "4289b4e52a1a5601846b198290d2e8435e1d70c0f4dba9ca76842d14ad9f64ec"
+  },
+  {
+    "file": "mails/09-teamuitnodiging-geaccepteerd/preview.html",
+    "sha256": "4a205b58d003a1c6c7cd3761cba9479928bcaf4b6a0bc4af0392bf9f81e3b048"
+  },
+  {
+    "file": "mails/09-teamuitnodiging-geaccepteerd/preview.txt",
+    "sha256": "ccfafeda6da38467574e241d8171bc4b23c9c25403991ff4d2ff7ca0951f9424"
+  },
+  {
+    "file": "mails/09-teamuitnodiging-geaccepteerd/voorbeeld.json",
+    "sha256": "ec1300ae52b39855f31e01e819550221c9323dd31933e5f4f3976affc9036040"
+  },
+  {
+    "file": "mails/10-teamuitnodiging-verloopt-binnenkort/email.html",
+    "sha256": "b0e20313401c4f51ef14345c94d22223ee030cd5749c7639fdf9979da5d77377"
+  },
+  {
+    "file": "mails/10-teamuitnodiging-verloopt-binnenkort/email.txt",
+    "sha256": "84ef62a6498567a5c8d483c7cf4ce51cc9bc102defd9776f572f431421cb4011"
+  },
+  {
+    "file": "mails/10-teamuitnodiging-verloopt-binnenkort/metadata.json",
+    "sha256": "e47c9e22c6fbf3bb94390ab6907cc582d399aaf9222c7bb608ea78c1b3f6cffc"
+  },
+  {
+    "file": "mails/10-teamuitnodiging-verloopt-binnenkort/onderwerp.txt",
+    "sha256": "1afb27d40921c2b542bca2f213b51553ac9f48348e498f64155fbccd7147edf9"
+  },
+  {
+    "file": "mails/10-teamuitnodiging-verloopt-binnenkort/preview.html",
+    "sha256": "8bcba1dff4321a4520688af52bdd3a52cdda273d7d588713798d35a79143c0f0"
+  },
+  {
+    "file": "mails/10-teamuitnodiging-verloopt-binnenkort/preview.txt",
+    "sha256": "fa1b9fe14fc8089d2229ad7768402aaab9da840b3b37817be9d9111ddbf115eb"
+  },
+  {
+    "file": "mails/10-teamuitnodiging-verloopt-binnenkort/voorbeeld.json",
+    "sha256": "b4b1be81cf722739ab67c4e0ea7f43e2d3785052f7501624c50985303c27096a"
+  },
+  {
+    "file": "mails/11-rol-of-toegangsrechten-gewijzigd/email.html",
+    "sha256": "035adb27d3428c5bdee0a897afc9f6ca5034bc195326e07e8244e5092c969bb3"
+  },
+  {
+    "file": "mails/11-rol-of-toegangsrechten-gewijzigd/email.txt",
+    "sha256": "93555602492cdd7f0d93ea4b6f370f2b25d12af2fc8dbb192762a185e5907ffa"
+  },
+  {
+    "file": "mails/11-rol-of-toegangsrechten-gewijzigd/metadata.json",
+    "sha256": "6b39cc6b84480b1ff1fb377a592417451794f9e393aba13768e535dac0ecedfa"
+  },
+  {
+    "file": "mails/11-rol-of-toegangsrechten-gewijzigd/onderwerp.txt",
+    "sha256": "06af3fee23eea28e6210009a7868f421a0b03d7fc1cbddb7d983ad93dc053367"
+  },
+  {
+    "file": "mails/11-rol-of-toegangsrechten-gewijzigd/preview.html",
+    "sha256": "2ad01b633c5b77751ffe5d7fd2e4a6b2223196724613cb4b9821a9dcbfc2a190"
+  },
+  {
+    "file": "mails/11-rol-of-toegangsrechten-gewijzigd/preview.txt",
+    "sha256": "a67f80f5adc7712da9a91b7bfc49f293f23733f2b4a85254247482cf3f5dcf00"
+  },
+  {
+    "file": "mails/11-rol-of-toegangsrechten-gewijzigd/voorbeeld.json",
+    "sha256": "a977114ca2b14a7e85043a2af60412d961412a6266ddfbb91b6390f22c3bdf93"
+  },
+  {
+    "file": "mails/12-nieuwe-medewerker-toegevoegd/email.html",
+    "sha256": "4dfbb82ec9197a1713066735acb69f765b585ef7abed98cd425862ed9d151e3f"
+  },
+  {
+    "file": "mails/12-nieuwe-medewerker-toegevoegd/email.txt",
+    "sha256": "d5bb521f2a80012bfe15245f6cd0b4dd7f2930b4cd76c896148b51efccf62757"
+  },
+  {
+    "file": "mails/12-nieuwe-medewerker-toegevoegd/metadata.json",
+    "sha256": "821b9829e422cc8d44b777ea974b74c0d9a6361c8d4e4401b6a3de4c9103b026"
+  },
+  {
+    "file": "mails/12-nieuwe-medewerker-toegevoegd/onderwerp.txt",
+    "sha256": "bf719536dcd6c09d53c61e9e2e6083f22452f1ffd849fc3f7ef9a088cc546e75"
+  },
+  {
+    "file": "mails/12-nieuwe-medewerker-toegevoegd/preview.html",
+    "sha256": "782ddaa170a154abbd2b8a43ecba0c2e52a3916d8f531561f1bd6e035b3af916"
+  },
+  {
+    "file": "mails/12-nieuwe-medewerker-toegevoegd/preview.txt",
+    "sha256": "aebcfcb6f492e6681ef49bb3a470d4c3fc7f55aa5d2511efa43bac2599778cca"
+  },
+  {
+    "file": "mails/12-nieuwe-medewerker-toegevoegd/voorbeeld.json",
+    "sha256": "5e19a9f7e3f7beb3d12d6b346d47a49c9c05d719a5e977ccef572b3909bfc37e"
+  },
+  {
+    "file": "mails/13-medewerker-gedeactiveerd/email.html",
+    "sha256": "6359505168a818b07088b2194a33098e274c78a6afedb7313641aefbc4e5d8db"
+  },
+  {
+    "file": "mails/13-medewerker-gedeactiveerd/email.txt",
+    "sha256": "70e6d180a5b050d7853c230c20c15877969391b0734514eb39249901b6dd76c0"
+  },
+  {
+    "file": "mails/13-medewerker-gedeactiveerd/metadata.json",
+    "sha256": "81a2645d48f919ddee18ba6640ee8a4f4c994c863ce508a3d6eec0e68408be1e"
+  },
+  {
+    "file": "mails/13-medewerker-gedeactiveerd/onderwerp.txt",
+    "sha256": "7c9332f3f2a5ec2fc443adcc84301ce39f1d5f8d684a1e30304cb75afe2391d5"
+  },
+  {
+    "file": "mails/13-medewerker-gedeactiveerd/preview.html",
+    "sha256": "1976d3fb14d58caf8309535d03485421266f10b46eae105f202139168e790a4d"
+  },
+  {
+    "file": "mails/13-medewerker-gedeactiveerd/preview.txt",
+    "sha256": "e14e3af16cbc0275f87970d0152b6df1ebd683fd2e4050f63a72de141bc9d1fa"
+  },
+  {
+    "file": "mails/13-medewerker-gedeactiveerd/voorbeeld.json",
+    "sha256": "72cdf121f27876198779d613937e3b67fba66f454b560bbe981df483d893bde6"
+  },
+  {
+    "file": "mails/14-collega-heeft-een-rijles-aan-jou-toegewezen/email.html",
+    "sha256": "5a3e5600e8b9cfe24b631e95c14152be89c50fb52d77f260b61efa21f4427b46"
+  },
+  {
+    "file": "mails/14-collega-heeft-een-rijles-aan-jou-toegewezen/email.txt",
+    "sha256": "b8a7101d3c899b7013095ab02e54db328f90903b44a6665224d400f8d0a0707f"
+  },
+  {
+    "file": "mails/14-collega-heeft-een-rijles-aan-jou-toegewezen/metadata.json",
+    "sha256": "6604e7531e666ee8a06526c15acc441d65676e7efe302bf2c027f7f4a85a695a"
+  },
+  {
+    "file": "mails/14-collega-heeft-een-rijles-aan-jou-toegewezen/onderwerp.txt",
+    "sha256": "fd33802821a5e35e095be3b4963534cb8b5784989335cfcdcb6bb6aa24323e73"
+  },
+  {
+    "file": "mails/14-collega-heeft-een-rijles-aan-jou-toegewezen/preview.html",
+    "sha256": "dfde126dc97e56b9ad4e45f2fa2daa65e25ee0099714f957330b4a789d3d6bc3"
+  },
+  {
+    "file": "mails/14-collega-heeft-een-rijles-aan-jou-toegewezen/preview.txt",
+    "sha256": "72796ef53653a065e9bf8ff5ecc5e0f4f2f996380efa71a947dc9bb26e2b920c"
+  },
+  {
+    "file": "mails/14-collega-heeft-een-rijles-aan-jou-toegewezen/voorbeeld.json",
+    "sha256": "e56755b18f38db18c7c12b70cd7f4b6f5db1fc8e607f0d886441d96d10cc943e"
+  },
+  {
+    "file": "mails/15-collega-heeft-jouw-rijles-overgenomen/email.html",
+    "sha256": "8fbd08c573dd6cdd0200788b4df25b092b8cb0aed56b1041ee6c194350f42cbf"
+  },
+  {
+    "file": "mails/15-collega-heeft-jouw-rijles-overgenomen/email.txt",
+    "sha256": "a8f55c78767e047d829075ba19f24ca25f9af6878e680f40e6881612589ef738"
+  },
+  {
+    "file": "mails/15-collega-heeft-jouw-rijles-overgenomen/metadata.json",
+    "sha256": "ae8c9338a06116faf0b167e582249f67ddb3e1a2313719648db307229483c309"
+  },
+  {
+    "file": "mails/15-collega-heeft-jouw-rijles-overgenomen/onderwerp.txt",
+    "sha256": "0278ae9502392237d69665789789df90f356ae8ca878aa9d6992e14ee1a99660"
+  },
+  {
+    "file": "mails/15-collega-heeft-jouw-rijles-overgenomen/preview.html",
+    "sha256": "84a447db22341a19bd687e5f75868fc435e7ea3e91959ebc3fc132c709792155"
+  },
+  {
+    "file": "mails/15-collega-heeft-jouw-rijles-overgenomen/preview.txt",
+    "sha256": "ad3fd6365b3f6210681054be5c8d0a2ce393c1e765d41f71bc6c5b409966f506"
+  },
+  {
+    "file": "mails/15-collega-heeft-jouw-rijles-overgenomen/voorbeeld.json",
+    "sha256": "a2c318c8fa8437675af4729fcc7e43eb878d1370490c00ab14738a448ede9753"
+  },
+  {
+    "file": "mails/16-andere-lesauto-toegewezen/email.html",
+    "sha256": "d46d96de229b70cc149485cc12d1027923a85ba5f7e70510bf9a17b8be2352f4"
+  },
+  {
+    "file": "mails/16-andere-lesauto-toegewezen/email.txt",
+    "sha256": "46b9bc413af1b4852df6f3d5f7fff804ff2f82108eb825db6a86717f657f1ebd"
+  },
+  {
+    "file": "mails/16-andere-lesauto-toegewezen/metadata.json",
+    "sha256": "efdbfec2973bfa86b1786e4247d630fc3dcd861488385202bcc7f0b93ae3dc0b"
+  },
+  {
+    "file": "mails/16-andere-lesauto-toegewezen/onderwerp.txt",
+    "sha256": "b6e423cdeeb60a71ba84ed5a578df9d808136b004e6b99447d35f5984460473b"
+  },
+  {
+    "file": "mails/16-andere-lesauto-toegewezen/preview.html",
+    "sha256": "0c0311bf8fc7b5a816c100538833199cf3cba6af8580943bfbee83f5a4178616"
+  },
+  {
+    "file": "mails/16-andere-lesauto-toegewezen/preview.txt",
+    "sha256": "c799a83761ba26347e451707db3f05a56fcf2d04262ef50f918bd45150ef2508"
+  },
+  {
+    "file": "mails/16-andere-lesauto-toegewezen/voorbeeld.json",
+    "sha256": "2534375ceeb55644cee4dbbba7c5ba3c2bafedaea231fc34bddbf8c287dcab41"
+  },
+  {
+    "file": "mails/17-nieuwe-rijles-in-jouw-agenda/email.html",
+    "sha256": "dbe5ba013a58c226ef502261ce86552a1654b2d694a20cedca01095c491864de"
+  },
+  {
+    "file": "mails/17-nieuwe-rijles-in-jouw-agenda/email.txt",
+    "sha256": "40c9b095f76fb436dc4f9830c3f2667b1da4a9ac78dd068fe71b46ff324d37b9"
+  },
+  {
+    "file": "mails/17-nieuwe-rijles-in-jouw-agenda/metadata.json",
+    "sha256": "be5603c5a7f4482e0653d87cc8002decb3ea75b9a0ad0d3cabc16deef454ba0a"
+  },
+  {
+    "file": "mails/17-nieuwe-rijles-in-jouw-agenda/onderwerp.txt",
+    "sha256": "282716838dc0b8f269cfe437f240cd0186c17a557896b9b33004916042669b55"
+  },
+  {
+    "file": "mails/17-nieuwe-rijles-in-jouw-agenda/preview.html",
+    "sha256": "69ca4bc8c8cabe8c8ac664a40ef9b59ff6e7d9e6de140c3b439c20783eae826e"
+  },
+  {
+    "file": "mails/17-nieuwe-rijles-in-jouw-agenda/preview.txt",
+    "sha256": "719f6111ab11d8df6724d9e68647d77d3db46358d1738e0f93fb6404452cc8fd"
+  },
+  {
+    "file": "mails/17-nieuwe-rijles-in-jouw-agenda/voorbeeld.json",
+    "sha256": "9ac99b7c792944c98efb0d4b3065dac28c4953857f6b7b9341486025539feae7"
+  },
+  {
+    "file": "mails/18-collega-heeft-jouw-rijles-verplaatst/email.html",
+    "sha256": "2c65294e43fad72d9b1b9fc50179f399a2b3599247934cd099e1c77637b13cb2"
+  },
+  {
+    "file": "mails/18-collega-heeft-jouw-rijles-verplaatst/email.txt",
+    "sha256": "a7775d37b1a96018d697e4d78ba6fc752a3a401c66624c527579f72a8c4e743f"
+  },
+  {
+    "file": "mails/18-collega-heeft-jouw-rijles-verplaatst/metadata.json",
+    "sha256": "3790fd04456cec1429c8f929d3371e4f0fd641895e12ebef3b7fdcbcb86db416"
+  },
+  {
+    "file": "mails/18-collega-heeft-jouw-rijles-verplaatst/onderwerp.txt",
+    "sha256": "51f4fc0462500d511138bb454ddcf1bd7a166adf164000695141e8eeaf014b4e"
+  },
+  {
+    "file": "mails/18-collega-heeft-jouw-rijles-verplaatst/preview.html",
+    "sha256": "9b0a3e14c8aaafff2be6c102b79798a6db0c6099e9fabb3e578be698269b6377"
+  },
+  {
+    "file": "mails/18-collega-heeft-jouw-rijles-verplaatst/preview.txt",
+    "sha256": "dc7ac3c2503fa0b97955e586cb6df8b359a8b9902bd4d8b8c0c755e4561ef466"
+  },
+  {
+    "file": "mails/18-collega-heeft-jouw-rijles-verplaatst/voorbeeld.json",
+    "sha256": "0717e115c6b3e5e4f90a9657b162194b4713ef0a086ae14403f9eabf7facf421"
+  },
+  {
+    "file": "mails/19-collega-heeft-tijd-of-locatie-gewijzigd/email.html",
+    "sha256": "941b57ef439c6e37b88472d2a6f08e9b2687caf6a0edd53a9bd8299005502fcf"
+  },
+  {
+    "file": "mails/19-collega-heeft-tijd-of-locatie-gewijzigd/email.txt",
+    "sha256": "4726a6fdd05ad4a53beb0d3cfe53fd1369e5eaa5ea08f508e6cc152ae3ee4d36"
+  },
+  {
+    "file": "mails/19-collega-heeft-tijd-of-locatie-gewijzigd/metadata.json",
+    "sha256": "3ef73c659f522c26ff685e54044600dc1e338f1e256a7d0be2828647785a43ba"
+  },
+  {
+    "file": "mails/19-collega-heeft-tijd-of-locatie-gewijzigd/onderwerp.txt",
+    "sha256": "e5660beb94c0298f9f9c54eba601c9a5a447a95baa692755a6a6e28aa418eeac"
+  },
+  {
+    "file": "mails/19-collega-heeft-tijd-of-locatie-gewijzigd/preview.html",
+    "sha256": "74f3eeb7325910c9a686cbfb959c6742ffb19c40eea6d80294e718a32c5b3783"
+  },
+  {
+    "file": "mails/19-collega-heeft-tijd-of-locatie-gewijzigd/preview.txt",
+    "sha256": "e9022607aeeba8256ad3675ed7a1319ed7cdb2ec4443057c69a80038d20686d7"
+  },
+  {
+    "file": "mails/19-collega-heeft-tijd-of-locatie-gewijzigd/voorbeeld.json",
+    "sha256": "885675b25cce217cfa3195723ed3c2e18f7f06a403800ac041e9b58a5b8539b6"
+  },
+  {
+    "file": "mails/20-rijles-geannuleerd/email.html",
+    "sha256": "25438d1d675f555f94c1a6ced8f903643723e097daac7db830925f71a6fdb281"
+  },
+  {
+    "file": "mails/20-rijles-geannuleerd/email.txt",
+    "sha256": "6eacbca3d541ab78cfd3aafabba930db36e43ac7ece937011369ec4100a104cb"
+  },
+  {
+    "file": "mails/20-rijles-geannuleerd/metadata.json",
+    "sha256": "ac713d203114bfd49cbbe38d08aecd63392b40e215a3987e0ad2b83908dd9b01"
+  },
+  {
+    "file": "mails/20-rijles-geannuleerd/onderwerp.txt",
+    "sha256": "a62ba89097c5c1512a471d1eddd52e71df7239fa43980416de7cf6f4dfa9c665"
+  },
+  {
+    "file": "mails/20-rijles-geannuleerd/preview.html",
+    "sha256": "4e88090bac27289e8186f639b36c7e3b4cb0a3503527b34f6b58f37e3baf55a4"
+  },
+  {
+    "file": "mails/20-rijles-geannuleerd/preview.txt",
+    "sha256": "8f19128c32aa252c1dc22cb35708b3c2af2bb86f5f5134d2c84c62904e7ed9b0"
+  },
+  {
+    "file": "mails/20-rijles-geannuleerd/voorbeeld.json",
+    "sha256": "f1ca72f953b47d134ad56b8bf421eb2974d8c1162e9578e0bfc8228cefa0fc3e"
+  },
+  {
+    "file": "mails/21-leerling-aan-rijles-gekoppeld/email.html",
+    "sha256": "61a98ea9fe0a2f9745e4b5db6d646e2c75df8bfdd0c190e18e2f6ea6c4f1f57b"
+  },
+  {
+    "file": "mails/21-leerling-aan-rijles-gekoppeld/email.txt",
+    "sha256": "9c8921fb6f20acd2b5bc2a0a17a08da28b7f2ada50ab98aa5bc2936a2de66feb"
+  },
+  {
+    "file": "mails/21-leerling-aan-rijles-gekoppeld/metadata.json",
+    "sha256": "6e8e770c30df940e34ecabf866cc51a25624a089125343c2b3ce28d3242f741c"
+  },
+  {
+    "file": "mails/21-leerling-aan-rijles-gekoppeld/onderwerp.txt",
+    "sha256": "32835430c00be7b2dd8395609f84caf3a00c908614274cf766593483011f670e"
+  },
+  {
+    "file": "mails/21-leerling-aan-rijles-gekoppeld/preview.html",
+    "sha256": "cc10ab706390cf07256567a0ea60048da93aed024f1178527737aff4d5805775"
+  },
+  {
+    "file": "mails/21-leerling-aan-rijles-gekoppeld/preview.txt",
+    "sha256": "8a6d397466c00d76afb09d4e6ca304cc6d7735237081832e70c9491746f377ff"
+  },
+  {
+    "file": "mails/21-leerling-aan-rijles-gekoppeld/voorbeeld.json",
+    "sha256": "486e6f9f578d380873a49c9254eaeb80ac130575b43a0ced728b9e6e4126d350"
+  },
+  {
+    "file": "mails/22-rijles-overgedragen-aan-collega/email.html",
+    "sha256": "a8e3d10c51f83cdcade2955c50c1a47216324b5cc42a770198040add548f7192"
+  },
+  {
+    "file": "mails/22-rijles-overgedragen-aan-collega/email.txt",
+    "sha256": "23cc30c817e6ab2130feb17d81ae2ceb5997b9143571dcb022551f10e3904a30"
+  },
+  {
+    "file": "mails/22-rijles-overgedragen-aan-collega/metadata.json",
+    "sha256": "cfd93736f174bac4c4083c0991bf014a1ebf2b433e8d535c31deda0a211e724c"
+  },
+  {
+    "file": "mails/22-rijles-overgedragen-aan-collega/onderwerp.txt",
+    "sha256": "5e5170172234f9b9fd27e3e9471dc47ce54c039bce255782c5ffe6f4cebd28ae"
+  },
+  {
+    "file": "mails/22-rijles-overgedragen-aan-collega/preview.html",
+    "sha256": "b8d19f7d0da215ee3299676812a04c7201fca78374e89eb8ca3f0e7274f9910c"
+  },
+  {
+    "file": "mails/22-rijles-overgedragen-aan-collega/preview.txt",
+    "sha256": "95c80638e2bec548c5541d2f932518a4a5c19419beae45fb3ecd0cc1f16a36a6"
+  },
+  {
+    "file": "mails/22-rijles-overgedragen-aan-collega/voorbeeld.json",
+    "sha256": "caca1884f5e57a037ad9870bd97a28507b842e266b5ba309d27148a37d7ab8ce"
+  },
+  {
+    "file": "mails/23-lesrooster-voor-morgen/email.html",
+    "sha256": "7af8acf3a595525354703751070a5c974e1a3a7267f617bdc843b70e28e68615"
+  },
+  {
+    "file": "mails/23-lesrooster-voor-morgen/email.txt",
+    "sha256": "b4fd7eeeb1d526cb47ef2abbfeda6b58664f19d8fd15f137a168446a041151af"
+  },
+  {
+    "file": "mails/23-lesrooster-voor-morgen/metadata.json",
+    "sha256": "1ba898d2daaa2f449f348ca3abc287a7ba9ddcb579b799c8131d4c14b629744a"
+  },
+  {
+    "file": "mails/23-lesrooster-voor-morgen/onderwerp.txt",
+    "sha256": "e49036949fb5b3a3f73cee993709ab83cdbce076b03b75b5e9de351dd1b0db66"
+  },
+  {
+    "file": "mails/23-lesrooster-voor-morgen/preview.html",
+    "sha256": "d9b9913e8dbfb7037ee1d0db0a2ac489492a85d2ff5dd0e1880703c14422c2ab"
+  },
+  {
+    "file": "mails/23-lesrooster-voor-morgen/preview.txt",
+    "sha256": "b1385d783e61f8c3c884f276c8254c24c614b6453c2d3cad1ec1cb8834f566a6"
+  },
+  {
+    "file": "mails/23-lesrooster-voor-morgen/voorbeeld.json",
+    "sha256": "8d57b24e5b88ef88d1cf43345f826ea72a860a41a5715bac1987e8a35cd133ba"
+  },
+  {
+    "file": "mails/24-weekplanning/email.html",
+    "sha256": "b4f379ed68e05c86693744c40c6f0e60d079ee5107ef21970bb7dc272a332fd1"
+  },
+  {
+    "file": "mails/24-weekplanning/email.txt",
+    "sha256": "f5a5d96d8875188b18eb59548b4bbcbb352ac044810923058ade3c97dbcea5b8"
+  },
+  {
+    "file": "mails/24-weekplanning/metadata.json",
+    "sha256": "00413765c321485c3884b23be9fd7e5e296726dcba01e28adecb3ec18b500b59"
+  },
+  {
+    "file": "mails/24-weekplanning/onderwerp.txt",
+    "sha256": "22b2203a421d40bc1927c89d1b84a0acbb35530556b6fbe29b8fbae6cb738e76"
+  },
+  {
+    "file": "mails/24-weekplanning/preview.html",
+    "sha256": "e2a4207324c5c4229542d9f39daa55da8cbb65dfa1c2d4110bb2a63953e0b9e6"
+  },
+  {
+    "file": "mails/24-weekplanning/preview.txt",
+    "sha256": "f2efcad5036ed13c30ea13d1ec5fce3d3b79f98aec1e921a5ede3523650342da"
+  },
+  {
+    "file": "mails/24-weekplanning/voorbeeld.json",
+    "sha256": "0cab4492240a8cf83389601438e54bcc3b793bebd0c3b75216fd8fc79fa75ec3"
+  },
+  {
+    "file": "mails/25-planningsconflict-ontdekt/email.html",
+    "sha256": "b524e53691330d699a3558c920ac8fd1f22c264a719634ff7b165157cae50caf"
+  },
+  {
+    "file": "mails/25-planningsconflict-ontdekt/email.txt",
+    "sha256": "6fde88f484b6169396504cc6947a45b0e8647fa767f31e03205e409a785e576d"
+  },
+  {
+    "file": "mails/25-planningsconflict-ontdekt/metadata.json",
+    "sha256": "03374f6ab292f36b2db7658df9dc36079772d61080ed8fa6d568dede09bd0db1"
+  },
+  {
+    "file": "mails/25-planningsconflict-ontdekt/onderwerp.txt",
+    "sha256": "272dd42e776e385163fa8c941a8662053045fb35aebf31ce55e91eb4b0bb9699"
+  },
+  {
+    "file": "mails/25-planningsconflict-ontdekt/preview.html",
+    "sha256": "43bf6f3b982372aea007f132d46929a7c2176a0b7c3d702a574548217d20bc4b"
+  },
+  {
+    "file": "mails/25-planningsconflict-ontdekt/preview.txt",
+    "sha256": "b3974859a4a7556481f756f3e0944bbe1577f2b0cfbace8e7a233cd5e01cb6e5"
+  },
+  {
+    "file": "mails/25-planningsconflict-ontdekt/voorbeeld.json",
+    "sha256": "d16f332d3bc8a34893190b059f82fc6b846ce0bd4c678be54ca3f152bf925052"
+  },
+  {
+    "file": "mails/26-leerling-heeft-beschikbaarheid-gewijzigd/email.html",
+    "sha256": "b3b48bb2b7e68fefb947393e8240508ba80937d78b0d59be0b61bd714a106a1d"
+  },
+  {
+    "file": "mails/26-leerling-heeft-beschikbaarheid-gewijzigd/email.txt",
+    "sha256": "d8f6d84293e65dbc91087eb90b433dd77ea2f0a991d54784787a9d8d13db7c86"
+  },
+  {
+    "file": "mails/26-leerling-heeft-beschikbaarheid-gewijzigd/metadata.json",
+    "sha256": "0ffe0fd34ceb0a3967a24cc72046eb08c959a04a094dc0fed72cf8c82e69b088"
+  },
+  {
+    "file": "mails/26-leerling-heeft-beschikbaarheid-gewijzigd/onderwerp.txt",
+    "sha256": "a4c0fbd77df4c99d4897383474112f38ffff34137f61a26a7279d4cb9cb58558"
+  },
+  {
+    "file": "mails/26-leerling-heeft-beschikbaarheid-gewijzigd/preview.html",
+    "sha256": "cdb6e2f998d73e3b025a55be3b19a359aec00a7ed4525ea0736538819af1ff1c"
+  },
+  {
+    "file": "mails/26-leerling-heeft-beschikbaarheid-gewijzigd/preview.txt",
+    "sha256": "88a4669dfcf42b88f6684aa1cb5de4def005d2fa967b4623b608734ca09b0a38"
+  },
+  {
+    "file": "mails/26-leerling-heeft-beschikbaarheid-gewijzigd/voorbeeld.json",
+    "sha256": "566ac6590f01cac4a69819b63d5ac824b8985f32cf8e35668e404542a8d47bc8"
+  },
+  {
+    "file": "mails/27-openstaande-planningstaak/email.html",
+    "sha256": "d89d2aa022e6e551dda572f74459a92e0bf871a428b9e6585ccb4357fc509016"
+  },
+  {
+    "file": "mails/27-openstaande-planningstaak/email.txt",
+    "sha256": "c7261e5ed546e195cd179eed608cc5f70f90462638644e24bb97cd317fbe5791"
+  },
+  {
+    "file": "mails/27-openstaande-planningstaak/metadata.json",
+    "sha256": "3e34b9e384e738e3c8f3c9550867108de70cbde8e0740b6707a05d3735939d4f"
+  },
+  {
+    "file": "mails/27-openstaande-planningstaak/onderwerp.txt",
+    "sha256": "e88b4a7c39a465da1510787f21abb9eb25bad884890442b40714a94b272587dc"
+  },
+  {
+    "file": "mails/27-openstaande-planningstaak/preview.html",
+    "sha256": "f4dac25c429af787d22a7805a2a709c0c073a238f978897f236bc425c0e55487"
+  },
+  {
+    "file": "mails/27-openstaande-planningstaak/preview.txt",
+    "sha256": "18b400e62be76b8d461b859f490bea45a42848600e3a93391cc44dab25ace704"
+  },
+  {
+    "file": "mails/27-openstaande-planningstaak/voorbeeld.json",
+    "sha256": "ba857ce2c3e3ddee82f119ebebe233f84d56c04aa1bf1463c4091bd1f4283646"
+  },
+  {
+    "file": "mails/28-nieuwe-leerling-toegewezen/email.html",
+    "sha256": "572466c1dc8e7932566be3c4bfaedd93443fa7054b34d454adaf9d257eb2a9ea"
+  },
+  {
+    "file": "mails/28-nieuwe-leerling-toegewezen/email.txt",
+    "sha256": "9a389a32413100a6c5cbf8ee2e2febd6f566f925ce5331c9d38c3e234b1a1484"
+  },
+  {
+    "file": "mails/28-nieuwe-leerling-toegewezen/metadata.json",
+    "sha256": "d66cfdd5941db16c04efd152b2e09143078c72cb41effafafbf3a753f033f9d7"
+  },
+  {
+    "file": "mails/28-nieuwe-leerling-toegewezen/onderwerp.txt",
+    "sha256": "710e2c7427ebebda0dfcad3d50428d1b42a16f86f0f7f33ae8868f299dbf0d91"
+  },
+  {
+    "file": "mails/28-nieuwe-leerling-toegewezen/preview.html",
+    "sha256": "a58d03cd6563bd3c7b62bbd71ab8e2053d691e0bfb14cb0d6fd5391c479d3213"
+  },
+  {
+    "file": "mails/28-nieuwe-leerling-toegewezen/preview.txt",
+    "sha256": "4beb5da974b38e8bcc46faf9e623f13f405fd19dc170c306d94f2c3d419de34a"
+  },
+  {
+    "file": "mails/28-nieuwe-leerling-toegewezen/voorbeeld.json",
+    "sha256": "87f745ea79c6aad409c1482d37c49324f17d791af9f89f44a13fcca77b94d88c"
+  },
+  {
+    "file": "mails/29-leerling-overgedragen/email.html",
+    "sha256": "549c8736773ea723ed43fb78448999e6edc4eb7edabfa34efb619f8685524f4a"
+  },
+  {
+    "file": "mails/29-leerling-overgedragen/email.txt",
+    "sha256": "e500416d71b61f4fe884e8cc8b4d6b50ae58218ae7cad9db1530a392d1e89e7c"
+  },
+  {
+    "file": "mails/29-leerling-overgedragen/metadata.json",
+    "sha256": "94f117793ab62e01d752cccb988165d6451f067c69615e32d27f3b4cd8419044"
+  },
+  {
+    "file": "mails/29-leerling-overgedragen/onderwerp.txt",
+    "sha256": "98e550a548c9a0854fc3069c611680c983cb335fe122d0733ebf2bde2da7d2d1"
+  },
+  {
+    "file": "mails/29-leerling-overgedragen/preview.html",
+    "sha256": "649f56c96c54c7754971f770f78ad911c7d13062c2deb21b189b377e47b91bed"
+  },
+  {
+    "file": "mails/29-leerling-overgedragen/preview.txt",
+    "sha256": "413f5dc8a53239123deec0ccbe8c029e6568bcb7a55005e022674f2f0cd432d1"
+  },
+  {
+    "file": "mails/29-leerling-overgedragen/voorbeeld.json",
+    "sha256": "0aebdbba33e479d517aecde4fafdd1aef6f89b25b92ed90035f697b5ea40bc3c"
+  },
+  {
+    "file": "mails/30-lespakket-bijna-op/email.html",
+    "sha256": "53fcdd49c852ed480e33f78364e343c0b19ff5e1d099ab07bfccd9f3fb629615"
+  },
+  {
+    "file": "mails/30-lespakket-bijna-op/email.txt",
+    "sha256": "b42967a338e11c029b1a3c479d56d9f05cfca60f8f12cd6dd486ebff8e34ccb4"
+  },
+  {
+    "file": "mails/30-lespakket-bijna-op/metadata.json",
+    "sha256": "1424e640b31919f33c38fd9e123c2be23be30efc44ad44ed1831aa9ef60f77df"
+  },
+  {
+    "file": "mails/30-lespakket-bijna-op/onderwerp.txt",
+    "sha256": "9fd4a893658dfb652ff7829cad8f82ff5e538091ddd8b861f26ef3c0e2bc48be"
+  },
+  {
+    "file": "mails/30-lespakket-bijna-op/preview.html",
+    "sha256": "c5314738517873d61a83654dbe2532d5f367f4fdf90d68ffbedba20d052211de"
+  },
+  {
+    "file": "mails/30-lespakket-bijna-op/preview.txt",
+    "sha256": "016a72b76bbd5364b8c0e0ce790a99d3532eda5e5625ec8bb79a189ed0200ad1"
+  },
+  {
+    "file": "mails/30-lespakket-bijna-op/voorbeeld.json",
+    "sha256": "11fa4a43a0c4fd2085539381a515a17a651774e66267fcf373a009fb6a8bd255"
+  },
+  {
+    "file": "mails/31-lesevaluatie-ontbreekt/email.html",
+    "sha256": "8cc5752a2ca2de4f4c79a08ccaf03c1231426cc2f1c965b8e9a4f4f47a29fc1e"
+  },
+  {
+    "file": "mails/31-lesevaluatie-ontbreekt/email.txt",
+    "sha256": "fe8987170efffd608f540745a634bf594e86a053a5e2d4bd3a4fba2d7ba8c172"
+  },
+  {
+    "file": "mails/31-lesevaluatie-ontbreekt/metadata.json",
+    "sha256": "7a06c46e9735f199d02f78b39c50c8b2440ef367458e5468b8d32134f82de643"
+  },
+  {
+    "file": "mails/31-lesevaluatie-ontbreekt/onderwerp.txt",
+    "sha256": "02ea0cd7c6c7b6c6432cbd8c28956e428cb8fce7cfb74bfba0ef95a7ffa79703"
+  },
+  {
+    "file": "mails/31-lesevaluatie-ontbreekt/preview.html",
+    "sha256": "cf80213a3dc6a120cf1385c35e55f175308357c4fb4f0b7a953e7979860919ec"
+  },
+  {
+    "file": "mails/31-lesevaluatie-ontbreekt/preview.txt",
+    "sha256": "59a760a28c2ecb58871db927abfe5ed76accf91e26176679b474a5d4fa199c5d"
+  },
+  {
+    "file": "mails/31-lesevaluatie-ontbreekt/voorbeeld.json",
+    "sha256": "7e6d2a70183548035134c7a55c0b030c1b445ef65141441db3b4f62ee03e171c"
+  },
+  {
+    "file": "mails/32-ai-lesnotitie-klaar-ter-controle/email.html",
+    "sha256": "2db5a74510a91c7e04dceed1352f5f483970698f66660d1266855e1ee3ca1533"
+  },
+  {
+    "file": "mails/32-ai-lesnotitie-klaar-ter-controle/email.txt",
+    "sha256": "21e955296f28b34195becb8178488922b9d4ce22b7f03bbbb0cc88a6f42823c6"
+  },
+  {
+    "file": "mails/32-ai-lesnotitie-klaar-ter-controle/metadata.json",
+    "sha256": "fd31454530e502e445cdaa0c07df7f267720b5d2e28106e680caf08479fc4dd1"
+  },
+  {
+    "file": "mails/32-ai-lesnotitie-klaar-ter-controle/onderwerp.txt",
+    "sha256": "1e8a089cf00b63b8834c68fdd2d9accb8e9930b11e73a061073671c5943dc97d"
+  },
+  {
+    "file": "mails/32-ai-lesnotitie-klaar-ter-controle/preview.html",
+    "sha256": "9e44be44e42af8288f7a73603cd0916971357a4f5285050bafb0c2c52f4b5f11"
+  },
+  {
+    "file": "mails/32-ai-lesnotitie-klaar-ter-controle/preview.txt",
+    "sha256": "0f7dd049f4273962015f6b8874bd23913ecf71867d09ed8332eb6623bb4a13ba"
+  },
+  {
+    "file": "mails/32-ai-lesnotitie-klaar-ter-controle/voorbeeld.json",
+    "sha256": "58bc5b4da01ed0370d8bc71dde9acc8e2814ad29dec7846bc6a3aa5a0b92be2f"
+  },
+  {
+    "file": "mails/33-praktijkexamen-nadert/email.html",
+    "sha256": "248d1c2ff86019be5a9c306401a074a3fc5ee351f9fa9ef52321e339db2551b5"
+  },
+  {
+    "file": "mails/33-praktijkexamen-nadert/email.txt",
+    "sha256": "cdb5a5aed90e8d980615a2557db333e42f6dde81f6791a9167f9f46682a656d3"
+  },
+  {
+    "file": "mails/33-praktijkexamen-nadert/metadata.json",
+    "sha256": "e3b0696752fc244827ec761e532f4b82eda1ca0886fde56ca0c0ad0f29bf82aa"
+  },
+  {
+    "file": "mails/33-praktijkexamen-nadert/onderwerp.txt",
+    "sha256": "fd5d4acdf2ac03bd858488308b36cc1ac6b74c648f14b136dcde6ba49c1af939"
+  },
+  {
+    "file": "mails/33-praktijkexamen-nadert/preview.html",
+    "sha256": "381bef2e1764f635a6ecd180c7a9936ea66ec062e36777d1a37b8ba2dfacb107"
+  },
+  {
+    "file": "mails/33-praktijkexamen-nadert/preview.txt",
+    "sha256": "66aeef07eda5a4f3e1641f2346cd8e3295bffbccd9f49013a50795b19feb171b"
+  },
+  {
+    "file": "mails/33-praktijkexamen-nadert/voorbeeld.json",
+    "sha256": "c1b2e2064fdc18879e8801d1e1f280b08cce7af66bf32b5869d20b9de2d6200a"
+  },
+  {
+    "file": "mails/34-examenresultaat-geregistreerd/email.html",
+    "sha256": "9fe3f9a08927f2e633f97347da21f9c6cee6b34b391d09ef8afc01b8f625e04d"
+  },
+  {
+    "file": "mails/34-examenresultaat-geregistreerd/email.txt",
+    "sha256": "eae0fd50748cafc9a76754d78957e73fc393164e72c1277336246425d9b45ace"
+  },
+  {
+    "file": "mails/34-examenresultaat-geregistreerd/metadata.json",
+    "sha256": "4eb256bae639eac9cc04dd19e4072bfc64a7a994ec538c282654b906e70aa118"
+  },
+  {
+    "file": "mails/34-examenresultaat-geregistreerd/onderwerp.txt",
+    "sha256": "8490fd7128692984b4dabca4a00dadcaa4633140e239d1afb77e7cef3602003c"
+  },
+  {
+    "file": "mails/34-examenresultaat-geregistreerd/preview.html",
+    "sha256": "e8ca4173cba7ab6dba93d875210a4bb42820ec7f11f000d3b08ebd5d43181920"
+  },
+  {
+    "file": "mails/34-examenresultaat-geregistreerd/preview.txt",
+    "sha256": "67d2f66dd0e5c6d3d8623f5e59b901810f8856aee4474a830bb0360240f31fcc"
+  },
+  {
+    "file": "mails/34-examenresultaat-geregistreerd/voorbeeld.json",
+    "sha256": "24c17479084bcfaab0f19c2c3e6240ed62ae16eecf0ef73354fc47f6d1062842"
+  },
+  {
+    "file": "mails/35-leerling-heeft-factuur-betaald/email.html",
+    "sha256": "71e411175666839d950a731164224b9b031b069f67c2216237ced70f019c7bcc"
+  },
+  {
+    "file": "mails/35-leerling-heeft-factuur-betaald/email.txt",
+    "sha256": "8100b5d29e268e65a01d6139d579d4d1e27965705bf815b79dd40018f0877265"
+  },
+  {
+    "file": "mails/35-leerling-heeft-factuur-betaald/metadata.json",
+    "sha256": "33c0b71071ff30714e27f737e5af0612af3960072d4f938ed58013657ea07554"
+  },
+  {
+    "file": "mails/35-leerling-heeft-factuur-betaald/onderwerp.txt",
+    "sha256": "106a7c576d58887cc4c0beb9b43baa3d6ac969cc9bd290dc403815fdd19af48c"
+  },
+  {
+    "file": "mails/35-leerling-heeft-factuur-betaald/preview.html",
+    "sha256": "4ab4ad4b051d0816162e72ea5ac1c029bb242ac6908e6c85dc7b35d141f6a589"
+  },
+  {
+    "file": "mails/35-leerling-heeft-factuur-betaald/preview.txt",
+    "sha256": "c9779b91851c4e849b36406eef4fc11640b03d8bc34716a5316f6481831ac8c1"
+  },
+  {
+    "file": "mails/35-leerling-heeft-factuur-betaald/voorbeeld.json",
+    "sha256": "6282b688685ba4d01f56e71818113e9ebb7746ff2085529d806b3f3f26ca7e68"
+  },
+  {
+    "file": "mails/36-betaling-van-leerling-mislukt/email.html",
+    "sha256": "40e013712f876b514d35816e67740203d79789e9816765e564370e2351fd51f3"
+  },
+  {
+    "file": "mails/36-betaling-van-leerling-mislukt/email.txt",
+    "sha256": "5f5c62fbbe45a3026c26db9aaebeadd72822cd19967f31b8771143414f8b251b"
+  },
+  {
+    "file": "mails/36-betaling-van-leerling-mislukt/metadata.json",
+    "sha256": "880faef9319a76246cc14f4f914246dd88d079f6ae4125e613c74e7c96958893"
+  },
+  {
+    "file": "mails/36-betaling-van-leerling-mislukt/onderwerp.txt",
+    "sha256": "165d8e16f9b9cdc4cab3f116fa2f753a17a88aab29f16b7bc8cea2f360eafdc0"
+  },
+  {
+    "file": "mails/36-betaling-van-leerling-mislukt/preview.html",
+    "sha256": "323e8fca368b9da8fa884cce7d2331917e63e25744151d247d18eef40c6f3f9b"
+  },
+  {
+    "file": "mails/36-betaling-van-leerling-mislukt/preview.txt",
+    "sha256": "c1f11200d68ea3f0eced45d594491a95d5acc63193e0b861e952cadfd08e931e"
+  },
+  {
+    "file": "mails/36-betaling-van-leerling-mislukt/voorbeeld.json",
+    "sha256": "096737da3cdfefe7463cbda34a26d937ec5847b8a71f7a6e2691578df74e9efb"
+  },
+  {
+    "file": "mails/37-factuur-van-leerling-verlopen/email.html",
+    "sha256": "be0b699fb901eed89d8f5d3409210d73b05544e8d10d825444bdd5452d24bf38"
+  },
+  {
+    "file": "mails/37-factuur-van-leerling-verlopen/email.txt",
+    "sha256": "495a75681a225a37d9712c84266e93b8817b35cf919c417a65fe0ad959925d11"
+  },
+  {
+    "file": "mails/37-factuur-van-leerling-verlopen/metadata.json",
+    "sha256": "f4d1b50d8ac8ab4ef5ac5eae1ac850a755e416b7f9b73655675d7b68400b5a0b"
+  },
+  {
+    "file": "mails/37-factuur-van-leerling-verlopen/onderwerp.txt",
+    "sha256": "b84de928f54e2a5162a5f78ac522ff63dd86e567bba5c585fcafdcad51991112"
+  },
+  {
+    "file": "mails/37-factuur-van-leerling-verlopen/preview.html",
+    "sha256": "6f38b243d3b5baaf2391fcdffec825b3e17f253bdb6d209b6cf630ca7b75c8e5"
+  },
+  {
+    "file": "mails/37-factuur-van-leerling-verlopen/preview.txt",
+    "sha256": "22d5a7c051629b70dd88118c353337951c4f08bcf238d5b498c26aacfeecc11b"
+  },
+  {
+    "file": "mails/37-factuur-van-leerling-verlopen/voorbeeld.json",
+    "sha256": "52e67e1eaa69b38e257940147d1a0926c7004ce0758c36db788d23e521390a62"
+  },
+  {
+    "file": "mails/38-nieuwe-factuur-verzonden/email.html",
+    "sha256": "3d4526e4326f48380c85cb6c3d1bbdc5023cf539e7b6a703cbd68c5783b17d73"
+  },
+  {
+    "file": "mails/38-nieuwe-factuur-verzonden/email.txt",
+    "sha256": "7d7ef0c093fac64d3f989e3c561d4e1789163ef87ce52c58529d16af9082e899"
+  },
+  {
+    "file": "mails/38-nieuwe-factuur-verzonden/metadata.json",
+    "sha256": "3a0e274cd4fe7c11daedbdeb77329f2d41a4f22ec23158fd53ca67256678fa01"
+  },
+  {
+    "file": "mails/38-nieuwe-factuur-verzonden/onderwerp.txt",
+    "sha256": "895f3e150bc563c4a92897f9afd74416ce85ecc79bf46b075b5ed3158dff1554"
+  },
+  {
+    "file": "mails/38-nieuwe-factuur-verzonden/preview.html",
+    "sha256": "48591c8e7b51b19283ec9c661d01e7d8e8b3d4107c9f88a45842c2c0c41fd504"
+  },
+  {
+    "file": "mails/38-nieuwe-factuur-verzonden/preview.txt",
+    "sha256": "1759c39c5d233300edd28ad1e2cc085528e696e70a7a69878c1c92c1f351df43"
+  },
+  {
+    "file": "mails/38-nieuwe-factuur-verzonden/voorbeeld.json",
+    "sha256": "03a872c427968024518a1f2d77bd7c66d756ad3a96b809c62b16ffa8222453b5"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/email.html",
+    "sha256": "1b9178969dc8f850f57bb9288ebef86b34915b4878629da8bac862fe33766076"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/email.txt",
+    "sha256": "5a68396d2b5eb93429977fbe2dcddbc9b5880719500e118c4fc41835850a9630"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/metadata.json",
+    "sha256": "14efc7e46bfd4c7b9a0b00fcd1b2bf5c95eeb16dee4b86edb9ea40820aaf3c4e"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/onderwerp.txt",
+    "sha256": "52e7fe06340f78f78e6a149e2588c2d74cc7f80b8d32afe2cf5c94fa06cde684"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/preview-creditnota.html",
+    "sha256": "3cc9d9fb6f639c45a24ae6fd4b344ba47bcddf90aacdf7e4cc5d9cc70c46d3a1"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/preview-refund.html",
+    "sha256": "4c3ebed173480d0882b1bcf17c1dfe32267c99f224ab3c1cf12d86f141e373f6"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/preview.html",
+    "sha256": "b403645108e30d8cbef38f5b64214729ae528102aef36edc8f567a65b6e460b9"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/preview.txt",
+    "sha256": "b4bd1d6edadbc00fe0dbaab826f22a6d1977462c044f294a333a8169066d1ff0"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/variant-creditnota.html",
+    "sha256": "9fe94026db5868b2ead2697a06b087b4adc551660b49a2b2247e0f9b5ad32bfb"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/variant-creditnota.txt",
+    "sha256": "5900fc9363c3086a9c5b3eb54088a18aadc91005905aad2f408e00da3c67b18c"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/variant-refund.html",
+    "sha256": "57131f3f2420c7f9ecdaf9ac011de2ee137875eae37fd13b5c680525004d3e1e"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/variant-refund.txt",
+    "sha256": "d959b97c17c92cc9d0974a5563acb7721c804614dc2df8b492b9938e88c165c4"
+  },
+  {
+    "file": "mails/39-betaling-terugbetaald-of-factuur-gecrediteerd/voorbeeld.json",
+    "sha256": "62cecdcf6d4f880d420c17f80bfd81cc5bd01db47d79ad5f6babced5ac4beeb0"
+  },
+  {
+    "file": "mails/40-overzicht-openstaande-facturen/email.html",
+    "sha256": "29920e58833959b0d1b49e1e0814fcaaba760a5cc6280c9af1296a4ef8fe8b07"
+  },
+  {
+    "file": "mails/40-overzicht-openstaande-facturen/email.txt",
+    "sha256": "7fe9f883283d74d3607c691478eaabae71d7dbb5a1b0218f4eb76b12a5104ba3"
+  },
+  {
+    "file": "mails/40-overzicht-openstaande-facturen/metadata.json",
+    "sha256": "63b9b55d24f8948bfb71ffeda37cd20e91169c9ffba1bb8188d7b166da63f68b"
+  },
+  {
+    "file": "mails/40-overzicht-openstaande-facturen/onderwerp.txt",
+    "sha256": "290839b2e7aafff63e3f1b5504a21eef6285a617ea6ed720ae72f58767d37c81"
+  },
+  {
+    "file": "mails/40-overzicht-openstaande-facturen/preview.html",
+    "sha256": "7278c93d0f44a2f57ae9e56df7a82c67054d0c2369bc0db35f730902b0c1dbdc"
+  },
+  {
+    "file": "mails/40-overzicht-openstaande-facturen/preview.txt",
+    "sha256": "a58308f1732c49f484082ae10ed1b72e4c2cc9a65c0ba51fb972115e9d6ee351"
+  },
+  {
+    "file": "mails/40-overzicht-openstaande-facturen/voorbeeld.json",
+    "sha256": "9ff46d1e7047ffc78fc10f7ecdf6232ab089af8ed5d39800743394aaf4589c89"
+  },
+  {
+    "file": "mails/41-financieel-maandoverzicht/email.html",
+    "sha256": "c9c67aabcee87d103eef2b92cf917beeb0fe582bff76e70f529266b25e3c6c85"
+  },
+  {
+    "file": "mails/41-financieel-maandoverzicht/email.txt",
+    "sha256": "ef919a305b988ed1079e77f7de85bb008e8b66a4ebf088b303280729d318ac3b"
+  },
+  {
+    "file": "mails/41-financieel-maandoverzicht/metadata.json",
+    "sha256": "4930ec2a543c7622623b3236990138255cf0cdf0923cf5c5e0f17367cfcd19be"
+  },
+  {
+    "file": "mails/41-financieel-maandoverzicht/onderwerp.txt",
+    "sha256": "2d71ae76a7a67a11f9b10d382e6d05efe8fedded6255d453178f677c29e2c8a6"
+  },
+  {
+    "file": "mails/41-financieel-maandoverzicht/preview.html",
+    "sha256": "5efa262a284375ff7bcfe1f4eed6f3584992f3c93a0cb17d375a0e47efee43b5"
+  },
+  {
+    "file": "mails/41-financieel-maandoverzicht/preview.txt",
+    "sha256": "adef0b8be5746be30f0d6b21c9ef744aca75b5f6736bbb82f83f2877191ecbc7"
+  },
+  {
+    "file": "mails/41-financieel-maandoverzicht/voorbeeld.json",
+    "sha256": "9e474cfba1a0c797d5899dd954c2e161d5e062393f1aa4f3172ba2d0459d77a5"
+  },
+  {
+    "file": "mails/42-betaling-vereist-controle/email.html",
+    "sha256": "8ebc4bf569f5410c7cb64cf23e65e7f5e3d0e50698f1056ed2c13cea1f1ccb7a"
+  },
+  {
+    "file": "mails/42-betaling-vereist-controle/email.txt",
+    "sha256": "2de64af8b1b8d1bcdbf47ca252d62869382993db193aa991206ac0fb55c22b57"
+  },
+  {
+    "file": "mails/42-betaling-vereist-controle/metadata.json",
+    "sha256": "02b39a1f3c1d326340af2c7845005eca02248a6e392760692c0a1377eb5424ef"
+  },
+  {
+    "file": "mails/42-betaling-vereist-controle/onderwerp.txt",
+    "sha256": "fdb54febd1c2f9f5850080d6910af3b50937151c2deb96a4d3d4cad20f8ee7a8"
+  },
+  {
+    "file": "mails/42-betaling-vereist-controle/preview.html",
+    "sha256": "9f622232903622a33d47c7fd6f5c1679ee8c0e04808ae1052905565b0eaf624e"
+  },
+  {
+    "file": "mails/42-betaling-vereist-controle/preview.txt",
+    "sha256": "1ad169e19b9c65e82a6ca85b61a856974bfbdcbe36bbe06d5cd1534427ecd0c1"
+  },
+  {
+    "file": "mails/42-betaling-vereist-controle/voorbeeld.json",
+    "sha256": "2cee198bc6553467232e9b5fdd75c17b81b171d0cbd620c167ff91acb94805ab"
+  },
+  {
+    "file": "mails/43-pro-of-team-geactiveerd/email.html",
+    "sha256": "315c6a5a46cf46056198d605a472eb5fa96c16f1b9db42d2a3009e9996da14b5"
+  },
+  {
+    "file": "mails/43-pro-of-team-geactiveerd/email.txt",
+    "sha256": "8f91c6457bf333652271faae9af4045caa55285e3d871ca6c4c0eba4308db269"
+  },
+  {
+    "file": "mails/43-pro-of-team-geactiveerd/metadata.json",
+    "sha256": "e7a5e24e74ba7e780ba3429a016c6dfdccd4648f1eb2f21d616537a7331de490"
+  },
+  {
+    "file": "mails/43-pro-of-team-geactiveerd/onderwerp.txt",
+    "sha256": "85fe2f2f9332ade21769dc66718dfe4b508181a38dba628ff528d2351be361f2"
+  },
+  {
+    "file": "mails/43-pro-of-team-geactiveerd/preview.html",
+    "sha256": "74aea6430b4054d975a330d343b8e78b559ddacc600fbdf961bec4c90bec6d58"
+  },
+  {
+    "file": "mails/43-pro-of-team-geactiveerd/preview.txt",
+    "sha256": "42bf250c4f2566fc79fdde55b8200ec01d00999454c91da75a6fbf08e3c59253"
+  },
+  {
+    "file": "mails/43-pro-of-team-geactiveerd/voorbeeld.json",
+    "sha256": "0be783d6a73dab2e14dc301f7cafcd2479557654398aff59de8ad3c8fb429c1c"
+  },
+  {
+    "file": "mails/44-proefperiode-loopt-bijna-af/email.html",
+    "sha256": "38240d5c08b5e37ef6f555ea355001f2f7c35420ac427819f7a910b1afc3a2d9"
+  },
+  {
+    "file": "mails/44-proefperiode-loopt-bijna-af/email.txt",
+    "sha256": "90b528c1396616749647177e671dced9c66f4e66703823791617dedd74e54ab1"
+  },
+  {
+    "file": "mails/44-proefperiode-loopt-bijna-af/metadata.json",
+    "sha256": "a541e804b97a2d9f2c95007b9edca41eacbb667a05a9d1a02ec04df07ca0b946"
+  },
+  {
+    "file": "mails/44-proefperiode-loopt-bijna-af/onderwerp.txt",
+    "sha256": "035d269a0063351b2a219238e392232d698b6b47d7e684629fa0c70e41a01619"
+  },
+  {
+    "file": "mails/44-proefperiode-loopt-bijna-af/preview.html",
+    "sha256": "c969846053a781b8d2d534b30309718a77dfc9174e521eb5d37f9d4d2ece593a"
+  },
+  {
+    "file": "mails/44-proefperiode-loopt-bijna-af/preview.txt",
+    "sha256": "5493b93b8328314d7b57f8fd33f2e6969c5b94613e5bc4666aa858acfb10b393"
+  },
+  {
+    "file": "mails/44-proefperiode-loopt-bijna-af/voorbeeld.json",
+    "sha256": "473ac82cea6ff07edcb642bc41228547ca3a1c0c73a2b446aab0cec300f4dffb"
+  },
+  {
+    "file": "mails/45-abonnementsbetaling-mislukt/email.html",
+    "sha256": "e37e5492cdf143f56875807e9108d59ae77c9e06a268c8eefafa7ef585eed8eb"
+  },
+  {
+    "file": "mails/45-abonnementsbetaling-mislukt/email.txt",
+    "sha256": "0f81d8e00a94a907482924a40881549d2df47df730272c291337e14fe0d47b96"
+  },
+  {
+    "file": "mails/45-abonnementsbetaling-mislukt/metadata.json",
+    "sha256": "785ffc2b0ef650561d3edea44953cd9e89c50d4ea58a38b2355ef8210788e7b4"
+  },
+  {
+    "file": "mails/45-abonnementsbetaling-mislukt/onderwerp.txt",
+    "sha256": "2b80a3e05d39012cce42d82d21e9a8815e286e06298a2dbbfebbc6171fa6b7c6"
+  },
+  {
+    "file": "mails/45-abonnementsbetaling-mislukt/preview.html",
+    "sha256": "8722d1d25099830714460bc62a3bbe2a183b31fbe3e75710863920643c3bc009"
+  },
+  {
+    "file": "mails/45-abonnementsbetaling-mislukt/preview.txt",
+    "sha256": "c3c4fb4657e8a2a434d53e15bded6d5699292cce4cb6241cd4b2cdbbef52926f"
+  },
+  {
+    "file": "mails/45-abonnementsbetaling-mislukt/voorbeeld.json",
+    "sha256": "48a40274b892c7c819fc2a8217cdc84c39fd2dfcbc981072efee72dbf6fb2543"
+  },
+  {
+    "file": "mails/46-klantio-abonnementsbetaling-ontvangen/email.html",
+    "sha256": "0dc6b5a3aa477b598f890a088e33b1c0d742fe4d4b346fbe215f7a1df3f0916a"
+  },
+  {
+    "file": "mails/46-klantio-abonnementsbetaling-ontvangen/email.txt",
+    "sha256": "f872ea1541193877ec3af2b098eadf29809b135768eef27bfd2e6d0e4d7befb4"
+  },
+  {
+    "file": "mails/46-klantio-abonnementsbetaling-ontvangen/metadata.json",
+    "sha256": "5e68a6c1fea9f7e432386314991c13b6dcd1fe54eca29f169e7a86d901348695"
+  },
+  {
+    "file": "mails/46-klantio-abonnementsbetaling-ontvangen/onderwerp.txt",
+    "sha256": "1c1dfc046e7ca832754d4a09d7ee2585845da1da391042fca86f3932713f12d2"
+  },
+  {
+    "file": "mails/46-klantio-abonnementsbetaling-ontvangen/preview.html",
+    "sha256": "ad0b29c7eb2e86d2135cd7b20136a68ad0a184dc30c247411a502c1a49cf073b"
+  },
+  {
+    "file": "mails/46-klantio-abonnementsbetaling-ontvangen/preview.txt",
+    "sha256": "fbd850a23745c343169c883ceb3646e64e3139beba1cac5c3edc73e02288d5e0"
+  },
+  {
+    "file": "mails/46-klantio-abonnementsbetaling-ontvangen/voorbeeld.json",
+    "sha256": "81352734f315e3ee640342482f81318a89dd5f9b7c1fb198e46bea238eda28e7"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/email.html",
+    "sha256": "84b81144b0c2df91b614796bbfc8d42cafcde54138685c84268a103ba24d2cbb"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/email.txt",
+    "sha256": "8b77efb721b44a1fe9c4690295fa984537098e4591430fa47a391d6d29e06fb7"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/metadata.json",
+    "sha256": "6b06ab652c39645ed689dfb2d9917527289a5bd1173f9db2955809d29e2d9181"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/onderwerp.txt",
+    "sha256": "bde3468a98ff0fad76c0d64d6f8c776deb3faaae35be3291e2bcdc34fd14468e"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/preview-gewijzigd.html",
+    "sha256": "558000dc0300e5f49cb53df618c61683892531107fc1cb4c4ded2b1d485189f8"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/preview-opgezegd.html",
+    "sha256": "57dc83ded4931498c26239e80b8c3edb7e4c656e02446240617eff03a6bb47a5"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/preview-verlopen.html",
+    "sha256": "832f8694af3bf11740920ed0732f8ee9bd10ba3f3eb674f57600e6534fa3fcc9"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/preview.html",
+    "sha256": "435e929dcf620c47410e10ad3ac6cdce65bbb145ffb938378c519e5194a6630c"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/preview.txt",
+    "sha256": "66937db3681f675e2028686c0e975f74c96127e4ae37e9d9bcc8a3b6ca51fbcf"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/variant-gewijzigd.html",
+    "sha256": "e20265e240b37c2e52b7ebf9e2f30f00307c85eeba9576943974d70ab2b775cb"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/variant-gewijzigd.txt",
+    "sha256": "6913eb6717f9f1393e08260ad6dc6f7e3735a1f45acaff38a024e28a429a34ee"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/variant-opgezegd.html",
+    "sha256": "18fd82c77906e9edf4a4225357f7ee8c1ccd3164d1676b0b66df926c0c030b07"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/variant-opgezegd.txt",
+    "sha256": "164df7a1a6a5eaab9057a59e2ed5bc0acc63b1d6e1e85e7d27daa9bf683bfcc4"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/variant-verlopen.html",
+    "sha256": "d2a2e7915e7cb5f021a8370316c7fc7cd1d2dfe7ae52a8c0825119ca216a4eb7"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/variant-verlopen.txt",
+    "sha256": "ebe905845c59261a308651da96dc779220e492eb0815f8d22501395b924811ac"
+  },
+  {
+    "file": "mails/47-abonnement-gewijzigd-opgezegd-of-verlopen/voorbeeld.json",
+    "sha256": "9f03029f487ae66955f0a13d83ebeb64c894b8bf6d68bd8c958c6ae10acf7919"
+  },
+  {
+    "file": "mails/48-document-verloopt-binnenkort/email.html",
+    "sha256": "ea395a9d626c119ea790443c04c3f9422e15682f18ddd5ae7f16038825ca8555"
+  },
+  {
+    "file": "mails/48-document-verloopt-binnenkort/email.txt",
+    "sha256": "db8fe09f76f8115c033db67437002372228e5595f086ac723802199f2b1c639c"
+  },
+  {
+    "file": "mails/48-document-verloopt-binnenkort/metadata.json",
+    "sha256": "f0d7c05c51f346bc64ca25c67675e667a016878b389cf5f1a2ea04dccd34f6b3"
+  },
+  {
+    "file": "mails/48-document-verloopt-binnenkort/onderwerp.txt",
+    "sha256": "6dc495971c914176de5b76f123fda702204507fda1c44c5fce33d1b465479215"
+  },
+  {
+    "file": "mails/48-document-verloopt-binnenkort/preview.html",
+    "sha256": "35dec9f62de723e4f4402319da9f996031603e485f459e2cf81a02429a34db33"
+  },
+  {
+    "file": "mails/48-document-verloopt-binnenkort/preview.txt",
+    "sha256": "1e86ab07a466f00440d3de2270c9f35020207e1255b314607c91d9312e0e3819"
+  },
+  {
+    "file": "mails/48-document-verloopt-binnenkort/voorbeeld.json",
+    "sha256": "2e1ea012b8cb4d3541a9a3b198e4aafb392921b7f094bbf5cfbfa8ba9138738f"
+  },
+  {
+    "file": "mails/49-wrm-bevoegdheid-of-certificaat-verloopt/email.html",
+    "sha256": "32b42e8b6e70a67ed67363675d15bbc1d18c89978f170bd397ccd9566936132c"
+  },
+  {
+    "file": "mails/49-wrm-bevoegdheid-of-certificaat-verloopt/email.txt",
+    "sha256": "046a66331246148cb72008b8acd97dd32e884db09d1bc0012e2e90f018501c76"
+  },
+  {
+    "file": "mails/49-wrm-bevoegdheid-of-certificaat-verloopt/metadata.json",
+    "sha256": "1926282eff9d5309476a7440e8c3ba20c0012094a69863bb159a47c24f819a96"
+  },
+  {
+    "file": "mails/49-wrm-bevoegdheid-of-certificaat-verloopt/onderwerp.txt",
+    "sha256": "d58e6f511ce3b719c66901a2a5acf7ef7551db68aa474fa6188d6f79485ea770"
+  },
+  {
+    "file": "mails/49-wrm-bevoegdheid-of-certificaat-verloopt/preview.html",
+    "sha256": "49809b9919a827a2d4d257a6f32ea619d5ff022731eb047f4322be0470068b5f"
+  },
+  {
+    "file": "mails/49-wrm-bevoegdheid-of-certificaat-verloopt/preview.txt",
+    "sha256": "d24bacf369b79eb53793034f7f36584b14eceebd32424c04c98def0921b955c0"
+  },
+  {
+    "file": "mails/49-wrm-bevoegdheid-of-certificaat-verloopt/voorbeeld.json",
+    "sha256": "f31e7075e46ece93135f500f983d41bb12014b8c08d02cb3559ea3f89819d22e"
+  },
+  {
+    "file": "mails/50-voertuigverzekering-of-voertuigdocument-verloopt/email.html",
+    "sha256": "985db1ccf035687c6e9b0f6b49d9a2b0ef2ac13fde975d4279252df257c31ed6"
+  },
+  {
+    "file": "mails/50-voertuigverzekering-of-voertuigdocument-verloopt/email.txt",
+    "sha256": "8847b61b71debdc0ef42bdbb86777098297fb7cb701429c5ff6c946bcec97ab7"
+  },
+  {
+    "file": "mails/50-voertuigverzekering-of-voertuigdocument-verloopt/metadata.json",
+    "sha256": "c2f2da90e13cebfdb2de4e0a640a2352dd98c94488c2322be38e7d3da87068cf"
+  },
+  {
+    "file": "mails/50-voertuigverzekering-of-voertuigdocument-verloopt/onderwerp.txt",
+    "sha256": "0774c3945a54036a280ab17c5e5cc54d05a7afedc5d53baf8d87f0acc0344b7d"
+  },
+  {
+    "file": "mails/50-voertuigverzekering-of-voertuigdocument-verloopt/preview.html",
+    "sha256": "5850449c89efc45cdd31fde95c04278603e102255a138d6a24b21c8623f73f43"
+  },
+  {
+    "file": "mails/50-voertuigverzekering-of-voertuigdocument-verloopt/preview.txt",
+    "sha256": "5c3862c7b9ea22ba698b6f837ca2d2bbccf5967de752102153043591c5b2e94f"
+  },
+  {
+    "file": "mails/50-voertuigverzekering-of-voertuigdocument-verloopt/voorbeeld.json",
+    "sha256": "baf5826e15ff3ab0c569c9ca0184af3e948efff529e021ad7325dc3a0e85bb02"
+  },
+  {
+    "file": "mails/51-bon-of-document-nadert-opslagtermijn/email.html",
+    "sha256": "a9a63eafc9f82488830376f4fd4b48746fe4a686fe4f0cb9632c131a076f5319"
+  },
+  {
+    "file": "mails/51-bon-of-document-nadert-opslagtermijn/email.txt",
+    "sha256": "0f4f6cc2258545b366e771e88ccd5b6b30ed530a432fd9273c5bb5ae5ecc3104"
+  },
+  {
+    "file": "mails/51-bon-of-document-nadert-opslagtermijn/metadata.json",
+    "sha256": "157954eb0ee8ed460d6e0745425cfe1275f683a8d90ceaec7d85a794d059ffb8"
+  },
+  {
+    "file": "mails/51-bon-of-document-nadert-opslagtermijn/onderwerp.txt",
+    "sha256": "73ae57f92208dd1abb24b0e71290913ac6b1f8bf58db9cdfc4e1efe3cded8b0a"
+  },
+  {
+    "file": "mails/51-bon-of-document-nadert-opslagtermijn/preview.html",
+    "sha256": "2590148e8ea2749a430ea7ae51c6c51feaba611169773c0ecf34bcc20e5302b4"
+  },
+  {
+    "file": "mails/51-bon-of-document-nadert-opslagtermijn/preview.txt",
+    "sha256": "bd46beb54b2d25f878fdae00ebab9a87accf9445e05adbb29ff5730d87c2b2b0"
+  },
+  {
+    "file": "mails/51-bon-of-document-nadert-opslagtermijn/voorbeeld.json",
+    "sha256": "152501e3b12fa69252e3b4226b1419d2def3a487185298e5f35b9851592d8f87"
+  },
+  {
+    "file": "mails/52-kilometerregistratie-vereist-controle/email.html",
+    "sha256": "9a91573d265cfd75c0a5e900ee8ba8d5c59aa34737bd0a5d17ac17966ca33714"
+  },
+  {
+    "file": "mails/52-kilometerregistratie-vereist-controle/email.txt",
+    "sha256": "166500f0759b6a47518295c6ac1f63ce5efd5b8fcc16516214b8c84e0baf5009"
+  },
+  {
+    "file": "mails/52-kilometerregistratie-vereist-controle/metadata.json",
+    "sha256": "5c6b1b80a6dafb111bf257fc0a7e8c0c4e9c49dc4eed4fd8e3bc3dcedde7d4d0"
+  },
+  {
+    "file": "mails/52-kilometerregistratie-vereist-controle/onderwerp.txt",
+    "sha256": "68c47c77635df219f4448800e5cf32d918e324900b64fb40c9e907df4c765cc2"
+  },
+  {
+    "file": "mails/52-kilometerregistratie-vereist-controle/preview.html",
+    "sha256": "b1888ddfce6835fed400506c755644760b466280d550c4c4bc14fa90eba77dd7"
+  },
+  {
+    "file": "mails/52-kilometerregistratie-vereist-controle/preview.txt",
+    "sha256": "55494b6d2267f7622cfb0637d6a938acb339e1da6d5cb9dcb8958e9a288c2364"
+  },
+  {
+    "file": "mails/52-kilometerregistratie-vereist-controle/voorbeeld.json",
+    "sha256": "5474be378c7759b90fc6d693003dfd82b37eeb4f8b65aab7126d53fafd741d19"
+  },
+  {
+    "file": "qa/catalogus.png",
+    "sha256": "b51d3f0aca0ad25e0e4f442ab2042b102fbcd9850ed226ca42f251937dc7ad8f"
+  },
+  {
+    "file": "qa/contact-abonnementen.png",
+    "sha256": "36f6f139086dbc3051bab17a27c82291ad988b11d535e94f03f1d14ff9f61a7e"
+  },
+  {
+    "file": "qa/contact-account.png",
+    "sha256": "453f09a0e6ca511bbb115e0c4fe5464c12a26bb6e93431c0f9438667ab9643fa"
+  },
+  {
+    "file": "qa/contact-betalingen.png",
+    "sha256": "8178edcda684e311badcfad1f67942690fa81e0280fa477e1f734c9dea315d2e"
+  },
+  {
+    "file": "qa/contact-documenten.png",
+    "sha256": "7f9cf1fad0a2ee3971d8b7be4fa9a5ba72ab2e373401ecbdcd71c25cb6113958"
+  },
+  {
+    "file": "qa/contact-leerlingen.png",
+    "sha256": "df66fce828854ad8b982b582c3fa819e8c11d726702eb980e3223adab17b2ff1"
+  },
+  {
+    "file": "qa/contact-planning.png",
+    "sha256": "8c94348821cd258c760daea599c49d5cc7c044ce3af9f674cac262875ae94930"
+  },
+  {
+    "file": "qa/contact-team.png",
+    "sha256": "4a8f90c2f20ad982ac4b80331777ac90148fa71bb14365f4e84fcec6304a8ebe"
+  },
+  {
+    "file": "qa/illustraties-compleet.png",
+    "sha256": "1de7bf70a5326a55db46d62611237ddd3d164bc92f3d43dec167d180fd3d4490"
+  },
+  {
+    "file": "qa/logo-mail-desktop.png",
+    "sha256": "882352a87b6d2531a927e99dc397433225581e3a6113a17452af03c05fe5aafc"
+  },
+  {
+    "file": "qa/logo-mail-mobiel.png",
+    "sha256": "882352a87b6d2531a927e99dc397433225581e3a6113a17452af03c05fe5aafc"
+  },
+  {
+    "file": "qa/logo-uitlijning.json",
+    "sha256": "211ba5d2521752e39e359e556415b7899202b2944d615006cf973327dbfa3ebe"
+  },
+  {
+    "file": "qa/personages.json",
+    "sha256": "6b4be25bf2a949a1fd647f46c404d7f096c611af2d7a63ec66fefd4a7ef3107d"
+  },
+  {
+    "file": "qa/resultaten.json",
+    "sha256": "2f47577d856555a4871651a02796ecd24b5de2b0fb928d175e1d47f00d249c30"
+  },
+  {
+    "file": "qa/screenshots/01-desktop.png",
+    "sha256": "f6f7ec147e17ef3f90bfcdf4e2415eed29ed00b11badb7308dda0c225abcb4fd"
+  },
+  {
+    "file": "qa/screenshots/01-mobiel.png",
+    "sha256": "806534fcb08e1ab54002b0656846efd1b930d6204f7a18456d26fbba40cf26d8"
+  },
+  {
+    "file": "qa/screenshots/02-desktop.png",
+    "sha256": "f075146324a3a1bb55a243814c01d6ec357f85aa4aaef9eec474c69c3d280911"
+  },
+  {
+    "file": "qa/screenshots/02-mobiel.png",
+    "sha256": "fc37fccf0978f0da609688afe744e4452f32901e05b7b70105bc1de6b2940d4b"
+  },
+  {
+    "file": "qa/screenshots/03-desktop.png",
+    "sha256": "929539e7bc611c65c78732e6ad2362f196bf44b9a31530ceecab21205c084de3"
+  },
+  {
+    "file": "qa/screenshots/03-mobiel.png",
+    "sha256": "ac5bd48aef38c3b3c39d7acac1bdf4345c63621d40b69acba447fe7bdce769a2"
+  },
+  {
+    "file": "qa/screenshots/04-desktop.png",
+    "sha256": "3f8e262a33c5ad2e618f33892221d7077d5e8cfb7024e31404e08d7541def652"
+  },
+  {
+    "file": "qa/screenshots/04-mobiel.png",
+    "sha256": "083ec2fcc1b204583ff6073a9607a81cc2c3c0c1ae040e6ae63cb168f1bad1cb"
+  },
+  {
+    "file": "qa/screenshots/05-desktop.png",
+    "sha256": "145352de8998ff99556ccf044a3cf22ffad038cb97aa97418906778285f202c3"
+  },
+  {
+    "file": "qa/screenshots/05-mobiel.png",
+    "sha256": "e27151b8fa0e6e838ff02b0e507c4084121a6d82ad64b75e042dab847c03a79e"
+  },
+  {
+    "file": "qa/screenshots/06-desktop.png",
+    "sha256": "eb057aaf6434e4ee100cfcaab8b4a111c5bb3f75bec998fea8829ed3d397461f"
+  },
+  {
+    "file": "qa/screenshots/06-mobiel.png",
+    "sha256": "c6c7f639fb6085a269734dceac45a5402eb2900ae3e814ed6e4ddeb283f7c565"
+  },
+  {
+    "file": "qa/screenshots/07-desktop.png",
+    "sha256": "32d1e350c55151025f95f858f2c54bf8f389923c267daaf7b16da8b2167778f8"
+  },
+  {
+    "file": "qa/screenshots/07-mobiel.png",
+    "sha256": "7e4a88725957c71d83a6ed150424ff3d48965a249fe82d45c535ea0a059c9bee"
+  },
+  {
+    "file": "qa/screenshots/08-desktop.png",
+    "sha256": "88c39e4ff1e3d1fcce9dc0ce9de0b66ee59d200270d05dada05652a336b19c33"
+  },
+  {
+    "file": "qa/screenshots/08-mobiel.png",
+    "sha256": "ec10eef75482f7d2bfa9063da5b6ab6d9d537ce15c2fe64c88aa9bca4c46399b"
+  },
+  {
+    "file": "qa/screenshots/09-desktop.png",
+    "sha256": "e64457f222e1e37647d9b77bd5ff0fe7bf9668c2aef5c073fc2cb8acc7ed8a45"
+  },
+  {
+    "file": "qa/screenshots/09-mobiel.png",
+    "sha256": "b6aa5bf22ae2ff41274c1e25ebb1956baa3e3c7018d73d8add5fc997dedc80b4"
+  },
+  {
+    "file": "qa/screenshots/10-desktop.png",
+    "sha256": "4216f9e303627725241a07160dd9053d9efc0bc4def46035727bfc1c2dbeca73"
+  },
+  {
+    "file": "qa/screenshots/10-mobiel.png",
+    "sha256": "2e7889d35ce020ff7f9503d3ec45f2ea8cc22e250c318ed674b8adc73dca946f"
+  },
+  {
+    "file": "qa/screenshots/11-desktop.png",
+    "sha256": "c0a2549cd6560993a7ee7b71f1b636fc2df898a057e44d3d98edac0fab730e6a"
+  },
+  {
+    "file": "qa/screenshots/11-mobiel.png",
+    "sha256": "224b60b4943e927c62e651e82c649cfe18e445429d6fd77867626eb3a39a3b66"
+  },
+  {
+    "file": "qa/screenshots/12-desktop.png",
+    "sha256": "90c3dfec4a15d0ddf305a698281591a421c9df020f4872704f2a5adaa88faeb5"
+  },
+  {
+    "file": "qa/screenshots/12-mobiel.png",
+    "sha256": "0dcae59bac4c1292f4cf6c8880ce1cbce207034e128175811fcea57174cef466"
+  },
+  {
+    "file": "qa/screenshots/13-desktop.png",
+    "sha256": "64cb47052c341d4d72b75819713fb4037fb06be61984ba9a88235e64dc492033"
+  },
+  {
+    "file": "qa/screenshots/13-mobiel.png",
+    "sha256": "8e3dd6fb6af46ab21b9609edf18e450468d5b0cb67ead5d522e02f87fd6e9d22"
+  },
+  {
+    "file": "qa/screenshots/14-desktop.png",
+    "sha256": "e556263ddde626a6d263667bb07e4a9611eeaf77b527b1c7b59ae5bb6b5459ed"
+  },
+  {
+    "file": "qa/screenshots/14-mobiel.png",
+    "sha256": "66f5f5b5236ca665742f6236611b8acde355e9cb0d981ac1d13b6abc9dfbe3ed"
+  },
+  {
+    "file": "qa/screenshots/15-desktop.png",
+    "sha256": "2ef3b2056df525ef5ff6128740cf1fa33d98be3f9d066b5b6067b849124fd2e8"
+  },
+  {
+    "file": "qa/screenshots/15-mobiel.png",
+    "sha256": "eda5f78c6312d6b4d454e0817502705965380eb565aebd5356b1e36de5ac868d"
+  },
+  {
+    "file": "qa/screenshots/16-desktop.png",
+    "sha256": "2863cc462958565b1be3a16d8cf83d0dad0851f366c6b12ed325ace5b957aa3f"
+  },
+  {
+    "file": "qa/screenshots/16-mobiel.png",
+    "sha256": "a46f4240ba9090233cc3513ade0c60d4120a3e0d35d172607d2044476b9b4499"
+  },
+  {
+    "file": "qa/screenshots/17-desktop.png",
+    "sha256": "a1f36581e13ee5d924cb917c32db57330e2a0181a038f1bed37befa192001405"
+  },
+  {
+    "file": "qa/screenshots/17-mobiel.png",
+    "sha256": "7da5a693bd22dde118c1a099ed76f1169ce423ec45ad693ec0166e742616cebf"
+  },
+  {
+    "file": "qa/screenshots/18-desktop.png",
+    "sha256": "f6fe9daa19f8c7bb860e562cb1b438ee38c7688e0d1f64219e1ca3344a62c889"
+  },
+  {
+    "file": "qa/screenshots/18-mobiel.png",
+    "sha256": "fc6ed2998dfa1d7c697601ba14e2fc50e5cec190ad4c84da495bec7cdccce23b"
+  },
+  {
+    "file": "qa/screenshots/19-desktop.png",
+    "sha256": "79bbae8a733f2f80c3d4f955c5e056f68c26e22d642eb6c981bd0f05ee45eca9"
+  },
+  {
+    "file": "qa/screenshots/19-mobiel.png",
+    "sha256": "f8d68398c6a071b9164896ee45fa48bd048262535783ce76023a024df5a6aaf5"
+  },
+  {
+    "file": "qa/screenshots/20-desktop.png",
+    "sha256": "01fd68a57158f1ecc7554d0af87b6daac5cf66dee85865373e3992e3c7ad4c55"
+  },
+  {
+    "file": "qa/screenshots/20-mobiel.png",
+    "sha256": "b1b4fc8b8dfdf4cec0012c3db26ea47684581ab341252a13de6332516b9a80ca"
+  },
+  {
+    "file": "qa/screenshots/21-desktop.png",
+    "sha256": "9df38368f94dcd37d42f3a27a73d4c9274c20ab742fe23c0ff26877889922574"
+  },
+  {
+    "file": "qa/screenshots/21-mobiel.png",
+    "sha256": "2936e968d043cd703e4acd273df083ba34c4ea44948cbdc5d6482262d0b3e8ca"
+  },
+  {
+    "file": "qa/screenshots/22-desktop.png",
+    "sha256": "c2d677e73d24291c4666ed7be79df81ddfe30201191833bcbec418b68bb539d7"
+  },
+  {
+    "file": "qa/screenshots/22-mobiel.png",
+    "sha256": "edc6afece48366666adc7aaaef2a36d571dfca2b6ca75b7ea29bc67586836b82"
+  },
+  {
+    "file": "qa/screenshots/23-desktop.png",
+    "sha256": "33705f1db9929254fb9ee2bacf0fd8c71c884731c3ac631fe68ff14981f928da"
+  },
+  {
+    "file": "qa/screenshots/23-mobiel.png",
+    "sha256": "1bd5581a8ef0b30c040942c57454845a2ad2e2935c71c7c8a92fe8b6c5558352"
+  },
+  {
+    "file": "qa/screenshots/24-desktop.png",
+    "sha256": "fd7fd90681f42d14f29edccc1bae6bef8463c2b000f03b142475b4d7bb00958d"
+  },
+  {
+    "file": "qa/screenshots/24-mobiel.png",
+    "sha256": "71f52b18df7a22716095f38855e3038bf83360b825ade3aa1da65ed9790eebc3"
+  },
+  {
+    "file": "qa/screenshots/25-desktop.png",
+    "sha256": "00ed58f7f5fdd754347898e7101d689770602ee22f0e1cc961aa27ac7541a142"
+  },
+  {
+    "file": "qa/screenshots/25-mobiel.png",
+    "sha256": "2da2a3d3fa0ace1c1485a576977818edfa3c7bd74c5c1bafc1fde4b709eef0fd"
+  },
+  {
+    "file": "qa/screenshots/26-desktop.png",
+    "sha256": "4d0836b13c233962cddb1e94bb2cbeae2b84e2b6a2a931f5e452fb3821383054"
+  },
+  {
+    "file": "qa/screenshots/26-mobiel.png",
+    "sha256": "53cae20f9622779c61ca91b805b0a28abeae03aeb84a83a297a7a8c802f4463d"
+  },
+  {
+    "file": "qa/screenshots/27-desktop.png",
+    "sha256": "b204fb4fd5078740ecd5c8659fbba0b76df7140d920906fd81326d23205b1a4e"
+  },
+  {
+    "file": "qa/screenshots/27-mobiel.png",
+    "sha256": "9e89295c33ddddd8c4807151c698b5067914f66902f27b0ef950898c848822aa"
+  },
+  {
+    "file": "qa/screenshots/28-desktop.png",
+    "sha256": "566a1ff2cfdd0f082b2d40577228dfb7632020f46f69d00176f7f68e6a960839"
+  },
+  {
+    "file": "qa/screenshots/28-mobiel.png",
+    "sha256": "5c608f6c02c3f011ced303cf2e9530c674a736c6a4c96140ba28fc6e4c33db3e"
+  },
+  {
+    "file": "qa/screenshots/29-desktop.png",
+    "sha256": "f56c592babad3a1be0757b693adc4c8d89a916dba59425560980718c96772863"
+  },
+  {
+    "file": "qa/screenshots/29-mobiel.png",
+    "sha256": "974fe4617914d069b2ca4ce6385a4f0894878ee924474a596344cf242fe6a396"
+  },
+  {
+    "file": "qa/screenshots/30-desktop.png",
+    "sha256": "67b01c4c7a37a4647b5cbb35649e5661b68eef3f36e563f592139d39fe43a01b"
+  },
+  {
+    "file": "qa/screenshots/30-mobiel.png",
+    "sha256": "c7ddb9b490598e9710fc933d9086771c961d0d2082600de7451a5cc39a5c7eb9"
+  },
+  {
+    "file": "qa/screenshots/31-desktop.png",
+    "sha256": "8890e40de93a358581dd48768f0049ff8c8c9df64f6c704bba6923ed1673a095"
+  },
+  {
+    "file": "qa/screenshots/31-mobiel.png",
+    "sha256": "ee40d5ef314012a6fef7087245d181611441f9231e3c334fb681affb3e92be6a"
+  },
+  {
+    "file": "qa/screenshots/32-desktop.png",
+    "sha256": "41bfc5c237548b874ed7982a3cfc6b33f75254e13b1c1b2e0123e8f34b66c188"
+  },
+  {
+    "file": "qa/screenshots/32-mobiel.png",
+    "sha256": "88bb40a5d855f52b8ed860d2380f7a960d6e8e2984a03325c7c7635db305aeca"
+  },
+  {
+    "file": "qa/screenshots/33-desktop.png",
+    "sha256": "a83bd6c682262ce639aca3393056b65d1e5b406a469ad8fec519bf8fc0f1efe6"
+  },
+  {
+    "file": "qa/screenshots/33-mobiel.png",
+    "sha256": "b438e06abebad12647f1d8b368fbd7e8ef301c510b6a2873b0a5b8cb4425d11d"
+  },
+  {
+    "file": "qa/screenshots/34-desktop.png",
+    "sha256": "fcadeb6723cedd2a414e402fe08371fc87d31fb92c9b822f232d8bd0e01434f4"
+  },
+  {
+    "file": "qa/screenshots/34-mobiel.png",
+    "sha256": "3453f10b2ce99726265dee9da985d406d24b4520845240e91ea9509e2f37a46e"
+  },
+  {
+    "file": "qa/screenshots/35-desktop.png",
+    "sha256": "1af29f500de3b06c468a65f6d44d82ea4f5fd0f74263e4a43e60095b055fa1bd"
+  },
+  {
+    "file": "qa/screenshots/35-mobiel.png",
+    "sha256": "f41c39b5c57fb0f50394cfae647158bbed15560d675c96e6dced81b5a883c50a"
+  },
+  {
+    "file": "qa/screenshots/36-desktop.png",
+    "sha256": "af9f86456bcae481ead2f6ed5dfe363758673fb8b0cf983ca57b263855e31294"
+  },
+  {
+    "file": "qa/screenshots/36-mobiel.png",
+    "sha256": "c02bd146438aed1f69bdc9c5866eefc4b16fa2567c02dd155122537937486413"
+  },
+  {
+    "file": "qa/screenshots/37-desktop.png",
+    "sha256": "90502f27429f80df1545dab533eb600b7db1a8b8eb737652cd17a837177813f5"
+  },
+  {
+    "file": "qa/screenshots/37-mobiel.png",
+    "sha256": "db8e81735b2cc33ffa94c47a6cfe8bda50541eac85246dc5f4e8a1ab9a4b9fb6"
+  },
+  {
+    "file": "qa/screenshots/38-desktop.png",
+    "sha256": "7a9e5c284b150dce3b09961f2ad6ca6c0a2c53262d80c45729b4b51aa8cdfc2e"
+  },
+  {
+    "file": "qa/screenshots/38-mobiel.png",
+    "sha256": "543996ca4d97bdbeee841d2bc8cfb1fbf1dc6521276324ac75b90dac6df1ebb6"
+  },
+  {
+    "file": "qa/screenshots/39-desktop.png",
+    "sha256": "a3fc1c050a8ab7707d5c987cf4f6c26da17334779aceb6bb90c1fc7179f29ffc"
+  },
+  {
+    "file": "qa/screenshots/39-mobiel.png",
+    "sha256": "41da2cad99f351d2cd7b7069c1f85b30c78a8b60cb4c030a7aa9b09e83be6556"
+  },
+  {
+    "file": "qa/screenshots/40-desktop.png",
+    "sha256": "fcbaea72f7e84c98c27897d7b078e78302e04a7ea22208df091d3418a161778f"
+  },
+  {
+    "file": "qa/screenshots/40-mobiel.png",
+    "sha256": "5ab5e8e9481b2aacd1b98510191fdf8b1803e4fa84541f3349a9194a0e0e916e"
+  },
+  {
+    "file": "qa/screenshots/41-desktop.png",
+    "sha256": "1ee8f17603a92944e3e92155df53d52e981679990bd25a030731581ba5eee106"
+  },
+  {
+    "file": "qa/screenshots/41-mobiel.png",
+    "sha256": "64079ef209141339c7018d9fc316a71d72693b597a987c478f27d2b63d64fae5"
+  },
+  {
+    "file": "qa/screenshots/42-desktop.png",
+    "sha256": "672a1cbdf5daf2de1108810322c55c9e3655ba2d2a0ab37462e3614d9070387d"
+  },
+  {
+    "file": "qa/screenshots/42-mobiel.png",
+    "sha256": "12f7460df8ff06c22011f22a30b6c0a14a118c1940485634403876dad848716b"
+  },
+  {
+    "file": "qa/screenshots/43-desktop.png",
+    "sha256": "f44d94bd93a4ab1393d2fc6941d8d6aad3218c40e6720c3cad92985468fee48e"
+  },
+  {
+    "file": "qa/screenshots/43-mobiel.png",
+    "sha256": "ccca2e004ca3f5510cfa5125037093d6f3fa1f5ebf263588ae9da00435d26351"
+  },
+  {
+    "file": "qa/screenshots/44-desktop.png",
+    "sha256": "ab0f32edd0ce20ea65c32f1342e83fb316d497e5d564f10175e3ee3fc67bcfb3"
+  },
+  {
+    "file": "qa/screenshots/44-mobiel.png",
+    "sha256": "cb0e64ca4b9d1ac361afbfa6752a4524ddf9653b9fe4d767783a649754dd1663"
+  },
+  {
+    "file": "qa/screenshots/45-desktop.png",
+    "sha256": "de7b42df0a3651e34d3b713bc8500af253ad648a74bfc28b6dd8c4e893942ea4"
+  },
+  {
+    "file": "qa/screenshots/45-mobiel.png",
+    "sha256": "71c3a015155d217cf3741a8ae97d5e790e2b41a7b15cc55f258f25ae6868b2d6"
+  },
+  {
+    "file": "qa/screenshots/46-desktop.png",
+    "sha256": "dd8fdb4a897d41a7ea47330b05405d80859cf9488134075aabab04be1b3393ac"
+  },
+  {
+    "file": "qa/screenshots/46-mobiel.png",
+    "sha256": "01f28655283455582933ca11b66a5541ad5e39525b53ba2d6e376e136bdcd380"
+  },
+  {
+    "file": "qa/screenshots/47-desktop.png",
+    "sha256": "95e8b2daa6c7622d23c7ae96a2e2aad5a268e31e2d1eec38b0ab97712dab727b"
+  },
+  {
+    "file": "qa/screenshots/47-mobiel.png",
+    "sha256": "bb5e493efce52c3cf3581f31e8a1e1346e2f4ca07d162b3429554e8881ebe9a5"
+  },
+  {
+    "file": "qa/screenshots/48-desktop.png",
+    "sha256": "bf7beecff6601595b2e98c67460636c677974ab22e1263f5c5acbde51ecc8b3e"
+  },
+  {
+    "file": "qa/screenshots/48-mobiel.png",
+    "sha256": "32cce091227940b5b56cb7af430354d2e3e26bfa34ac99ae4b9fff3994f49bbf"
+  },
+  {
+    "file": "qa/screenshots/49-desktop.png",
+    "sha256": "4d93f9fa8bba4cd1b8c21f1dfba71fdda18895b9aed6f348ab806793ac926885"
+  },
+  {
+    "file": "qa/screenshots/49-mobiel.png",
+    "sha256": "036d4192df5957f6efeee597182033d46c41d16294a4803f4d8621e08da0dd3a"
+  },
+  {
+    "file": "qa/screenshots/50-desktop.png",
+    "sha256": "af35fd2102cf823cdacd4461051b159bf3a119ccc3645452c68fb33f672f3957"
+  },
+  {
+    "file": "qa/screenshots/50-mobiel.png",
+    "sha256": "ceb009e178c4d42aa81813649e2be197972a0376e01ea1d3d5b52636e1a2b0c2"
+  },
+  {
+    "file": "qa/screenshots/51-desktop.png",
+    "sha256": "fe266cc5c163565feb690f0ffb721f237a2abc34e50cf08b250fdfa36fa6dc1b"
+  },
+  {
+    "file": "qa/screenshots/51-mobiel.png",
+    "sha256": "ff49ce3206c7142ee83c6cf925bc51b7f9acf92f5d6171e1c73c74202589472d"
+  },
+  {
+    "file": "qa/screenshots/52-desktop.png",
+    "sha256": "a46e4be3d623c5df9bdd05d7a7d40ec1f925b5bb4ddaec8f038d40695e208608"
+  },
+  {
+    "file": "qa/screenshots/52-mobiel.png",
+    "sha256": "e223259b6ae476c44230dab6d217b5dbd547627b3790ff352440c3ed58dac31b"
+  },
+  {
+    "file": "qa/screenshots/variant-39-creditnota-mobiel.png",
+    "sha256": "8de9428166560c51d61b44b54d6fd1838655af3c914e79a227f5a17fc38df435"
+  },
+  {
+    "file": "qa/screenshots/variant-39-refund-mobiel.png",
+    "sha256": "5c99b2014b5d57c4d371285c9d90cdec3e9d8fc80fb50965c6a320ed47bdb47d"
+  },
+  {
+    "file": "qa/screenshots/variant-47-gewijzigd-mobiel.png",
+    "sha256": "b8d712652a5425cc1979e8c21016faa198b011d2a007de7d3e3b3adff1221c4c"
+  },
+  {
+    "file": "qa/screenshots/variant-47-opgezegd-mobiel.png",
+    "sha256": "d058bc6c36ccb4d0a0fabd27bb4bf4d72a019a2d83314ee5bd101fd971a90276"
+  },
+  {
+    "file": "qa/screenshots/variant-47-verlopen-mobiel.png",
+    "sha256": "e56db990de2dee5758b5699af00b32b47ac9dd5a045bf67c707ecda282565e37"
+  },
+  {
+    "file": "qa/unit-tests.tap",
+    "sha256": "d1ba5797fddb3df3d98f5afe7cab50668414d79485bde1eac1bcc32a45d925f2"
+  },
+  {
+    "file": "qa/varianten.json",
+    "sha256": "a1728cd33db6f8096985091f2b10f06919c8e02fb96d91ed9cf4240014c5fc8c"
+  },
+  {
+    "file": "qa/voorkeuren.png",
+    "sha256": "b46aa58f0b21db7c97c21af6eba24c8543648239eb27dbfc1b7e3e164cc54e9f"
+  },
+  {
+    "file": "RAPPORT.md",
+    "sha256": "1bf78b97cc5ccef5761ae526d05fc94538018992d1dea922e0527212df5b1658"
+  },
+  {
+    "file": "README.md",
+    "sha256": "b665fa51b6b539fae276af4ca75bff118b811064ea8a270706b9b65c5d3c4a29"
+  },
+  {
+    "file": "scripts/build.mjs",
+    "sha256": "4c3bc27f4dbfa3994d2e59366e5f78c27997a06d2f3e456459d29eabe290a8fb"
+  },
+  {
+    "file": "scripts/report.mjs",
+    "sha256": "3b26e3f07066826cb708c8d4da9b688fdd170afc57b1721eecbbf6bc3c4180e7"
+  },
+  {
+    "file": "scripts/verify-previews.mjs",
+    "sha256": "6875cbdd77949ec058f78515de759c9e6b46d32bca958d3b3b4861321f273362"
+  },
+  {
+    "file": "src/catalogus-shell.html",
+    "sha256": "9a2e922996de7824e752778f673fb24e3ef2238e766fbfbc09d5970a45d11ac0"
+  },
+  {
+    "file": "src/catalogus.mjs",
+    "sha256": "b720a1d892b8ad4aa57703d852b4834d77b460a08975fafca291bddd58a62ada"
+  },
+  {
+    "file": "src/email-design.mjs",
+    "sha256": "961cf0be2e0a35fe15e572028895a223ffad4021aed1a2c0096bbf78b9a03cd5"
+  },
+  {
+    "file": "src/illustrations.mjs",
+    "sha256": "5c441802a228861b5fa50392443b81a1c36812f77c552f64202f43913164dcf9"
+  },
+  {
+    "file": "tests/library.test.mjs",
+    "sha256": "77370d6db1198b3fee5c8bfe7a5b8feb15ce0c6b6f51785a4448072a169982f3"
+  },
+  {
+    "file": "voorkeuren.html",
+    "sha256": "3a67adfe0b86b7751076ba3168f7f8509d19a45fd35e7f8a00226266f89976e8"
+  }
+]

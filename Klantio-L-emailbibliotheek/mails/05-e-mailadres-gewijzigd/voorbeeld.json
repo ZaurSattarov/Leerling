@@ -1,0 +1,11 @@
+{
+  "website_url": "../../actie-demo.html?type=website",
+  "logo_url": "../../assets/klantio-wordmark.png",
+  "student_name": "Amir Voorbeeld",
+  "action_url": "../../actie-demo.html?mail=5",
+  "illustration_url": "../../assets/beveiliging.png",
+  "old_email": "amir.oud@example.invalid",
+  "new_email": "amir.nieuw@example.invalid",
+  "changed_at": "dinsdag 20 oktober 2026, 10:15",
+  "support_url": "mailto:info@klantio.com"
+}

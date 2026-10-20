@@ -1,0 +1,68 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": true,
+  "debounce": false,
+  "variants": [],
+  "legacy": null,
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 35,
+  "category": "overzichten",
+  "name": "Weekoverzicht rijlessen",
+  "subject": "Jouw rijlessen voor komende week",
+  "preheader": "Je komende lessen in één overzicht.",
+  "intro": "Hoi {{student_name}},<br><br>Dit zijn je geplande lessen voor de komende week. In Klantio L zie je altijd de meest actuele planning.",
+  "theme": "les-gepland",
+  "cta": "Bekijk je weekplanning",
+  "rows": [
+    [
+      "Periode",
+      "{{period}}"
+    ],
+    [
+      "Aantal lessen",
+      "{{lesson_count}}"
+    ],
+    [
+      "Lessen",
+      "{{lesson_summary}}"
+    ]
+  ],
+  "event": "student.digest_week_schedule",
+  "slug": "35-weekoverzicht-rijlessen",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "period",
+    "lesson_count",
+    "lesson_summary",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Jouw rijlessen voor komende week",
+  "preheaderExample": "Je komende lessen in één overzicht.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

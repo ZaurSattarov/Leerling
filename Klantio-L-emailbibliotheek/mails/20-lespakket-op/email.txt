@@ -1,0 +1,19 @@
+Lespakket op
+
+Hoi {{student_name}},
+
+De lessen uit het onderstaande pakket zijn gebruikt. Neem contact op met je rijschool om te bespreken hoe je verdergaat.
+
+Bekijk je lespakket: {{action_url}}
+
+Rijschool: {{school_name}}
+Pakket: {{package_name}}
+Resterend: 0 lessen
+
+Deze melding koopt of verlengt geen pakket.
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

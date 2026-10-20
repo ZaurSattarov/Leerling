@@ -1,0 +1,77 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": null,
+  "customerNote": "Weet je niet zeker of er geld is afgeschreven? Controleer dit bij je bank en vraag je rijschool om hulp voordat je opnieuw betaalt.",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 31,
+  "category": "betalingen",
+  "name": "Betaling niet gelukt",
+  "subject": "Je betaling is niet gelukt",
+  "preheader": "Controleer de status voordat je opnieuw betaalt.",
+  "intro": "Hoi {{student_name}},<br><br>De betaling voor onderstaande rijschoolfactuur is als mislukt bevestigd. Bekijk de actuele status en beschikbare betaalactie.",
+  "theme": "betaling",
+  "cta": "Bekijk je factuur",
+  "rows": [
+    [
+      "Rijschool",
+      "{{school_name}}"
+    ],
+    [
+      "Factuurnummer",
+      "{{invoice_number}}"
+    ],
+    [
+      "Bedrag",
+      "{{invoice_amount}}"
+    ],
+    [
+      "Betaalstatus",
+      "Mislukt"
+    ],
+    [
+      "Vastgesteld op",
+      "{{changed_at}}"
+    ]
+  ],
+  "event": "student.payment_failed",
+  "slug": "31-betaling-niet-gelukt",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "school_name",
+    "invoice_number",
+    "invoice_amount",
+    "changed_at",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Je betaling is niet gelukt",
+  "preheaderExample": "Controleer de status voordat je opnieuw betaalt.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

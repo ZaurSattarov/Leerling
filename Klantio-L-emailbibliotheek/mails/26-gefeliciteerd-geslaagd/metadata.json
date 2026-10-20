@@ -1,0 +1,67 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": "examenresultaat.html",
+  "customerNote": "Geslaagd zijn voor je praktijkexamen betekent niet dat je rijbewijs al is afgegeven.",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 26,
+  "category": "examens",
+  "name": "Gefeliciteerd, geslaagd!",
+  "subject": "Gefeliciteerd, je bent geslaagd voor je praktijkexamen!",
+  "preheader": "Een mooie stap. Gefeliciteerd met je behaalde praktijkexamen.",
+  "intro": "Hoi {{student_name}},<br><br>Je bent geslaagd voor je praktijkexamen. Gefeliciteerd met deze mooie prestatie! Bespreek met je rijschool welke vervolgstappen voor jou gelden.",
+  "theme": "geslaagd",
+  "cta": "Bekijk je examenresultaat",
+  "rows": [
+    [
+      "Examen",
+      "{{exam_type}}"
+    ],
+    [
+      "Datum",
+      "{{exam_date}}"
+    ],
+    [
+      "Uitslag",
+      "Geslaagd"
+    ]
+  ],
+  "event": "student.exam_passed",
+  "slug": "26-gefeliciteerd-geslaagd",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "exam_type",
+    "exam_date",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Gefeliciteerd, je bent geslaagd voor je praktijkexamen!",
+  "preheaderExample": "Een mooie stap. Gefeliciteerd met je behaalde praktijkexamen.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

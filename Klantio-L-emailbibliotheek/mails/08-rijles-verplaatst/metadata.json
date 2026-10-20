@@ -1,0 +1,74 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": true,
+  "variants": [],
+  "legacy": "les-gewijzigd.html",
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 8,
+  "category": "planning",
+  "name": "Rijles verplaatst",
+  "subject": "Je rijles is verplaatst",
+  "preheader": "Bekijk de oude en nieuwe afspraak.",
+  "intro": "Hoi {{student_name}},<br><br>Je rijles is verplaatst. Gebruik de nieuwe datum en tijd hieronder.",
+  "theme": "les-verplaatst",
+  "cta": "Bekijk de gewijzigde rijles",
+  "rows": [
+    [
+      "Was gepland op",
+      "{{old_lesson_moment}}"
+    ],
+    [
+      "Nieuwe afspraak",
+      "{{new_lesson_moment}}"
+    ],
+    [
+      "Instructeur",
+      "{{instructor_name}}"
+    ],
+    [
+      "Nieuwe locatie",
+      "{{lesson_location}}"
+    ]
+  ],
+  "event": "student.lesson_rescheduled",
+  "comparison": true,
+  "slug": "08-rijles-verplaatst",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "old_lesson_moment",
+    "new_lesson_moment",
+    "instructor_name",
+    "lesson_location",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Je rijles is verplaatst",
+  "preheaderExample": "Bekijk de oude en nieuwe afspraak.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

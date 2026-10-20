@@ -1,0 +1,67 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": "pakket-op.html",
+  "customerNote": "Deze melding koopt of verlengt geen pakket.",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 20,
+  "category": "voortgang",
+  "name": "Lespakket op",
+  "subject": "Je hebt alle lessen uit je pakket gebruikt",
+  "preheader": "Bespreek de volgende stap met je rijschool.",
+  "intro": "Hoi {{student_name}},<br><br>De lessen uit het onderstaande pakket zijn gebruikt. Neem contact op met je rijschool om te bespreken hoe je verdergaat.",
+  "theme": "voortgang",
+  "cta": "Bekijk je lespakket",
+  "rows": [
+    [
+      "Rijschool",
+      "{{school_name}}"
+    ],
+    [
+      "Pakket",
+      "{{package_name}}"
+    ],
+    [
+      "Resterend",
+      "0 lessen"
+    ]
+  ],
+  "event": "student.package_empty",
+  "slug": "20-lespakket-op",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "school_name",
+    "package_name",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Je hebt alle lessen uit je pakket gebruikt",
+  "preheaderExample": "Bespreek de volgende stap met je rijschool.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

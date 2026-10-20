@@ -1,0 +1,12 @@
+{
+  "website_url": "../../actie-demo.html?type=website",
+  "logo_url": "../../assets/klantio-wordmark.png",
+  "student_name": "Amir Voorbeeld",
+  "action_url": "../../actie-demo.html?mail=19",
+  "illustration_url": "../../assets/voortgang.png",
+  "school_name": "Rijschool Voorbeeld",
+  "package_name": "Voorbeeldpakket",
+  "remaining_lessons": "2",
+  "support_url": "mailto:info@klantio.com",
+  "preferences_url": "../../voorkeuren.html"
+}

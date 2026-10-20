@@ -1,0 +1,68 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": "examen-gepland.html",
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 22,
+  "category": "examens",
+  "name": "Praktijkexamen ingepland",
+  "subject": "Je praktijkexamen staat gepland",
+  "preheader": "Bekijk de geregistreerde examenafspraak.",
+  "intro": "Hoi {{student_name}},<br><br>Je rijschool heeft een praktijkexamen voor je geregistreerd. Controleer de afspraakgegevens en stem je voorbereiding af met je instructeur.",
+  "theme": "examen",
+  "cta": "Bekijk je examen",
+  "rows": [
+    [
+      "Examen",
+      "{{exam_type}}"
+    ],
+    [
+      "Datum en tijd",
+      "{{exam_moment}}"
+    ],
+    [
+      "Locatie",
+      "{{exam_location}}"
+    ]
+  ],
+  "event": "student.exam_scheduled",
+  "slug": "22-praktijkexamen-ingepland",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "exam_type",
+    "exam_moment",
+    "exam_location",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Je praktijkexamen staat gepland",
+  "preheaderExample": "Bekijk de geregistreerde examenafspraak.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

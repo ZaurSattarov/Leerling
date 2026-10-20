@@ -1,0 +1,19 @@
+Rijles afgerond
+
+Hoi {{student_name}},
+
+Je rijles is als afgerond geregistreerd. In Klantio L vind je het lesoverzicht. Een evaluatie zie je zodra je instructeur deze heeft vrijgegeven.
+
+Bekijk je afgeronde les: {{action_url}}
+
+Rijles: {{lesson_moment}}
+Instructeur: {{instructor_name}}
+Status: Afgerond
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

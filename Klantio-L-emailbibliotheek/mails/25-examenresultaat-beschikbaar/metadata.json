@@ -1,0 +1,68 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": "examenresultaat.html",
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 25,
+  "category": "examens",
+  "name": "Examenresultaat beschikbaar",
+  "subject": "Je examenresultaat staat klaar",
+  "preheader": "Bekijk de vastgelegde uitslag.",
+  "intro": "Hoi {{student_name}},<br><br>Je rijschool heeft je examenresultaat geregistreerd. Bekijk de uitslag en bespreek de volgende stap met je instructeur.",
+  "theme": "examen",
+  "cta": "Bekijk je resultaat",
+  "rows": [
+    [
+      "Examen",
+      "{{exam_type}}"
+    ],
+    [
+      "Datum",
+      "{{exam_date}}"
+    ],
+    [
+      "Resultaat",
+      "{{exam_result}}"
+    ]
+  ],
+  "event": "student.exam_result_registered",
+  "slug": "25-examenresultaat-beschikbaar",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "exam_type",
+    "exam_date",
+    "exam_result",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Je examenresultaat staat klaar",
+  "preheaderExample": "Bekijk de vastgelegde uitslag.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

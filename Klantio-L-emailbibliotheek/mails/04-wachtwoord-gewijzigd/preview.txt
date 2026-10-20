@@ -1,0 +1,18 @@
+Wachtwoord gewijzigd
+
+Hoi Amir Voorbeeld,
+
+Het wachtwoord van je account is gewijzigd. Heb jij dit gedaan? Dan hoef je niets te doen.
+
+Hulp bij je account: ../../actie-demo.html?mail=4
+
+Account: amir@example.invalid
+Gewijzigd op: dinsdag 20 oktober 2026, 10:15
+
+Was jij dit niet? Neem contact op via info@klantio.com en gebruik de bestaande wachtwoordherstelfunctie.
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: ../../actie-demo.html?type=website
+Noodzakelijke melding over je account of toegang.

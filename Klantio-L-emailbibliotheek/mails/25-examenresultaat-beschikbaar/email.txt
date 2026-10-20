@@ -1,0 +1,19 @@
+Examenresultaat beschikbaar
+
+Hoi {{student_name}},
+
+Je rijschool heeft je examenresultaat geregistreerd. Bekijk de uitslag en bespreek de volgende stap met je instructeur.
+
+Bekijk je resultaat: {{action_url}}
+
+Examen: {{exam_type}}
+Datum: {{exam_date}}
+Resultaat: {{exam_result}}
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

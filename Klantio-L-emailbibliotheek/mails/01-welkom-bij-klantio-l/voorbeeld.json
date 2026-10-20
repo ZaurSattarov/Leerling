@@ -1,0 +1,9 @@
+{
+  "website_url": "../../actie-demo.html?type=website",
+  "logo_url": "../../assets/klantio-wordmark.png",
+  "student_name": "Amir Voorbeeld",
+  "action_url": "../../actie-demo.html?mail=1",
+  "getting_started_url": "../../actie-demo.html?type=eerste-stappen",
+  "illustration_url": "../../assets/welkom.png",
+  "support_url": "mailto:info@klantio.com"
+}

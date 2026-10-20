@@ -1,0 +1,21 @@
+Betaling niet gelukt
+
+Hoi {{student_name}},
+
+De betaling voor onderstaande rijschoolfactuur is als mislukt bevestigd. Bekijk de actuele status en beschikbare betaalactie.
+
+Bekijk je factuur: {{action_url}}
+
+Rijschool: {{school_name}}
+Factuurnummer: {{invoice_number}}
+Bedrag: {{invoice_amount}}
+Betaalstatus: Mislukt
+Vastgesteld op: {{changed_at}}
+
+Weet je niet zeker of er geld is afgeschreven? Controleer dit bij je bank en vraag je rijschool om hulp voordat je opnieuw betaalt.
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

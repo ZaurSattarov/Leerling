@@ -1,0 +1,67 @@
+{
+  "essential": true,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": null,
+  "customerNote": "Herken je deze wijziging niet? Neem direct contact op via info@klantio.com.",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 5,
+  "category": "account",
+  "name": "E-mailadres gewijzigd",
+  "subject": "Je e-mailadres is gewijzigd",
+  "preheader": "Controleer je nieuwe accountadres.",
+  "intro": "Hoi {{student_name}},<br><br>Het e-mailadres voor je Klantio L-account is bevestigd gewijzigd. Hieronder zie je de oude en nieuwe gegevens.",
+  "theme": "beveiliging",
+  "cta": "Account controleren",
+  "rows": [
+    [
+      "Vorig adres",
+      "{{old_email}}"
+    ],
+    [
+      "Nieuw adres",
+      "{{new_email}}"
+    ],
+    [
+      "Bevestigd op",
+      "{{changed_at}}"
+    ]
+  ],
+  "event": "student.email_changed",
+  "slug": "05-e-mailadres-gewijzigd",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "old_email",
+    "new_email",
+    "changed_at",
+    "support_url"
+  ],
+  "subjectExample": "Je e-mailadres is gewijzigd",
+  "preheaderExample": "Controleer je nieuwe accountadres.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

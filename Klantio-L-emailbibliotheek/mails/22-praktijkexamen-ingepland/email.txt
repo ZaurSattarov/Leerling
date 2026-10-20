@@ -1,0 +1,19 @@
+Praktijkexamen ingepland
+
+Hoi {{student_name}},
+
+Je rijschool heeft een praktijkexamen voor je geregistreerd. Controleer de afspraakgegevens en stem je voorbereiding af met je instructeur.
+
+Bekijk je examen: {{action_url}}
+
+Examen: {{exam_type}}
+Datum en tijd: {{exam_moment}}
+Locatie: {{exam_location}}
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

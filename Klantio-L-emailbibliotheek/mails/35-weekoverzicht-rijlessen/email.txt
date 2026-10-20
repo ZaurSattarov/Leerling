@@ -1,0 +1,19 @@
+Weekoverzicht rijlessen
+
+Hoi {{student_name}},
+
+Dit zijn je geplande lessen voor de komende week. In Klantio L zie je altijd de meest actuele planning.
+
+Bekijk je weekplanning: {{action_url}}
+
+Periode: {{period}}
+Aantal lessen: {{lesson_count}}
+Lessen: {{lesson_summary}}
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

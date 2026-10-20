@@ -1,0 +1,22 @@
+Betaling ontvangen
+
+Hoi {{student_name}},
+
+De betaling aan {{school_name}} voor onderstaande factuur is bevestigd. Bedankt!
+
+Bekijk je betaalde factuur: {{action_url}}
+
+Rijschool: {{school_name}}
+Factuurnummer: {{invoice_number}}
+Bedrag: {{invoice_amount}}
+Betaald op: {{paid_at}}
+Betaalstatus: Betaald
+Betaalmethode: {{payment_method}}
+
+Dit betreft een betaling aan je rijschool. Klantio levert de software.
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

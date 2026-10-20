@@ -1,0 +1,18 @@
+E-mailadres bevestigen
+
+Hoi Amir Voorbeeld,
+
+Bevestig dat amir@example.invalid jouw e-mailadres is. Gebruik hiervoor de beveiligde bevestigingslink.
+
+E-mailadres bevestigen: ../../actie-demo.html?mail=2
+
+E-mailadres: amir@example.invalid
+Geldig tot: vrijdag 23 oktober 2026, 18:00
+
+Heb je dit account niet aangevraagd? Dan hoef je niets te doen.
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: ../../actie-demo.html?type=website
+Noodzakelijke melding over je account of toegang.

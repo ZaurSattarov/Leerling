@@ -1,0 +1,22 @@
+Je terugbetaling is bevestigd
+
+Hoi {{student_name}},
+
+De terugbetaling bij je factuur van {{school_name}} is bevestigd. Bekijk de referentie en het bedrag hieronder.
+
+Bekijk de aanpassing: {{action_url}}
+
+Rijschool: {{school_name}}
+Factuur: {{invoice_number}}
+Type wijziging: {{adjustment_type}}
+Referentie: {{adjustment_reference}}
+Bedrag: {{invoice_amount}}
+Datum: {{changed_at}}
+
+Een creditnota is een administratieve correctie. Dat betekent niet automatisch dat er geld is teruggestort.
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

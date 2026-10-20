@@ -1,0 +1,63 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": true,
+  "debounce": false,
+  "variants": [],
+  "legacy": null,
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 21,
+  "category": "voortgang",
+  "name": "Maandelijks voortgangsoverzicht",
+  "subject": "Dit is jouw voortgang van deze maand",
+  "preheader": "Je vrijgegeven voortgang in één overzicht.",
+  "intro": "Hoi {{student_name}},<br><br>Dit is je voortgangsoverzicht van de afgelopen maand. Bekijk je actuele dossier voor de volledige feedback.",
+  "theme": "voortgang",
+  "cta": "Bekijk je voortgang",
+  "rows": [
+    [
+      "Maand",
+      "{{month}}"
+    ],
+    [
+      "Samenvatting",
+      "{{progress_summary}}"
+    ]
+  ],
+  "event": "student.digest_progress_month",
+  "slug": "21-maandelijks-voortgangsoverzicht",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "month",
+    "progress_summary",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Dit is jouw voortgang van deze maand",
+  "preheaderExample": "Je vrijgegeven voortgang in één overzicht.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

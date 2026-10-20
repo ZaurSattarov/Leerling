@@ -1,0 +1,21 @@
+Nieuwe factuur
+
+Hoi {{student_name}},
+
+{{school_name}} heeft een factuur voor je klaargezet. Bekijk de gegevens en betaal via de mogelijkheid die je rijschool aanbiedt.
+
+Bekijk je factuur: {{action_url}}
+
+Rijschool: {{school_name}}
+Factuurnummer: {{invoice_number}}
+Bedrag: {{invoice_amount}}
+Vervaldatum: {{invoice_due_date}}
+Betaalstatus: {{payment_status}}
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

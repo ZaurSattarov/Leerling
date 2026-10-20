@@ -1,0 +1,68 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": "examen-herinnering.html",
+  "customerNote": "Volg de instructies uit je eigen examenbevestiging. Deze mail voegt geen officiële CBR-instructies toe.",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 24,
+  "category": "examens",
+  "name": "Examenherinnering",
+  "subject": "Je praktijkexamen komt eraan",
+  "preheader": "Controleer nog even je afspraak.",
+  "intro": "Hoi {{student_name}},<br><br>Je praktijkexamen komt dichterbij. Bekijk de geregistreerde afspraak en bespreek de voorbereiding met je instructeur.",
+  "theme": "examen",
+  "cta": "Bekijk je examen",
+  "rows": [
+    [
+      "Examen",
+      "{{exam_type}}"
+    ],
+    [
+      "Datum en tijd",
+      "{{exam_moment}}"
+    ],
+    [
+      "Locatie",
+      "{{exam_location}}"
+    ]
+  ],
+  "event": "student.exam_reminder",
+  "slug": "24-examenherinnering",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "exam_type",
+    "exam_moment",
+    "exam_location",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Je praktijkexamen komt eraan",
+  "preheaderExample": "Controleer nog even je afspraak.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

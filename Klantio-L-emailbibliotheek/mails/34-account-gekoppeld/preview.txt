@@ -1,0 +1,19 @@
+Account gekoppeld
+
+Hoi Amir Voorbeeld,
+
+Je account is gekoppeld aan Rijschool Voorbeeld. Je kunt nu de gegevens bekijken die jouw rijschool voor je beschikbaar heeft gemaakt.
+
+Open Klantio L: ../../actie-demo.html?mail=34
+
+Rijschool: Rijschool Voorbeeld
+Instructeur: Samira de Vries
+Gekoppeld op: dinsdag 20 oktober 2026, 10:15
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: ../../actie-demo.html?type=website
+Noodzakelijke melding over je account of toegang.

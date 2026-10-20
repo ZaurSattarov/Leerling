@@ -1,0 +1,63 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": null,
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 17,
+  "category": "voortgang",
+  "name": "Voortgang bijgewerkt",
+  "subject": "Bekijk je nieuwste voortgang",
+  "preheader": "Je voortgangsoverzicht is bijgewerkt.",
+  "intro": "Hoi {{student_name}},<br><br>Je voortgang is bijgewerkt. Bekijk welke vaardigheden zijn vastgelegd en bespreek vragen met je instructeur.",
+  "theme": "voortgang",
+  "cta": "Bekijk mijn voortgang",
+  "rows": [
+    [
+      "Bijgewerkt op",
+      "{{changed_at}}"
+    ],
+    [
+      "Samenvatting",
+      "{{progress_summary}}"
+    ]
+  ],
+  "event": "student.progress_published",
+  "slug": "17-voortgang-bijgewerkt",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "changed_at",
+    "progress_summary",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Bekijk je nieuwste voortgang",
+  "preheaderExample": "Je voortgangsoverzicht is bijgewerkt.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

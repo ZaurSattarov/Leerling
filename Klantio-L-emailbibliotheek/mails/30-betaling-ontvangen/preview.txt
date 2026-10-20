@@ -1,0 +1,22 @@
+Betaling ontvangen
+
+Hoi Amir Voorbeeld,
+
+De betaling aan Rijschool Voorbeeld voor onderstaande factuur is bevestigd. Bedankt!
+
+Bekijk je betaalde factuur: ../../actie-demo.html?mail=30
+
+Rijschool: Rijschool Voorbeeld
+Factuurnummer: DEMO-2026-0142
+Bedrag: € 180,00
+Betaald op: dinsdag 20 oktober 2026, 10:15
+Betaalstatus: Betaald
+Betaalmethode: iDEAL
+
+Dit betreft een betaling aan je rijschool. Klantio levert de software.
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: ../../actie-demo.html?type=website
+E-mailvoorkeuren: ../../voorkeuren.html

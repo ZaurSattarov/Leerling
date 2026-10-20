@@ -1,0 +1,62 @@
+{
+  "essential": true,
+  "auth": true,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": "wachtwoord-resetten.html",
+  "customerNote": "Niet aangevraagd? Negeer deze mail. Je wachtwoord verandert pas als je het zelf opnieuw instelt.",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 3,
+  "category": "account",
+  "name": "Wachtwoord opnieuw instellen",
+  "subject": "Stel je Klantio L-wachtwoord opnieuw in",
+  "preheader": "Je veilige herstellink staat klaar.",
+  "intro": "Hoi {{student_name}},<br><br>Je hebt gevraagd om je wachtwoord opnieuw in te stellen. Kies een nieuw wachtwoord via de beveiligde link.",
+  "theme": "beveiliging",
+  "cta": "Nieuw wachtwoord kiezen",
+  "rows": [
+    [
+      "Account",
+      "{{student_email}}"
+    ],
+    [
+      "Geldig tot",
+      "{{valid_until}}"
+    ]
+  ],
+  "event": "auth.password_recovery",
+  "slug": "03-wachtwoord-opnieuw-instellen",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "BESTAANDE AUTH-FLOW BEHOUDEN; LIVE NIET GETEST",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "student_email",
+    "valid_until",
+    "support_url"
+  ],
+  "subjectExample": "Stel je Klantio L-wachtwoord opnieuw in",
+  "preheaderExample": "Je veilige herstellink staat klaar.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

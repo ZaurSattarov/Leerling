@@ -1,0 +1,19 @@
+Praktijkexamen ingepland
+
+Hoi Amir Voorbeeld,
+
+Je rijschool heeft een praktijkexamen voor je geregistreerd. Controleer de afspraakgegevens en stem je voorbereiding af met je instructeur.
+
+Bekijk je examen: ../../actie-demo.html?mail=22
+
+Examen: Praktijkexamen B
+Datum en tijd: maandag 26 oktober 2026, 09:30
+Locatie: Examenlocatie Voorbeeldstad
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: ../../actie-demo.html?type=website
+E-mailvoorkeuren: ../../voorkeuren.html

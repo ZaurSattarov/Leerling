@@ -1,0 +1,86 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [
+    "creditnota",
+    "refund"
+  ],
+  "legacy": null,
+  "customerNote": "Een creditnota is een administratieve correctie. Dat betekent niet automatisch dat er geld is teruggestort.",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 32,
+  "category": "betalingen",
+  "name": "Creditnota of terugbetaling",
+  "subject": "Je factuur is aangepast",
+  "preheader": "Bekijk wat er met je factuur is gewijzigd.",
+  "intro": "Hoi {{student_name}},<br><br>Er is een wijziging geregistreerd bij je rijschoolfactuur. Hieronder staat of het om een creditnota of een bevestigde terugbetaling gaat.",
+  "theme": "betaling",
+  "cta": "Bekijk de aanpassing",
+  "rows": [
+    [
+      "Rijschool",
+      "{{school_name}}"
+    ],
+    [
+      "Factuur",
+      "{{invoice_number}}"
+    ],
+    [
+      "Type wijziging",
+      "{{adjustment_type}}"
+    ],
+    [
+      "Referentie",
+      "{{adjustment_reference}}"
+    ],
+    [
+      "Bedrag",
+      "{{invoice_amount}}"
+    ],
+    [
+      "Datum",
+      "{{changed_at}}"
+    ]
+  ],
+  "event": "student.invoice_adjusted",
+  "slug": "32-creditnota-of-terugbetaling",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "school_name",
+    "invoice_number",
+    "adjustment_type",
+    "adjustment_reference",
+    "invoice_amount",
+    "changed_at",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Je factuur is aangepast",
+  "preheaderExample": "Bekijk wat er met je factuur is gewijzigd.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

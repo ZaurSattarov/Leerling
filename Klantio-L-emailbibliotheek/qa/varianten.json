@@ -1,0 +1,14 @@
+[
+  {
+    "id": 32,
+    "variant": "creditnota",
+    "desktop": "PASS",
+    "mobile": "PASS"
+  },
+  {
+    "id": 32,
+    "variant": "refund",
+    "desktop": "PASS",
+    "mobile": "PASS"
+  }
+]

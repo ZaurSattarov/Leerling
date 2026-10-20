@@ -1,0 +1,63 @@
+{
+  "essential": true,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": "wachtwoord-gewijzigd.html",
+  "customerNote": "Was jij dit niet? Neem contact op via info@klantio.com en gebruik de bestaande wachtwoordherstelfunctie.",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 4,
+  "category": "account",
+  "name": "Wachtwoord gewijzigd",
+  "subject": "Je Klantio L-wachtwoord is gewijzigd",
+  "preheader": "Controleer of jij deze wijziging hebt gedaan.",
+  "intro": "Hoi {{student_name}},<br><br>Het wachtwoord van je account is gewijzigd. Heb jij dit gedaan? Dan hoef je niets te doen.",
+  "theme": "beveiliging",
+  "cta": "Hulp bij je account",
+  "rows": [
+    [
+      "Account",
+      "{{student_email}}"
+    ],
+    [
+      "Gewijzigd op",
+      "{{changed_at}}"
+    ]
+  ],
+  "event": "password_changed",
+  "evidence": "Lokaal: CommunicationService.sendPasswordChangedSecurityEmail → send-email/password_changed",
+  "slug": "04-wachtwoord-gewijzigd",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "LOKAAL AANROEPPAD AANGETOOND; LIVE NIET GETEST",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "student_email",
+    "changed_at",
+    "support_url"
+  ],
+  "subjectExample": "Je Klantio L-wachtwoord is gewijzigd",
+  "preheaderExample": "Controleer of jij deze wijziging hebt gedaan.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

@@ -1,0 +1,256 @@
+TAP version 13
+# Subtest: 36 unieke volledige HTML- en teksttypen en tien originele thema’s
+ok 1 - 36 unieke volledige HTML- en teksttypen en tien originele thema’s
+  ---
+  duration_ms: 4.141
+  type: 'test'
+  ...
+# Subtest: SVG-personages zijn volledig met handen, benen en schoenen
+ok 2 - SVG-personages zijn volledig met handen, benen en schoenen
+  ---
+  duration_ms: 0.6784
+  type: 'test'
+  ...
+# Subtest: HTML-waarden worden ontsnapt
+ok 3 - HTML-waarden worden ontsnapt
+  ---
+  duration_ms: 0.1401
+  type: 'test'
+  ...
+# Subtest: geen onopgeloste verplichte velden
+ok 4 - geen onopgeloste verplichte velden
+  ---
+  duration_ms: 0.7152
+  type: 'test'
+  ...
+# Subtest: ontbrekende optionele locatie en toelichting krijgen veilige fallback
+ok 5 - ontbrekende optionele locatie en toelichting krijgen veilige fallback
+  ---
+  duration_ms: 0.373
+  type: 'test'
+  ...
+# Subtest: geen willekeurige lokale of externe CTA
+ok 6 - geen willekeurige lokale of externe CTA
+  ---
+  duration_ms: 0.531
+  type: 'test'
+  ...
+# Subtest: Supabase Auth-templates blijven ontwerpvoorstellen
+ok 7 - Supabase Auth-templates blijven ontwerpvoorstellen
+  ---
+  duration_ms: 0.6844
+  type: 'test'
+  ...
+# Subtest: geldige afspraak leidt uitsluitend tot voorbereidingsplan
+ok 8 - geldige afspraak leidt uitsluitend tot voorbereidingsplan
+  ---
+  duration_ms: 0.7846
+  type: 'test'
+  ...
+# Subtest: geen plan bij rollback of onbevestigd event
+ok 9 - geen plan bij rollback of onbevestigd event
+  ---
+  duration_ms: 0.225
+  type: 'test'
+  ...
+# Subtest: verouderde afspraak wordt tegengehouden
+ok 10 - verouderde afspraak wordt tegengehouden
+  ---
+  duration_ms: 0.2482
+  type: 'test'
+  ...
+# Subtest: verkeerde leerling of school wordt tegengehouden
+ok 11 - verkeerde leerling of school wordt tegengehouden
+  ---
+  duration_ms: 0.2857
+  type: 'test'
+  ...
+# Subtest: productmodus niet afleiden uit plan
+ok 12 - productmodus niet afleiden uit plan
+  ---
+  duration_ms: 0.1313
+  type: 'test'
+  ...
+# Subtest: server-objecttoegang is verplicht
+ok 13 - server-objecttoegang is verplicht
+  ---
+  duration_ms: 0.15
+  type: 'test'
+  ...
+# Subtest: verkeerde accountgebruiker ontvangt geen securitymail
+ok 14 - verkeerde accountgebruiker ontvangt geen securitymail
+  ---
+  duration_ms: 0.1037
+  type: 'test'
+  ...
+# Subtest: eigen optionele wijziging wordt niet bevestigd
+ok 15 - eigen optionele wijziging wordt niet bevestigd
+  ---
+  duration_ms: 0.0968
+  type: 'test'
+  ...
+# Subtest: onbevestigd of onveilig e-mailadres blokkeert
+ok 16 - onbevestigd of onveilig e-mailadres blokkeert
+  ---
+  duration_ms: 0.1357
+  type: 'test'
+  ...
+# Subtest: AI-concept wordt niet naar leerling gestuurd
+ok 17 - AI-concept wordt niet naar leerling gestuurd
+  ---
+  duration_ms: 0.1767
+  type: 'test'
+  ...
+# Subtest: voortgang vereist vrijgegeven betrouwbare gegevens
+ok 18 - voortgang vereist vrijgegeven betrouwbare gegevens
+  ---
+  duration_ms: 0.1417
+  type: 'test'
+  ...
+# Subtest: mijlpaal en pakketsaldo moeten werkelijk kloppen
+ok 19 - mijlpaal en pakketsaldo moeten werkelijk kloppen
+  ---
+  duration_ms: 0.1885
+  type: 'test'
+  ...
+# Subtest: geen geslaagdmail op onbevestigde of andere uitslag
+ok 20 - geen geslaagdmail op onbevestigde of andere uitslag
+  ---
+  duration_ms: 0.1771
+  type: 'test'
+  ...
+# Subtest: geslaagdmail belooft geen afgegeven rijbewijs
+ok 21 - geslaagdmail belooft geen afgegeven rijbewijs
+  ---
+  duration_ms: 0.0888
+  type: 'test'
+  ...
+# Subtest: herinnering alleen volgens bestaande vastgestelde termijn
+ok 22 - herinnering alleen volgens bestaande vastgestelde termijn
+  ---
+  duration_ms: 0.1956
+  type: 'test'
+  ...
+# Subtest: bestaande lesbevestiging voorkomt nieuwe dubbele bevestiging
+ok 23 - bestaande lesbevestiging voorkomt nieuwe dubbele bevestiging
+  ---
+  duration_ms: 0.1229
+  type: 'test'
+  ...
+# Subtest: globale en categorievoorkeuren worden toegepast
+ok 24 - globale en categorievoorkeuren worden toegepast
+  ---
+  duration_ms: 0.1618
+  type: 'test'
+  ...
+# Subtest: essentiële accountmelding blijft buiten opt-out
+ok 25 - essentiële accountmelding blijft buiten opt-out
+  ---
+  duration_ms: 0.1255
+  type: 'test'
+  ...
+# Subtest: digest omzeilt onderliggende categorie niet
+ok 26 - digest omzeilt onderliggende categorie niet
+  ---
+  duration_ms: 0.1307
+  type: 'test'
+  ...
+# Subtest: lege samenvatting niet versturen
+ok 27 - lege samenvatting niet versturen
+  ---
+  duration_ms: 0.1382
+  type: 'test'
+  ...
+# Subtest: factuur mag uitsluitend naar eigen leerling bij huidige school
+ok 28 - factuur mag uitsluitend naar eigen leerling bij huidige school
+  ---
+  duration_ms: 0.1952
+  type: 'test'
+  ...
+# Subtest: betaalde of ongeldige factuur krijgt geen betalingsherinnering
+ok 29 - betaalde of ongeldige factuur krijgt geen betalingsherinnering
+  ---
+  duration_ms: 0.1136
+  type: 'test'
+  ...
+# Subtest: betaling vereist providerbevestiging
+ok 30 - betaling vereist providerbevestiging
+  ---
+  duration_ms: 0.6484
+  type: 'test'
+  ...
+# Subtest: mislukte oudere betaalpoging niet melden bij inmiddels betaalde factuur
+ok 31 - mislukte oudere betaalpoging niet melden bij inmiddels betaalde factuur
+  ---
+  duration_ms: 0.1165
+  type: 'test'
+  ...
+# Subtest: creditnota en refund onderscheiden
+ok 32 - creditnota en refund onderscheiden
+  ---
+  duration_ms: 0.4131
+  type: 'test'
+  ...
+# Subtest: koppeling moet bevestigd zijn
+ok 33 - koppeling moet bevestigd zijn
+  ---
+  duration_ms: 0.0961
+  type: 'test'
+  ...
+# Subtest: uitnodiging alleen gebonden aan juiste ontvanger en geldigheidsduur
+ok 34 - uitnodiging alleen gebonden aan juiste ontvanger en geldigheidsduur
+  ---
+  duration_ms: 0.2021
+  type: 'test'
+  ...
+# Subtest: voorkeuren zijn afzonderlijk en standaard uit
+ok 35 - voorkeuren zijn afzonderlijk en standaard uit
+  ---
+  duration_ms: 0.2308
+  type: 'test'
+  ...
+# Subtest: voorkeuren alleen voor eigen geverifieerde sessie
+ok 36 - voorkeuren alleen voor eigen geverifieerde sessie
+  ---
+  duration_ms: 0.2563
+  type: 'test'
+  ...
+# Subtest: retries delen persistente businesskey in voorbereiding
+ok 37 - retries delen persistente businesskey in voorbereiding
+  ---
+  duration_ms: 0.2021
+  type: 'test'
+  ...
+# Subtest: snelle leswijzigingen bundelen naar definitieve versie
+ok 38 - snelle leswijzigingen bundelen naar definitieve versie
+  ---
+  duration_ms: 0.7287
+  type: 'test'
+  ...
+# Subtest: retry begrensd met Retry-After
+ok 39 - retry begrensd met Retry-After
+  ---
+  duration_ms: 0.118
+  type: 'test'
+  ...
+# Subtest: Nederlandse euro- en datumopmaak met zomer- en wintertijd
+ok 40 - Nederlandse euro- en datumopmaak met zomer- en wintertijd
+  ---
+  duration_ms: 17.5059
+  type: 'test'
+  ...
+# Subtest: instructeurbestanden komen overeen met de goedgekeurde gedeelde logo-uitlijning
+ok 41 - instructeurbestanden komen overeen met de goedgekeurde gedeelde logo-uitlijning
+  ---
+  duration_ms: 45.9673
+  type: 'test'
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 173.6569

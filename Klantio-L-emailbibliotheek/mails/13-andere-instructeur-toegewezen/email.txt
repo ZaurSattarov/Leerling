@@ -1,0 +1,19 @@
+Andere instructeur toegewezen
+
+Hoi {{student_name}},
+
+Voor de onderstaande les is een andere instructeur toegewezen. Dit zijn de bijgewerkte gegevens.
+
+Bekijk je rijles: {{action_url}}
+
+Rijles: {{lesson_moment}}
+Nieuwe instructeur: {{instructor_name}}
+Locatie: {{lesson_location}}
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

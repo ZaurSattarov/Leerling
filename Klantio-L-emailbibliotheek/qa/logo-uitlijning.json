@@ -1,0 +1,43 @@
+{
+  "reason": "Gebruiker vraagt gelijke marges boven en onder naast rode streep",
+  "approvedChange": true,
+  "transparentLogoTop": 16,
+  "transparentLogoBottom": 16,
+  "results": [
+    {
+      "surface": "mail",
+      "mode": "desktop",
+      "above": 5.7,
+      "below": 5.7,
+      "stripeHeight": 28,
+      "logoHeight": 23,
+      "clip": {
+        "x": 182,
+        "y": 58,
+        "width": 174,
+        "height": 44
+      }
+    },
+    {
+      "surface": "mail",
+      "mode": "mobiel",
+      "above": 5.7,
+      "below": 5.7,
+      "stripeHeight": 28,
+      "logoHeight": 23,
+      "clip": {
+        "x": 26,
+        "y": 38,
+        "width": 174,
+        "height": 44
+      }
+    },
+    {
+      "surface": "catalogus",
+      "above": 5.7,
+      "below": 5.7,
+      "stripeHeight": 28,
+      "logoHeight": 23
+    }
+  ]
+}

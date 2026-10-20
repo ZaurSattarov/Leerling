@@ -1,0 +1,21 @@
+Betaling niet gelukt
+
+Hoi Amir Voorbeeld,
+
+De betaling voor onderstaande rijschoolfactuur is als mislukt bevestigd. Bekijk de actuele status en beschikbare betaalactie.
+
+Bekijk je factuur: ../../actie-demo.html?mail=31
+
+Rijschool: Rijschool Voorbeeld
+Factuurnummer: DEMO-2026-0142
+Bedrag: € 180,00
+Betaalstatus: Mislukt
+Vastgesteld op: dinsdag 20 oktober 2026, 10:15
+
+Weet je niet zeker of er geld is afgeschreven? Controleer dit bij je bank en vraag je rijschool om hulp voordat je opnieuw betaalt.
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: ../../actie-demo.html?type=website
+E-mailvoorkeuren: ../../voorkeuren.html

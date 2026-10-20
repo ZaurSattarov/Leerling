@@ -1,0 +1,64 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": null,
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 15,
+  "category": "planning",
+  "name": "Beschikbaarheid bijgewerkt",
+  "subject": "Je beschikbare lestijden zijn bijgewerkt",
+  "preheader": "Bekijk welke tijden nu geregistreerd staan.",
+  "intro": "Hoi {{student_name}},<br><br>Je beschikbare tijden zijn door je rijschool of een relevante systeemactie aangepast. Controleer het bijgewerkte overzicht.",
+  "theme": "les-verplaatst",
+  "cta": "Bekijk mijn tijden",
+  "rows": [
+    [
+      "Periode",
+      "{{period}}"
+    ],
+    [
+      "Bijgewerkte tijden",
+      "{{availability_summary}}"
+    ]
+  ],
+  "event": "student.availability_changed",
+  "note": "Geen bevestigingsmail bij iedere eigen beschikbaarheidswijziging. Alleen melden bij een relevante wijziging door iemand anders.",
+  "slug": "15-beschikbaarheid-bijgewerkt",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "period",
+    "availability_summary",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Je beschikbare lestijden zijn bijgewerkt",
+  "preheaderExample": "Bekijk welke tijden nu geregistreerd staan.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

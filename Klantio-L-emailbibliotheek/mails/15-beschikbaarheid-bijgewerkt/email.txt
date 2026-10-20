@@ -1,0 +1,18 @@
+Beschikbaarheid bijgewerkt
+
+Hoi {{student_name}},
+
+Je beschikbare tijden zijn door je rijschool of een relevante systeemactie aangepast. Controleer het bijgewerkte overzicht.
+
+Bekijk mijn tijden: {{action_url}}
+
+Periode: {{period}}
+Bijgewerkte tijden: {{availability_summary}}
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

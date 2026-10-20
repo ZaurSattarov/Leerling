@@ -1,0 +1,74 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": true,
+  "variants": [],
+  "legacy": null,
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 23,
+  "category": "examens",
+  "name": "Praktijkexamen gewijzigd",
+  "subject": "Je praktijkexamen is gewijzigd",
+  "preheader": "Bekijk de oude en nieuwe gegevens.",
+  "intro": "Hoi {{student_name}},<br><br>Je geregistreerde examenafspraak is aangepast. Bekijk de nieuwe datum, tijd en locatie.",
+  "theme": "examen",
+  "cta": "Bekijk de wijziging",
+  "rows": [
+    [
+      "Vorige afspraak",
+      "{{old_exam_moment}}"
+    ],
+    [
+      "Nieuwe afspraak",
+      "{{exam_moment}}"
+    ],
+    [
+      "Vorige locatie",
+      "{{old_exam_location}}"
+    ],
+    [
+      "Nieuwe locatie",
+      "{{exam_location}}"
+    ]
+  ],
+  "event": "student.exam_changed",
+  "comparison": true,
+  "slug": "23-praktijkexamen-gewijzigd",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "old_exam_moment",
+    "exam_moment",
+    "old_exam_location",
+    "exam_location",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Je praktijkexamen is gewijzigd",
+  "preheaderExample": "Bekijk de oude en nieuwe gegevens.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

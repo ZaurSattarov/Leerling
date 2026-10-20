@@ -1,0 +1,68 @@
+{
+  "essential": true,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": "leerling-uitnodiging.html",
+  "customerNote": "Verwacht je deze uitnodiging niet? Dan hoef je niets te doen.",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling die veilig aan deze uitnodiging is gebonden",
+  "id": 33,
+  "category": "koppeling",
+  "name": "Uitnodiging voor Klantio L",
+  "subject": "Je rijschool nodigt je uit voor Klantio L",
+  "preheader": "Bekijk de uitnodiging van je rijschool.",
+  "intro": "Hoi {{student_name}},<br><br>{{school_name}} nodigt je uit om Klantio L te gebruiken. Bekijk de uitnodiging en koppel je account via de bestaande veilige koppelingsactie.",
+  "theme": "welkom",
+  "cta": "Bekijk de uitnodiging",
+  "rows": [
+    [
+      "Rijschool",
+      "{{school_name}}"
+    ],
+    [
+      "Uitnodigende instructeur",
+      "{{instructor_name}}"
+    ],
+    [
+      "Geldig tot",
+      "{{valid_until}}"
+    ]
+  ],
+  "event": "student.invited",
+  "invite": true,
+  "slug": "33-uitnodiging-voor-klantio-l",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "school_name",
+    "action_url",
+    "illustration_url",
+    "instructor_name",
+    "valid_until",
+    "support_url"
+  ],
+  "subjectExample": "Je rijschool nodigt je uit voor Klantio L",
+  "preheaderExample": "Bekijk de uitnodiging van je rijschool.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

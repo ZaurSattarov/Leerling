@@ -1,0 +1,20 @@
+Welkom bij Klantio L
+
+Hoi Amir Voorbeeld,
+
+Welkom! Je account is geactiveerd. Bekijk je lessen, geef je beschikbare tijden door en volg je voortgang. Ook je rijschoolfacturen vind je in Klantio L.
+
+Open Klantio L: ../../actie-demo.html?mail=1
+
+Bekijk je lessen.
+Geef je beschikbare tijden door.
+Volg je voortgang.
+Bekijk je rijschoolfacturen.
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: ../../actie-demo.html?type=website
+Noodzakelijke melding over je account of toegang.

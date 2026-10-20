@@ -1,0 +1,75 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": null,
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 12,
+  "category": "planning",
+  "name": "Rijles begint binnenkort",
+  "subject": "Je rijles begint binnenkort",
+  "preheader": "Je rijles start volgens je ingestelde herinneringstermijn.",
+  "intro": "Hoi {{student_name}},<br><br>Je rijles begint binnenkort. Bekijk het startpunt en de tijd in je planning.",
+  "theme": "lesherinnering",
+  "cta": "Bekijk je rijles",
+  "rows": [
+    [
+      "Datum",
+      "{{lesson_date}}"
+    ],
+    [
+      "Tijd",
+      "{{lesson_start}}–{{lesson_end}}"
+    ],
+    [
+      "Instructeur",
+      "{{instructor_name}}"
+    ],
+    [
+      "Locatie",
+      "{{lesson_location}}"
+    ]
+  ],
+  "event": "student.lesson_reminder_due",
+  "note": "Alleen met een bestaande servermatig vastgestelde herinneringstermijn; geen nieuwe fictieve standaardtermijn.",
+  "slug": "12-rijles-begint-binnenkort",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "lesson_date",
+    "lesson_start",
+    "lesson_end",
+    "instructor_name",
+    "lesson_location",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Je rijles begint binnenkort",
+  "preheaderExample": "Je rijles start volgens je ingestelde herinneringstermijn.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

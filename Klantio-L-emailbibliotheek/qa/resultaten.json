@@ -1,0 +1,452 @@
+{
+  "date": "2026-10-20",
+  "browser": "Microsoft Edge via Playwright",
+  "templates": 36,
+  "renderChecks": 216,
+  "results": [
+    {
+      "id": 1,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 2,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 3,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 4,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 5,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 6,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 7,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 8,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 9,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 10,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 11,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 12,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 13,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 14,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 15,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 16,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 17,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 18,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 19,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 20,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 21,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 22,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 23,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 24,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 25,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 26,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 27,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 28,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 29,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 30,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 31,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 32,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 33,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 34,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 35,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": 36,
+      "checks": [
+        "desktop",
+        "mobiel",
+        "smal",
+        "afbeeldingen-uit",
+        "browser-dark-media",
+        "lange-namen-speciale-tekens-lege-toelichting"
+      ],
+      "status": "PASS"
+    }
+  ],
+  "catalogue": "PASS: 36 items, filter, zoeken, selectie",
+  "preferencesDemo": "PASS: lokale opslag; geen accountwijziging",
+  "notTested": [
+    "Gmail inbox",
+    "Klassieke Outlook",
+    "Apple Mail inbox",
+    "Automatische inbox-darkmode",
+    "Live triggers",
+    "Live Auth/support/push/IMAP-regressies",
+    "Staging database",
+    "Resend-integratie"
+  ]
+}

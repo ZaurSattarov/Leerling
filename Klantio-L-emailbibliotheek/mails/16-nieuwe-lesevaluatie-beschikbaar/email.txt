@@ -1,0 +1,19 @@
+Nieuwe lesevaluatie beschikbaar
+
+Hoi {{student_name}},
+
+Je instructeur heeft een lesevaluatie vrijgegeven. Bekijk wat goed ging en waar je de volgende les aan kunt werken.
+
+Bekijk je evaluatie: {{action_url}}
+
+Rijles: {{lesson_moment}}
+Instructeur: {{instructor_name}}
+Feedback: {{evaluation_summary}}
+
+Je krijgt alleen feedback te zien die door je instructeur is vrijgegeven.
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: {{website_url}}
+E-mailvoorkeuren: {{preferences_url}}

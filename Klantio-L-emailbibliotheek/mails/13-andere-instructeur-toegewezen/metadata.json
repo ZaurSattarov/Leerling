@@ -1,0 +1,68 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": true,
+  "variants": [],
+  "legacy": null,
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 13,
+  "category": "planning",
+  "name": "Andere instructeur toegewezen",
+  "subject": "Je krijgt een andere rijinstructeur",
+  "preheader": "Bekijk wie jouw rijles geeft.",
+  "intro": "Hoi {{student_name}},<br><br>Voor de onderstaande les is een andere instructeur toegewezen. Dit zijn de bijgewerkte gegevens.",
+  "theme": "les-gepland",
+  "cta": "Bekijk je rijles",
+  "rows": [
+    [
+      "Rijles",
+      "{{lesson_moment}}"
+    ],
+    [
+      "Nieuwe instructeur",
+      "{{instructor_name}}"
+    ],
+    [
+      "Locatie",
+      "{{lesson_location}}"
+    ]
+  ],
+  "event": "student.lesson_instructor_changed",
+  "slug": "13-andere-instructeur-toegewezen",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "lesson_moment",
+    "instructor_name",
+    "lesson_location",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Je krijgt een andere rijinstructeur",
+  "preheaderExample": "Bekijk wie jouw rijles geeft.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

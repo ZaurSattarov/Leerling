@@ -1,0 +1,74 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": "lesherinnering.html",
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 11,
+  "category": "planning",
+  "name": "Herinnering: morgen rijles",
+  "subject": "Morgen heb je rijles!",
+  "preheader": "Bekijk de tijd en het startpunt.",
+  "intro": "Hoi {{student_name}},<br><br>Morgen staat er een rijles voor je gepland. Controleer nog even de afspraakgegevens.",
+  "theme": "lesherinnering",
+  "cta": "Bekijk je rijles",
+  "rows": [
+    [
+      "Datum",
+      "{{lesson_date}}"
+    ],
+    [
+      "Tijd",
+      "{{lesson_start}}–{{lesson_end}}"
+    ],
+    [
+      "Instructeur",
+      "{{instructor_name}}"
+    ],
+    [
+      "Locatie",
+      "{{lesson_location}}"
+    ]
+  ],
+  "event": "student.lesson_reminder_tomorrow",
+  "slug": "11-herinnering-morgen-rijles",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "lesson_date",
+    "lesson_start",
+    "lesson_end",
+    "instructor_name",
+    "lesson_location",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Morgen heb je rijles!",
+  "preheaderExample": "Bekijk de tijd en het startpunt.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

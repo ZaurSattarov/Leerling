@@ -1,0 +1,12 @@
+{
+  "website_url": "../../actie-demo.html?type=website",
+  "logo_url": "../../assets/klantio-wordmark.png",
+  "student_name": "Amir Voorbeeld",
+  "action_url": "../../actie-demo.html?mail=35",
+  "illustration_url": "../../assets/les-gepland.png",
+  "period": "26 oktober t/m 1 november 2026",
+  "lesson_count": "2",
+  "lesson_summary": "Maandag 26 oktober 10:00–11:00 · Samira de Vries\nDonderdag 29 oktober 13:00–14:00 · Samira de Vries",
+  "support_url": "mailto:info@klantio.com",
+  "preferences_url": "../../voorkeuren.html"
+}

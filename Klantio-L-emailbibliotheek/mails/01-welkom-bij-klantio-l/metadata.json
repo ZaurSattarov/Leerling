@@ -1,0 +1,53 @@
+{
+  "essential": true,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": null,
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 1,
+  "category": "account",
+  "name": "Welkom bij Klantio L",
+  "subject": "Welkom bij Klantio L!",
+  "preheader": "Jouw lessen, tijden, voortgang en facturen bij elkaar.",
+  "intro": "Hoi {{student_name}},<br><br>Welkom! Je account is geactiveerd. Bekijk je lessen, geef je beschikbare tijden door en volg je voortgang. Ook je rijschoolfacturen vind je in Klantio L.",
+  "theme": "welkom",
+  "cta": "Open Klantio L",
+  "rows": [],
+  "event": "student.account_activated",
+  "welcome": true,
+  "slug": "01-welkom-bij-klantio-l",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "getting_started_url",
+    "illustration_url",
+    "support_url"
+  ],
+  "subjectExample": "Welkom bij Klantio L!",
+  "preheaderExample": "Jouw lessen, tijden, voortgang en facturen bij elkaar.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="580" viewBox="0 0 1040 580" fill="none"><title>Klantio L — betaling</title><desc>Volledige leerling met handen, benen en schoenen bij betaling; originele Klantio L-vectorillustratie.</desc><rect x="0" y="0" width="1040" height="580" rx="28" fill="#F0F2F5"/><path d="M124 492C61 352 126 166 301 120C497 68 792 83 906 254C968 346 937 451 888 492H124Z" fill="#E3E7ED"/><path d="M140 536H925" stroke="#CBD2DC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><g aria-label="Volledige leerling met twee handen, benen en schoenen" transform="translate(245 135.06) scale(0.91)">
+  <!-- Onderlichaam: twee afzonderlijk zichtbare broekspijpen en schoenen. -->
+  <path d="M-58 250H58L56 304L47 411H15L5 302H-5L-15 411H-48L-59 302Z" fill="#1E2635"/>
+  <path d="M0 275V300M-29 315L-27 393M30 315L29 393" stroke="#536075" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M-49 404H-15L-13 427Q-13 434-22 434H-68Q-76 434-74 426Q-72 416-54 414Z" fill="#1E2635"/>
+  <path d="M15 404H48L54 414Q73 416 75 426Q77 434 68 434H23Q14 434 13 427Z" fill="#1E2635"/>
+  <path d="M-69 429H-20M21 429H69" stroke="#8793A4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Armen lopen vanaf de mouwen naar echte handpalmen, buiten het lijf. -->
+  <path d="M-77 172Q-92 204-92 241L-85 262L-68 253L-68 232L-54 187Z" fill="#D59670"/>
+  <path d="M77 172Q92 204 92 241L85 262L68 253L68 232L54 187Z" fill="#D59670"/>
+  <path d="M-55 127Q-73 128-81 149L-89 177L-58 193L-42 151M55 127Q73 128 81 149L89 177L58 193L42 151" fill="#D72F62"/>
+  <path d="M-50 128L-20 120H20L50 128L60 255Q31 277-1 274Q-32 277-60 255Z" fill="#D72F62"/>
+  <path d="M-17 102H17V132L0 147L-17 132Z" fill="#D59670"/>
+  <path d="M-21 122L0 146L-14 161L-31 132M21 122L0 146L14 161L31 132" fill="#B42450"/>
+  <path d="M0 149V173" stroke="#B42450" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="0" cy="158" r="2" fill="white"/>
+  <!-- Handpalmen, duimen en subtiele vingers. -->
+  <path d="M-88 239Q-97 244-96 258L-94 277Q-93 284-88 282L-85 269L-86 283Q-84 289-79 284L-77 267L-77 280Q-75 285-71 280L-70 261L-64 253Q-61 247-66 244Q-70 242-75 250L-77 240Z" fill="#D59670"/>
+  <path d="M88 239Q97 244 96 258L94 277Q93 284 88 282L85 269L86 283Q84 289 79 284L77 267L77 280Q75 285 71 280L70 261L64 253Q61 247 66 244Q70 242 75 250L77 240Z" fill="#D59670"/>
+  <path d="M-86 259L-88 275M86 259L88 275" stroke="#986044" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Hoofd en vriendelijk gezicht. -->
+  <ellipse cx="-43" cy="67" rx="8" ry="13" fill="#D59670"/><ellipse cx="43" cy="67" rx="8" ry="13" fill="#D59670"/>
+  <ellipse cy="60" rx="43" ry="52" fill="#D59670"/>
+  <path d="M-42 60C-57 14-24-13 9 1C47-6 59 31 41 59L32 30C8 44-12 40-29 30L-34 63Z" fill="#1E2635"/>
+  <path d="M-19 62H-17M17 62H19" stroke="#1E2635" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M0 66L-3 78H3" stroke="#986044" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M-11 88Q1 98 16 86" stroke="#1E2635" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+ </g><g transform="translate(540 110) scale(1.45)"><rect x="0" y="0" width="134" height="240" rx="22" fill="#1E2635"/><rect x="9" y="10" width="116" height="220" rx="15" fill="white"/><rect x="43" y="10" width="48" height="8" rx="4" fill="#1E2635"/><text x="23" y="49" fill="#1E2635" font-family="Arial, sans-serif" font-size="17" font-weight="700">Klantio L</text><rect x="22" y="67" width="90" height="56" rx="8" fill="#D72F62"/><text x="53" y="107" fill="white" font-family="Arial, sans-serif" font-size="35" font-weight="700">€</text><path d="M25 148H108M25 173H94M25 198H106" stroke="#CBD2DC" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g><rect x="768" y="173" width="153" height="112" rx="16" fill="white"/><text x="792" y="216" fill="#1E2635" font-family="Arial, sans-serif" font-size="23" font-weight="700">Factuur</text><text x="815" y="254" fill="#D72F62" font-family="Arial, sans-serif" font-size="34" font-weight="700">€</text><path d="M795 303H889M795 328H860" stroke="#CBD2DC" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M393 102V124M382 113H404M932 425V447M921 436H943" stroke="#D72F62" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>

@@ -1,0 +1,19 @@
+Examenresultaat beschikbaar
+
+Hoi Amir Voorbeeld,
+
+Je rijschool heeft je examenresultaat geregistreerd. Bekijk de uitslag en bespreek de volgende stap met je instructeur.
+
+Bekijk je resultaat: ../../actie-demo.html?mail=25
+
+Examen: Praktijkexamen B
+Datum: dinsdag 20 oktober 2026
+Resultaat: Geslaagd
+
+
+
+Klantio L
+Jouw rijlessen, voortgang en facturen op één plek.
+Contact: info@klantio.com
+Website: ../../actie-demo.html?type=website
+E-mailvoorkeuren: ../../voorkeuren.html

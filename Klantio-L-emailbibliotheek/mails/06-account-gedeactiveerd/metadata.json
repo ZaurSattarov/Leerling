@@ -1,0 +1,62 @@
+{
+  "essential": true,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": null,
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 6,
+  "category": "account",
+  "name": "Account gedeactiveerd",
+  "subject": "Je toegang tot Klantio L is gewijzigd",
+  "preheader": "Bekijk de wijziging van je toegang.",
+  "intro": "Hoi {{student_name}},<br><br>Je toegang tot Klantio L is gedeactiveerd. Heb je vragen? Neem contact op met je rijschool of met Klantio.",
+  "theme": "beveiliging",
+  "cta": "Contact opnemen",
+  "rows": [
+    [
+      "Account",
+      "{{student_email}}"
+    ],
+    [
+      "Ingangsdatum",
+      "{{effective_date}}"
+    ]
+  ],
+  "event": "student.account_deactivated",
+  "slug": "06-account-gedeactiveerd",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "student_email",
+    "effective_date",
+    "support_url"
+  ],
+  "subjectExample": "Je toegang tot Klantio L is gewijzigd",
+  "preheaderExample": "Bekijk de wijziging van je toegang.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

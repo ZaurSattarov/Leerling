@@ -1,0 +1,78 @@
+{
+  "essential": false,
+  "auth": false,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": "betalingsherinnering.html",
+  "customerNote": "",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 28,
+  "category": "betalingen",
+  "name": "Factuurherinnering",
+  "subject": "Herinnering: je factuur vervalt binnenkort",
+  "preheader": "Bekijk de einddatum en actuele betaalstatus.",
+  "intro": "Hoi {{student_name}},<br><br>De betaaltermijn van deze openstaande rijschoolfactuur loopt binnenkort af. Bekijk de actuele gegevens voordat je betaalt.",
+  "theme": "betaling",
+  "cta": "Bekijk je factuur",
+  "rows": [
+    [
+      "Rijschool",
+      "{{school_name}}"
+    ],
+    [
+      "Factuurnummer",
+      "{{invoice_number}}"
+    ],
+    [
+      "Bedrag",
+      "{{invoice_amount}}"
+    ],
+    [
+      "Vervaldatum",
+      "{{invoice_due_date}}"
+    ],
+    [
+      "Betaalstatus",
+      "{{payment_status}}"
+    ]
+  ],
+  "event": "student.invoice_due_soon",
+  "slug": "28-factuurherinnering",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "NIEUWE KOPPELING NIET GEBOUWD; LIVE TRIGGER NIET GEVERIFIEERD",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "action_url",
+    "illustration_url",
+    "school_name",
+    "invoice_number",
+    "invoice_amount",
+    "invoice_due_date",
+    "payment_status",
+    "support_url",
+    "preferences_url"
+  ],
+  "subjectExample": "Herinnering: je factuur vervalt binnenkort",
+  "preheaderExample": "Bekijk de einddatum en actuele betaalstatus.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}

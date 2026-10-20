@@ -1,0 +1,62 @@
+{
+  "essential": true,
+  "auth": true,
+  "digest": false,
+  "debounce": false,
+  "variants": [],
+  "legacy": "email-bevestigen.html",
+  "customerNote": "Heb je dit account niet aangevraagd? Dan hoef je niets te doen.",
+  "scope": "BEIDE",
+  "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
+  "recipient": "Leerling aan wie dit account of object toebehoort",
+  "id": 2,
+  "category": "account",
+  "name": "E-mailadres bevestigen",
+  "subject": "Bevestig je e-mailadres voor Klantio L",
+  "preheader": "Bevestig je adres om verder te gaan.",
+  "intro": "Hoi {{student_name}},<br><br>Bevestig dat {{student_email}} jouw e-mailadres is. Gebruik hiervoor de beveiligde bevestigingslink.",
+  "theme": "beveiliging",
+  "cta": "E-mailadres bevestigen",
+  "rows": [
+    [
+      "E-mailadres",
+      "{{student_email}}"
+    ],
+    [
+      "Geldig tot",
+      "{{valid_until}}"
+    ]
+  ],
+  "event": "auth.email_confirmation",
+  "slug": "02-e-mailadres-bevestigen",
+  "optional": {
+    "lesson_location": "Bekijk het startpunt in de app.",
+    "old_location": "Niet vastgelegd",
+    "new_location": "Bekijk het nieuwe startpunt in de app.",
+    "cancellation_note": "Geen toelichting opgegeven.",
+    "evaluation_summary": "Bekijk de vrijgegeven feedback in de app.",
+    "exam_location": "Stem de locatie af met je rijschool.",
+    "old_exam_location": "Niet vastgelegd",
+    "payment_method": "Niet vermeld"
+  },
+  "triggerStatus": "BESTAANDE AUTH-FLOW BEHOUDEN; LIVE NIET GETEST",
+  "status": [
+    "ONTWERP GEREED",
+    "HTML GEREED",
+    "WACHT OP GO-LIVE"
+  ],
+  "variables": [
+    "website_url",
+    "logo_url",
+    "student_name",
+    "student_email",
+    "action_url",
+    "illustration_url",
+    "valid_until",
+    "support_url"
+  ],
+  "subjectExample": "Bevestig je e-mailadres voor Klantio L",
+  "preheaderExample": "Bevestig je adres om verder te gaan.",
+  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
+  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+}
