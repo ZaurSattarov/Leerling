@@ -1,8 +1,7 @@
 {
-  "website_url": "../../actie-demo.html?type=website",
-  "logo_url": "../../assets/klantio-wordmark.png",
+  "website_url": "https://klantio.com/",
+  "logo_url": "../../assets/klantio-wordmark-white.png",
   "student_name": "Amir Voorbeeld",
-  "action_url": "../../actie-demo.html?mail=6",
   "illustration_url": "../../assets/beveiliging.png",
   "student_email": "amir@example.invalid",
   "effective_date": "woensdag 21 oktober 2026",

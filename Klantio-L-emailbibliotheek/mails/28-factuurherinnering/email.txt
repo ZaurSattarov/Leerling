@@ -2,9 +2,7 @@ Factuurherinnering
 
 Hoi {{student_name}},
 
-De betaaltermijn van deze openstaande rijschoolfactuur loopt binnenkort af. Bekijk de actuele gegevens voordat je betaalt.
-
-Bekijk je factuur: {{action_url}}
+De betaaltermijn van deze openstaande factuur loopt binnenkort af. Controleer de actuele status voordat je betaalt.
 
 Rijschool: {{school_name}}
 Factuurnummer: {{invoice_number}}
@@ -14,8 +12,8 @@ Betaalstatus: {{payment_status}}
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
+Bekijk je factuur: {{action_url}}
+
+info@klantio.com
+{{website_url}}
 E-mailvoorkeuren: {{preferences_url}}

@@ -16,7 +16,7 @@ VOOR iedere programmeeropdracht, VOORDAT broncode wordt gewijzigd:
 
 1. Lees deze projectinstructies.
 2. Lees (niet de hele vault):
-   - `00 - KLANTIO/Product Architectuur/Solo & Team - Canonical Architectuur.md` (**leidend**)
+   - `01 - ARCHITECTUUR/Canonical Product- en Businessarchitectuur.md` (**leidend**)
    - `01 - ARCHITECTUUR/Solo-vs-Team.md`
    - `01 - ARCHITECTUUR/Productarchitectuur.md`
 3. Bepaal zelfstandig: **SCOPE = SOLO | TEAM | BEIDE**. Algemene functionaliteit → **BEIDE**.
@@ -233,3 +233,18 @@ Officiële Google Agent Skills (`https://github.com/google/skills`) voor Google 
 - Developer retrieval & tools (`developers/retrieving-developer-knowledge`, `finding-google-skills`)
 
 Wordt automatisch geraadpleegd zodra een taak Google Cloud, Storage, IAM, Firebase of BigQuery raakt.
+---
+
+## Verplicht eindrapport (bij elk antwoord)
+
+Begin elke taak met het lezen van **Graphify** en **Obsidian**, en werk beide aan het einde bij wanneer er structurele code- of architectuurwijzigingen zijn.
+
+Sluit **elk antwoord** af met exact dit blok:
+
+``text
+🧩 Skills gebruikt: <lijst of "geen">
+🔎 Graphify: <bijgewerkt / gecontroleerd / niet nodig + reden>
+🧠 Obsidian: <bijgewerkt / gecontroleerd / niet nodig + reden>
+🌐 Cross-project impact: <DIRECT / CONSISTENCY / ISOLATED (+ korte toelichting)>
+📁 Gewijzigde projecten: <lijst of "geen">
+``

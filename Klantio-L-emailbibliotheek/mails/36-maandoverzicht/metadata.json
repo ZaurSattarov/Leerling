@@ -5,7 +5,7 @@
   "debounce": false,
   "variants": [],
   "legacy": null,
-  "customerNote": "Uitgebreide financiële details blijven in je beveiligde factuuroverzicht.",
+  "customerNote": "",
   "scope": "BEIDE",
   "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
   "recipient": "Leerling aan wie dit account of object toebehoort",
@@ -14,7 +14,7 @@
   "name": "Maandoverzicht",
   "subject": "Jouw maand met Klantio L",
   "preheader": "Je lessen en voortgang samengevat.",
-  "intro": "Hoi {{student_name}},<br><br>Bekijk je afgeronde lessen en vrijgegeven voortgang van de afgelopen maand. Je actuele factuurstatus vind je in de app.",
+  "intro": "Hoi {{student_name}},<br><br>Dit is het overzicht van je afgeronde lessen en vrijgegeven voortgang van de afgelopen maand.",
   "theme": "voortgang",
   "cta": "Bekijk je maandoverzicht",
   "rows": [
@@ -53,11 +53,13 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "hidePrimaryAction": true,
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
-    "action_url",
     "illustration_url",
     "month",
     "completed_lessons",
@@ -66,8 +68,21 @@
     "support_url",
     "preferences_url"
   ],
+  "linkRouting": {
+    "id": "L36",
+    "client": "leerling",
+    "desktop": "https://klantio.com/",
+    "mobile": "leerlingplanner://open?route=%2Fhome",
+    "personal": null,
+    "requiresNewMobileBuild": true,
+    "mobileScreen": "/home",
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
   "subjectExample": "Jouw maand met Klantio L",
   "preheaderExample": "Je lessen en voortgang samengevat.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

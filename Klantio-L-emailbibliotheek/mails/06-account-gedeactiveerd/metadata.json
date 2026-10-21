@@ -14,9 +14,9 @@
   "name": "Account gedeactiveerd",
   "subject": "Je toegang tot Klantio L is gewijzigd",
   "preheader": "Bekijk de wijziging van je toegang.",
-  "intro": "Hoi {{student_name}},<br><br>Je toegang tot Klantio L is gedeactiveerd. Heb je vragen? Neem contact op met je rijschool of met Klantio.",
+  "intro": "Hoi {{student_name}},<br><br>Je toegang tot Klantio L is gedeactiveerd. Heb je vragen over je account? Neem contact op met je rijschool.",
   "theme": "beveiliging",
-  "cta": "Contact opnemen",
+  "cta": "Neem contact op met je rijschool",
   "rows": [
     [
       "Account",
@@ -45,18 +45,33 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "hidePrimaryAction": true,
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
-    "action_url",
     "illustration_url",
     "student_email",
     "effective_date",
     "support_url"
   ],
+  "linkRouting": {
+    "id": "L06",
+    "client": "leerling",
+    "desktop": "mailto:info@klantio.com",
+    "mobile": "mailto:info@klantio.com",
+    "personal": null,
+    "requiresNewMobileBuild": false,
+    "mobileScreen": null,
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Contact opent info@klantio.com.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
   "subjectExample": "Je toegang tot Klantio L is gewijzigd",
   "preheaderExample": "Bekijk de wijziging van je toegang.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

@@ -14,7 +14,7 @@
   "name": "Account gekoppeld",
   "subject": "Je Klantio L-account is gekoppeld",
   "preheader": "Je rijschoolgegevens staan voor je klaar.",
-  "intro": "Hoi {{student_name}},<br><br>Je account is gekoppeld aan {{school_name}}. Je kunt nu de gegevens bekijken die jouw rijschool voor je beschikbaar heeft gemaakt.",
+  "intro": "Hoi {{student_name}},<br><br>Je account is gekoppeld aan {{school_name}}. Bekijk de gegevens die je rijschool met je deelt.",
   "theme": "welkom",
   "cta": "Open Klantio L",
   "rows": [
@@ -49,19 +49,34 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
     "school_name",
-    "action_url",
     "illustration_url",
     "instructor_name",
     "changed_at",
+    "action_url",
     "support_url"
   ],
+  "linkRouting": {
+    "id": "L34",
+    "client": "leerling",
+    "desktop": "https://klantio.com/",
+    "mobile": "leerlingplanner://open?route=%2Fhome",
+    "personal": null,
+    "requiresNewMobileBuild": true,
+    "mobileScreen": "/home",
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
   "subjectExample": "Je Klantio L-account is gekoppeld",
   "preheaderExample": "Je rijschoolgegevens staan voor je klaar.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

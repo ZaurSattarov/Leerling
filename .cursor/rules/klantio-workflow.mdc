@@ -8,7 +8,7 @@ alwaysApply: true
 Before every programming task, before modifying source code:
 
 1. Read canonical Klantio architecture from Obsidian/Klantio-Knowledge (not the whole vault):
-   - `00 - KLANTIO/Product Architectuur/Solo & Team - Canonical Architectuur.md` (leading)
+   - `01 - ARCHITECTUUR/Canonical Product- en Businessarchitectuur.md` (leading)
    - `01 - ARCHITECTUUR/Solo-vs-Team.md`
    - `01 - ARCHITECTUUR/Productarchitectuur.md`
 

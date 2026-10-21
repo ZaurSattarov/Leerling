@@ -2,9 +2,7 @@ Account gekoppeld
 
 Hoi {{student_name}},
 
-Je account is gekoppeld aan {{school_name}}. Je kunt nu de gegevens bekijken die jouw rijschool voor je beschikbaar heeft gemaakt.
-
-Open Klantio L: {{action_url}}
+Je account is gekoppeld aan {{school_name}}. Bekijk de gegevens die je rijschool met je deelt.
 
 Rijschool: {{school_name}}
 Instructeur: {{instructor_name}}
@@ -12,8 +10,7 @@ Gekoppeld op: {{changed_at}}
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
-Noodzakelijke melding over je account of toegang.
+Open Klantio L: {{action_url}}
+
+info@klantio.com
+{{website_url}}

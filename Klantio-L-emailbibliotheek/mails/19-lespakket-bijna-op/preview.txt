@@ -2,9 +2,7 @@ Lespakket bijna op
 
 Hoi Amir Voorbeeld,
 
-Er zijn nog maar een paar lessen over in je pakket. Bespreek met je rijschool wat een passende vervolgstap is.
-
-Bekijk je lespakket: ../../actie-demo.html?mail=19
+Je lespakket raakt bijna op. Bespreek het vervolg met je rijschool.
 
 Rijschool: Rijschool Voorbeeld
 Pakket: Voorbeeldpakket
@@ -12,8 +10,8 @@ Resterend: 2 lessen
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-E-mailvoorkeuren: ../../voorkeuren.html
+Bekijk je lespakket: open.html
+
+info@klantio.com
+https://klantio.com/
+E-mailvoorkeuren: preferences.html

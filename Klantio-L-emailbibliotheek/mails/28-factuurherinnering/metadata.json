@@ -14,7 +14,7 @@
   "name": "Factuurherinnering",
   "subject": "Herinnering: je factuur vervalt binnenkort",
   "preheader": "Bekijk de einddatum en actuele betaalstatus.",
-  "intro": "Hoi {{student_name}},<br><br>De betaaltermijn van deze openstaande rijschoolfactuur loopt binnenkort af. Bekijk de actuele gegevens voordat je betaalt.",
+  "intro": "Hoi {{student_name}},<br><br>De betaaltermijn van deze openstaande factuur loopt binnenkort af. Controleer de actuele status voordat je betaalt.",
   "theme": "betaling",
   "cta": "Bekijk je factuur",
   "rows": [
@@ -57,22 +57,37 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
-    "action_url",
     "illustration_url",
     "school_name",
     "invoice_number",
     "invoice_amount",
     "invoice_due_date",
     "payment_status",
+    "action_url",
     "support_url",
     "preferences_url"
   ],
+  "linkRouting": {
+    "id": "L28",
+    "client": "leerling",
+    "desktop": null,
+    "mobile": "leerlingplanner://open?route=%2Ffacturen",
+    "personal": "Eigen leerlingfactuur via canonieke UUID",
+    "requiresNewMobileBuild": true,
+    "mobileScreen": "/facturen",
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
   "subjectExample": "Herinnering: je factuur vervalt binnenkort",
   "preheaderExample": "Bekijk de einddatum en actuele betaalstatus.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

@@ -1,14 +1,14 @@
 {
-  "website_url": "../../actie-demo.html?type=website",
-  "logo_url": "../../assets/klantio-wordmark.png",
+  "website_url": "https://klantio.com/",
+  "logo_url": "../../assets/klantio-wordmark-white.png",
   "student_name": "Amir Voorbeeld",
   "school_name": "Rijschool Voorbeeld",
-  "action_url": "../../actie-demo.html?mail=27",
   "illustration_url": "../../assets/betaling.png",
   "invoice_number": "DEMO-2026-0142",
   "invoice_amount": "€ 180,00",
   "invoice_due_date": "vrijdag 30 oktober 2026",
   "payment_status": "Openstaand",
+  "action_url": "open.html",
   "support_url": "mailto:info@klantio.com",
-  "preferences_url": "../../voorkeuren.html"
+  "preferences_url": "preferences.html"
 }

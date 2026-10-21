@@ -14,7 +14,7 @@
   "name": "E-mailadres bevestigen",
   "subject": "Bevestig je e-mailadres voor Klantio L",
   "preheader": "Bevestig je adres om verder te gaan.",
-  "intro": "Hoi {{student_name}},<br><br>Bevestig dat {{student_email}} jouw e-mailadres is. Gebruik hiervoor de beveiligde bevestigingslink.",
+  "intro": "Hoi {{student_name}},<br><br>Bevestig dat {{student_email}} jouw e-mailadres is.",
   "theme": "beveiliging",
   "cta": "E-mailadres bevestigen",
   "rows": [
@@ -45,18 +45,33 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
     "student_email",
-    "action_url",
     "illustration_url",
     "valid_until",
+    "action_url",
     "support_url"
   ],
+  "linkRouting": {
+    "id": "L02",
+    "client": "leerling",
+    "desktop": null,
+    "mobile": null,
+    "personal": "Persoonlijke e-mailbevestiging",
+    "requiresNewMobileBuild": false,
+    "mobileScreen": null,
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
   "subjectExample": "Bevestig je e-mailadres voor Klantio L",
   "preheaderExample": "Bevestig je adres om verder te gaan.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

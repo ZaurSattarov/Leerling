@@ -2,17 +2,15 @@ Maandelijks voortgangsoverzicht
 
 Hoi {{student_name}},
 
-Dit is je voortgangsoverzicht van de afgelopen maand. Bekijk je actuele dossier voor de volledige feedback.
-
-Bekijk je voortgang: {{action_url}}
+Dit is je voortgangsoverzicht van de afgelopen maand.
 
 Maand: {{month}}
 Samenvatting: {{progress_summary}}
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
+Bekijk je voortgang: {{action_url}}
+
+info@klantio.com
+{{website_url}}
 E-mailvoorkeuren: {{preferences_url}}

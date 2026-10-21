@@ -14,9 +14,9 @@
   "name": "Gefeliciteerd, geslaagd!",
   "subject": "Gefeliciteerd, je bent geslaagd voor je praktijkexamen!",
   "preheader": "Een mooie stap. Gefeliciteerd met je behaalde praktijkexamen.",
-  "intro": "Hoi {{student_name}},<br><br>Je bent geslaagd voor je praktijkexamen. Gefeliciteerd met deze mooie prestatie! Bespreek met je rijschool welke vervolgstappen voor jou gelden.",
+  "intro": "Hoi {{student_name}},<br><br>Gefeliciteerd, je bent geslaagd voor je praktijkexamen! Bespreek de vervolgstappen met je rijschool.",
   "theme": "geslaagd",
-  "cta": "Bekijk je examenresultaat",
+  "cta": "Examens bekijken",
   "rows": [
     [
       "Examen",
@@ -49,19 +49,34 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
-    "action_url",
     "illustration_url",
     "exam_type",
     "exam_date",
+    "action_url",
     "support_url",
     "preferences_url"
   ],
+  "linkRouting": {
+    "id": "L26",
+    "client": "leerling",
+    "desktop": "https://klantio.com/",
+    "mobile": "leerlingplanner://open?route=%2Fexamens",
+    "personal": null,
+    "requiresNewMobileBuild": true,
+    "mobileScreen": "/examens",
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
   "subjectExample": "Gefeliciteerd, je bent geslaagd voor je praktijkexamen!",
   "preheaderExample": "Een mooie stap. Gefeliciteerd met je behaalde praktijkexamen.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

@@ -2,9 +2,7 @@ Factuur verlopen
 
 Hoi {{student_name}},
 
-Deze factuur van {{school_name}} staat nog open. Bekijk de actuele status en de beschikbare betaalmogelijkheid in je factuur.
-
-Bekijk je openstaande factuur: {{action_url}}
+Deze factuur van {{school_name}} staat nog open na de vervaldatum.
 
 Rijschool: {{school_name}}
 Factuurnummer: {{invoice_number}}
@@ -12,10 +10,10 @@ Bedrag: {{invoice_amount}}
 Vervaldatum: {{invoice_due_date}}
 Betaalstatus: {{payment_status}}
 
-Heb je vragen over deze factuur? Neem contact op met je rijschool.
+Controleer de actuele factuurstatus. Neem bij vragen contact op met je rijschool.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
+Bekijk je openstaande factuur: {{action_url}}
+
+info@klantio.com
+{{website_url}}
 E-mailvoorkeuren: {{preferences_url}}

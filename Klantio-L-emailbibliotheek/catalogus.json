@@ -13,9 +13,9 @@
     "id": 1,
     "category": "account",
     "name": "Welkom bij Klantio L",
-    "subject": "Welkom bij Klantio L!",
-    "preheader": "Jouw lessen, tijden, voortgang en facturen bij elkaar.",
-    "intro": "Hoi {{student_name}},<br><br>Welkom! Je account is geactiveerd. Bekijk je lessen, geef je beschikbare tijden door en volg je voortgang. Ook je rijschoolfacturen vind je in Klantio L.",
+    "subject": "Welkom bij Klantio L.",
+    "preheader": "Je rijlessen en voortgang bij elkaar.",
+    "intro": "Hoi {{student_name}},<br><br>Hier vind je de informatie die je rijschool met je deelt.",
     "theme": "welkom",
     "cta": "Open Klantio L",
     "rows": [],
@@ -38,19 +38,38 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
+    "activationGates": [
+      "email_verified",
+      "account_active",
+      "school_link_accepted"
+    ],
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
-      "getting_started_url",
       "illustration_url",
+      "action_url",
       "support_url"
     ],
-    "subjectExample": "Welkom bij Klantio L!",
-    "preheaderExample": "Jouw lessen, tijden, voortgang en facturen bij elkaar.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkRouting": {
+      "id": "L01",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fhome",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/home",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
+    "subjectExample": "Welkom bij Klantio L.",
+    "preheaderExample": "Je rijlessen en voortgang bij elkaar.",
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": true,
@@ -68,7 +87,7 @@
     "name": "E-mailadres bevestigen",
     "subject": "Bevestig je e-mailadres voor Klantio L",
     "preheader": "Bevestig je adres om verder te gaan.",
-    "intro": "Hoi {{student_name}},<br><br>Bevestig dat {{student_email}} jouw e-mailadres is. Gebruik hiervoor de beveiligde bevestigingslink.",
+    "intro": "Hoi {{student_name}},<br><br>Bevestig dat {{student_email}} jouw e-mailadres is.",
     "theme": "beveiliging",
     "cta": "E-mailadres bevestigen",
     "rows": [
@@ -99,20 +118,35 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
       "student_email",
-      "action_url",
       "illustration_url",
       "valid_until",
+      "action_url",
       "support_url"
     ],
+    "linkRouting": {
+      "id": "L02",
+      "client": "leerling",
+      "desktop": null,
+      "mobile": null,
+      "personal": "Persoonlijke e-mailbevestiging",
+      "requiresNewMobileBuild": false,
+      "mobileScreen": null,
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Bevestig je e-mailadres voor Klantio L",
     "preheaderExample": "Bevestig je adres om verder te gaan.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": true,
@@ -130,7 +164,7 @@
     "name": "Wachtwoord opnieuw instellen",
     "subject": "Stel je Klantio L-wachtwoord opnieuw in",
     "preheader": "Je veilige herstellink staat klaar.",
-    "intro": "Hoi {{student_name}},<br><br>Je hebt gevraagd om je wachtwoord opnieuw in te stellen. Kies een nieuw wachtwoord via de beveiligde link.",
+    "intro": "Hoi {{student_name}},<br><br>Je hebt gevraagd om je Klantio L-wachtwoord opnieuw in te stellen.",
     "theme": "beveiliging",
     "cta": "Nieuw wachtwoord kiezen",
     "rows": [
@@ -161,20 +195,35 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "student_email",
       "valid_until",
+      "action_url",
       "support_url"
     ],
+    "linkRouting": {
+      "id": "L03",
+      "client": "leerling",
+      "desktop": null,
+      "mobile": null,
+      "personal": "Persoonlijke wachtwoordherstellink",
+      "requiresNewMobileBuild": false,
+      "mobileScreen": null,
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Stel je Klantio L-wachtwoord opnieuw in",
     "preheaderExample": "Je veilige herstellink staat klaar.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": true,
@@ -192,7 +241,7 @@
     "name": "Wachtwoord gewijzigd",
     "subject": "Je Klantio L-wachtwoord is gewijzigd",
     "preheader": "Controleer of jij deze wijziging hebt gedaan.",
-    "intro": "Hoi {{student_name}},<br><br>Het wachtwoord van je account is gewijzigd. Heb jij dit gedaan? Dan hoef je niets te doen.",
+    "intro": "Hoi {{student_name}},<br><br>Je wachtwoord is gewijzigd. Heb jij dit gedaan? Dan hoef je niets te doen.",
     "theme": "beveiliging",
     "cta": "Hulp bij je account",
     "rows": [
@@ -224,20 +273,35 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "student_email",
       "changed_at",
+      "action_url",
       "support_url"
     ],
+    "linkRouting": {
+      "id": "L04",
+      "client": "leerling",
+      "desktop": "mailto:info@klantio.com",
+      "mobile": "mailto:info@klantio.com",
+      "personal": null,
+      "requiresNewMobileBuild": false,
+      "mobileScreen": null,
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Contact opent info@klantio.com.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je Klantio L-wachtwoord is gewijzigd",
     "preheaderExample": "Controleer of jij deze wijziging hebt gedaan.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": true,
@@ -255,7 +319,7 @@
     "name": "E-mailadres gewijzigd",
     "subject": "Je e-mailadres is gewijzigd",
     "preheader": "Controleer je nieuwe accountadres.",
-    "intro": "Hoi {{student_name}},<br><br>Het e-mailadres voor je Klantio L-account is bevestigd gewijzigd. Hieronder zie je de oude en nieuwe gegevens.",
+    "intro": "Hoi {{student_name}},<br><br>Je e-mailadres is gewijzigd. Hieronder staan het vorige en het nieuwe adres.",
     "theme": "beveiliging",
     "cta": "Account controleren",
     "rows": [
@@ -290,21 +354,36 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "old_email",
       "new_email",
       "changed_at",
+      "action_url",
       "support_url"
     ],
+    "linkRouting": {
+      "id": "L05",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fprofiel%2Fpersoonlijke-gegevens",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/profiel/persoonlijke-gegevens",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je e-mailadres is gewijzigd",
     "preheaderExample": "Controleer je nieuwe accountadres.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": true,
@@ -322,9 +401,9 @@
     "name": "Account gedeactiveerd",
     "subject": "Je toegang tot Klantio L is gewijzigd",
     "preheader": "Bekijk de wijziging van je toegang.",
-    "intro": "Hoi {{student_name}},<br><br>Je toegang tot Klantio L is gedeactiveerd. Heb je vragen? Neem contact op met je rijschool of met Klantio.",
+    "intro": "Hoi {{student_name}},<br><br>Je toegang tot Klantio L is gedeactiveerd. Heb je vragen over je account? Neem contact op met je rijschool.",
     "theme": "beveiliging",
-    "cta": "Contact opnemen",
+    "cta": "Neem contact op met je rijschool",
     "rows": [
       [
         "Account",
@@ -353,20 +432,35 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "hidePrimaryAction": true,
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "student_email",
       "effective_date",
       "support_url"
     ],
+    "linkRouting": {
+      "id": "L06",
+      "client": "leerling",
+      "desktop": "mailto:info@klantio.com",
+      "mobile": "mailto:info@klantio.com",
+      "personal": null,
+      "requiresNewMobileBuild": false,
+      "mobileScreen": null,
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Contact opent info@klantio.com.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je toegang tot Klantio L is gewijzigd",
     "preheaderExample": "Bekijk de wijziging van je toegang.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -384,7 +478,7 @@
     "name": "Rijles ingepland",
     "subject": "Je nieuwe rijles staat gepland",
     "preheader": "Bekijk wanneer en waar je volgende rijles begint.",
-    "intro": "Hoi {{student_name}},<br><br>Er staat een nieuwe rijles voor je klaar. Dit zijn de afspraakgegevens.",
+    "intro": "Hoi {{student_name}},<br><br>Er staat een nieuwe rijles in je planning.",
     "theme": "les-gepland",
     "cta": "Bekijk je rijles",
     "rows": [
@@ -424,24 +518,39 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "lesson_date",
       "lesson_start",
       "lesson_end",
       "instructor_name",
       "lesson_location",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L07",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fplanning",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/planning",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je nieuwe rijles staat gepland",
     "preheaderExample": "Bekijk wanneer en waar je volgende rijles begint.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -459,7 +568,7 @@
     "name": "Rijles verplaatst",
     "subject": "Je rijles is verplaatst",
     "preheader": "Bekijk de oude en nieuwe afspraak.",
-    "intro": "Hoi {{student_name}},<br><br>Je rijles is verplaatst. Gebruik de nieuwe datum en tijd hieronder.",
+    "intro": "Hoi {{student_name}},<br><br>Je rijles is verplaatst. De nieuwe afspraak staat hieronder.",
     "theme": "les-verplaatst",
     "cta": "Bekijk de gewijzigde rijles",
     "rows": [
@@ -499,23 +608,38 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "old_lesson_moment",
       "new_lesson_moment",
       "instructor_name",
       "lesson_location",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L08",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fplanning",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/planning",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je rijles is verplaatst",
     "preheaderExample": "Bekijk de oude en nieuwe afspraak.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -533,7 +657,7 @@
     "name": "Rijleslocatie gewijzigd",
     "subject": "De locatie van je rijles is gewijzigd",
     "preheader": "Je startpunt voor deze les is aangepast.",
-    "intro": "Hoi {{student_name}},<br><br>Je rijles begint op een andere locatie. Bekijk het nieuwe startpunt voordat je vertrekt.",
+    "intro": "Hoi {{student_name}},<br><br>Je rijles begint op een andere locatie. Controleer het nieuwe startpunt.",
     "theme": "les-verplaatst",
     "cta": "Bekijk je rijles",
     "rows": [
@@ -573,23 +697,38 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "lesson_moment",
       "old_location",
       "new_location",
       "instructor_name",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L09",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fplanning",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/planning",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "De locatie van je rijles is gewijzigd",
     "preheaderExample": "Je startpunt voor deze les is aangepast.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -607,7 +746,7 @@
     "name": "Rijles geannuleerd",
     "subject": "Je rijles is geannuleerd",
     "preheader": "Deze afspraak gaat niet door.",
-    "intro": "Hoi {{student_name}},<br><br>De onderstaande rijles is geannuleerd. Bekijk je planning of neem contact op met je rijschool om een volgende les af te spreken.",
+    "intro": "Hoi {{student_name}},<br><br>Deze rijles is geannuleerd. Bespreek met je rijschool wanneer je weer kunt lessen.",
     "theme": "les-geannuleerd",
     "cta": "Bekijk je planning",
     "rows": [
@@ -650,11 +789,12 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "lesson_date",
       "lesson_start",
@@ -662,13 +802,27 @@
       "instructor_name",
       "lesson_location",
       "cancellation_note",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L10",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fplanning",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/planning",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je rijles is geannuleerd",
     "preheaderExample": "Deze afspraak gaat niet door.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -686,7 +840,7 @@
     "name": "Herinnering: morgen rijles",
     "subject": "Morgen heb je rijles!",
     "preheader": "Bekijk de tijd en het startpunt.",
-    "intro": "Hoi {{student_name}},<br><br>Morgen staat er een rijles voor je gepland. Controleer nog even de afspraakgegevens.",
+    "intro": "Hoi {{student_name}},<br><br>Morgen heb je rijles. Controleer de afspraakgegevens hieronder.",
     "theme": "lesherinnering",
     "cta": "Bekijk je rijles",
     "rows": [
@@ -725,24 +879,39 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "lesson_date",
       "lesson_start",
       "lesson_end",
       "instructor_name",
       "lesson_location",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L11",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fplanning",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/planning",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Morgen heb je rijles!",
     "preheaderExample": "Bekijk de tijd en het startpunt.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -760,7 +929,7 @@
     "name": "Rijles begint binnenkort",
     "subject": "Je rijles begint binnenkort",
     "preheader": "Je rijles start volgens je ingestelde herinneringstermijn.",
-    "intro": "Hoi {{student_name}},<br><br>Je rijles begint binnenkort. Bekijk het startpunt en de tijd in je planning.",
+    "intro": "Hoi {{student_name}},<br><br>Je rijles begint binnenkort. Controleer de tijd en het startpunt.",
     "theme": "lesherinnering",
     "cta": "Bekijk je rijles",
     "rows": [
@@ -800,24 +969,39 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "lesson_date",
       "lesson_start",
       "lesson_end",
       "instructor_name",
       "lesson_location",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L12",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fplanning",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/planning",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je rijles begint binnenkort",
     "preheaderExample": "Je rijles start volgens je ingestelde herinneringstermijn.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -835,7 +1019,7 @@
     "name": "Andere instructeur toegewezen",
     "subject": "Je krijgt een andere rijinstructeur",
     "preheader": "Bekijk wie jouw rijles geeft.",
-    "intro": "Hoi {{student_name}},<br><br>Voor de onderstaande les is een andere instructeur toegewezen. Dit zijn de bijgewerkte gegevens.",
+    "intro": "Hoi {{student_name}},<br><br>Er is een andere instructeur voor deze rijles ingepland.",
     "theme": "les-gepland",
     "cta": "Bekijk je rijles",
     "rows": [
@@ -870,22 +1054,37 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "lesson_moment",
       "instructor_name",
       "lesson_location",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L13",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fplanning",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/planning",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je krijgt een andere rijinstructeur",
     "preheaderExample": "Bekijk wie jouw rijles geeft.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -903,7 +1102,7 @@
     "name": "Rijles afgerond",
     "subject": "Je rijles is afgerond",
     "preheader": "Bekijk je les en de volgende stap.",
-    "intro": "Hoi {{student_name}},<br><br>Je rijles is als afgerond geregistreerd. In Klantio L vind je het lesoverzicht. Een evaluatie zie je zodra je instructeur deze heeft vrijgegeven.",
+    "intro": "Hoi {{student_name}},<br><br>Je rijles is als afgerond geregistreerd. Een evaluatie zie je zodra je instructeur die vrijgeeft.",
     "theme": "voortgang",
     "cta": "Bekijk je afgeronde les",
     "rows": [
@@ -938,21 +1137,36 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "lesson_moment",
       "instructor_name",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L14",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fplanning",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/planning",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je rijles is afgerond",
     "preheaderExample": "Bekijk je les en de volgende stap.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -970,7 +1184,7 @@
     "name": "Beschikbaarheid bijgewerkt",
     "subject": "Je beschikbare lestijden zijn bijgewerkt",
     "preheader": "Bekijk welke tijden nu geregistreerd staan.",
-    "intro": "Hoi {{student_name}},<br><br>Je beschikbare tijden zijn door je rijschool of een relevante systeemactie aangepast. Controleer het bijgewerkte overzicht.",
+    "intro": "Hoi {{student_name}},<br><br>Je beschikbaarheid is bijgewerkt. Controleer het overzicht.",
     "theme": "les-verplaatst",
     "cta": "Bekijk mijn tijden",
     "rows": [
@@ -1002,21 +1216,36 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "period",
       "availability_summary",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L15",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fbeschikbaarheid",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/beschikbaarheid",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je beschikbare lestijden zijn bijgewerkt",
     "preheaderExample": "Bekijk welke tijden nu geregistreerd staan.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1025,7 +1254,7 @@
     "debounce": false,
     "variants": [],
     "legacy": null,
-    "customerNote": "Je krijgt alleen feedback te zien die door je instructeur is vrijgegeven.",
+    "customerNote": "",
     "scope": "BEIDE",
     "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
     "recipient": "Leerling aan wie dit account of object toebehoort",
@@ -1034,7 +1263,7 @@
     "name": "Nieuwe lesevaluatie beschikbaar",
     "subject": "Je nieuwe lesevaluatie staat klaar",
     "preheader": "Bekijk de feedback die je instructeur heeft vrijgegeven.",
-    "intro": "Hoi {{student_name}},<br><br>Je instructeur heeft een lesevaluatie vrijgegeven. Bekijk wat goed ging en waar je de volgende les aan kunt werken.",
+    "intro": "Hoi {{student_name}},<br><br>Je instructeur heeft een lesevaluatie vrijgegeven. Bekijk de feedback.",
     "theme": "voortgang",
     "cta": "Bekijk je evaluatie",
     "rows": [
@@ -1069,22 +1298,37 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "lesson_moment",
       "instructor_name",
       "evaluation_summary",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L16",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fplanning",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/planning",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je nieuwe lesevaluatie staat klaar",
     "preheaderExample": "Bekijk de feedback die je instructeur heeft vrijgegeven.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1102,7 +1346,7 @@
     "name": "Voortgang bijgewerkt",
     "subject": "Bekijk je nieuwste voortgang",
     "preheader": "Je voortgangsoverzicht is bijgewerkt.",
-    "intro": "Hoi {{student_name}},<br><br>Je voortgang is bijgewerkt. Bekijk welke vaardigheden zijn vastgelegd en bespreek vragen met je instructeur.",
+    "intro": "Hoi {{student_name}},<br><br>Je voortgang is bijgewerkt. Bekijk de vastgelegde vaardigheden.",
     "theme": "voortgang",
     "cta": "Bekijk mijn voortgang",
     "rows": [
@@ -1133,21 +1377,36 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "changed_at",
       "progress_summary",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L17",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fvoortgang",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/voortgang",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Bekijk je nieuwste voortgang",
     "preheaderExample": "Je voortgangsoverzicht is bijgewerkt.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1165,7 +1424,7 @@
     "name": "Nieuwe mijlpaal bereikt",
     "subject": "Goed bezig! Je hebt een nieuwe mijlpaal bereikt",
     "preheader": "Een bevestigde stap vooruit.",
-    "intro": "Hoi {{student_name}},<br><br>Je hebt een nieuwe mijlpaal bereikt. Bekijk deze stap in je voortgang en bespreek met je instructeur hoe je verdergaat.",
+    "intro": "Hoi {{student_name}},<br><br>Je hebt een nieuwe mijlpaal bereikt. Bekijk je voortgang.",
     "theme": "voortgang",
     "cta": "Bekijk je mijlpaal",
     "rows": [
@@ -1196,21 +1455,36 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "milestone_name",
       "milestone_date",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L18",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fvoortgang%2Ftijdlijn",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/voortgang/tijdlijn",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Goed bezig! Je hebt een nieuwe mijlpaal bereikt",
     "preheaderExample": "Een bevestigde stap vooruit.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1228,7 +1502,7 @@
     "name": "Lespakket bijna op",
     "subject": "Je rijlespakket is bijna op",
     "preheader": "Bekijk hoeveel lessen je nog hebt.",
-    "intro": "Hoi {{student_name}},<br><br>Er zijn nog maar een paar lessen over in je pakket. Bespreek met je rijschool wat een passende vervolgstap is.",
+    "intro": "Hoi {{student_name}},<br><br>Je lespakket raakt bijna op. Bespreek het vervolg met je rijschool.",
     "theme": "voortgang",
     "cta": "Bekijk je lespakket",
     "rows": [
@@ -1263,22 +1537,37 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "school_name",
       "package_name",
       "remaining_lessons",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L19",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fprofiel%2Flespakket",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/profiel/lespakket",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je rijlespakket is bijna op",
     "preheaderExample": "Bekijk hoeveel lessen je nog hebt.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1296,7 +1585,7 @@
     "name": "Lespakket op",
     "subject": "Je hebt alle lessen uit je pakket gebruikt",
     "preheader": "Bespreek de volgende stap met je rijschool.",
-    "intro": "Hoi {{student_name}},<br><br>De lessen uit het onderstaande pakket zijn gebruikt. Neem contact op met je rijschool om te bespreken hoe je verdergaat.",
+    "intro": "Hoi {{student_name}},<br><br>De lessen uit dit pakket zijn gebruikt. Bespreek het vervolg met je rijschool.",
     "theme": "voortgang",
     "cta": "Bekijk je lespakket",
     "rows": [
@@ -1331,21 +1620,36 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "school_name",
       "package_name",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L20",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fprofiel%2Flespakket",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/profiel/lespakket",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je hebt alle lessen uit je pakket gebruikt",
     "preheaderExample": "Bespreek de volgende stap met je rijschool.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1363,7 +1667,7 @@
     "name": "Maandelijks voortgangsoverzicht",
     "subject": "Dit is jouw voortgang van deze maand",
     "preheader": "Je vrijgegeven voortgang in één overzicht.",
-    "intro": "Hoi {{student_name}},<br><br>Dit is je voortgangsoverzicht van de afgelopen maand. Bekijk je actuele dossier voor de volledige feedback.",
+    "intro": "Hoi {{student_name}},<br><br>Dit is je voortgangsoverzicht van de afgelopen maand.",
     "theme": "voortgang",
     "cta": "Bekijk je voortgang",
     "rows": [
@@ -1394,21 +1698,36 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "month",
       "progress_summary",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L21",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fvoortgang",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/voortgang",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Dit is jouw voortgang van deze maand",
     "preheaderExample": "Je vrijgegeven voortgang in één overzicht.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1426,9 +1745,9 @@
     "name": "Praktijkexamen ingepland",
     "subject": "Je praktijkexamen staat gepland",
     "preheader": "Bekijk de geregistreerde examenafspraak.",
-    "intro": "Hoi {{student_name}},<br><br>Je rijschool heeft een praktijkexamen voor je geregistreerd. Controleer de afspraakgegevens en stem je voorbereiding af met je instructeur.",
+    "intro": "Hoi {{student_name}},<br><br>Je rijschool heeft een praktijkexamen voor je geregistreerd. Controleer de afspraak.",
     "theme": "examen",
-    "cta": "Bekijk je examen",
+    "cta": "Examens bekijken",
     "rows": [
       [
         "Examen",
@@ -1461,22 +1780,37 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "exam_type",
       "exam_moment",
       "exam_location",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L22",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fexamens",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/examens",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je praktijkexamen staat gepland",
     "preheaderExample": "Bekijk de geregistreerde examenafspraak.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1494,9 +1828,9 @@
     "name": "Praktijkexamen gewijzigd",
     "subject": "Je praktijkexamen is gewijzigd",
     "preheader": "Bekijk de oude en nieuwe gegevens.",
-    "intro": "Hoi {{student_name}},<br><br>Je geregistreerde examenafspraak is aangepast. Bekijk de nieuwe datum, tijd en locatie.",
+    "intro": "Hoi {{student_name}},<br><br>Je examenafspraak is gewijzigd. De nieuwe gegevens staan hieronder.",
     "theme": "examen",
-    "cta": "Bekijk de wijziging",
+    "cta": "Examens bekijken",
     "rows": [
       [
         "Vorige afspraak",
@@ -1534,23 +1868,38 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "old_exam_moment",
       "exam_moment",
       "old_exam_location",
       "exam_location",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L23",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fexamens",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/examens",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je praktijkexamen is gewijzigd",
     "preheaderExample": "Bekijk de oude en nieuwe gegevens.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1568,9 +1917,9 @@
     "name": "Examenherinnering",
     "subject": "Je praktijkexamen komt eraan",
     "preheader": "Controleer nog even je afspraak.",
-    "intro": "Hoi {{student_name}},<br><br>Je praktijkexamen komt dichterbij. Bekijk de geregistreerde afspraak en bespreek de voorbereiding met je instructeur.",
+    "intro": "Hoi {{student_name}},<br><br>Je praktijkexamen nadert. Controleer de afspraak en bespreek de voorbereiding met je instructeur.",
     "theme": "examen",
-    "cta": "Bekijk je examen",
+    "cta": "Examens bekijken",
     "rows": [
       [
         "Examen",
@@ -1603,22 +1952,37 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "exam_type",
       "exam_moment",
       "exam_location",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L24",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fexamens",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/examens",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je praktijkexamen komt eraan",
     "preheaderExample": "Controleer nog even je afspraak.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1636,9 +2000,9 @@
     "name": "Examenresultaat beschikbaar",
     "subject": "Je examenresultaat staat klaar",
     "preheader": "Bekijk de vastgelegde uitslag.",
-    "intro": "Hoi {{student_name}},<br><br>Je rijschool heeft je examenresultaat geregistreerd. Bekijk de uitslag en bespreek de volgende stap met je instructeur.",
+    "intro": "Hoi {{student_name}},<br><br>Je rijschool heeft je examenresultaat geregistreerd.",
     "theme": "examen",
-    "cta": "Bekijk je resultaat",
+    "cta": "Examens bekijken",
     "rows": [
       [
         "Examen",
@@ -1671,22 +2035,37 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "exam_type",
       "exam_date",
       "exam_result",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L25",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fexamens",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/examens",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je examenresultaat staat klaar",
     "preheaderExample": "Bekijk de vastgelegde uitslag.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1704,9 +2083,9 @@
     "name": "Gefeliciteerd, geslaagd!",
     "subject": "Gefeliciteerd, je bent geslaagd voor je praktijkexamen!",
     "preheader": "Een mooie stap. Gefeliciteerd met je behaalde praktijkexamen.",
-    "intro": "Hoi {{student_name}},<br><br>Je bent geslaagd voor je praktijkexamen. Gefeliciteerd met deze mooie prestatie! Bespreek met je rijschool welke vervolgstappen voor jou gelden.",
+    "intro": "Hoi {{student_name}},<br><br>Gefeliciteerd, je bent geslaagd voor je praktijkexamen! Bespreek de vervolgstappen met je rijschool.",
     "theme": "geslaagd",
-    "cta": "Bekijk je examenresultaat",
+    "cta": "Examens bekijken",
     "rows": [
       [
         "Examen",
@@ -1739,21 +2118,36 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "exam_type",
       "exam_date",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L26",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fexamens",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/examens",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Gefeliciteerd, je bent geslaagd voor je praktijkexamen!",
     "preheaderExample": "Een mooie stap. Gefeliciteerd met je behaalde praktijkexamen.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1771,7 +2165,7 @@
     "name": "Nieuwe factuur",
     "subject": "Er staat een nieuwe factuur voor je klaar",
     "preheader": "Bekijk de factuur van je rijschool.",
-    "intro": "Hoi {{student_name}},<br><br>{{school_name}} heeft een factuur voor je klaargezet. Bekijk de gegevens en betaal via de mogelijkheid die je rijschool aanbiedt.",
+    "intro": "Hoi {{student_name}},<br><br>{{school_name}} heeft een factuur voor je klaargezet.",
     "theme": "betaling",
     "cta": "Bekijk je factuur",
     "rows": [
@@ -1814,24 +2208,39 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
       "school_name",
-      "action_url",
       "illustration_url",
       "invoice_number",
       "invoice_amount",
       "invoice_due_date",
       "payment_status",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L27",
+      "client": "leerling",
+      "desktop": null,
+      "mobile": "leerlingplanner://open?route=%2Ffacturen",
+      "personal": "Eigen leerlingfactuur via canonieke UUID",
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/facturen",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Er staat een nieuwe factuur voor je klaar",
     "preheaderExample": "Bekijk de factuur van je rijschool.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1849,7 +2258,7 @@
     "name": "Factuurherinnering",
     "subject": "Herinnering: je factuur vervalt binnenkort",
     "preheader": "Bekijk de einddatum en actuele betaalstatus.",
-    "intro": "Hoi {{student_name}},<br><br>De betaaltermijn van deze openstaande rijschoolfactuur loopt binnenkort af. Bekijk de actuele gegevens voordat je betaalt.",
+    "intro": "Hoi {{student_name}},<br><br>De betaaltermijn van deze openstaande factuur loopt binnenkort af. Controleer de actuele status voordat je betaalt.",
     "theme": "betaling",
     "cta": "Bekijk je factuur",
     "rows": [
@@ -1892,24 +2301,39 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "school_name",
       "invoice_number",
       "invoice_amount",
       "invoice_due_date",
       "payment_status",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L28",
+      "client": "leerling",
+      "desktop": null,
+      "mobile": "leerlingplanner://open?route=%2Ffacturen",
+      "personal": "Eigen leerlingfactuur via canonieke UUID",
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/facturen",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Herinnering: je factuur vervalt binnenkort",
     "preheaderExample": "Bekijk de einddatum en actuele betaalstatus.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -1918,7 +2342,7 @@
     "debounce": false,
     "variants": [],
     "legacy": "betalingsherinnering.html",
-    "customerNote": "Heb je vragen over deze factuur? Neem contact op met je rijschool.",
+    "customerNote": "Controleer de actuele factuurstatus. Neem bij vragen contact op met je rijschool.",
     "scope": "BEIDE",
     "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
     "recipient": "Leerling aan wie dit account of object toebehoort",
@@ -1927,7 +2351,7 @@
     "name": "Factuur verlopen",
     "subject": "Je factuur staat nog open",
     "preheader": "De betaaltermijn is verstreken.",
-    "intro": "Hoi {{student_name}},<br><br>Deze factuur van {{school_name}} staat nog open. Bekijk de actuele status en de beschikbare betaalmogelijkheid in je factuur.",
+    "intro": "Hoi {{student_name}},<br><br>Deze factuur van {{school_name}} staat nog open na de vervaldatum.",
     "theme": "betaling",
     "cta": "Bekijk je openstaande factuur",
     "rows": [
@@ -1970,24 +2394,39 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
       "school_name",
-      "action_url",
       "illustration_url",
       "invoice_number",
       "invoice_amount",
       "invoice_due_date",
       "payment_status",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L29",
+      "client": "leerling",
+      "desktop": null,
+      "mobile": "leerlingplanner://open?route=%2Ffacturen",
+      "personal": "Eigen leerlingfactuur via canonieke UUID",
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/facturen",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je factuur staat nog open",
     "preheaderExample": "De betaaltermijn is verstreken.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -2005,7 +2444,7 @@
     "name": "Betaling ontvangen",
     "subject": "Je betaling is ontvangen",
     "preheader": "Je rijschoolbetaling is bevestigd.",
-    "intro": "Hoi {{student_name}},<br><br>De betaling aan {{school_name}} voor onderstaande factuur is bevestigd. Bedankt!",
+    "intro": "Hoi {{student_name}},<br><br>Je betaling aan {{school_name}} voor deze factuur is bevestigd.",
     "theme": "betaling",
     "cta": "Bekijk je betaalde factuur",
     "rows": [
@@ -2052,24 +2491,39 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
       "school_name",
-      "action_url",
       "illustration_url",
       "invoice_number",
       "invoice_amount",
       "paid_at",
       "payment_method",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L30",
+      "client": "leerling",
+      "desktop": null,
+      "mobile": "leerlingplanner://open?route=%2Ffacturen",
+      "personal": "Eigen leerlingfactuur via canonieke UUID",
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/facturen",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je betaling is ontvangen",
     "preheaderExample": "Je rijschoolbetaling is bevestigd.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -2087,7 +2541,7 @@
     "name": "Betaling niet gelukt",
     "subject": "Je betaling is niet gelukt",
     "preheader": "Controleer de status voordat je opnieuw betaalt.",
-    "intro": "Hoi {{student_name}},<br><br>De betaling voor onderstaande rijschoolfactuur is als mislukt bevestigd. Bekijk de actuele status en beschikbare betaalactie.",
+    "intro": "Hoi {{student_name}},<br><br>De betaling voor deze rijschoolfactuur is als mislukt bevestigd. Controleer de actuele status.",
     "theme": "betaling",
     "cta": "Bekijk je factuur",
     "rows": [
@@ -2130,23 +2584,38 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "school_name",
       "invoice_number",
       "invoice_amount",
       "changed_at",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L31",
+      "client": "leerling",
+      "desktop": null,
+      "mobile": "leerlingplanner://open?route=%2Ffacturen",
+      "personal": "Eigen leerlingfactuur via canonieke UUID",
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/facturen",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je betaling is niet gelukt",
     "preheaderExample": "Controleer de status voordat je opnieuw betaalt.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -2167,7 +2636,7 @@
     "name": "Creditnota of terugbetaling",
     "subject": "Je factuur is aangepast",
     "preheader": "Bekijk wat er met je factuur is gewijzigd.",
-    "intro": "Hoi {{student_name}},<br><br>Er is een wijziging geregistreerd bij je rijschoolfactuur. Hieronder staat of het om een creditnota of een bevestigde terugbetaling gaat.",
+    "intro": "Hoi {{student_name}},<br><br>Er is een creditnota of terugbetaling bij je rijschoolfactuur geregistreerd. Hieronder staat het type wijziging.",
     "theme": "betaling",
     "cta": "Bekijk de aanpassing",
     "rows": [
@@ -2214,11 +2683,12 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "school_name",
       "invoice_number",
@@ -2226,13 +2696,27 @@
       "adjustment_reference",
       "invoice_amount",
       "changed_at",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L32",
+      "client": "leerling",
+      "desktop": null,
+      "mobile": "leerlingplanner://open?route=%2Ffacturen",
+      "personal": "Eigen leerlingfactuur via canonieke UUID",
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/facturen",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je factuur is aangepast",
     "preheaderExample": "Bekijk wat er met je factuur is gewijzigd.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": true,
@@ -2250,7 +2734,7 @@
     "name": "Uitnodiging voor Klantio L",
     "subject": "Je rijschool nodigt je uit voor Klantio L",
     "preheader": "Bekijk de uitnodiging van je rijschool.",
-    "intro": "Hoi {{student_name}},<br><br>{{school_name}} nodigt je uit om Klantio L te gebruiken. Bekijk de uitnodiging en koppel je account via de bestaande veilige koppelingsactie.",
+    "intro": "Hoi {{student_name}},<br><br>{{school_name}} nodigt je uit voor Klantio L.<br><br>Open Klantio L en log in. Kies ‘Koppelcode invoeren’, vul de code van je rijschool in en tik op ‘Koppelen’.<br>Heb je nog geen koppelcode? Vraag deze dan aan je rijschool of rijinstructeur.",
     "theme": "welkom",
     "cta": "Bekijk de uitnodiging",
     "rows": [
@@ -2286,21 +2770,36 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "hidePrimaryAction": true,
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
       "school_name",
-      "action_url",
       "illustration_url",
       "instructor_name",
       "valid_until",
       "support_url"
     ],
+    "linkRouting": {
+      "id": "L33",
+      "client": "leerling",
+      "desktop": null,
+      "mobile": null,
+      "personal": "Persoonlijke uitnodigingslink",
+      "requiresNewMobileBuild": false,
+      "mobileScreen": null,
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je rijschool nodigt je uit voor Klantio L",
     "preheaderExample": "Bekijk de uitnodiging van je rijschool.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": true,
@@ -2318,7 +2817,7 @@
     "name": "Account gekoppeld",
     "subject": "Je Klantio L-account is gekoppeld",
     "preheader": "Je rijschoolgegevens staan voor je klaar.",
-    "intro": "Hoi {{student_name}},<br><br>Je account is gekoppeld aan {{school_name}}. Je kunt nu de gegevens bekijken die jouw rijschool voor je beschikbaar heeft gemaakt.",
+    "intro": "Hoi {{student_name}},<br><br>Je account is gekoppeld aan {{school_name}}. Bekijk de gegevens die je rijschool met je deelt.",
     "theme": "welkom",
     "cta": "Open Klantio L",
     "rows": [
@@ -2353,21 +2852,36 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
       "school_name",
-      "action_url",
       "illustration_url",
       "instructor_name",
       "changed_at",
+      "action_url",
       "support_url"
     ],
+    "linkRouting": {
+      "id": "L34",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fhome",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/home",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Je Klantio L-account is gekoppeld",
     "preheaderExample": "Je rijschoolgegevens staan voor je klaar.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -2385,9 +2899,9 @@
     "name": "Weekoverzicht rijlessen",
     "subject": "Jouw rijlessen voor komende week",
     "preheader": "Je komende lessen in één overzicht.",
-    "intro": "Hoi {{student_name}},<br><br>Dit zijn je geplande lessen voor de komende week. In Klantio L zie je altijd de meest actuele planning.",
+    "intro": "Hoi {{student_name}},<br><br>Dit zijn je geplande rijlessen voor de komende week.",
     "theme": "les-gepland",
-    "cta": "Bekijk je weekplanning",
+    "cta": "Bekijk je lessen",
     "rows": [
       [
         "Periode",
@@ -2420,22 +2934,37 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "period",
       "lesson_count",
       "lesson_summary",
+      "action_url",
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L35",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fplanning",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/planning",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Jouw rijlessen voor komende week",
     "preheaderExample": "Je komende lessen in één overzicht.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   },
   {
     "essential": false,
@@ -2444,7 +2973,7 @@
     "debounce": false,
     "variants": [],
     "legacy": null,
-    "customerNote": "Uitgebreide financiële details blijven in je beveiligde factuuroverzicht.",
+    "customerNote": "",
     "scope": "BEIDE",
     "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
     "recipient": "Leerling aan wie dit account of object toebehoort",
@@ -2453,7 +2982,7 @@
     "name": "Maandoverzicht",
     "subject": "Jouw maand met Klantio L",
     "preheader": "Je lessen en voortgang samengevat.",
-    "intro": "Hoi {{student_name}},<br><br>Bekijk je afgeronde lessen en vrijgegeven voortgang van de afgelopen maand. Je actuele factuurstatus vind je in de app.",
+    "intro": "Hoi {{student_name}},<br><br>Dit is het overzicht van je afgeronde lessen en vrijgegeven voortgang van de afgelopen maand.",
     "theme": "voortgang",
     "cta": "Bekijk je maandoverzicht",
     "rows": [
@@ -2492,11 +3021,13 @@
       "HTML GEREED",
       "WACHT OP GO-LIVE"
     ],
+    "hidePrimaryAction": true,
+    "editorialReviewed": true,
+    "editorialReviewedAt": "2026-10-21",
     "variables": [
       "website_url",
       "logo_url",
       "student_name",
-      "action_url",
       "illustration_url",
       "month",
       "completed_lessons",
@@ -2505,9 +3036,22 @@
       "support_url",
       "preferences_url"
     ],
+    "linkRouting": {
+      "id": "L36",
+      "client": "leerling",
+      "desktop": "https://klantio.com/",
+      "mobile": "leerlingplanner://open?route=%2Fhome",
+      "personal": null,
+      "requiresNewMobileBuild": true,
+      "mobileScreen": "/home",
+      "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+      "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+      "preferencesDesktop": null,
+      "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+    },
     "subjectExample": "Jouw maand met Klantio L",
     "preheaderExample": "Je lessen en voortgang samengevat.",
-    "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-    "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+    "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+    "backendStatus": "Geen nieuwe trigger of verzending"
   }
 ]

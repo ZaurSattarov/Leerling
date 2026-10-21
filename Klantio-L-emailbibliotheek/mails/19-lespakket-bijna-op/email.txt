@@ -2,9 +2,7 @@ Lespakket bijna op
 
 Hoi {{student_name}},
 
-Er zijn nog maar een paar lessen over in je pakket. Bespreek met je rijschool wat een passende vervolgstap is.
-
-Bekijk je lespakket: {{action_url}}
+Je lespakket raakt bijna op. Bespreek het vervolg met je rijschool.
 
 Rijschool: {{school_name}}
 Pakket: {{package_name}}
@@ -12,8 +10,8 @@ Resterend: {{remaining_lessons}} lessen
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
+Bekijk je lespakket: {{action_url}}
+
+info@klantio.com
+{{website_url}}
 E-mailvoorkeuren: {{preferences_url}}

@@ -14,7 +14,7 @@
   "name": "Rijles geannuleerd",
   "subject": "Je rijles is geannuleerd",
   "preheader": "Deze afspraak gaat niet door.",
-  "intro": "Hoi {{student_name}},<br><br>De onderstaande rijles is geannuleerd. Bekijk je planning of neem contact op met je rijschool om een volgende les af te spreken.",
+  "intro": "Hoi {{student_name}},<br><br>Deze rijles is geannuleerd. Bespreek met je rijschool wanneer je weer kunt lessen.",
   "theme": "les-geannuleerd",
   "cta": "Bekijk je planning",
   "rows": [
@@ -57,11 +57,12 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
-    "action_url",
     "illustration_url",
     "lesson_date",
     "lesson_start",
@@ -69,11 +70,25 @@
     "instructor_name",
     "lesson_location",
     "cancellation_note",
+    "action_url",
     "support_url",
     "preferences_url"
   ],
+  "linkRouting": {
+    "id": "L10",
+    "client": "leerling",
+    "desktop": "https://klantio.com/",
+    "mobile": "leerlingplanner://open?route=%2Fplanning",
+    "personal": null,
+    "requiresNewMobileBuild": true,
+    "mobileScreen": "/planning",
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
   "subjectExample": "Je rijles is geannuleerd",
   "preheaderExample": "Deze afspraak gaat niet door.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

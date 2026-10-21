@@ -14,7 +14,7 @@
   "name": "Nieuwe mijlpaal bereikt",
   "subject": "Goed bezig! Je hebt een nieuwe mijlpaal bereikt",
   "preheader": "Een bevestigde stap vooruit.",
-  "intro": "Hoi {{student_name}},<br><br>Je hebt een nieuwe mijlpaal bereikt. Bekijk deze stap in je voortgang en bespreek met je instructeur hoe je verdergaat.",
+  "intro": "Hoi {{student_name}},<br><br>Je hebt een nieuwe mijlpaal bereikt. Bekijk je voortgang.",
   "theme": "voortgang",
   "cta": "Bekijk je mijlpaal",
   "rows": [
@@ -45,19 +45,34 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
-    "action_url",
     "illustration_url",
     "milestone_name",
     "milestone_date",
+    "action_url",
     "support_url",
     "preferences_url"
   ],
+  "linkRouting": {
+    "id": "L18",
+    "client": "leerling",
+    "desktop": "https://klantio.com/",
+    "mobile": "leerlingplanner://open?route=%2Fvoortgang%2Ftijdlijn",
+    "personal": null,
+    "requiresNewMobileBuild": true,
+    "mobileScreen": "/voortgang/tijdlijn",
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
   "subjectExample": "Goed bezig! Je hebt een nieuwe mijlpaal bereikt",
   "preheaderExample": "Een bevestigde stap vooruit.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

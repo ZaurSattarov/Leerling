@@ -2,17 +2,14 @@ Account gedeactiveerd
 
 Hoi Amir Voorbeeld,
 
-Je toegang tot Klantio L is gedeactiveerd. Heb je vragen? Neem contact op met je rijschool of met Klantio.
-
-Contact opnemen: ../../actie-demo.html?mail=6
+Je toegang tot Klantio L is gedeactiveerd. Heb je vragen over je account? Neem contact op met je rijschool.
 
 Account: amir@example.invalid
 Ingangsdatum: woensdag 21 oktober 2026
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-Noodzakelijke melding over je account of toegang.
+
+
+info@klantio.com
+https://klantio.com/

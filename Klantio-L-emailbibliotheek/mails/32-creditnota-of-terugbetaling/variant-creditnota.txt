@@ -4,8 +4,6 @@ Hoi {{student_name}},
 
 {{school_name}} heeft een creditnota bij je factuur geregistreerd. Dit is een administratieve correctie en geen bevestiging van geldteruggave.
 
-Bekijk de aanpassing: {{action_url}}
-
 Rijschool: {{school_name}}
 Factuur: {{invoice_number}}
 Type wijziging: {{adjustment_type}}
@@ -15,8 +13,8 @@ Datum: {{changed_at}}
 
 Een creditnota is een administratieve correctie. Dat betekent niet automatisch dat er geld is teruggestort.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
+Bekijk de aanpassing: {{action_url}}
+
+info@klantio.com
+{{website_url}}
 E-mailvoorkeuren: {{preferences_url}}

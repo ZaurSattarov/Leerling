@@ -1,10 +1,10 @@
 {
-  "website_url": "../../actie-demo.html?type=website",
-  "logo_url": "../../assets/klantio-wordmark.png",
+  "website_url": "https://klantio.com/",
+  "logo_url": "../../assets/klantio-wordmark-white.png",
   "student_name": "Amir Voorbeeld",
   "student_email": "amir@example.invalid",
-  "action_url": "../../actie-demo.html?mail=2",
   "illustration_url": "../../assets/beveiliging.png",
   "valid_until": "vrijdag 23 oktober 2026, 18:00",
+  "action_url": "open.html",
   "support_url": "mailto:info@klantio.com"
 }

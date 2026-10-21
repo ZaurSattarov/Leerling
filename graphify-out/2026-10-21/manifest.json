@@ -1,0 +1,3866 @@
+{
+  ".claude/launch.json": {
+    "mtime": 1788858046.7484803,
+    "seen": 1792569422.2485616,
+    "ast_hash": "433c2b585ae9b46e70bea82d19f75c5b",
+    "semantic_hash": ""
+  },
+  ".claude/preflight.config.json": {
+    "mtime": 1790065314.1521652,
+    "seen": 1792569422.248575,
+    "ast_hash": "c66312a7d3224973605d2cb83c2f1050",
+    "semantic_hash": ""
+  },
+  "lib/app.dart": {
+    "mtime": 1791870642.017212,
+    "seen": 1792569422.248775,
+    "ast_hash": "1e92d456acf0fc84e619c78ef2ee6afc",
+    "semantic_hash": ""
+  },
+  "lib/core/config/app_config.dart": {
+    "mtime": 1790258313.4793584,
+    "seen": 1792569422.2487779,
+    "ast_hash": "ec25c67ca17b8d0cc0ffebbebad14b06",
+    "semantic_hash": ""
+  },
+  "lib/core/constants/app_colors.dart": {
+    "mtime": 1791870642.017212,
+    "seen": 1792569422.2487807,
+    "ast_hash": "54fc3b06b9a49af97193c80f940c7a38",
+    "semantic_hash": ""
+  },
+  "lib/core/constants/nav_shell_tokens.dart": {
+    "mtime": 1788858046.968038,
+    "seen": 1792569422.2487867,
+    "ast_hash": "e2f2e4ce8dd2bcb023949b8b96ee48e8",
+    "semantic_hash": ""
+  },
+  "lib/core/debug/release_log_guard.dart": {
+    "mtime": 1790258188.6452985,
+    "seen": 1792569422.2487898,
+    "ast_hash": "65bf8892ffc3e6d482c101f0328db935",
+    "semantic_hash": ""
+  },
+  "lib/core/lifecycle/account_scoped_invalidation.dart": {
+    "mtime": 1788858046.968038,
+    "seen": 1792569422.2487924,
+    "ast_hash": "b3fb1f3aab15aa16f406fbe5690df66b",
+    "semantic_hash": ""
+  },
+  "lib/core/services/access_gate_service.dart": {
+    "mtime": 1788858046.968038,
+    "seen": 1792569422.248799,
+    "ast_hash": "ca7a67557ec2c7854a93878e5627b5e4",
+    "semantic_hash": ""
+  },
+  "lib/core/services/arrival_repository.dart": {
+    "mtime": 1791870642.020246,
+    "seen": 1792569422.2488015,
+    "ast_hash": "390dbbc5cc7ba128f6efdb868fe50f6d",
+    "semantic_hash": ""
+  },
+  "lib/core/services/avatar_service.dart": {
+    "mtime": 1788858046.968038,
+    "seen": 1792569422.2488036,
+    "ast_hash": "355ff8a9876c8b63f62a0831a62dcd61",
+    "semantic_hash": ""
+  },
+  "lib/core/services/communication_service.dart": {
+    "mtime": 1791870642.021984,
+    "seen": 1792569422.2488062,
+    "ast_hash": "1e22d8053510750e082c69a45c25da06",
+    "semantic_hash": ""
+  },
+  "lib/core/services/geocoding_service.dart": {
+    "mtime": 1791870642.021984,
+    "seen": 1792569422.2488077,
+    "ast_hash": "7aa556611b46608a833abc9713ee7a4d",
+    "semantic_hash": ""
+  },
+  "lib/core/services/leerling_notificatie_router.dart": {
+    "mtime": 1791870642.021984,
+    "seen": 1792569422.248809,
+    "ast_hash": "920567e1a0b177ae6df8087bf2fb58af",
+    "semantic_hash": ""
+  },
+  "lib/core/services/native_navigation_bridge.dart": {
+    "mtime": 1791870642.021984,
+    "seen": 1792569422.2488117,
+    "ast_hash": "783b05ad9ab76710936fb095a9e5a89a",
+    "semantic_hash": ""
+  },
+  "lib/core/services/push_service.dart": {
+    "mtime": 1791870642.024613,
+    "seen": 1792569422.248815,
+    "ast_hash": "4a1c8769843bed47fe43bd2fb114dffb",
+    "semantic_hash": ""
+  },
+  "lib/core/services/secure_supabase_local_storage.dart": {
+    "mtime": 1791870642.024613,
+    "seen": 1792569422.2488182,
+    "ast_hash": "2f6be04898dbeb31ee5dca074f10feb3",
+    "semantic_hash": ""
+  },
+  "lib/core/services/student_service.dart": {
+    "mtime": 1791870642.024613,
+    "seen": 1792569422.248821,
+    "ast_hash": "e0747a7db5247330cedf72bb26381167",
+    "semantic_hash": ""
+  },
+  "lib/core/services/support_service.dart": {
+    "mtime": 1788858046.968038,
+    "seen": 1792569422.2488236,
+    "ast_hash": "59f6007f677e95f71d222d0712eeedd6",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/contact_uri.dart": {
+    "mtime": 1788858046.968038,
+    "seen": 1792569422.2488267,
+    "ast_hash": "797c5594a9a51696d25bea5390be9cea",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/datum_utils.dart": {
+    "mtime": 1788858046.968038,
+    "seen": 1792569422.2488291,
+    "ast_hash": "04c458ae727976612267a90fe087eae3",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/factuur_pdf_utils.dart": {
+    "mtime": 1788858046.968038,
+    "seen": 1792569422.248832,
+    "ast_hash": "3ac2daa33280b8c3f1637aa3a4ac53c8",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/factuur_status.dart": {
+    "mtime": 1791870642.024613,
+    "seen": 1792569422.2488346,
+    "ast_hash": "afea3b6fcd3008a7f23d4b3c8793d019",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/komende_les_filter.dart": {
+    "mtime": 1788858046.9823637,
+    "seen": 1792569422.2488384,
+    "ast_hash": "731663deca188d3b20ddc6b2a7a2e93c",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/lespakket_detail.dart": {
+    "mtime": 1791870642.024613,
+    "seen": 1792569422.2488418,
+    "ast_hash": "49445ea4921392bb858f9d3ef41f379e",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/lespakket_voortgang.dart": {
+    "mtime": 1790065314.2115262,
+    "seen": 1792569422.2488456,
+    "ast_hash": "87025ff31db0b9a60ebb42a1249ecb44",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/maps_uri.dart": {
+    "mtime": 1788858046.9839482,
+    "seen": 1792569422.2488484,
+    "ast_hash": "fd151b8dbced292a9d7b2be439879c75",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/tijd_invoer_formatter.dart": {
+    "mtime": 1788858046.9839482,
+    "seen": 1792569422.2488527,
+    "ast_hash": "c2f9c0990ac2f1393b54348a06af3575",
+    "semantic_hash": ""
+  },
+  "lib/features/arrival/arrival_map_utils.dart": {
+    "mtime": 1788858046.9839482,
+    "seen": 1792569422.2488558,
+    "ast_hash": "3a096ac74ac2ab1c903cefeb8ac1ea5b",
+    "semantic_hash": ""
+  },
+  "lib/features/arrival/arrival_provider.dart": {
+    "mtime": 1791870642.0304222,
+    "seen": 1792569422.248859,
+    "ast_hash": "3057e2e6a3cd0940177417c72d9cd2c0",
+    "semantic_hash": ""
+  },
+  "lib/features/arrival/live_aankomst_banner_logic.dart": {
+    "mtime": 1788858046.9839482,
+    "seen": 1792569422.2489052,
+    "ast_hash": "ebcd032f07cfa27d3786c97a3155c66e",
+    "semantic_hash": ""
+  },
+  "lib/features/arrival/live_aankomst_fullscreen_screen.dart": {
+    "mtime": 1791870642.0304222,
+    "seen": 1792569422.248921,
+    "ast_hash": "7b3bc90a113213564397a1aa3b7916ab",
+    "semantic_hash": ""
+  },
+  "lib/features/arrival/widgets/arrival_live_map.dart": {
+    "mtime": 1791870642.0304222,
+    "seen": 1792569422.2489252,
+    "ast_hash": "4e889d08f805778e327de2466ac96a28",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/account_geblokkeerd_screen.dart": {
+    "mtime": 1791870642.0304222,
+    "seen": 1792569422.2489285,
+    "ast_hash": "0a2fc69d57a6c666bb9e7ad44b75a72c",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/auth_design.dart": {
+    "mtime": 1791870642.0339806,
+    "seen": 1792569422.2489321,
+    "ast_hash": "5f0a453f798c30f74cb854392980f297",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/login_screen.dart": {
+    "mtime": 1791870642.0346074,
+    "seen": 1792569422.2489355,
+    "ast_hash": "4745fef4c47b74aa82ca7ea06df92404",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/registreer_screen.dart": {
+    "mtime": 1791870642.0346074,
+    "seen": 1792569422.2489388,
+    "ast_hash": "1a3eeca3e430861d621cb1020e7e821d",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/reset_password_screen.dart": {
+    "mtime": 1791870642.0346074,
+    "seen": 1792569422.248942,
+    "ast_hash": "aed2726098a5f9ce21ba898e19be7abe",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/social_login_widgets.dart": {
+    "mtime": 1791870642.0385075,
+    "seen": 1792569422.248945,
+    "ast_hash": "db24586ff3b7b6dc1cfead39886650f0",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/verificatie_screen.dart": {
+    "mtime": 1791870642.0385075,
+    "seen": 1792569422.2489476,
+    "ast_hash": "4b6869d1e81ddc43331ba44fac4ca9da",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/wachtwoord_reset_code_screen.dart": {
+    "mtime": 1791870642.0385075,
+    "seen": 1792569422.2489507,
+    "ast_hash": "b384b6d62b3af56c0c62af5ab958ce74",
+    "semantic_hash": ""
+  },
+  "lib/features/auth/wachtwoord_vergeten_screen.dart": {
+    "mtime": 1791870642.0385075,
+    "seen": 1792569422.248954,
+    "ast_hash": "cdb8a1e8654a5962ade3ccb18a149c99",
+    "semantic_hash": ""
+  },
+  "lib/features/beschikbaarheid/beschikbaarheid_screen.dart": {
+    "mtime": 1791870642.0385075,
+    "seen": 1792569422.2489572,
+    "ast_hash": "fb5a6b6ef32bb1cf50c3f8cdfb4faa54",
+    "semantic_hash": ""
+  },
+  "lib/features/examenadvies/examenadvies_data.dart": {
+    "mtime": 1791870642.0385075,
+    "seen": 1792569422.2489607,
+    "ast_hash": "133982bfe2b4071ded3d1340ed058004",
+    "semantic_hash": ""
+  },
+  "lib/features/examenadvies/examenadvies_ontwikkeling.dart": {
+    "mtime": 1788858046.9839482,
+    "seen": 1792569422.2489638,
+    "ast_hash": "620c78f125bde86e0359e5fcac32e253",
+    "semantic_hash": ""
+  },
+  "lib/features/examenadvies/examenadvies_provider.dart": {
+    "mtime": 1788858046.9997015,
+    "seen": 1792569422.2489676,
+    "ast_hash": "eb39db6865ee6de93f5a156fe80722fb",
+    "semantic_hash": ""
+  },
+  "lib/features/examenadvies/examenadvies_screen.dart": {
+    "mtime": 1791870642.0385075,
+    "seen": 1792569422.2489712,
+    "ast_hash": "568a2e1c864b938cd2f76000e684def5",
+    "semantic_hash": ""
+  },
+  "lib/features/examenadvies/examenadvies_sparkline.dart": {
+    "mtime": 1791870642.0385075,
+    "seen": 1792569422.2489753,
+    "ast_hash": "68dcfff7c100324d63cc986a25119e0b",
+    "semantic_hash": ""
+  },
+  "lib/features/examenadvies/examenadvies_status_style.dart": {
+    "mtime": 1788858047.0028317,
+    "seen": 1792569422.248979,
+    "ast_hash": "e43437ac01896b4e41c73ddf88028692",
+    "semantic_hash": ""
+  },
+  "lib/features/examens/examens_provider.dart": {
+    "mtime": 1788858047.0028317,
+    "seen": 1792569422.2489827,
+    "ast_hash": "3ef45e9b0c5cf9ef53d2e43034f88707",
+    "semantic_hash": ""
+  },
+  "lib/features/examens/examens_screen.dart": {
+    "mtime": 1791870642.0385075,
+    "seen": 1792569422.248987,
+    "ast_hash": "c03e22e3aecc7e812b2413914b3f6cb2",
+    "semantic_hash": ""
+  },
+  "lib/features/facturen/facturen_provider.dart": {
+    "mtime": 1788858047.0028317,
+    "seen": 1792569422.248991,
+    "ast_hash": "37c00f93901d018a741c2bd2f26ffa79",
+    "semantic_hash": ""
+  },
+  "lib/features/facturen/facturen_screen.dart": {
+    "mtime": 1791870642.0469303,
+    "seen": 1792569422.2489944,
+    "ast_hash": "18608aed15a997babe2afe0156a6de9e",
+    "semantic_hash": ""
+  },
+  "lib/features/facturen/factuur_detail_screen.dart": {
+    "mtime": 1791870642.0469303,
+    "seen": 1792569422.2489977,
+    "ast_hash": "7bc68afc5972279087cb0c12d393eb47",
+    "semantic_hash": ""
+  },
+  "lib/features/help/support_chat_screen.dart": {
+    "mtime": 1791870642.0469303,
+    "seen": 1792569422.2490015,
+    "ast_hash": "353e8a361dbd21bdd42fa02d949d1e13",
+    "semantic_hash": ""
+  },
+  "lib/features/help/support_inbox_screen.dart": {
+    "mtime": 1791870642.0469303,
+    "seen": 1792569422.249005,
+    "ast_hash": "f453987a69e2fb2dbe36dd0f2dce3e84",
+    "semantic_hash": ""
+  },
+  "lib/features/help/support_provider.dart": {
+    "mtime": 1788858047.0028317,
+    "seen": 1792569422.2490084,
+    "ast_hash": "9af96ea7f82831490d25bf6d9fa01221",
+    "semantic_hash": ""
+  },
+  "lib/features/help/widgets/support_ui.dart": {
+    "mtime": 1791870642.0469303,
+    "seen": 1792569422.2490122,
+    "ast_hash": "2c630b609db44106bdc944d84f05cdf3",
+    "semantic_hash": ""
+  },
+  "lib/features/home/home_coach_provider.dart": {
+    "mtime": 1791870642.0469303,
+    "seen": 1792569422.2490196,
+    "ast_hash": "91faa47233fbaa024a324e0663f812c0",
+    "semantic_hash": ""
+  },
+  "lib/features/home/home_provider.dart": {
+    "mtime": 1788858047.0028317,
+    "seen": 1792569422.249023,
+    "ast_hash": "5256a614500ce24d212523f19534d620",
+    "semantic_hash": ""
+  },
+  "lib/features/home/home_screen.dart": {
+    "mtime": 1791870642.0469303,
+    "seen": 1792569422.249027,
+    "ast_hash": "bd1fd1f68739abbe769d3f45090ab692",
+    "semantic_hash": ""
+  },
+  "lib/features/koppelcode/koppel_flow.dart": {
+    "mtime": 1788858047.0028317,
+    "seen": 1792569422.2490332,
+    "ast_hash": "361f858bfffeb8afcebf3576af8a9ef4",
+    "semantic_hash": ""
+  },
+  "lib/features/koppelcode/koppel_keuze_screen.dart": {
+    "mtime": 1791870642.0549607,
+    "seen": 1792569422.2490363,
+    "ast_hash": "bd4666d73212a8f04d567a73ae4013c3",
+    "semantic_hash": ""
+  },
+  "lib/features/koppelcode/koppelcode_screen.dart": {
+    "mtime": 1791870642.0549607,
+    "seen": 1792569422.24904,
+    "ast_hash": "5a935a44285f65c3c2c46bf6e6e6b821",
+    "semantic_hash": ""
+  },
+  "lib/features/koppelcode/qr_scan_screen.dart": {
+    "mtime": 1791870642.0549607,
+    "seen": 1792569422.249042,
+    "ast_hash": "5721f1648d2304d2c98e054611b0f5d2",
+    "semantic_hash": ""
+  },
+  "lib/features/legal/content/legal_document_content.dart": {
+    "mtime": 1788858047.0028317,
+    "seen": 1792569422.2490444,
+    "ast_hash": "85062af41d03e74edee7e8d7d78ae472",
+    "semantic_hash": ""
+  },
+  "lib/features/legal/content/privacy_policy_nl.dart": {
+    "mtime": 1788858047.0028317,
+    "seen": 1792569422.249047,
+    "ast_hash": "426429fc26b4e668eac4a5cd0e629579",
+    "semantic_hash": ""
+  },
+  "lib/features/legal/content/terms_conditions_nl.dart": {
+    "mtime": 1788858047.0188527,
+    "seen": 1792569422.2490497,
+    "ast_hash": "e4a880e83b0297e846669393cebae34b",
+    "semantic_hash": ""
+  },
+  "lib/features/legal/legal_document_screen.dart": {
+    "mtime": 1791870642.0549607,
+    "seen": 1792569422.2490518,
+    "ast_hash": "32bd41ca034a79dab73979e0bf264bde",
+    "semantic_hash": ""
+  },
+  "lib/features/les_logboek/les_logboek_item.dart": {
+    "mtime": 1788858047.0188527,
+    "seen": 1792569422.2490559,
+    "ast_hash": "f34542c00ce81915d5c56ae213b769ce",
+    "semantic_hash": ""
+  },
+  "lib/features/les_logboek/les_logboek_mapper.dart": {
+    "mtime": 1788858047.0188527,
+    "seen": 1792569422.2490585,
+    "ast_hash": "2698481e324232c01e76b8a45fc569e7",
+    "semantic_hash": ""
+  },
+  "lib/features/les_logboek/les_logboek_provider.dart": {
+    "mtime": 1788858047.0188527,
+    "seen": 1792569422.2490625,
+    "ast_hash": "4217791b6e575bdf6935346f5f07aff2",
+    "semantic_hash": ""
+  },
+  "lib/features/les_logboek/les_logboek_screen.dart": {
+    "mtime": 1791870642.0549607,
+    "seen": 1792569422.2490656,
+    "ast_hash": "4f9b728c83b80285cbb67f71dba2515b",
+    "semantic_hash": ""
+  },
+  "lib/features/lesvoorbereiding/lesvoorbereiding_provider.dart": {
+    "mtime": 1788858047.0188527,
+    "seen": 1792569422.2490695,
+    "ast_hash": "69f64e1a39fd9275fe79ebca3a754804",
+    "semantic_hash": ""
+  },
+  "lib/features/lesvoorbereiding/lesvoorbereiding_screen.dart": {
+    "mtime": 1791870642.0549607,
+    "seen": 1792569422.2490733,
+    "ast_hash": "0f7cf33965462456dbf4b7a9c5af09c6",
+    "semantic_hash": ""
+  },
+  "lib/features/lesvoorbereiding/preparation_mapper.dart": {
+    "mtime": 1788858047.0188527,
+    "seen": 1792569422.2490761,
+    "ast_hash": "7f12dbad09388c0aa70c7d9c59ee35c9",
+    "semantic_hash": ""
+  },
+  "lib/features/notificaties/leerling_notification_preference_registry.dart": {
+    "mtime": 1791870642.0549607,
+    "seen": 1792569422.2490792,
+    "ast_hash": "206d50e8843ac0cf8e32ad64c3185a45",
+    "semantic_hash": ""
+  },
+  "lib/features/notificaties/notificatie_instellingen_provider.dart": {
+    "mtime": 1788858047.026171,
+    "seen": 1792569422.2490826,
+    "ast_hash": "cdece69da5b73acf8ff012d2a643a3e8",
+    "semantic_hash": ""
+  },
+  "lib/features/notificaties/notificatie_instellingen_screen.dart": {
+    "mtime": 1791870642.0609968,
+    "seen": 1792569422.2490864,
+    "ast_hash": "2f55b14e387f3e6d0e720edc6de923d1",
+    "semantic_hash": ""
+  },
+  "lib/features/notificaties/notificaties_provider.dart": {
+    "mtime": 1788858047.026171,
+    "seen": 1792569422.2490897,
+    "ast_hash": "688e0ea0f9544fcbe2d3c266692d29ce",
+    "semantic_hash": ""
+  },
+  "lib/features/notificaties/notificaties_screen.dart": {
+    "mtime": 1791870642.0609968,
+    "seen": 1792569422.249093,
+    "ast_hash": "b361488454bff1ecada85df3e40d961a",
+    "semantic_hash": ""
+  },
+  "lib/features/planning/les_detail_screen.dart": {
+    "mtime": 1791870642.0609968,
+    "seen": 1792569422.2490962,
+    "ast_hash": "033a212ac06cbe3e80513b971041132e",
+    "semantic_hash": ""
+  },
+  "lib/features/planning/planning_provider.dart": {
+    "mtime": 1788858047.026171,
+    "seen": 1792569422.2490993,
+    "ast_hash": "7fc8c6a5f9f11090bd1f15d909eb4368",
+    "semantic_hash": ""
+  },
+  "lib/features/planning/planning_screen.dart": {
+    "mtime": 1791870642.0609968,
+    "seen": 1792569422.2491016,
+    "ast_hash": "cfd9c16648eabdd037b3e02dd15e25da",
+    "semantic_hash": ""
+  },
+  "lib/features/planning/widgets/lesson_status_badge.dart": {
+    "mtime": 1791870642.0609968,
+    "seen": 1792569422.2491066,
+    "ast_hash": "08834fad5ee2f5baf7978592ca2e6abc",
+    "semantic_hash": ""
+  },
+  "lib/features/planning/widgets/live_aankomst_banner.dart": {
+    "mtime": 1791870642.0609968,
+    "seen": 1792569422.2491093,
+    "ast_hash": "d3e817a9bdb5310252bc504677695675",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/account_deletion_exception.dart": {
+    "mtime": 1788858047.0344996,
+    "seen": 1792569422.2491121,
+    "ast_hash": "bea183fa7cc31ded46c164b450b45f40",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/account_deletion_flow.dart": {
+    "mtime": 1791870642.0609968,
+    "seen": 1792569422.249115,
+    "ast_hash": "e41eadfaaae5b961b3eb67320358d423",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/app_instellingen_screen.dart": {
+    "mtime": 1791870642.0707352,
+    "seen": 1792569422.2491176,
+    "ast_hash": "e500e66b300fc4385ddb31c82677a565",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/app_machtigingen_screen.dart": {
+    "mtime": 1791870642.0707352,
+    "seen": 1792569422.2491205,
+    "ast_hash": "f71674e730df0595a76b9cd8eaabd826",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/beveiliging_screen.dart": {
+    "mtime": 1791870642.0707352,
+    "seen": 1792569422.2491233,
+    "ast_hash": "a16dc5312bd0b71a8eae90571ec8bba3",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/lespakket_detail_screen.dart": {
+    "mtime": 1791870642.0707352,
+    "seen": 1792569422.249126,
+    "ast_hash": "c94c03954031206f7efefd344f5ab607",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/mijn_rijschool_screen.dart": {
+    "mtime": 1791870642.0738645,
+    "seen": 1792569422.249128,
+    "ast_hash": "b2eb4f1881cb3701048fa86ce745d5ed",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/persoonlijke_gegevens_screen.dart": {
+    "mtime": 1791870642.0738645,
+    "seen": 1792569422.2491305,
+    "ast_hash": "a38346025df5bf4561c3413251030bf9",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/privacy_juridisch_screen.dart": {
+    "mtime": 1791870642.076092,
+    "seen": 1792569422.2491324,
+    "ast_hash": "1ade21dd96c0833ec677f83ac4e319d0",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/profiel_afronden_screen.dart": {
+    "mtime": 1791870642.076092,
+    "seen": 1792569422.249135,
+    "ast_hash": "7aa0e641580d15ab55f176397c3cc615",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/profiel_screen.dart": {
+    "mtime": 1791870642.076092,
+    "seen": 1792569422.2491374,
+    "ast_hash": "1ec111b3942f8cd1a94bff04e75ce4f4",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/profielfoto_editor.dart": {
+    "mtime": 1791870642.076092,
+    "seen": 1792569422.2491403,
+    "ast_hash": "04f056a8d1a1e6552a971400d9625639",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/profile_hero_copy.dart": {
+    "mtime": 1791870642.0803635,
+    "seen": 1792569422.2491431,
+    "ast_hash": "d62c1ad72d0365f2c523bec07eb0a553",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/rijschool_provider.dart": {
+    "mtime": 1790065314.2190778,
+    "seen": 1792569422.2491455,
+    "ast_hash": "04ab251f2ba4066f4cba83c75e293e65",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/widgets/profiel_menu_widgets.dart": {
+    "mtime": 1791870642.0803635,
+    "seen": 1792569422.2491484,
+    "ast_hash": "b895cf38620cb8cb50e0e00031a6e6e0",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/widgets/profile_info_row.dart": {
+    "mtime": 1791870642.0823727,
+    "seen": 1792569422.2491508,
+    "ast_hash": "b0c4973eaaaf7f11e9cbf478d7dc78c8",
+    "semantic_hash": ""
+  },
+  "lib/features/profiel/widgets/settings_action_row.dart": {
+    "mtime": 1791870642.0823727,
+    "seen": 1792569422.2491531,
+    "ast_hash": "e9e98f41dab4226eab684409aeceee13",
+    "semantic_hash": ""
+  },
+  "lib/features/splash/splash_layout.dart": {
+    "mtime": 1791870642.0823727,
+    "seen": 1792569422.249156,
+    "ast_hash": "bfea9ac062441bd80aa0084d76bf928b",
+    "semantic_hash": ""
+  },
+  "lib/features/splash/splash_phase_animations.dart": {
+    "mtime": 1791870642.0843816,
+    "seen": 1792569422.249158,
+    "ast_hash": "c785a7b034ba02d4e4f1b3f6414a638a",
+    "semantic_hash": ""
+  },
+  "lib/features/splash/splash_screen.dart": {
+    "mtime": 1791870642.0843816,
+    "seen": 1792569422.24916,
+    "ast_hash": "2939c89c9d6cbfa62a7e85ee2310d48e",
+    "semantic_hash": ""
+  },
+  "lib/features/splash/widgets/splash_svg_element.dart": {
+    "mtime": 1791870642.0863898,
+    "seen": 1792569422.2491658,
+    "ast_hash": "fb227aa8faf4a8c9e37a9714e1389d96",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/lespakket_detail_provider.dart": {
+    "mtime": 1788858047.0502124,
+    "seen": 1792569422.2491689,
+    "ast_hash": "fee0555ec87606db2c03a0460a995e53",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/lespakket_detail_screen.dart": {
+    "mtime": 1791870642.0863898,
+    "seen": 1792569422.2491713,
+    "ast_hash": "8a3bc6dfa362455ebba8ca0558908622",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/lespakket_voortgang_provider.dart": {
+    "mtime": 1788858047.0502124,
+    "seen": 1792569422.2491724,
+    "ast_hash": "821c89f8bf7f64538be1679ac849f98e",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/voortgang_provider.dart": {
+    "mtime": 1788858047.0502124,
+    "seen": 1792569422.2491746,
+    "ast_hash": "944fa0f2fd33a3ce1706d7fc7c9a8e11",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/voortgang_screen.dart": {
+    "mtime": 1791870642.0863898,
+    "seen": 1792569422.249178,
+    "ast_hash": "61731aeb73595ee68a4937b7951c42fa",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/voortgang_tijdlijn_screen.dart": {
+    "mtime": 1791870642.0903115,
+    "seen": 1792569422.2491806,
+    "ast_hash": "873f0ec8a9361b01aa881f0bfb04824c",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/voortgang_trends_provider.dart": {
+    "mtime": 1791870642.0903115,
+    "seen": 1792569422.249184,
+    "ast_hash": "5be5bc47b81cc0d7f4bcbf67a61eb730",
+    "semantic_hash": ""
+  },
+  "lib/features/voortgang/widgets/tijdlijn_card.dart": {
+    "mtime": 1791870642.0903115,
+    "seen": 1792569422.2491872,
+    "ast_hash": "6945dd4bc372506bbd2e162b1ea0f21a",
+    "semantic_hash": ""
+  },
+  "lib/main.dart": {
+    "mtime": 1790661268.9615333,
+    "seen": 1792569422.24919,
+    "ast_hash": "fb3108164bb81f6ba7112e854f3dc6c9",
+    "semantic_hash": ""
+  },
+  "lib/models/arrival_location.dart": {
+    "mtime": 1788858047.0502124,
+    "seen": 1792569422.2491934,
+    "ast_hash": "4bee94122d3ba538e4a3323c9febb8fe",
+    "semantic_hash": ""
+  },
+  "lib/models/arrival_session.dart": {
+    "mtime": 1788858047.0502124,
+    "seen": 1792569422.2491965,
+    "ast_hash": "853a24c5dbf0d1d06869d30126e51438",
+    "semantic_hash": ""
+  },
+  "lib/models/arrival_settings_info.dart": {
+    "mtime": 1788858047.0502124,
+    "seen": 1792569422.2491994,
+    "ast_hash": "0bd7e0ddf46fcf69c456bc929f5a9ce3",
+    "semantic_hash": ""
+  },
+  "lib/models/examen.dart": {
+    "mtime": 1788858047.0502124,
+    "seen": 1792569422.2492018,
+    "ast_hash": "f901bb93f0ef7aa29c049214918b3b42",
+    "semantic_hash": ""
+  },
+  "lib/models/factuur.dart": {
+    "mtime": 1788858047.0502124,
+    "seen": 1792569422.2492037,
+    "ast_hash": "4c878800820ef96d51f2b83600a0145d",
+    "semantic_hash": ""
+  },
+  "lib/models/instructeur.dart": {
+    "mtime": 1791870642.0903115,
+    "seen": 1792569422.249206,
+    "ast_hash": "9479544076b2c28b818e70feb91cf55d",
+    "semantic_hash": ""
+  },
+  "lib/models/instructor_lesson_package.dart": {
+    "mtime": 1788858047.0502124,
+    "seen": 1792569422.2492077,
+    "ast_hash": "7416eef063454d6cf0f68320df459619",
+    "semantic_hash": ""
+  },
+  "lib/models/leerling_beschikbaarheid.dart": {
+    "mtime": 1788858047.0649426,
+    "seen": 1792569422.24921,
+    "ast_hash": "7da3b60f6fecc6fd627bbdfd68007080",
+    "semantic_hash": ""
+  },
+  "lib/models/leerling_notificatie_voorkeuren.dart": {
+    "mtime": 1788858047.0649426,
+    "seen": 1792569422.2492125,
+    "ast_hash": "6f9e11d661402c27c841415851154f30",
+    "semantic_hash": ""
+  },
+  "lib/models/leerling_profiel.dart": {
+    "mtime": 1790065314.2190778,
+    "seen": 1792569422.2492146,
+    "ast_hash": "4ffab8a3b3041d771b8889216d0837ba",
+    "semantic_hash": ""
+  },
+  "lib/models/leerling_voertuig.dart": {
+    "mtime": 1790065314.2232122,
+    "seen": 1792569422.249217,
+    "ast_hash": "a05017b84837d73f77f3a0486f313d4d",
+    "semantic_hash": ""
+  },
+  "lib/models/les.dart": {
+    "mtime": 1788858047.0665557,
+    "seen": 1792569422.2492201,
+    "ast_hash": "6ae3fbf0a331d23e1031d85c04e9ca66",
+    "semantic_hash": ""
+  },
+  "lib/models/les_evaluatie.dart": {
+    "mtime": 1791870642.0903115,
+    "seen": 1792569422.2492228,
+    "ast_hash": "d1cbb2773c8d2b5f06c3f9497cd689ed",
+    "semantic_hash": ""
+  },
+  "lib/models/notificatie.dart": {
+    "mtime": 1788858047.0665557,
+    "seen": 1792569422.2492251,
+    "ast_hash": "0c21acc0b0595119043ce7adf17258d1",
+    "semantic_hash": ""
+  },
+  "lib/models/support_thread.dart": {
+    "mtime": 1788858047.0665557,
+    "seen": 1792569422.2492282,
+    "ast_hash": "f37a0430c5e10cb8d451fa536798fd0f",
+    "semantic_hash": ""
+  },
+  "lib/shared/providers/auth_provider.dart": {
+    "mtime": 1788858047.0665557,
+    "seen": 1792569422.249231,
+    "ast_hash": "f853ca7956b6a9a4365fd4edf84ea951",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/app_card.dart": {
+    "mtime": 1791870642.0903115,
+    "seen": 1792569422.2492335,
+    "ast_hash": "af3f6409be550b3f014a09b2a2c67648",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/app_logo.dart": {
+    "mtime": 1788858047.0665557,
+    "seen": 1792569422.2492385,
+    "ast_hash": "c8676ebe085adc0e302722555f84b7ff",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/coach_widgets.dart": {
+    "mtime": 1791870642.0903115,
+    "seen": 1792569422.2492414,
+    "ast_hash": "20235f29ff51c31e6383234149ead819",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/home_header.dart": {
+    "mtime": 1791870642.0903115,
+    "seen": 1792569422.2492492,
+    "ast_hash": "14e2f53fea68bf349b6efdb68a8e972e",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/ios_native_navigation_host.dart": {
+    "mtime": 1791870642.0903115,
+    "seen": 1792569422.2492516,
+    "ast_hash": "ab68a5c19aefc5e765003cbd323ea6f4",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/klantio_header.dart": {
+    "mtime": 1791870642.102454,
+    "seen": 1792569422.249259,
+    "ast_hash": "f8a2fe9efe95bd2f9097a74292a15db8",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/main_detail_header.dart": {
+    "mtime": 1791870642.102454,
+    "seen": 1792569422.249263,
+    "ast_hash": "aebb16a75d4e38b69a00824372dafea7",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/main_scaffold.dart": {
+    "mtime": 1791870642.1064167,
+    "seen": 1792569422.2492647,
+    "ast_hash": "e2a3bc699d86e86555dbb64dc74bb426",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/main_tab_header.dart": {
+    "mtime": 1791870642.1064167,
+    "seen": 1792569422.2492666,
+    "ast_hash": "3d6dbc3f8ace69e1997c1df749f2304c",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/snackbar.dart": {
+    "mtime": 1791870642.1064167,
+    "seen": 1792569422.249275,
+    "ast_hash": "3c0beb4d802c676819fa32a533bee4d0",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/status_pill.dart": {
+    "mtime": 1791870642.1064167,
+    "seen": 1792569422.2492788,
+    "ast_hash": "271adc812be835f13914af3fed63e36b",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/student_profile_gate.dart": {
+    "mtime": 1791870642.1064167,
+    "seen": 1792569422.2492807,
+    "ast_hash": "2668f5d2b0cc7bd07f016923bc5b4da2",
+    "semantic_hash": ""
+  },
+  "supabase/.temp/linked-project.json": {
+    "mtime": 1788858047.1046154,
+    "seen": 1792569422.2492857,
+    "ast_hash": "60a05ccc96ec11a184b18755f77a8a5e",
+    "semantic_hash": ""
+  },
+  "test/app_account_invalidation_test.dart": {
+    "mtime": 1788858047.1183817,
+    "seen": 1792569422.2492888,
+    "ast_hash": "c8fa33cfa9b78fe33dc662336aca71e2",
+    "semantic_hash": ""
+  },
+  "test/arrival_geen_debug_override_test.dart": {
+    "mtime": 1788858047.1183817,
+    "seen": 1792569422.2492907,
+    "ast_hash": "8000a52bab1d61987d93f1e8957f1e2f",
+    "semantic_hash": ""
+  },
+  "test/beschikbaarheid_navigator_guard_test.dart": {
+    "mtime": 1791870642.11844,
+    "seen": 1792569422.2492933,
+    "ast_hash": "4f445107ce7f9f5fe4bec23a8f56d755",
+    "semantic_hash": ""
+  },
+  "test/beschikbaarheid_tijdblok_formulier_test.dart": {
+    "mtime": 1791870642.11844,
+    "seen": 1792569422.2492957,
+    "ast_hash": "74c1fa0d659ee8ea0bdb892f57895988",
+    "semantic_hash": ""
+  },
+  "test/beveiliging_screen_test.dart": {
+    "mtime": 1791870642.11844,
+    "seen": 1792569422.2492983,
+    "ast_hash": "5ef4dc357a3e1fc9db0a782bf2bfdea6",
+    "semantic_hash": ""
+  },
+  "test/contact_uri_test.dart": {
+    "mtime": 1788858047.1183817,
+    "seen": 1792569422.2493,
+    "ast_hash": "d88caea3743f0d461b814919275ec1b9",
+    "semantic_hash": ""
+  },
+  "test/core/services/arrival_repository_no_writes_test.dart": {
+    "mtime": 1788858047.1299205,
+    "seen": 1792569422.2493026,
+    "ast_hash": "6b8ada52a7277695c42b431706ec6582",
+    "semantic_hash": ""
+  },
+  "test/core/services/geocoding_service_test.dart": {
+    "mtime": 1788858047.1299205,
+    "seen": 1792569422.249305,
+    "ast_hash": "7cc495519e2456b48ee634ebec73e6c1",
+    "semantic_hash": ""
+  },
+  "test/core/services/profile_completion_contract_test.dart": {
+    "mtime": 1791870642.11844,
+    "seen": 1792569422.2493074,
+    "ast_hash": "d48f42574539a3d7d1a729ff13b0ec04",
+    "semantic_hash": ""
+  },
+  "test/core/services/secure_supabase_local_storage_test.dart": {
+    "mtime": 1790258355.8993087,
+    "seen": 1792569422.24931,
+    "ast_hash": "9581a793c883c9e535b40635e16a2d12",
+    "semantic_hash": ""
+  },
+  "test/core/utils/datum_utils_lesdatum_test.dart": {
+    "mtime": 1788858047.1299205,
+    "seen": 1792569422.249312,
+    "ast_hash": "41b21729d26367d0dbb6f18e22904cad",
+    "semantic_hash": ""
+  },
+  "test/core/utils/komende_les_filter_test.dart": {
+    "mtime": 1788858047.1299205,
+    "seen": 1792569422.249314,
+    "ast_hash": "25b62fc1f7bc02e90c3e8cc570b0b30f",
+    "semantic_hash": ""
+  },
+  "test/core/utils/tijd_invoer_formatter_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.249316,
+    "ast_hash": "52f9b3d12342c7e0d4910b308dca6729",
+    "semantic_hash": ""
+  },
+  "test/features/arrival/arrival_map_utils_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.2493184,
+    "ast_hash": "02de4647db6c05db2a236502bdcd51af",
+    "semantic_hash": ""
+  },
+  "test/features/arrival/arrival_provider_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.2493203,
+    "ast_hash": "8397561275ae101bf2a1a7ce2fb6b5b7",
+    "semantic_hash": ""
+  },
+  "test/features/arrival/fakes.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.2493222,
+    "ast_hash": "da2ed866d50b890b79dc7db51745d7b2",
+    "semantic_hash": ""
+  },
+  "test/features/arrival/live_aankomst_banner_logic_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.2493248,
+    "ast_hash": "494810bbaa1a392d13f8bc453023cbf0",
+    "semantic_hash": ""
+  },
+  "test/features/arrival/live_aankomst_fullscreen_screen_test.dart": {
+    "mtime": 1791870642.1251478,
+    "seen": 1792569422.2493272,
+    "ast_hash": "5b3703e34c72ec8066f7f601f8679ed5",
+    "semantic_hash": ""
+  },
+  "test/features/arrival/widgets/arrival_live_map_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.2493293,
+    "ast_hash": "9548b3feb72f83e73a779fc89434e978",
+    "semantic_hash": ""
+  },
+  "test/features/auth/login_social_platform_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.249331,
+    "ast_hash": "912b6c4c1645d01b2bb9173bb8ea92e5",
+    "semantic_hash": ""
+  },
+  "test/features/auth/registreer_screen_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.2493327,
+    "ast_hash": "6333ec93d16f01a0a6be71be33c1d186",
+    "semantic_hash": ""
+  },
+  "test/features/examenadvies/examenadvies_bronnen_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.2493348,
+    "ast_hash": "b31c5dbedea22e051621c3f6c72f88c8",
+    "semantic_hash": ""
+  },
+  "test/features/examenadvies/examenadvies_calculator_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.2493372,
+    "ast_hash": "b000a0336af4e05dd570fad5227e55ba",
+    "semantic_hash": ""
+  },
+  "test/features/examenadvies/examenadvies_ontwikkeling_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.249339,
+    "ast_hash": "04891e29bb420ededafe9c3cdc1f6d82",
+    "semantic_hash": ""
+  },
+  "test/features/examenadvies/examenadvies_status_style_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.2493415,
+    "ast_hash": "e946815bf72a4a5d46988ca13cda3bf1",
+    "semantic_hash": ""
+  },
+  "test/features/koppelcode/koppel_flow_normalize_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.249343,
+    "ast_hash": "21219638ee496d249f00076322ca40ec",
+    "semantic_hash": ""
+  },
+  "test/features/koppelcode/koppel_keuze_screen_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.2493458,
+    "ast_hash": "b5e6707c50db85d84d2112f504191420",
+    "semantic_hash": ""
+  },
+  "test/features/koppelcode/qr_payload_cross_app_contract_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.249348,
+    "ast_hash": "bb889de6bc854d497e0ee927c36fbc84",
+    "semantic_hash": ""
+  },
+  "test/features/lesvoorbereiding/lesvoorbereiding_screen_test.dart": {
+    "mtime": 1788858047.1325223,
+    "seen": 1792569422.2493494,
+    "ast_hash": "d76e0b4ddceff1b8edbb98b8add25105",
+    "semantic_hash": ""
+  },
+  "test/features/lesvoorbereiding/preparation_mapper_test.dart": {
+    "mtime": 1788858047.145627,
+    "seen": 1792569422.2493515,
+    "ast_hash": "a760e060868a39b4ce7c46c20d473be5",
+    "semantic_hash": ""
+  },
+  "test/features/notificaties/notificatie_icon_centering_test.dart": {
+    "mtime": 1791870642.1251478,
+    "seen": 1792569422.249353,
+    "ast_hash": "ca6e4fbc19564254e23fa9f21f8fe696",
+    "semantic_hash": ""
+  },
+  "test/features/profiel/account_deletion_flow_test.dart": {
+    "mtime": 1791870642.1251478,
+    "seen": 1792569422.249355,
+    "ast_hash": "8a3892af0ff7de9046e9991c7b153af9",
+    "semantic_hash": ""
+  },
+  "test/features/profiel/profile_hero_copy_test.dart": {
+    "mtime": 1788858047.145627,
+    "seen": 1792569422.2493567,
+    "ast_hash": "b97bbd38be20e34f715edea03689f265",
+    "semantic_hash": ""
+  },
+  "test/home_screen_redesign_test.dart": {
+    "mtime": 1791870642.1271574,
+    "seen": 1792569422.2493591,
+    "ast_hash": "be9d2da29de69eb1b1b40d92cbea01b7",
+    "semantic_hash": ""
+  },
+  "test/klantio_header_test.dart": {
+    "mtime": 1791870642.1271574,
+    "seen": 1792569422.2493649,
+    "ast_hash": "0afdb80538a624e720d067e8eb07ed05",
+    "semantic_hash": ""
+  },
+  "test/leerling_notification_preference_registry_test.dart": {
+    "mtime": 1791870642.1271574,
+    "seen": 1792569422.2493668,
+    "ast_hash": "4765f67611bab9dcba4cccd8fd0f40f0",
+    "semantic_hash": ""
+  },
+  "test/les_detail_volgorde_test.dart": {
+    "mtime": 1788858047.145627,
+    "seen": 1792569422.2493687,
+    "ast_hash": "04f3086eb01d6054437adef8c5ba83fd",
+    "semantic_hash": ""
+  },
+  "test/lespakket_voortgang_canonical_lessen_gevolgd_test.dart": {
+    "mtime": 1790065314.2235925,
+    "seen": 1792569422.2493706,
+    "ast_hash": "4abd65f9f6c6cf0caac41c89ef69c7c7",
+    "semantic_hash": ""
+  },
+  "test/lesvoertuig_velden_test.dart": {
+    "mtime": 1788858047.145627,
+    "seen": 1792569422.2493725,
+    "ast_hash": "21ccedaa47b61b4ce52b2e2bbfa6252d",
+    "semantic_hash": ""
+  },
+  "test/live_aankomst_banner_lesdetail_test.dart": {
+    "mtime": 1788858047.145627,
+    "seen": 1792569422.2493742,
+    "ast_hash": "c9fed9285ac376efe5fc3e66e26af3d8",
+    "semantic_hash": ""
+  },
+  "test/main_detail_header_test.dart": {
+    "mtime": 1791870642.1271574,
+    "seen": 1792569422.2493768,
+    "ast_hash": "089150b832220fdeaae244b68dd5afcf",
+    "semantic_hash": ""
+  },
+  "test/models/arrival_location_test.dart": {
+    "mtime": 1788858047.145627,
+    "seen": 1792569422.2493792,
+    "ast_hash": "0b6a012fe7b4fd7051224b9cb35a8599",
+    "semantic_hash": ""
+  },
+  "test/models/arrival_session_test.dart": {
+    "mtime": 1788858047.145627,
+    "seen": 1792569422.2493818,
+    "ast_hash": "d9db3f0d54b82a276782f2226c488816",
+    "semantic_hash": ""
+  },
+  "test/models/arrival_settings_info_test.dart": {
+    "mtime": 1788858047.145627,
+    "seen": 1792569422.249384,
+    "ast_hash": "5c02cddaa41cdf89084930d7ee81a401",
+    "semantic_hash": ""
+  },
+  "test/models/factuur_test.dart": {
+    "mtime": 1788858047.145627,
+    "seen": 1792569422.249386,
+    "ast_hash": "f762e32eb3d128f4e4b869cafd9cc910",
+    "semantic_hash": ""
+  },
+  "test/models/leerling_profiel_completion_test.dart": {
+    "mtime": 1788858047.145627,
+    "seen": 1792569422.249388,
+    "ast_hash": "b055dabbeff29c0def8cd2657d1fc521",
+    "semantic_hash": ""
+  },
+  "test/models/leerling_profiel_nullable_achternaam_test.dart": {
+    "mtime": 1788858047.145627,
+    "seen": 1792569422.2493906,
+    "ast_hash": "bb09c12079a206177b9938f3bc014116",
+    "semantic_hash": ""
+  },
+  "test/navbar_background_test.dart": {
+    "mtime": 1791870642.1271574,
+    "seen": 1792569422.2493927,
+    "ast_hash": "97440f10195ee785e3f07d74debb4c0b",
+    "semantic_hash": ""
+  },
+  "test/notificatie_instellingen_test.dart": {
+    "mtime": 1791870642.1271574,
+    "seen": 1792569422.249395,
+    "ast_hash": "44ec36e00f1f5c39a4ac8b84585ac4f3",
+    "semantic_hash": ""
+  },
+  "test/ophaallocatie_kaart_test.dart": {
+    "mtime": 1791870642.1342359,
+    "seen": 1792569422.2493975,
+    "ast_hash": "29fce873f84f4630bf68989bce4b8c83",
+    "semantic_hash": ""
+  },
+  "test/planning_premium_sync_test.dart": {
+    "mtime": 1791870642.1342359,
+    "seen": 1792569422.2494,
+    "ast_hash": "4403a2578a808e9453f5958422541567",
+    "semantic_hash": ""
+  },
+  "test/premium_bottom_nav_bar_test.dart": {
+    "mtime": 1791870642.1342359,
+    "seen": 1792569422.2494013,
+    "ast_hash": "ba3bc2b8ec69ec5facd2ec65b25d40b1",
+    "semantic_hash": ""
+  },
+  "test/profile_ui_safe_phase_test.dart": {
+    "mtime": 1791870642.1342359,
+    "seen": 1792569422.2494028,
+    "ast_hash": "3344008c713da7f83a1013cdcae52994",
+    "semantic_hash": ""
+  },
+  "test/push_service_apns_test.dart": {
+    "mtime": 1788858047.15676,
+    "seen": 1792569422.2494047,
+    "ast_hash": "a30e571c13ab90fd2284b8baf825e41a",
+    "semantic_hash": ""
+  },
+  "test/push_service_tap_test.dart": {
+    "mtime": 1788858047.15676,
+    "seen": 1792569422.249407,
+    "ast_hash": "689f51f31e2729608150e249bf8837d9",
+    "semantic_hash": ""
+  },
+  "test/shared/widgets/student_profile_gate_test.dart": {
+    "mtime": 1788858047.15676,
+    "seen": 1792569422.2494092,
+    "ast_hash": "4858d8998fd92a8290432891fcc418c2",
+    "semantic_hash": ""
+  },
+  "test/splash_composition_test.dart": {
+    "mtime": 1791870642.1342359,
+    "seen": 1792569422.2494116,
+    "ast_hash": "1f66f8d235089a60d686dda28515e1a3",
+    "semantic_hash": ""
+  },
+  "test/support_help_test.dart": {
+    "mtime": 1790065314.224602,
+    "seen": 1792569422.2494135,
+    "ast_hash": "d206803ea9fc495ff8cb8decb5644573",
+    "semantic_hash": ""
+  },
+  "test/voortgang_phase8c_ui_test.dart": {
+    "mtime": 1791870642.1342359,
+    "seen": 1792569422.2494156,
+    "ast_hash": "82686dda237ad0a7eef7e782f6af1e19",
+    "semantic_hash": ""
+  },
+  "test/widget_test.dart": {
+    "mtime": 1788858047.161283,
+    "seen": 1792569422.249418,
+    "ast_hash": "34cefec4c6a4aacc76a87de083203607",
+    "semantic_hash": ""
+  },
+  "tooling/ios_release_preflight.sh": {
+    "mtime": 1788858047.161283,
+    "seen": 1792569422.2494195,
+    "ast_hash": "034bed356ea11ce5a0f3513d2ce21f8e",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1792563508.561438,
+    "seen": 1792569422.2494354,
+    "ast_hash": "60bcd3e511b58f90063546175192d382",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1792563508.5604146,
+    "seen": 1792569422.2494373,
+    "ast_hash": "34e30231f89d2dfe83467860ec82b803",
+    "semantic_hash": ""
+  },
+  "LEERLINGEN_UI_REGELS.md": {
+    "mtime": 1788858046.7522185,
+    "seen": 1792569422.249799,
+    "ast_hash": "5fcabefd56ca771edfbeaa232f5f002f",
+    "semantic_hash": ""
+  },
+  "MOLLIE_PAYMENT_TROUBLESHOOT.md": {
+    "mtime": 1788858046.753935,
+    "seen": 1792569422.2498012,
+    "ast_hash": "fa65823992d445f994e5490a96a386d3",
+    "semantic_hash": ""
+  },
+  "PRODUCT.md": {
+    "mtime": 1788858046.753935,
+    "seen": 1792569422.2498035,
+    "ast_hash": "a1a5923622e5b986452b7bac14e08e48",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1788858046.753935,
+    "seen": 1792569422.2498066,
+    "ast_hash": "e44454b78667e47a0aabe5c6ee889666",
+    "semantic_hash": ""
+  },
+  "analysis_options.yaml": {
+    "mtime": 1788858046.753935,
+    "seen": 1792569422.2498095,
+    "ast_hash": "9ec7b1eff0fd95a9d2922aae93ff8d36",
+    "semantic_hash": ""
+  },
+  "devtools_options.yaml": {
+    "mtime": 1788858046.8202338,
+    "seen": 1792569422.2498128,
+    "ast_hash": "1b16e156b9f8b9f43ca52a78a6f72e80",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_ARCHITECTUUR.md": {
+    "mtime": 1788858046.8202338,
+    "seen": 1792569422.2498164,
+    "ast_hash": "4e51b7ec3bcb08abdf2b2c67f8c8096f",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_AUDIT.md": {
+    "mtime": 1788858046.8202338,
+    "seen": 1792569422.2498188,
+    "ast_hash": "7c4107fa889269e6f071f8bd28c68c8c",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_FASE4_ARCHITECTUURCONTROLE.md": {
+    "mtime": 1788858046.8202338,
+    "seen": 1792569422.249821,
+    "ast_hash": "17403fc503a85594dc396d42b67ab367",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_FASE5A_AVATAR_STORAGE_BEVEILIGING.md": {
+    "mtime": 1788858046.8202338,
+    "seen": 1792569422.2498236,
+    "ast_hash": "a005ef6660af3e275e2e2bc0a83b045e",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_FASE5_PERSOONLIJKE_GEGEVENS.md": {
+    "mtime": 1788858046.8202338,
+    "seen": 1792569422.249826,
+    "ast_hash": "25f35a3e76c51e2f8acea28c8c973693",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_FASE6_MIJN_RIJSCHOOL.md": {
+    "mtime": 1788858046.8202338,
+    "seen": 1792569422.2498283,
+    "ast_hash": "3abcf8a7cfe429da9b899d1837dd76dc",
+    "semantic_hash": ""
+  },
+  "docs/PROFIEL_STAP2_BEVEILIGING.md": {
+    "mtime": 1788858046.8202338,
+    "seen": 1792569422.2498307,
+    "ast_hash": "4f1cb71e9f078cf7ac780d635047c114",
+    "semantic_hash": ""
+  },
+  "docs/VOORSTEL_PAKKET_SNAPSHOT_BACKFILL.md": {
+    "mtime": 1788858046.8202338,
+    "seen": 1792569422.2498329,
+    "ast_hash": "1d238542fedbe61a9a612dbabade6aba",
+    "semantic_hash": ""
+  },
+  "docs/ios-release.md": {
+    "mtime": 1788858046.8202338,
+    "seen": 1792569422.249835,
+    "ast_hash": "56f0ddef8e42fd4b3ce0776caa047d63",
+    "semantic_hash": ""
+  },
+  "docs/lesson_vehicle_architecture_review.md": {
+    "mtime": 1788858046.8202338,
+    "seen": 1792569422.2498374,
+    "ast_hash": "be503bcb05fe5344fcab5a87f6cc68bb",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-06-08-leerling-app-redesign.md": {
+    "mtime": 1788858046.8202338,
+    "seen": 1792569422.24984,
+    "ast_hash": "94cb1aecdcf073e4f5cd8b2acac3d4b2",
+    "semantic_hash": ""
+  },
+  "pubspec.yaml": {
+    "mtime": 1791870642.11844,
+    "seen": 1792569422.2498417,
+    "ast_hash": "01a9dc04edd76b2a14a0f00a194ee784",
+    "semantic_hash": ""
+  },
+  ".claude/settings.json": {
+    "mtime": 1792563446.669767,
+    "seen": 1792569422.2485824,
+    "ast_hash": "b61796d35aae3030f619e2cbecb93701",
+    "semantic_hash": ""
+  },
+  "docs/well-known/assetlinks.json": {
+    "mtime": 1790261557.0503533,
+    "seen": 1792569422.2487686,
+    "ast_hash": "820e463bdd13270f78f096c14a411927",
+    "semantic_hash": ""
+  },
+  "docs/well-known/cloudflare-worker.js": {
+    "mtime": 1790261570.0168254,
+    "seen": 1792569422.2487717,
+    "ast_hash": "44f298949a38e82346ad14cd4e3ad0d7",
+    "semantic_hash": ""
+  },
+  "lib/features/splash/widgets/splash_logo_mark.dart": {
+    "mtime": 1791870642.0863898,
+    "seen": 1792569422.2491632,
+    "ast_hash": "33b75c6d8683e2c6c7cbfe3cd9e2c14c",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/klantio_aurora_button.dart": {
+    "mtime": 1791870642.102454,
+    "seen": 1792569422.2492568,
+    "ast_hash": "21f22c32f79c7b0813dd82f628b4ed91",
+    "semantic_hash": ""
+  },
+  "lib/core/constants/cool_icons.dart": {
+    "mtime": 1791870642.017212,
+    "seen": 1792569422.2487836,
+    "ast_hash": "8c6705df3819913be101c58fd6074f4c",
+    "semantic_hash": ""
+  },
+  "lib/core/providers/main_shell_nav_bar_visibility.dart": {
+    "mtime": 1791870642.017212,
+    "seen": 1792569422.248794,
+    "ast_hash": "6869f6a5ad9c57ed633b27599ac7e2b9",
+    "semantic_hash": ""
+  },
+  "lib/core/providers/theme_provider.dart": {
+    "mtime": 1791870642.020246,
+    "seen": 1792569422.2487962,
+    "ast_hash": "af7fce19b2c8c7fbd9fddb3556a8c938",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/app_error_banner.dart": {
+    "mtime": 1791870642.0903115,
+    "seen": 1792569422.249236,
+    "ast_hash": "a0273a48d80cd0faa4b808a58362a457",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/isomorphic_icons.dart": {
+    "mtime": 1791870642.0903115,
+    "seen": 1792569422.249254,
+    "ast_hash": "e68dec3085b87c024cfd035a31473f8d",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/klantio_pressable.dart": {
+    "mtime": 1791870642.102454,
+    "seen": 1792569422.2492611,
+    "ast_hash": "86cf5511a33a9b9127a0c8edbd5b784a",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/native_nav_clearance.dart": {
+    "mtime": 1791870642.1064167,
+    "seen": 1792569422.2492688,
+    "ast_hash": "dca3ae8676a4c2065eb6586052ecebef",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/status_badge.dart": {
+    "mtime": 1791870642.1064167,
+    "seen": 1792569422.2492769,
+    "ast_hash": "0814099e441d58d10b37e838a13fdd3c",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/toast.dart": {
+    "mtime": 1791870642.1064167,
+    "seen": 1792569422.2492833,
+    "ast_hash": "fced2e21c6ad8206f5bbaeca9d330ef7",
+    "semantic_hash": ""
+  },
+  "tools/apply_coolicons.py": {
+    "mtime": 1791870642.1342359,
+    "seen": 1792569422.2494223,
+    "ast_hash": "ea326935a857553e70689dbb8813a4bf",
+    "semantic_hash": ""
+  },
+  "tools/coolicons_mapping.py": {
+    "mtime": 1791870642.1342359,
+    "seen": 1792569422.2494245,
+    "ast_hash": "6ffbb94c530314b330e5b735d4e165d2",
+    "semantic_hash": ""
+  },
+  "tools/generate_coolicons_font.py": {
+    "mtime": 1791870642.1342359,
+    "seen": 1792569422.249426,
+    "ast_hash": "786b1b04c5cbd2fc084cccd3c86c6f9f",
+    "semantic_hash": ""
+  },
+  "tools/normalize_cards.py": {
+    "mtime": 1791870642.1342359,
+    "seen": 1792569422.2494283,
+    "ast_hash": "3488c5adb5d40f7b4beb6144cb9f96c6",
+    "semantic_hash": ""
+  },
+  "tools/strip_icon_backgrounds.py": {
+    "mtime": 1791870642.1342359,
+    "seen": 1792569422.2494302,
+    "ast_hash": "43423c32b75b49a02377d0cce2f806b0",
+    "semantic_hash": ""
+  },
+  "tools/unify_icon_colors.py": {
+    "mtime": 1791870642.1342359,
+    "seen": 1792569422.2494328,
+    "ast_hash": "bd058c4e563a47364d407a3a405c138b",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/framer_toggle.dart": {
+    "mtime": 1791870642.0903115,
+    "seen": 1792569422.2492454,
+    "ast_hash": "f456fe0306559e8016860a51661d2896",
+    "semantic_hash": ""
+  },
+  "lib/shared/widgets/settings_design.dart": {
+    "mtime": 1791870642.1064167,
+    "seen": 1792569422.2492723,
+    "ast_hash": "37bd6c7514b02feadf1fae8197e15c5c",
+    "semantic_hash": ""
+  },
+  "lib/features/home/cbr_voorbereiding_data.dart": {
+    "mtime": 1791870642.0469303,
+    "seen": 1792569422.2490158,
+    "ast_hash": "603cf960a10acdeba5b51f85dd1fe738",
+    "semantic_hash": ""
+  },
+  "lib/features/home/home_voorbereiding_carousel.dart": {
+    "mtime": 1791870642.0469303,
+    "seen": 1792569422.2490299,
+    "ast_hash": "db8f2c7466464446903d44959fb945fd",
+    "semantic_hash": ""
+  },
+  "lib/features/planning/widgets/framer_animated_timeline.dart": {
+    "mtime": 1791870642.0609968,
+    "seen": 1792569422.249104,
+    "ast_hash": "87f4af3ca3f51db5eae4f4c0aace0403",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/backend/notification-policy.mjs": {
+    "mtime": 1792508568.254146,
+    "seen": 1792569422.2485876,
+    "ast_hash": "ae3dae15f214bb048a08dcb774978720",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/backend/render-delivery.mjs": {
+    "mtime": 1792508568.255204,
+    "seen": 1792569422.2485902,
+    "ast_hash": "baa03f63bea32d103fb24e6d5530ad93",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/catalogus.json": {
+    "mtime": 1792569298.874609,
+    "seen": 1792569422.2485924,
+    "ast_hash": "7cf7a75a263450329ed6003446ded764",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/01-welkom-bij-klantio-l/metadata.json": {
+    "mtime": 1792569298.7681942,
+    "seen": 1792569422.2485948,
+    "ast_hash": "2403be7f01d039848b1db10766de85f4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/01-welkom-bij-klantio-l/voorbeeld.json": {
+    "mtime": 1792569298.7681942,
+    "seen": 1792569422.2485971,
+    "ast_hash": "11bf2e427c1dbe2337b6ce71cf1b9e93",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/02-e-mailadres-bevestigen/metadata.json": {
+    "mtime": 1792569298.7722068,
+    "seen": 1792569422.2486,
+    "ast_hash": "a0750fc8d08aaa35b4484f585e06fd66",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/02-e-mailadres-bevestigen/voorbeeld.json": {
+    "mtime": 1792569298.7712069,
+    "seen": 1792569422.248603,
+    "ast_hash": "3699ebf723998f08c02b4ddfa31bb7fc",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/03-wachtwoord-opnieuw-instellen/metadata.json": {
+    "mtime": 1792569298.774206,
+    "seen": 1792569422.248606,
+    "ast_hash": "a600db49c5c0dc4a607c0e426af59bda",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/03-wachtwoord-opnieuw-instellen/voorbeeld.json": {
+    "mtime": 1792569298.774206,
+    "seen": 1792569422.2486084,
+    "ast_hash": "0be489381d52dffd73776e7b97764406",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/04-wachtwoord-gewijzigd/metadata.json": {
+    "mtime": 1792569298.7772071,
+    "seen": 1792569422.2486107,
+    "ast_hash": "f3338ff4462ebcc6b148f516f316fd7a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/04-wachtwoord-gewijzigd/voorbeeld.json": {
+    "mtime": 1792569298.7772071,
+    "seen": 1792569422.2486129,
+    "ast_hash": "a3814a4de8d3d28d5bbbf47b983f550a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/05-e-mailadres-gewijzigd/metadata.json": {
+    "mtime": 1792569298.7792072,
+    "seen": 1792569422.2486153,
+    "ast_hash": "7e1eb32ed90fcb5458c4195c87616391",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/05-e-mailadres-gewijzigd/voorbeeld.json": {
+    "mtime": 1792569298.7792072,
+    "seen": 1792569422.248618,
+    "ast_hash": "c810a38b927f37ee8ac9ae0966f958f0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/06-account-gedeactiveerd/metadata.json": {
+    "mtime": 1792569298.782207,
+    "seen": 1792569422.2486196,
+    "ast_hash": "6996e909f0ca241050806764831d6297",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/06-account-gedeactiveerd/voorbeeld.json": {
+    "mtime": 1792569298.782207,
+    "seen": 1792569422.2486207,
+    "ast_hash": "16b8c6c2b4e93edb36de48ffa7d000de",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/07-rijles-ingepland/metadata.json": {
+    "mtime": 1792569298.786209,
+    "seen": 1792569422.2486224,
+    "ast_hash": "4e7dcacb1a8e20d6bde5b178917e9b82",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/07-rijles-ingepland/voorbeeld.json": {
+    "mtime": 1792569298.7852085,
+    "seen": 1792569422.2486243,
+    "ast_hash": "0b5a5ea8effeb1ff70b6c63ec6f96009",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/08-rijles-verplaatst/metadata.json": {
+    "mtime": 1792569298.7893481,
+    "seen": 1792569422.2486262,
+    "ast_hash": "1ed54382777cbe22ada75f262c69e7f6",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/08-rijles-verplaatst/voorbeeld.json": {
+    "mtime": 1792569298.7893481,
+    "seen": 1792569422.2486289,
+    "ast_hash": "7e87a6b777ae4e222433c29722b934ad",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/09-rijleslocatie-gewijzigd/metadata.json": {
+    "mtime": 1792569298.79335,
+    "seen": 1792569422.2486315,
+    "ast_hash": "7bbac9b20871bcef5a2a7762facd4ac4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/09-rijleslocatie-gewijzigd/voorbeeld.json": {
+    "mtime": 1792569298.792349,
+    "seen": 1792569422.2486343,
+    "ast_hash": "fc52931aeee8882a03244e162c9495de",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/10-rijles-geannuleerd/metadata.json": {
+    "mtime": 1792569298.7953546,
+    "seen": 1792569422.2486362,
+    "ast_hash": "809c7c432692650145b26f2d6b3942e7",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/10-rijles-geannuleerd/voorbeeld.json": {
+    "mtime": 1792569298.7953546,
+    "seen": 1792569422.248638,
+    "ast_hash": "a85b2117b84c4331c7c1950066ba1a42",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/11-herinnering-morgen-rijles/metadata.json": {
+    "mtime": 1792569298.7985594,
+    "seen": 1792569422.2486405,
+    "ast_hash": "93d96eba71843501daa32a85a46b73e9",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/11-herinnering-morgen-rijles/voorbeeld.json": {
+    "mtime": 1792569298.7978644,
+    "seen": 1792569422.2486422,
+    "ast_hash": "56d3d7261e58fb8b22bda9b43c834344",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/12-rijles-begint-binnenkort/metadata.json": {
+    "mtime": 1792569298.8029268,
+    "seen": 1792569422.2486446,
+    "ast_hash": "4efcf3d4c47e97540a5ac1b9b7302423",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/12-rijles-begint-binnenkort/voorbeeld.json": {
+    "mtime": 1792569298.8029268,
+    "seen": 1792569422.2486463,
+    "ast_hash": "9f7e93191e8892f143eb34548baeef2e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/13-andere-instructeur-toegewezen/metadata.json": {
+    "mtime": 1792569298.806934,
+    "seen": 1792569422.2486477,
+    "ast_hash": "35b36b7a0ff77a4c63dad6a7771e47d8",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/13-andere-instructeur-toegewezen/voorbeeld.json": {
+    "mtime": 1792569298.806934,
+    "seen": 1792569422.2486498,
+    "ast_hash": "2c026b1c6e4419a41f2a696395fc43f0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/14-rijles-afgerond/metadata.json": {
+    "mtime": 1792569298.810761,
+    "seen": 1792569422.2486513,
+    "ast_hash": "426b9ab2fc01ac781a8a419fa69333fa",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/14-rijles-afgerond/voorbeeld.json": {
+    "mtime": 1792569298.8100066,
+    "seen": 1792569422.2486534,
+    "ast_hash": "26bfa39f1e05cb8eb70232760a7cfa8b",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/15-beschikbaarheid-bijgewerkt/metadata.json": {
+    "mtime": 1792569298.813434,
+    "seen": 1792569422.2486558,
+    "ast_hash": "18155dba1c77a12a4e2267e4fedeff0b",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/15-beschikbaarheid-bijgewerkt/voorbeeld.json": {
+    "mtime": 1792569298.813434,
+    "seen": 1792569422.248658,
+    "ast_hash": "654b53f912e2dc54add525f8611eb99a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/16-nieuwe-lesevaluatie-beschikbaar/metadata.json": {
+    "mtime": 1792569298.8159842,
+    "seen": 1792569422.2486598,
+    "ast_hash": "dd475c4bc256289c5678c46b3ee826e0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/16-nieuwe-lesevaluatie-beschikbaar/voorbeeld.json": {
+    "mtime": 1792569298.8159842,
+    "seen": 1792569422.248662,
+    "ast_hash": "b389ff9d61e90e3246b8b7c54879f97d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/17-voortgang-bijgewerkt/metadata.json": {
+    "mtime": 1792569298.8190658,
+    "seen": 1792569422.248664,
+    "ast_hash": "190392ce0f09189a1bd58c81c921eb5f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/17-voortgang-bijgewerkt/voorbeeld.json": {
+    "mtime": 1792569298.8190658,
+    "seen": 1792569422.248666,
+    "ast_hash": "7d79212fed9899badeab43c0e68e3f22",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/18-nieuwe-mijlpaal-bereikt/metadata.json": {
+    "mtime": 1792569298.8210623,
+    "seen": 1792569422.2486682,
+    "ast_hash": "8e7b721a44b99055a5658ff63aa1cae6",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/18-nieuwe-mijlpaal-bereikt/voorbeeld.json": {
+    "mtime": 1792569298.8210623,
+    "seen": 1792569422.24867,
+    "ast_hash": "ca211c17cd06438b8ab146135babccf2",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/19-lespakket-bijna-op/metadata.json": {
+    "mtime": 1792569298.824223,
+    "seen": 1792569422.2486725,
+    "ast_hash": "4e6a57376e1445efbbe21949676281e8",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/19-lespakket-bijna-op/voorbeeld.json": {
+    "mtime": 1792569298.82323,
+    "seen": 1792569422.2486737,
+    "ast_hash": "669eb9e0c9e1dcf572ad348dc276f726",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/20-lespakket-op/metadata.json": {
+    "mtime": 1792569298.826226,
+    "seen": 1792569422.2486758,
+    "ast_hash": "3da9c67944aed4627fd15cfab6c003f7",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/20-lespakket-op/voorbeeld.json": {
+    "mtime": 1792569298.826226,
+    "seen": 1792569422.248678,
+    "ast_hash": "aeba2dbb838105962ee68e2a0cddfe98",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/21-maandelijks-voortgangsoverzicht/metadata.json": {
+    "mtime": 1792569298.8299305,
+    "seen": 1792569422.2486796,
+    "ast_hash": "63d3c0b1d4b4b323da373b2938fa5af7",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/21-maandelijks-voortgangsoverzicht/voorbeeld.json": {
+    "mtime": 1792569298.8292232,
+    "seen": 1792569422.2486825,
+    "ast_hash": "e5b0a15f662dc2fd899ebb67a39d50a6",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/22-praktijkexamen-ingepland/metadata.json": {
+    "mtime": 1792569298.8320987,
+    "seen": 1792569422.2486851,
+    "ast_hash": "b2add25d4ee3751fd9651d3ef24ec80e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/22-praktijkexamen-ingepland/voorbeeld.json": {
+    "mtime": 1792569298.8320987,
+    "seen": 1792569422.2486866,
+    "ast_hash": "fd1f6c9cec3412eca8d0c55f9cc28443",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/23-praktijkexamen-gewijzigd/metadata.json": {
+    "mtime": 1792569298.8355744,
+    "seen": 1792569422.2486885,
+    "ast_hash": "180c1b0d119783e210a06dd4f3afbe6b",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/23-praktijkexamen-gewijzigd/voorbeeld.json": {
+    "mtime": 1792569298.8345566,
+    "seen": 1792569422.2486904,
+    "ast_hash": "0a909a62177791c9f1fdb681c2132efe",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/24-examenherinnering/metadata.json": {
+    "mtime": 1792569298.838575,
+    "seen": 1792569422.2486923,
+    "ast_hash": "2945d26512c50d79da582db837632e76",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/24-examenherinnering/voorbeeld.json": {
+    "mtime": 1792569298.838575,
+    "seen": 1792569422.2486942,
+    "ast_hash": "03e69a1c8b4501eaf34f06646e0721fe",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/25-examenresultaat-beschikbaar/metadata.json": {
+    "mtime": 1792569298.840573,
+    "seen": 1792569422.2486963,
+    "ast_hash": "d7667c606c697eb1aee387cba0789900",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/25-examenresultaat-beschikbaar/voorbeeld.json": {
+    "mtime": 1792569298.840573,
+    "seen": 1792569422.248698,
+    "ast_hash": "8d498fc677dc572749c3c077c48cd8f7",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/26-gefeliciteerd-geslaagd/metadata.json": {
+    "mtime": 1792569298.8430922,
+    "seen": 1792569422.2487001,
+    "ast_hash": "f4da262c31d7767e3c174ac32cdd1d64",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/26-gefeliciteerd-geslaagd/voorbeeld.json": {
+    "mtime": 1792569298.8430922,
+    "seen": 1792569422.2487018,
+    "ast_hash": "df09dfa27c84728594ddec0671d44a65",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/27-nieuwe-factuur/metadata.json": {
+    "mtime": 1792569298.845968,
+    "seen": 1792569422.248703,
+    "ast_hash": "3e5627e195e2785a52adad52bdf29170",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/27-nieuwe-factuur/voorbeeld.json": {
+    "mtime": 1792569298.8454132,
+    "seen": 1792569422.2487047,
+    "ast_hash": "3f50b94d8c368e01cf8fbc12d5cfa455",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/28-factuurherinnering/metadata.json": {
+    "mtime": 1792569298.845968,
+    "seen": 1792569422.2487066,
+    "ast_hash": "4fc2918cc5bbfb423a5146f29289ed20",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/28-factuurherinnering/voorbeeld.json": {
+    "mtime": 1792569298.845968,
+    "seen": 1792569422.2487087,
+    "ast_hash": "67ecb9bece4580242480dbc267c122d0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/29-factuur-verlopen/metadata.json": {
+    "mtime": 1792569298.8529391,
+    "seen": 1792569422.2487109,
+    "ast_hash": "411e69a50d0fb3486d692c49548b0a2c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/29-factuur-verlopen/voorbeeld.json": {
+    "mtime": 1792569298.8529391,
+    "seen": 1792569422.248713,
+    "ast_hash": "cae2ec51d7f13276aedd3ed513814521",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/30-betaling-ontvangen/metadata.json": {
+    "mtime": 1792569298.855942,
+    "seen": 1792569422.248715,
+    "ast_hash": "688b7133e569260c9512fd9b3cf5e37f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/30-betaling-ontvangen/voorbeeld.json": {
+    "mtime": 1792569298.855942,
+    "seen": 1792569422.2487168,
+    "ast_hash": "e662f8635bd74a139e119899973f0334",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/31-betaling-niet-gelukt/metadata.json": {
+    "mtime": 1792569298.8579438,
+    "seen": 1792569422.2487183,
+    "ast_hash": "6b0a9c2fa419e5f9d9cfd7f7ba33c2d1",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/31-betaling-niet-gelukt/voorbeeld.json": {
+    "mtime": 1792569298.8579438,
+    "seen": 1792569422.2487202,
+    "ast_hash": "4fb62eb6a905897de4b13de933f5bd54",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/metadata.json": {
+    "mtime": 1792569298.860429,
+    "seen": 1792569422.2487218,
+    "ast_hash": "7cb0136dce44dcbfd924ab8d3b4564ab",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/voorbeeld.json": {
+    "mtime": 1792569298.860429,
+    "seen": 1792569422.2487237,
+    "ast_hash": "bad54c5b8705a86a2760ed0745183bfa",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/33-uitnodiging-voor-klantio-l/metadata.json": {
+    "mtime": 1792569298.8654716,
+    "seen": 1792569422.248725,
+    "ast_hash": "20430f76ce43574bc7fe049ec66f5ad0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/33-uitnodiging-voor-klantio-l/voorbeeld.json": {
+    "mtime": 1792569298.8654716,
+    "seen": 1792569422.2487266,
+    "ast_hash": "f8a53fa807fb3b2e6e24279b74161627",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/34-account-gekoppeld/metadata.json": {
+    "mtime": 1792569298.868089,
+    "seen": 1792569422.2487292,
+    "ast_hash": "a828ef61a65f91e768a906fdce1c86b7",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/34-account-gekoppeld/voorbeeld.json": {
+    "mtime": 1792569298.8670769,
+    "seen": 1792569422.2487314,
+    "ast_hash": "69ea530ff8fbe0df89be38c1fed43a75",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/35-weekoverzicht-rijlessen/metadata.json": {
+    "mtime": 1792569298.8710878,
+    "seen": 1792569422.2487333,
+    "ast_hash": "afc5281060b018a3253d986f89c78642",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/35-weekoverzicht-rijlessen/voorbeeld.json": {
+    "mtime": 1792569298.8710878,
+    "seen": 1792569422.2487352,
+    "ast_hash": "9df9e02ce74487743a6c380488c257d8",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/36-maandoverzicht/metadata.json": {
+    "mtime": 1792569298.8736079,
+    "seen": 1792569422.2487369,
+    "ast_hash": "58716e9bd440b0d58b57f33b42a9c7ec",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/36-maandoverzicht/voorbeeld.json": {
+    "mtime": 1792569298.8736079,
+    "seen": 1792569422.248739,
+    "ast_hash": "7b7d0b8923580a688be1d86f1b0eb463",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/instructeur-baseline-voor-logo-uitlijning.json": {
+    "mtime": 1792508326.76667,
+    "seen": 1792569422.2487414,
+    "ast_hash": "661e646238a84f3b45bbcdffca64d035",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/instructeur-baseline.json": {
+    "mtime": 1792509234.2171621,
+    "seen": 1792569422.2487435,
+    "ast_hash": "9f196fcc0fec21c3fbea7048db0d03bc",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/logo-uitlijning.json": {
+    "mtime": 1792509195.3658588,
+    "seen": 1792569422.2487452,
+    "ast_hash": "4bf533bccc2f1e7ba3e13c0a224ce8b3",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/resultaten.json": {
+    "mtime": 1792509173.23586,
+    "seen": 1792569422.2487473,
+    "ast_hash": "70c051c6149045f11ca0db5239348ccf",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/varianten.json": {
+    "mtime": 1792508915.3636868,
+    "seen": 1792569422.2487493,
+    "ast_hash": "397faf194fa8efbdec3e43a1f7c43d95",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/scripts/build.mjs": {
+    "mtime": 1792569298.1644397,
+    "seen": 1792569422.2487514,
+    "ast_hash": "3794a86f879fbcf7fa2c3ded86256347",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/scripts/report.mjs": {
+    "mtime": 1792509234.035493,
+    "seen": 1792569422.2487528,
+    "ast_hash": "76bf5997078c0420619635e9dc2a5e67",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/scripts/verify-previews.mjs": {
+    "mtime": 1792508691.7215161,
+    "seen": 1792569422.2487543,
+    "ast_hash": "f6a827715df7e4fab36e93b2a7bc8952",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/src/catalogus.mjs": {
+    "mtime": 1792568482.2937825,
+    "seen": 1792569422.248756,
+    "ast_hash": "ef893d063ee3ee975ec11d60378ef3f4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/src/editorial-review.mjs": {
+    "mtime": 1792569180.4478683,
+    "seen": 1792569422.2487576,
+    "ast_hash": "65dc9382235488d2bdeeb21dd4d0dc84",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/src/email-design.mjs": {
+    "mtime": 1792568482.2618978,
+    "seen": 1792569422.2487593,
+    "ast_hash": "14efcd128fa293ddcb9da902dad1b2fb",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/src/illustrations.mjs": {
+    "mtime": 1792508612.289837,
+    "seen": 1792569422.248761,
+    "ast_hash": "9d3682dccf9f03e9f99f5bf149d0b21a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/src/template-data.d.ts": {
+    "mtime": 1792569298.874609,
+    "seen": 1792569422.2487626,
+    "ast_hash": "4f5bcd3d184ae944cb19036caf590842",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/tests/library.test.mjs": {
+    "mtime": 1792509234.035493,
+    "seen": 1792569422.2487643,
+    "ast_hash": "696eb352f8154eafb5a98408e4e3f76f",
+    "semantic_hash": ""
+  },
+  "test/home_voorbereiding_carousel_test.dart": {
+    "mtime": 1791870642.1271574,
+    "seen": 1792569422.2493622,
+    "ast_hash": "54d65aa1d6b29b42ab0ea7ebf7071a4f",
+    "semantic_hash": ""
+  },
+  "GEMINI.md": {
+    "mtime": 1792563508.5609314,
+    "seen": 1792569422.2494392,
+    "ast_hash": "34e30231f89d2dfe83467860ec82b803",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/RAPPORT.md": {
+    "mtime": 1792509234.5212016,
+    "seen": 1792569422.2494538,
+    "ast_hash": "7d7a5b1643955b72117f38fee6ef7041",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/README.md": {
+    "mtime": 1792509234.035493,
+    "seen": 1792569422.2494564,
+    "ast_hash": "9c8af557f4324e5e4889d15388b078dd",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/actie-demo.html": {
+    "mtime": 1792508482.2321723,
+    "seen": 1792569422.2494588,
+    "ast_hash": "72d0efff4fe3b648ad280b08ecb709b4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/backend/INTEGRATIE.md": {
+    "mtime": 1792508791.5327744,
+    "seen": 1792569422.2494607,
+    "ast_hash": "ab6369d28a29e0c49258b66d4acbccf8",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/index.html": {
+    "mtime": 1792569298.8762183,
+    "seen": 1792569422.2494633,
+    "ast_hash": "7463b99cb9eea6e2946d2c76a7cca269",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/01-welkom-bij-klantio-l/email.html": {
+    "mtime": 1792569298.7649617,
+    "seen": 1792569422.2494652,
+    "ast_hash": "2a1245dcec3ce0e465711ecbb186c36e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/01-welkom-bij-klantio-l/email.txt": {
+    "mtime": 1792569298.765961,
+    "seen": 1792569422.2494676,
+    "ast_hash": "658b2e44a3fa13343223009a7a7cd339",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/01-welkom-bij-klantio-l/onderwerp.txt": {
+    "mtime": 1792569298.7665615,
+    "seen": 1792569422.2494693,
+    "ast_hash": "cba08aedd81e02f38958d1a71957beb4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/01-welkom-bij-klantio-l/preview.html": {
+    "mtime": 1792569298.7670636,
+    "seen": 1792569422.249471,
+    "ast_hash": "52449772c49621309fb79868287a472c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/01-welkom-bij-klantio-l/preview.txt": {
+    "mtime": 1792569298.7681942,
+    "seen": 1792569422.249473,
+    "ast_hash": "0c4549fb15599e31344ff445645c0f55",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/02-e-mailadres-bevestigen/email.html": {
+    "mtime": 1792569298.7692027,
+    "seen": 1792569422.2494748,
+    "ast_hash": "9ea599c7d3b9b61287c666ebed73a9f1",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/02-e-mailadres-bevestigen/email.txt": {
+    "mtime": 1792569298.770202,
+    "seen": 1792569422.2494771,
+    "ast_hash": "b77096306e4856a844ee7cf624ae5e2a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/02-e-mailadres-bevestigen/onderwerp.txt": {
+    "mtime": 1792569298.770202,
+    "seen": 1792569422.2494788,
+    "ast_hash": "d02292aa055c551c400e31f24f974435",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/02-e-mailadres-bevestigen/preview.html": {
+    "mtime": 1792569298.770202,
+    "seen": 1792569422.2494807,
+    "ast_hash": "62ed97b131d17c48d96492e2b478bff6",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/02-e-mailadres-bevestigen/preview.txt": {
+    "mtime": 1792569298.7712069,
+    "seen": 1792569422.2494829,
+    "ast_hash": "9cebaf646507e333a003178962c51299",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/03-wachtwoord-opnieuw-instellen/email.html": {
+    "mtime": 1792569298.7722068,
+    "seen": 1792569422.2494853,
+    "ast_hash": "9d1eb1a89a93aab03f1d46ed80b6b314",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/03-wachtwoord-opnieuw-instellen/email.txt": {
+    "mtime": 1792569298.7732065,
+    "seen": 1792569422.249487,
+    "ast_hash": "79308a70d71a363934a4f48d495d30b9",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/03-wachtwoord-opnieuw-instellen/onderwerp.txt": {
+    "mtime": 1792569298.7732065,
+    "seen": 1792569422.249489,
+    "ast_hash": "e6e3c4b229441c811e09ebce2a9ba340",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/03-wachtwoord-opnieuw-instellen/preview.html": {
+    "mtime": 1792569298.7732065,
+    "seen": 1792569422.2494915,
+    "ast_hash": "619c5e7bc210bc5435a8e3a58f6e9012",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/03-wachtwoord-opnieuw-instellen/preview.txt": {
+    "mtime": 1792569298.774206,
+    "seen": 1792569422.2494934,
+    "ast_hash": "66d40904f49f4bb8b558d501a82bb8ee",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/04-wachtwoord-gewijzigd/email.html": {
+    "mtime": 1792569298.7752059,
+    "seen": 1792569422.249495,
+    "ast_hash": "981f2713327ae1b08b3d97eec958b572",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/04-wachtwoord-gewijzigd/email.txt": {
+    "mtime": 1792569298.7752059,
+    "seen": 1792569422.2494965,
+    "ast_hash": "d59e4be83ef18446ec026d7af47a2489",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/04-wachtwoord-gewijzigd/onderwerp.txt": {
+    "mtime": 1792569298.7752059,
+    "seen": 1792569422.2494984,
+    "ast_hash": "67cd49281654fbb21803c13011e36ea2",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/04-wachtwoord-gewijzigd/preview.html": {
+    "mtime": 1792569298.7762082,
+    "seen": 1792569422.2495005,
+    "ast_hash": "6208d80546c3515ed98d6311d3584d75",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/04-wachtwoord-gewijzigd/preview.txt": {
+    "mtime": 1792569298.7762082,
+    "seen": 1792569422.2495027,
+    "ast_hash": "45aaf268ea61ccb22bf06b8743548e82",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/05-e-mailadres-gewijzigd/email.html": {
+    "mtime": 1792569298.7772071,
+    "seen": 1792569422.2495048,
+    "ast_hash": "77b0559b765a98fe5e59bcb91490a407",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/05-e-mailadres-gewijzigd/email.txt": {
+    "mtime": 1792569298.7782073,
+    "seen": 1792569422.2495072,
+    "ast_hash": "e9f6a6181409bc62cf8e104dd913e2e2",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/05-e-mailadres-gewijzigd/onderwerp.txt": {
+    "mtime": 1792569298.7782073,
+    "seen": 1792569422.2495089,
+    "ast_hash": "778995be31c166e2b63bd32dcff9efd5",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/05-e-mailadres-gewijzigd/preview.html": {
+    "mtime": 1792569298.7782073,
+    "seen": 1792569422.249511,
+    "ast_hash": "727b13069fed7b70ba8d0d9f58f63671",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/05-e-mailadres-gewijzigd/preview.txt": {
+    "mtime": 1792569298.7792072,
+    "seen": 1792569422.2495127,
+    "ast_hash": "bff5ed14c847cbc71b43c63702499a94",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/06-account-gedeactiveerd/email.html": {
+    "mtime": 1792569298.7802074,
+    "seen": 1792569422.2495148,
+    "ast_hash": "fb22864d4bcbafa86f5d8713dfcec438",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/06-account-gedeactiveerd/email.txt": {
+    "mtime": 1792569298.7802074,
+    "seen": 1792569422.2495167,
+    "ast_hash": "feabaed64b246828c6b53974ee8cb429",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/06-account-gedeactiveerd/onderwerp.txt": {
+    "mtime": 1792569298.7802074,
+    "seen": 1792569422.249519,
+    "ast_hash": "ea9561f94ec677e5e4101ff0df430c7e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/06-account-gedeactiveerd/preview.html": {
+    "mtime": 1792569298.7812076,
+    "seen": 1792569422.2495213,
+    "ast_hash": "b83479f8fc84c9d45431f901fe1b8a65",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/06-account-gedeactiveerd/preview.txt": {
+    "mtime": 1792569298.7812076,
+    "seen": 1792569422.2495232,
+    "ast_hash": "2f61e3d6be092fc7f4e2c1075003de0f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/07-rijles-ingepland/email.html": {
+    "mtime": 1792569298.7832081,
+    "seen": 1792569422.249525,
+    "ast_hash": "394551184780300a8f3a1654b1872d2a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/07-rijles-ingepland/email.txt": {
+    "mtime": 1792569298.7832081,
+    "seen": 1792569422.2495265,
+    "ast_hash": "f1c659ebef99e974cee719c9fef6b99c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/07-rijles-ingepland/onderwerp.txt": {
+    "mtime": 1792569298.7842083,
+    "seen": 1792569422.2495282,
+    "ast_hash": "18dc954cc578cc0c8874e246fb313edb",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/07-rijles-ingepland/preview.html": {
+    "mtime": 1792569298.7842083,
+    "seen": 1792569422.2495296,
+    "ast_hash": "f9402f0ebbf50dfd8e9d3265b538ab68",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/07-rijles-ingepland/preview.txt": {
+    "mtime": 1792569298.7842083,
+    "seen": 1792569422.249531,
+    "ast_hash": "72654110af7288a90dfad4751cb0a577",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/08-rijles-verplaatst/email.html": {
+    "mtime": 1792569298.7867157,
+    "seen": 1792569422.249533,
+    "ast_hash": "bfce63032a78b221b6568dd54ccdd51f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/08-rijles-verplaatst/email.txt": {
+    "mtime": 1792569298.7867157,
+    "seen": 1792569422.2495341,
+    "ast_hash": "5ce59dfd9b26c003a420346f346d6930",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/08-rijles-verplaatst/onderwerp.txt": {
+    "mtime": 1792569298.7877233,
+    "seen": 1792569422.2495363,
+    "ast_hash": "5d2eeb7f5cede90b48209e8c4eebe9b0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/08-rijles-verplaatst/preview.html": {
+    "mtime": 1792569298.7883406,
+    "seen": 1792569422.2495377,
+    "ast_hash": "320254f1e5540d55e1a19b89d67f4ddd",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/08-rijles-verplaatst/preview.txt": {
+    "mtime": 1792569298.7883406,
+    "seen": 1792569422.2495391,
+    "ast_hash": "f2b3658357f23214a62dbfee353cb5ca",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/09-rijleslocatie-gewijzigd/email.html": {
+    "mtime": 1792569298.7903483,
+    "seen": 1792569422.2495406,
+    "ast_hash": "d62c88a8cbc7a8b9a6391839e0c3ad26",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/09-rijleslocatie-gewijzigd/email.txt": {
+    "mtime": 1792569298.7903483,
+    "seen": 1792569422.249542,
+    "ast_hash": "7b6add7bfb9cc288e01a554bcb764429",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/09-rijleslocatie-gewijzigd/onderwerp.txt": {
+    "mtime": 1792569298.7903483,
+    "seen": 1792569422.2495434,
+    "ast_hash": "5ae2ec924026d7a517865b522361fbad",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/09-rijleslocatie-gewijzigd/preview.html": {
+    "mtime": 1792569298.7913492,
+    "seen": 1792569422.2495458,
+    "ast_hash": "e798d3d216eb46a2f94fe80486f2a754",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/09-rijleslocatie-gewijzigd/preview.txt": {
+    "mtime": 1792569298.792349,
+    "seen": 1792569422.2495475,
+    "ast_hash": "5acc091c155a8f3a9156a9a546422469",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/10-rijles-geannuleerd/email.html": {
+    "mtime": 1792569298.79335,
+    "seen": 1792569422.249549,
+    "ast_hash": "f56a56b5504fa75da9a8227242dc7b40",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/10-rijles-geannuleerd/email.txt": {
+    "mtime": 1792569298.79335,
+    "seen": 1792569422.2495508,
+    "ast_hash": "14e4232a2897358869d0ff368a043bd1",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/10-rijles-geannuleerd/onderwerp.txt": {
+    "mtime": 1792569298.7943518,
+    "seen": 1792569422.2495527,
+    "ast_hash": "6ca22e28e374330dc62d19f9827907db",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/10-rijles-geannuleerd/preview.html": {
+    "mtime": 1792569298.7943518,
+    "seen": 1792569422.2495542,
+    "ast_hash": "8f6950818ee4d685ede1a351dfcf6ec6",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/10-rijles-geannuleerd/preview.txt": {
+    "mtime": 1792569298.7943518,
+    "seen": 1792569422.2495558,
+    "ast_hash": "4a7afc4750b025ee522f67cd4bd0e92f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/11-herinnering-morgen-rijles/email.html": {
+    "mtime": 1792569298.7953546,
+    "seen": 1792569422.2495577,
+    "ast_hash": "f78a7b2eb9fbad88c0cc5e74d3b7b42a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/11-herinnering-morgen-rijles/email.txt": {
+    "mtime": 1792569298.7963505,
+    "seen": 1792569422.2495599,
+    "ast_hash": "e5c9ec2aaa2b712dac2b841e25ac2adb",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/11-herinnering-morgen-rijles/onderwerp.txt": {
+    "mtime": 1792569298.7968583,
+    "seen": 1792569422.2495613,
+    "ast_hash": "dfb90e2e397115f0757b705e83cd9df3",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/11-herinnering-morgen-rijles/preview.html": {
+    "mtime": 1792569298.7968583,
+    "seen": 1792569422.2495632,
+    "ast_hash": "a367dafb24814541977f65cb04ebec2d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/11-herinnering-morgen-rijles/preview.txt": {
+    "mtime": 1792569298.7978644,
+    "seen": 1792569422.2495654,
+    "ast_hash": "0a56c2f95b9dd5a21dbfcbf168ed7d00",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/12-rijles-begint-binnenkort/email.html": {
+    "mtime": 1792569298.799567,
+    "seen": 1792569422.249567,
+    "ast_hash": "dc0e90ce20bba44a688f0b4939adc392",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/12-rijles-begint-binnenkort/email.txt": {
+    "mtime": 1792569298.8004098,
+    "seen": 1792569422.2495692,
+    "ast_hash": "b9c4aa3ff423073ac7bd9fe4b3e766e4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/12-rijles-begint-binnenkort/onderwerp.txt": {
+    "mtime": 1792569298.8004098,
+    "seen": 1792569422.2495713,
+    "ast_hash": "8f469be102ab927975fcad4c2efea6cb",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/12-rijles-begint-binnenkort/preview.html": {
+    "mtime": 1792569298.8014176,
+    "seen": 1792569422.2495737,
+    "ast_hash": "e67ee56ab36e58c107f451eb30bff94a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/12-rijles-begint-binnenkort/preview.txt": {
+    "mtime": 1792569298.8024192,
+    "seen": 1792569422.2495754,
+    "ast_hash": "3ae1cc89b430818720122cfe119fa5e5",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/13-andere-instructeur-toegewezen/email.html": {
+    "mtime": 1792569298.8039353,
+    "seen": 1792569422.2495778,
+    "ast_hash": "5817480fb5f55a8a790b983ffbd1c909",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/13-andere-instructeur-toegewezen/email.txt": {
+    "mtime": 1792569298.8039353,
+    "seen": 1792569422.2495797,
+    "ast_hash": "34fece3857f00b99dc7ce839edcdd8a4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/13-andere-instructeur-toegewezen/onderwerp.txt": {
+    "mtime": 1792569298.8049355,
+    "seen": 1792569422.249582,
+    "ast_hash": "c7b8035fcbf348800bb289bd91c6506a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/13-andere-instructeur-toegewezen/preview.html": {
+    "mtime": 1792569298.8049355,
+    "seen": 1792569422.2495842,
+    "ast_hash": "fc89058a85d6c22c57417cdc5b738c53",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/13-andere-instructeur-toegewezen/preview.txt": {
+    "mtime": 1792569298.805935,
+    "seen": 1792569422.249586,
+    "ast_hash": "f5e81cd37cd937b2f26dca0f92f8f730",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/14-rijles-afgerond/email.html": {
+    "mtime": 1792569298.8081403,
+    "seen": 1792569422.2495875,
+    "ast_hash": "1155a39474ea1a454d85f29c4cf9068c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/14-rijles-afgerond/email.txt": {
+    "mtime": 1792569298.8081403,
+    "seen": 1792569422.249589,
+    "ast_hash": "6c0571e69278a5c38e15707f67471887",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/14-rijles-afgerond/onderwerp.txt": {
+    "mtime": 1792569298.8091488,
+    "seen": 1792569422.2495909,
+    "ast_hash": "8725754a4c9f0236ba907ef590d05a14",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/14-rijles-afgerond/preview.html": {
+    "mtime": 1792569298.8095002,
+    "seen": 1792569422.249593,
+    "ast_hash": "df3b36b288855873599704ce40673739",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/14-rijles-afgerond/preview.txt": {
+    "mtime": 1792569298.8100066,
+    "seen": 1792569422.2495952,
+    "ast_hash": "4af7c8582511a5707c0ddfe00d1b3832",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/15-beschikbaarheid-bijgewerkt/email.html": {
+    "mtime": 1792569298.8112664,
+    "seen": 1792569422.249597,
+    "ast_hash": "a8f3a63ec370a1ece059030c3561f9f0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/15-beschikbaarheid-bijgewerkt/email.txt": {
+    "mtime": 1792569298.8112664,
+    "seen": 1792569422.2495987,
+    "ast_hash": "882f9ae28e85eeb80accf6ddd6db49b5",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/15-beschikbaarheid-bijgewerkt/onderwerp.txt": {
+    "mtime": 1792569298.811921,
+    "seen": 1792569422.2496011,
+    "ast_hash": "81e18e98489fd20d63a827847afc83a4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/15-beschikbaarheid-bijgewerkt/preview.html": {
+    "mtime": 1792569298.8124256,
+    "seen": 1792569422.2496028,
+    "ast_hash": "d42f8c7a6fe032f920f37cc0b798e50d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/15-beschikbaarheid-bijgewerkt/preview.txt": {
+    "mtime": 1792569298.8124256,
+    "seen": 1792569422.2496052,
+    "ast_hash": "58e20d5ddec0de5f9e7e9263b5dddd3e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/16-nieuwe-lesevaluatie-beschikbaar/email.html": {
+    "mtime": 1792569298.8144338,
+    "seen": 1792569422.2496066,
+    "ast_hash": "e14c2babff42b2a02ce422b85f66f5ad",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/16-nieuwe-lesevaluatie-beschikbaar/email.txt": {
+    "mtime": 1792569298.8144338,
+    "seen": 1792569422.2496085,
+    "ast_hash": "cce6b756fd8864014128a890e3652b22",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/16-nieuwe-lesevaluatie-beschikbaar/onderwerp.txt": {
+    "mtime": 1792569298.8144338,
+    "seen": 1792569422.2496104,
+    "ast_hash": "398a5a39cc3c9506cc4f0b9050c9dcb7",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/16-nieuwe-lesevaluatie-beschikbaar/preview.html": {
+    "mtime": 1792569298.8154337,
+    "seen": 1792569422.2496123,
+    "ast_hash": "58bbceb013c16bd010c04669f7e7d1db",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/16-nieuwe-lesevaluatie-beschikbaar/preview.txt": {
+    "mtime": 1792569298.8154337,
+    "seen": 1792569422.2496138,
+    "ast_hash": "b442748e6ff00e97f2b660d7f06e6b3e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/17-voortgang-bijgewerkt/email.html": {
+    "mtime": 1792569298.8170452,
+    "seen": 1792569422.2496157,
+    "ast_hash": "f3fac0e1236d2db59d248aa27127deb9",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/17-voortgang-bijgewerkt/email.txt": {
+    "mtime": 1792569298.8170452,
+    "seen": 1792569422.2496166,
+    "ast_hash": "75fb85b949ce3b451d02175fdedb4f3d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/17-voortgang-bijgewerkt/onderwerp.txt": {
+    "mtime": 1792569298.8180532,
+    "seen": 1792569422.2496185,
+    "ast_hash": "ab1e388b0b7ca29a82dedc94cd999417",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/17-voortgang-bijgewerkt/preview.html": {
+    "mtime": 1792569298.8180532,
+    "seen": 1792569422.2496207,
+    "ast_hash": "f70d5658dccfb866c444b46baf3efffc",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/17-voortgang-bijgewerkt/preview.txt": {
+    "mtime": 1792569298.8180532,
+    "seen": 1792569422.2496226,
+    "ast_hash": "085b9a8227d67dad152f4e39c2bf89ac",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/18-nieuwe-mijlpaal-bereikt/email.html": {
+    "mtime": 1792569298.8190658,
+    "seen": 1792569422.2496245,
+    "ast_hash": "1949604de0b74983333be9cdfa1668b8",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/18-nieuwe-mijlpaal-bereikt/email.txt": {
+    "mtime": 1792569298.8200648,
+    "seen": 1792569422.2496266,
+    "ast_hash": "35b9987e6af19d043945aaf293d9cd1c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/18-nieuwe-mijlpaal-bereikt/onderwerp.txt": {
+    "mtime": 1792569298.8200648,
+    "seen": 1792569422.2496278,
+    "ast_hash": "13a5c5910d4332321eddf7e730cd9dc6",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/18-nieuwe-mijlpaal-bereikt/preview.html": {
+    "mtime": 1792569298.8210623,
+    "seen": 1792569422.2496297,
+    "ast_hash": "801f57b9bf2b82485de3ae4657ccfd62",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/18-nieuwe-mijlpaal-bereikt/preview.txt": {
+    "mtime": 1792569298.8210623,
+    "seen": 1792569422.2496314,
+    "ast_hash": "f43a0d8d0dbb2f6f24da327c0d58df36",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/19-lespakket-bijna-op/email.html": {
+    "mtime": 1792569298.8222203,
+    "seen": 1792569422.249633,
+    "ast_hash": "6a663f1c772add96f37d673f81b53b27",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/19-lespakket-bijna-op/email.txt": {
+    "mtime": 1792569298.8222203,
+    "seen": 1792569422.2496357,
+    "ast_hash": "ac499f8963ebe7df63ce84ebe4dcd446",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/19-lespakket-bijna-op/onderwerp.txt": {
+    "mtime": 1792569298.8222203,
+    "seen": 1792569422.2496374,
+    "ast_hash": "eb946980db9e6f82b0108082a41e5be4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/19-lespakket-bijna-op/preview.html": {
+    "mtime": 1792569298.82323,
+    "seen": 1792569422.2496388,
+    "ast_hash": "23ff284b1520de885b9c9d258f2353b4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/19-lespakket-bijna-op/preview.txt": {
+    "mtime": 1792569298.82323,
+    "seen": 1792569422.2496412,
+    "ast_hash": "4783c3f3f2dc09bebe8b3a57375d0ed5",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/20-lespakket-op/email.html": {
+    "mtime": 1792569298.824223,
+    "seen": 1792569422.249643,
+    "ast_hash": "bb108efcfecb3aca357718b93bbfa104",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/20-lespakket-op/email.txt": {
+    "mtime": 1792569298.825229,
+    "seen": 1792569422.2496443,
+    "ast_hash": "5241076bf61d1bb1fad79100eb425d99",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/20-lespakket-op/onderwerp.txt": {
+    "mtime": 1792569298.825229,
+    "seen": 1792569422.2496464,
+    "ast_hash": "89c060d2d2353a757cbfe3d92d0ee1ba",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/20-lespakket-op/preview.html": {
+    "mtime": 1792569298.825229,
+    "seen": 1792569422.249648,
+    "ast_hash": "3c17bea4279f00b11a8c382de7f84de0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/20-lespakket-op/preview.txt": {
+    "mtime": 1792569298.826226,
+    "seen": 1792569422.2496495,
+    "ast_hash": "e15927f3dfe9d39ff7e2e1166d7f525b",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/21-maandelijks-voortgangsoverzicht/email.html": {
+    "mtime": 1792569298.8272302,
+    "seen": 1792569422.2496514,
+    "ast_hash": "0c80743bb3d89214e7b9040f8eb1c502",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/21-maandelijks-voortgangsoverzicht/email.txt": {
+    "mtime": 1792569298.8272302,
+    "seen": 1792569422.2496533,
+    "ast_hash": "b673b2e89817d0b2ecaa09ea7b4c2529",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/21-maandelijks-voortgangsoverzicht/onderwerp.txt": {
+    "mtime": 1792569298.828227,
+    "seen": 1792569422.2496548,
+    "ast_hash": "f52178cce50fb7fd0b4114e8a1bbead2",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/21-maandelijks-voortgangsoverzicht/preview.html": {
+    "mtime": 1792569298.828227,
+    "seen": 1792569422.2496567,
+    "ast_hash": "7b0a0b74031454e3b0f1ce42a94510a9",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/21-maandelijks-voortgangsoverzicht/preview.txt": {
+    "mtime": 1792569298.8292232,
+    "seen": 1792569422.2496583,
+    "ast_hash": "65b710f162e05911191fc6b741b463d0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/22-praktijkexamen-ingepland/email.html": {
+    "mtime": 1792569298.830467,
+    "seen": 1792569422.24966,
+    "ast_hash": "3d9268614e58bdb97569488634c365e7",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/22-praktijkexamen-ingepland/email.txt": {
+    "mtime": 1792569298.831083,
+    "seen": 1792569422.2496622,
+    "ast_hash": "2c5d50c9cda6a61ef3b376369f846840",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/22-praktijkexamen-ingepland/onderwerp.txt": {
+    "mtime": 1792569298.831083,
+    "seen": 1792569422.249664,
+    "ast_hash": "5be3f284ded62a55974cb2906ebe1338",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/22-praktijkexamen-ingepland/preview.html": {
+    "mtime": 1792569298.831083,
+    "seen": 1792569422.2496657,
+    "ast_hash": "d4686e8441d5ac87e0864cb82225451f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/22-praktijkexamen-ingepland/preview.txt": {
+    "mtime": 1792569298.8320987,
+    "seen": 1792569422.2496676,
+    "ast_hash": "683d6c663982ef4c531bb28cecb07437",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/23-praktijkexamen-gewijzigd/email.html": {
+    "mtime": 1792569298.833097,
+    "seen": 1792569422.2496696,
+    "ast_hash": "5c6ffc9f92eb4c4d951cbc3717b8a7fe",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/23-praktijkexamen-gewijzigd/email.txt": {
+    "mtime": 1792569298.8335197,
+    "seen": 1792569422.2496715,
+    "ast_hash": "414eb7cad91c1802f7f38bf6be9e093f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/23-praktijkexamen-gewijzigd/onderwerp.txt": {
+    "mtime": 1792569298.8338737,
+    "seen": 1792569422.2496731,
+    "ast_hash": "dd7531c1dfe02e13331e9cccdc7332bb",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/23-praktijkexamen-gewijzigd/preview.html": {
+    "mtime": 1792569298.8345566,
+    "seen": 1792569422.249675,
+    "ast_hash": "9ae0a29c90ab33dbd2da5e2d36f98eef",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/23-praktijkexamen-gewijzigd/preview.txt": {
+    "mtime": 1792569298.8345566,
+    "seen": 1792569422.2496765,
+    "ast_hash": "7974f6a6d087fbe3bfb4e1856ff1a0a7",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/24-examenherinnering/email.html": {
+    "mtime": 1792569298.836571,
+    "seen": 1792569422.2496781,
+    "ast_hash": "2940337c71c6d361b8f21c614e4e00ed",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/24-examenherinnering/email.txt": {
+    "mtime": 1792569298.836571,
+    "seen": 1792569422.2496796,
+    "ast_hash": "a44c4219045c3c742fa257fd038cffee",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/24-examenherinnering/onderwerp.txt": {
+    "mtime": 1792569298.837579,
+    "seen": 1792569422.2496812,
+    "ast_hash": "19201b21518bead7a181231906fa58b3",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/24-examenherinnering/preview.html": {
+    "mtime": 1792569298.837579,
+    "seen": 1792569422.2496831,
+    "ast_hash": "21e83cc2daeaeb0742e70d39c2fe87d1",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/24-examenherinnering/preview.txt": {
+    "mtime": 1792569298.837579,
+    "seen": 1792569422.2496848,
+    "ast_hash": "e2baaba677a4ef85fba0b2d45181f7ae",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/25-examenresultaat-beschikbaar/email.html": {
+    "mtime": 1792569298.838575,
+    "seen": 1792569422.2496862,
+    "ast_hash": "2c1d645f30ba7bc8943ff47eea765bb5",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/25-examenresultaat-beschikbaar/email.txt": {
+    "mtime": 1792569298.8395753,
+    "seen": 1792569422.2496884,
+    "ast_hash": "3b1e798ab4bfb78a49bd45c9313b8afb",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/25-examenresultaat-beschikbaar/onderwerp.txt": {
+    "mtime": 1792569298.8395753,
+    "seen": 1792569422.24969,
+    "ast_hash": "53788be43b7947f9b496e348d1940d21",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/25-examenresultaat-beschikbaar/preview.html": {
+    "mtime": 1792569298.8395753,
+    "seen": 1792569422.249692,
+    "ast_hash": "1a5c7b290dabd2671a8566ac20895f5c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/25-examenresultaat-beschikbaar/preview.txt": {
+    "mtime": 1792569298.840573,
+    "seen": 1792569422.2496939,
+    "ast_hash": "4d0e3914fb2e055a2611751b29ded679",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/26-gefeliciteerd-geslaagd/email.html": {
+    "mtime": 1792569298.8415682,
+    "seen": 1792569422.2496958,
+    "ast_hash": "124da901b40ae66ecf448a0015eb15a3",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/26-gefeliciteerd-geslaagd/email.txt": {
+    "mtime": 1792569298.8415682,
+    "seen": 1792569422.2496972,
+    "ast_hash": "70f251d4fcced4134e7cef3394e2006a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/26-gefeliciteerd-geslaagd/onderwerp.txt": {
+    "mtime": 1792569298.8420827,
+    "seen": 1792569422.2496989,
+    "ast_hash": "b48f2b2c56e7108e42ceeb1096a5bbd6",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/26-gefeliciteerd-geslaagd/preview.html": {
+    "mtime": 1792569298.8420827,
+    "seen": 1792569422.2497,
+    "ast_hash": "2cb95f3d2e80fd4e22fd42ac7fe4857f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/26-gefeliciteerd-geslaagd/preview.txt": {
+    "mtime": 1792569298.8420827,
+    "seen": 1792569422.2497017,
+    "ast_hash": "4eeea23edd957f1d6250f269b45e59c8",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/27-nieuwe-factuur/email.html": {
+    "mtime": 1792569298.8430922,
+    "seen": 1792569422.2497032,
+    "ast_hash": "71f64ec0815efdc256f9894a0b0d2f6e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/27-nieuwe-factuur/email.txt": {
+    "mtime": 1792569298.844056,
+    "seen": 1792569422.249705,
+    "ast_hash": "cffc66fd634aa551c2b55f02564fb49b",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/27-nieuwe-factuur/onderwerp.txt": {
+    "mtime": 1792569298.844056,
+    "seen": 1792569422.2497067,
+    "ast_hash": "5584f2b1923982f560c8275ef850f49a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/27-nieuwe-factuur/preview.html": {
+    "mtime": 1792569298.844056,
+    "seen": 1792569422.2497087,
+    "ast_hash": "8065eb381d27c5aa72b21a6cf6cd3f5d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/27-nieuwe-factuur/preview.txt": {
+    "mtime": 1792569298.844056,
+    "seen": 1792569422.24971,
+    "ast_hash": "8d946a5b581750ba4accc0fd29bd8315",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/28-factuurherinnering/email.html": {
+    "mtime": 1792569298.845968,
+    "seen": 1792569422.2497115,
+    "ast_hash": "9c82631bde7772e09ad76583b78cd4bf",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/28-factuurherinnering/email.txt": {
+    "mtime": 1792569298.845968,
+    "seen": 1792569422.249713,
+    "ast_hash": "d119b947d562dde49f41a5d3b9db11b3",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/28-factuurherinnering/onderwerp.txt": {
+    "mtime": 1792569298.845968,
+    "seen": 1792569422.249715,
+    "ast_hash": "c449344903133bde66569cf216b79dfe",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/28-factuurherinnering/preview.html": {
+    "mtime": 1792569298.845968,
+    "seen": 1792569422.2497168,
+    "ast_hash": "67baeb45c0adc5576f24f1aede5c87f7",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/28-factuurherinnering/preview.txt": {
+    "mtime": 1792569298.845968,
+    "seen": 1792569422.2497182,
+    "ast_hash": "a02c54bcdeff46d6f29156a066a8d571",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/29-factuur-verlopen/email.html": {
+    "mtime": 1792569298.8504052,
+    "seen": 1792569422.2497199,
+    "ast_hash": "820ed31fa6f66b498d49d2d2acb2ba2e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/29-factuur-verlopen/email.txt": {
+    "mtime": 1792569298.8504052,
+    "seen": 1792569422.249721,
+    "ast_hash": "cdcf2fbffc89f0c542b954354bf95e77",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/29-factuur-verlopen/onderwerp.txt": {
+    "mtime": 1792569298.8514187,
+    "seen": 1792569422.2497225,
+    "ast_hash": "107d48aa8a9958eb1825b2f802de0f63",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/29-factuur-verlopen/preview.html": {
+    "mtime": 1792569298.8514187,
+    "seen": 1792569422.2497244,
+    "ast_hash": "64762dd3adedd77b490fa4c8358ceeac",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/29-factuur-verlopen/preview.txt": {
+    "mtime": 1792569298.8524218,
+    "seen": 1792569422.2497263,
+    "ast_hash": "2fa1cc441eb7e289c32a88a7ef0bf7be",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/30-betaling-ontvangen/email.html": {
+    "mtime": 1792569298.8539445,
+    "seen": 1792569422.2497277,
+    "ast_hash": "1a58747787aaf9ebb5e7128bca6e18a2",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/30-betaling-ontvangen/email.txt": {
+    "mtime": 1792569298.8539445,
+    "seen": 1792569422.2497296,
+    "ast_hash": "608e709e915c5d855113ea8f00c2521b",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/30-betaling-ontvangen/onderwerp.txt": {
+    "mtime": 1792569298.854944,
+    "seen": 1792569422.2497313,
+    "ast_hash": "b5679278dc5f0d2088138ac2e3327e9a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/30-betaling-ontvangen/preview.html": {
+    "mtime": 1792569298.854944,
+    "seen": 1792569422.2497332,
+    "ast_hash": "24b3790c2183dc5f30d88405856b7256",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/30-betaling-ontvangen/preview.txt": {
+    "mtime": 1792569298.854944,
+    "seen": 1792569422.2497349,
+    "ast_hash": "17440ba8d6fff47831d809947adebd3c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/31-betaling-niet-gelukt/email.html": {
+    "mtime": 1792569298.855942,
+    "seen": 1792569422.249737,
+    "ast_hash": "96674f7106933786af4682289a0efe9a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/31-betaling-niet-gelukt/email.txt": {
+    "mtime": 1792569298.8569448,
+    "seen": 1792569422.249739,
+    "ast_hash": "6ae1918e352537eee3088a38868d6757",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/31-betaling-niet-gelukt/onderwerp.txt": {
+    "mtime": 1792569298.8569448,
+    "seen": 1792569422.2497406,
+    "ast_hash": "62bfe59835ed2cb981a45a50dfd9a856",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/31-betaling-niet-gelukt/preview.html": {
+    "mtime": 1792569298.8569448,
+    "seen": 1792569422.249742,
+    "ast_hash": "efaf29543ad89115977c3f9240baf1ca",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/31-betaling-niet-gelukt/preview.txt": {
+    "mtime": 1792569298.8579438,
+    "seen": 1792569422.2497435,
+    "ast_hash": "f3319012a5068748a1ed3c94e975ef2b",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/email.html": {
+    "mtime": 1792569298.8589423,
+    "seen": 1792569422.2497451,
+    "ast_hash": "1df9d891e9cf278f7937ac23348ef655",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/email.txt": {
+    "mtime": 1792569298.8589423,
+    "seen": 1792569422.2497468,
+    "ast_hash": "0bd9c260cf7df66bf1df003a0e8fa5cf",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/onderwerp.txt": {
+    "mtime": 1792569298.8589423,
+    "seen": 1792569422.2497482,
+    "ast_hash": "379d85879d303de2b42ff76c6e6ad20d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/preview-creditnota.html": {
+    "mtime": 1792569298.861955,
+    "seen": 1792569422.24975,
+    "ast_hash": "edcc649a8e58a5832429951d4482d4f8",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/preview-refund.html": {
+    "mtime": 1792569298.8629596,
+    "seen": 1792569422.2497516,
+    "ast_hash": "7eddd6daeace0a894f845e38862c900f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/preview.html": {
+    "mtime": 1792569298.8589423,
+    "seen": 1792569422.2497528,
+    "ast_hash": "04b1b4bb7f7deefdd553aff849907ef2",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/preview.txt": {
+    "mtime": 1792569298.8599415,
+    "seen": 1792569422.2497544,
+    "ast_hash": "cd8c9cedbbdbc2e198756d5013056517",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/variant-creditnota.html": {
+    "mtime": 1792569298.8614419,
+    "seen": 1792569422.2497559,
+    "ast_hash": "6d9d9711fa96ea36c8c579781851ac1b",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/variant-creditnota.txt": {
+    "mtime": 1792569298.8614419,
+    "seen": 1792569422.2497575,
+    "ast_hash": "d11d2aa387b41e3ab3d32cffb9b7d661",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/variant-refund.html": {
+    "mtime": 1792569298.861955,
+    "seen": 1792569422.2497587,
+    "ast_hash": "c36dc5d2a4d361dd5b0c8c256b821db3",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/32-creditnota-of-terugbetaling/variant-refund.txt": {
+    "mtime": 1792569298.861955,
+    "seen": 1792569422.2497606,
+    "ast_hash": "3ec9b3cdd9bce96bac4df309b9d12132",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/33-uitnodiging-voor-klantio-l/email.html": {
+    "mtime": 1792569298.8629596,
+    "seen": 1792569422.2497618,
+    "ast_hash": "70e2c9f1c704adc1a85c69d3e6f628c0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/33-uitnodiging-voor-klantio-l/email.txt": {
+    "mtime": 1792569298.8639596,
+    "seen": 1792569422.2497633,
+    "ast_hash": "5f48e0c2ccb21b7a29c2e0c2f928becb",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/33-uitnodiging-voor-klantio-l/onderwerp.txt": {
+    "mtime": 1792569298.8639596,
+    "seen": 1792569422.2497647,
+    "ast_hash": "98a8c9fa5b74c763158d21f2e19b832e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/33-uitnodiging-voor-klantio-l/preview.html": {
+    "mtime": 1792569298.8639596,
+    "seen": 1792569422.249766,
+    "ast_hash": "9d3f1224069ba32575d7d8067acf899c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/33-uitnodiging-voor-klantio-l/preview.txt": {
+    "mtime": 1792569298.8649595,
+    "seen": 1792569422.2497678,
+    "ast_hash": "2070c237e8fed68078548d540e0153ab",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/34-account-gekoppeld/email.html": {
+    "mtime": 1792569298.8661394,
+    "seen": 1792569422.2497694,
+    "ast_hash": "449efc8a446146ca01388da0c7ba4ad5",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/34-account-gekoppeld/email.txt": {
+    "mtime": 1792569298.8661394,
+    "seen": 1792569422.2497714,
+    "ast_hash": "e910cd9c64dafc5818b52ab8902d571d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/34-account-gekoppeld/onderwerp.txt": {
+    "mtime": 1792569298.8661394,
+    "seen": 1792569422.2497733,
+    "ast_hash": "6c3a9f080ec60147f2e4c99dab4a01b3",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/34-account-gekoppeld/preview.html": {
+    "mtime": 1792569298.8670769,
+    "seen": 1792569422.2497747,
+    "ast_hash": "7adfce1be363444b9fb907d3054cef1d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/34-account-gekoppeld/preview.txt": {
+    "mtime": 1792569298.8670769,
+    "seen": 1792569422.2497761,
+    "ast_hash": "31ba1ffb5310d2853df7992c68bddd8b",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/35-weekoverzicht-rijlessen/email.html": {
+    "mtime": 1792569298.868089,
+    "seen": 1792569422.2497776,
+    "ast_hash": "c15801c714f9a95f2184d7d166ad6fca",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/35-weekoverzicht-rijlessen/email.txt": {
+    "mtime": 1792569298.868089,
+    "seen": 1792569422.2497792,
+    "ast_hash": "753f509ae811053716cbc6fbb9752992",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/35-weekoverzicht-rijlessen/onderwerp.txt": {
+    "mtime": 1792569298.869087,
+    "seen": 1792569422.2497807,
+    "ast_hash": "f40a821552e0fde7016e348fe51fab68",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/35-weekoverzicht-rijlessen/preview.html": {
+    "mtime": 1792569298.8700905,
+    "seen": 1792569422.2497823,
+    "ast_hash": "5bf1583d7a05c420b3ff2e5956e7f998",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/35-weekoverzicht-rijlessen/preview.txt": {
+    "mtime": 1792569298.8700905,
+    "seen": 1792569422.2497842,
+    "ast_hash": "4b3c2a7e96cf0478203fe17e6c6d3569",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/36-maandoverzicht/email.html": {
+    "mtime": 1792569298.8710878,
+    "seen": 1792569422.2497861,
+    "ast_hash": "1d4959e43c860cf1137b06da3a3e6813",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/36-maandoverzicht/email.txt": {
+    "mtime": 1792569298.8710878,
+    "seen": 1792569422.2497878,
+    "ast_hash": "f6bafda2b6d5d27f0b8ad716502b73aa",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/36-maandoverzicht/onderwerp.txt": {
+    "mtime": 1792569298.8725965,
+    "seen": 1792569422.249789,
+    "ast_hash": "6b76476ae425f576bc3d11d8697fca7a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/36-maandoverzicht/preview.html": {
+    "mtime": 1792569298.8725965,
+    "seen": 1792569422.2497907,
+    "ast_hash": "eab0a3e922ac62233f83293eb9557766",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/mails/36-maandoverzicht/preview.txt": {
+    "mtime": 1792569298.8725965,
+    "seen": 1792569422.2497923,
+    "ast_hash": "8ca0449e9da1dba699c8f7c02a50b0b9",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/src/catalogus-shell.html": {
+    "mtime": 1792509952.8905907,
+    "seen": 1792569422.249794,
+    "ast_hash": "8f83c3d43794c2d3f4bc0f4e78ca1720",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/voorkeuren.html": {
+    "mtime": 1792508595.3390098,
+    "seen": 1792569422.2497964,
+    "ast_hash": "500f54f8beb703d7a7b1132c9f807c8c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/betaling.png": {
+    "mtime": 1792509128.147,
+    "seen": 1792569422.2498431,
+    "ast_hash": "6a3b4d55f6becbcf445e09a85b6d4804",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/betaling.svg": {
+    "mtime": 1792509128.1341338,
+    "seen": 1792569422.249845,
+    "ast_hash": "54864063b0263def34798da03d487833",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/beveiliging.png": {
+    "mtime": 1792509128.163,
+    "seen": 1792569422.2498467,
+    "ast_hash": "19c176e3a7fb1dececb920d0676f2bd8",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/beveiliging.svg": {
+    "mtime": 1792509128.1520357,
+    "seen": 1792569422.2498481,
+    "ast_hash": "a423d4a86ff3ec5927b8038be538845c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/examen.png": {
+    "mtime": 1792509128.113,
+    "seen": 1792569422.2498498,
+    "ast_hash": "1bdfcaff049b3c5875295bf021ecdb56",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/examen.svg": {
+    "mtime": 1792509128.107975,
+    "seen": 1792569422.2498517,
+    "ast_hash": "6f165247f4c5fc5b90e4a3312d1e4d84",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/geslaagd.png": {
+    "mtime": 1792509128.129,
+    "seen": 1792569422.2498531,
+    "ast_hash": "3a1bfaaba07e06be75bdeb74d15a4de1",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/geslaagd.svg": {
+    "mtime": 1792509128.1132143,
+    "seen": 1792569422.2498548,
+    "ast_hash": "805d4aa0eb3d9214542f8ade04976dcf",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/klantio-wordmark-white.png": {
+    "mtime": 1792568484.219,
+    "seen": 1792569422.2498567,
+    "ast_hash": "818beb54f9644229e7493208e81e317e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/klantio-wordmark-white.svg": {
+    "mtime": 1792568484.219005,
+    "seen": 1792569422.2498596,
+    "ast_hash": "5e6fe2414bc137db7f04f32cedb4915d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/klantio-wordmark.png": {
+    "mtime": 1792509127.430231,
+    "seen": 1792569422.249861,
+    "ast_hash": "aa2390754740dd4778deabcbc80e9e8a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/les-geannuleerd.png": {
+    "mtime": 1792509128.069,
+    "seen": 1792569422.2498627,
+    "ast_hash": "b3322f2598b382ae0e23b27a480f705f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/les-geannuleerd.svg": {
+    "mtime": 1792509128.0595484,
+    "seen": 1792569422.249864,
+    "ast_hash": "33470b6ac15a376ed02979a0c9412c83",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/les-gepland.png": {
+    "mtime": 1792509128.034,
+    "seen": 1792569422.249866,
+    "ast_hash": "63cae5a58eff5eae05747eb1d452d1dd",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/les-gepland.svg": {
+    "mtime": 1792509128.029153,
+    "seen": 1792569422.2498674,
+    "ast_hash": "0fc21e65f6e44eef47d98b83957fa29c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/les-verplaatst.png": {
+    "mtime": 1792509128.057,
+    "seen": 1792569422.2498689,
+    "ast_hash": "f882301dc1a6aaa467d04ff7eb4585c4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/les-verplaatst.svg": {
+    "mtime": 1792509128.0462458,
+    "seen": 1792569422.2498705,
+    "ast_hash": "b2a2b1c127c2fc2c626bd534b21ea651",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/lesherinnering.png": {
+    "mtime": 1792509128.082,
+    "seen": 1792569422.2498724,
+    "ast_hash": "3bc9f8ede063177540b0dc02ac606a3b",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/lesherinnering.svg": {
+    "mtime": 1792509128.078214,
+    "seen": 1792569422.2498739,
+    "ast_hash": "5251712c0f8d480731b4555b2dec0d4d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/voortgang.png": {
+    "mtime": 1792509128.104,
+    "seen": 1792569422.2498758,
+    "ast_hash": "55e38b10bc590e308470e78fe34b6278",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/voortgang.svg": {
+    "mtime": 1792509128.0825574,
+    "seen": 1792569422.2498772,
+    "ast_hash": "fa70a4ce579f9d7111a6be7c39814712",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/welkom.png": {
+    "mtime": 1792509128.026,
+    "seen": 1792569422.2498786,
+    "ast_hash": "04387630263f1facf793f620931d69fc",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/assets/welkom.svg": {
+    "mtime": 1792509127.9972258,
+    "seen": 1792569422.24988,
+    "ast_hash": "9bfebccf14c272c1b159f7ee8b8ba413",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/catalogus.png": {
+    "mtime": 1792509172.9652252,
+    "seen": 1792569422.2498817,
+    "ast_hash": "4fab6e780b34429e5acab5c4e802db62",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/contact-account.png": {
+    "mtime": 1792509174.2,
+    "seen": 1792569422.249884,
+    "ast_hash": "1f3713aae480269a9c9ecc10a8ea3699",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/contact-betalingen.png": {
+    "mtime": 1792509174.396,
+    "seen": 1792569422.2498858,
+    "ast_hash": "727dd7853c556282e9b4ea9b59cb55c4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/contact-examens.png": {
+    "mtime": 1792509174.358,
+    "seen": 1792569422.249888,
+    "ast_hash": "c06e34c78c2548b91f6590be63a55774",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/contact-koppeling.png": {
+    "mtime": 1792509174.424,
+    "seen": 1792569422.2498899,
+    "ast_hash": "7e40f12ab6fcf6134300749824fb2c1c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/contact-overzichten.png": {
+    "mtime": 1792509174.451,
+    "seen": 1792569422.249891,
+    "ast_hash": "dcf7c12105eda4172d8f0c8b7bd243fa",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/contact-planning.png": {
+    "mtime": 1792509174.25,
+    "seen": 1792569422.249893,
+    "ast_hash": "cd1940d4d500dc0ef42c7926f7790d46",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/contact-voortgang.png": {
+    "mtime": 1792509174.321,
+    "seen": 1792569422.2498944,
+    "ast_hash": "ff2927be1aede341b077e842e5ac3520",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/illustraties.png": {
+    "mtime": 1792508915.583,
+    "seen": 1792569422.2498963,
+    "ast_hash": "53c59324a633927e42ceaf4fc90e533c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/logo-mail-desktop.png": {
+    "mtime": 1792509195.21226,
+    "seen": 1792569422.2498982,
+    "ast_hash": "d74a2715530dc85758a8bcb9e75fbb2f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/logo-mail-mobiel.png": {
+    "mtime": 1792509195.2937694,
+    "seen": 1792569422.2498999,
+    "ast_hash": "d74a2715530dc85758a8bcb9e75fbb2f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/01-desktop.png": {
+    "mtime": 1792509154.4083464,
+    "seen": 1792569422.249902,
+    "ast_hash": "3c8e8e2d5d344124bcc55f20fbb66bab",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/01-mobiel.png": {
+    "mtime": 1792509154.5447516,
+    "seen": 1792569422.249904,
+    "ast_hash": "7c36a6a85a9a5faa6d8cce57dbbb98cd",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/02-desktop.png": {
+    "mtime": 1792509154.7917836,
+    "seen": 1792569422.2499056,
+    "ast_hash": "b384201a4d1d70a5e6d891144b89582f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/02-mobiel.png": {
+    "mtime": 1792509154.90861,
+    "seen": 1792569422.2499075,
+    "ast_hash": "3cb5ea0321399695be3cb3e20f3a1c4e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/03-desktop.png": {
+    "mtime": 1792509155.1549644,
+    "seen": 1792569422.249909,
+    "ast_hash": "61c6aee49c0c00451edceb237203a619",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/03-mobiel.png": {
+    "mtime": 1792509155.2783225,
+    "seen": 1792569422.2499106,
+    "ast_hash": "c5c122be7125812a187e485d9911fc16",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/04-desktop.png": {
+    "mtime": 1792509155.5230694,
+    "seen": 1792569422.2499123,
+    "ast_hash": "4a7b20716cb82cec3626ebe4ca2b803c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/04-mobiel.png": {
+    "mtime": 1792509155.6459033,
+    "seen": 1792569422.2499142,
+    "ast_hash": "52852476e0e6031f90122f83b62ede01",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/05-desktop.png": {
+    "mtime": 1792509155.883585,
+    "seen": 1792569422.249916,
+    "ast_hash": "4768d894f689a7e05edca825c1a2f452",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/05-mobiel.png": {
+    "mtime": 1792509155.9923637,
+    "seen": 1792569422.2499177,
+    "ast_hash": "eb2add04fc07d320cc0610165d334860",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/06-desktop.png": {
+    "mtime": 1792509156.220984,
+    "seen": 1792569422.2499194,
+    "ast_hash": "c5182d54dc379d8cd8da8c03d0cf92b1",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/06-mobiel.png": {
+    "mtime": 1792509156.343365,
+    "seen": 1792569422.2499213,
+    "ast_hash": "1b1a7a72f37eb62ba401b17ab00f6608",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/07-desktop.png": {
+    "mtime": 1792509156.6086743,
+    "seen": 1792569422.2499228,
+    "ast_hash": "c91c034c26808343e21f86c9796a30ee",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/07-mobiel.png": {
+    "mtime": 1792509156.7545865,
+    "seen": 1792569422.2499244,
+    "ast_hash": "b1988a4fb6d7a706fbc3d79987302286",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/08-desktop.png": {
+    "mtime": 1792509157.0921123,
+    "seen": 1792569422.2499259,
+    "ast_hash": "4a96cf4f2c20cc0e7f496182037430de",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/08-mobiel.png": {
+    "mtime": 1792509157.2544668,
+    "seen": 1792569422.2499275,
+    "ast_hash": "342b4fbf10977910099cbaedefc148b0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/09-desktop.png": {
+    "mtime": 1792509157.6272912,
+    "seen": 1792569422.2499287,
+    "ast_hash": "879920c292b4894ba8b2b5d295bce89f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/09-mobiel.png": {
+    "mtime": 1792509157.784521,
+    "seen": 1792569422.24993,
+    "ast_hash": "234286784240400b9dda5216bdfd3d9c",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/10-desktop.png": {
+    "mtime": 1792509158.182627,
+    "seen": 1792569422.2499316,
+    "ast_hash": "77321bbb35683ffd8a57bd8fc630914f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/10-mobiel.png": {
+    "mtime": 1792509158.3438141,
+    "seen": 1792569422.2499328,
+    "ast_hash": "6f23a3ad44eeb37c9c1dd80be6f459be",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/11-desktop.png": {
+    "mtime": 1792509158.7435062,
+    "seen": 1792569422.2499342,
+    "ast_hash": "f54dcea98d87d2529fb36a5fefa21146",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/11-mobiel.png": {
+    "mtime": 1792509158.9080944,
+    "seen": 1792569422.249936,
+    "ast_hash": "8cd216a357e93eeeaafdc9da6f830056",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/12-desktop.png": {
+    "mtime": 1792509159.2777827,
+    "seen": 1792569422.2499373,
+    "ast_hash": "7adf0da34feba3cd7fbd6aec02ec89b0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/12-mobiel.png": {
+    "mtime": 1792509159.4318454,
+    "seen": 1792569422.2499387,
+    "ast_hash": "2c9389d40657244bbb59e3a7001b0d15",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/13-desktop.png": {
+    "mtime": 1792509159.7911148,
+    "seen": 1792569422.2499402,
+    "ast_hash": "58e57372a99d472f687b233add4a20df",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/13-mobiel.png": {
+    "mtime": 1792509159.9575846,
+    "seen": 1792569422.2499418,
+    "ast_hash": "a739cbe12142bf28134409dbb3fdb002",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/14-desktop.png": {
+    "mtime": 1792509160.336134,
+    "seen": 1792569422.249943,
+    "ast_hash": "80ef6f0e1918fda86ee8b3b361f42d8f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/14-mobiel.png": {
+    "mtime": 1792509160.504975,
+    "seen": 1792569422.2499442,
+    "ast_hash": "a669616f0437d19a64dc8d7a830e9053",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/15-desktop.png": {
+    "mtime": 1792509160.891802,
+    "seen": 1792569422.2499459,
+    "ast_hash": "b9daa452b03f919e27e2aae9c6a6677d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/15-mobiel.png": {
+    "mtime": 1792509161.0523841,
+    "seen": 1792569422.249947,
+    "ast_hash": "a6190b3192faea2058c18d522260fbb7",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/16-desktop.png": {
+    "mtime": 1792509161.4453518,
+    "seen": 1792569422.2499485,
+    "ast_hash": "d2bcada2e871797983139d5755c489e7",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/16-mobiel.png": {
+    "mtime": 1792509161.6237998,
+    "seen": 1792569422.24995,
+    "ast_hash": "6b7f28ddce162f040f01525e8f514017",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/17-desktop.png": {
+    "mtime": 1792509162.0031943,
+    "seen": 1792569422.249951,
+    "ast_hash": "ac701b9b7396fe8290af560b9e06c527",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/17-mobiel.png": {
+    "mtime": 1792509162.1758502,
+    "seen": 1792569422.2499526,
+    "ast_hash": "fe4254be53d336b0f8c41c6431fab3d9",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/18-desktop.png": {
+    "mtime": 1792509162.5587926,
+    "seen": 1792569422.2499537,
+    "ast_hash": "0bf1980fbb8de2c97b5b2ff5fda6c09e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/18-mobiel.png": {
+    "mtime": 1792509162.7392366,
+    "seen": 1792569422.2499552,
+    "ast_hash": "1d180ca08318a9bd1d325f624da5aaba",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/19-desktop.png": {
+    "mtime": 1792509163.1172318,
+    "seen": 1792569422.2499566,
+    "ast_hash": "5d60f34025f6cb97ab6f88aa88abcbae",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/19-mobiel.png": {
+    "mtime": 1792509163.2847373,
+    "seen": 1792569422.249958,
+    "ast_hash": "110e59ed32f7666b532e86c7b115a4de",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/20-desktop.png": {
+    "mtime": 1792509163.6523666,
+    "seen": 1792569422.2499595,
+    "ast_hash": "28e81a4792a825a4d751f43c991933f5",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/20-mobiel.png": {
+    "mtime": 1792509163.805485,
+    "seen": 1792569422.2499607,
+    "ast_hash": "bca9e2bfbc238d732a9a88b1ea684335",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/21-desktop.png": {
+    "mtime": 1792509164.167408,
+    "seen": 1792569422.2499628,
+    "ast_hash": "8c522764f7e1635381aa460813e834c0",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/21-mobiel.png": {
+    "mtime": 1792509164.316247,
+    "seen": 1792569422.2499642,
+    "ast_hash": "a126369ff34008077cd2529f9c8cca4d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/22-desktop.png": {
+    "mtime": 1792509164.6919606,
+    "seen": 1792569422.2499657,
+    "ast_hash": "b00e1a28910ecd7204a37669b8a3562f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/22-mobiel.png": {
+    "mtime": 1792509164.8497114,
+    "seen": 1792569422.2499669,
+    "ast_hash": "82b2f9d7d6eee4f3ef1307ef5c49f461",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/23-desktop.png": {
+    "mtime": 1792509165.2062457,
+    "seen": 1792569422.249968,
+    "ast_hash": "1100a79678dce06a8b0de6e615ad202e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/23-mobiel.png": {
+    "mtime": 1792509165.3731408,
+    "seen": 1792569422.2499695,
+    "ast_hash": "b84142ee14ace4925f7f0cb3e0e75b4d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/24-desktop.png": {
+    "mtime": 1792509165.7330835,
+    "seen": 1792569422.2499707,
+    "ast_hash": "c0ad1cd2478a3130d91e48abc26cc283",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/24-mobiel.png": {
+    "mtime": 1792509165.8845327,
+    "seen": 1792569422.2499726,
+    "ast_hash": "5696b553f734d1cb7e05e0cd4e6ddd90",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/25-desktop.png": {
+    "mtime": 1792509166.2453923,
+    "seen": 1792569422.249974,
+    "ast_hash": "b1f094861a3a0724bc7c235bd6400ab6",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/25-mobiel.png": {
+    "mtime": 1792509166.4044013,
+    "seen": 1792569422.2499752,
+    "ast_hash": "7c98dcc5036412d0894770c8410f9959",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/26-desktop.png": {
+    "mtime": 1792509166.770878,
+    "seen": 1792569422.2499766,
+    "ast_hash": "fbeb517f989cea3989f9002f61707163",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/26-mobiel.png": {
+    "mtime": 1792509166.9387045,
+    "seen": 1792569422.2499778,
+    "ast_hash": "bb5b52f331ca29c5d1aac9373959fb45",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/27-desktop.png": {
+    "mtime": 1792509167.3056965,
+    "seen": 1792569422.249979,
+    "ast_hash": "c3aa6a37924bd58d23e57cacb3ef770f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/27-mobiel.png": {
+    "mtime": 1792509167.474327,
+    "seen": 1792569422.2499807,
+    "ast_hash": "0afa2d22edd5d78ebf92e0484ecb0b30",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/28-desktop.png": {
+    "mtime": 1792509167.8315454,
+    "seen": 1792569422.2499819,
+    "ast_hash": "bd7fa30ae1bcecefa02cfcb1c1f3b686",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/28-mobiel.png": {
+    "mtime": 1792509167.9833026,
+    "seen": 1792569422.249984,
+    "ast_hash": "4345339a86108ac59031188660658bd3",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/29-desktop.png": {
+    "mtime": 1792509168.3463578,
+    "seen": 1792569422.2499857,
+    "ast_hash": "51861b9c4c448f561b69a09097bfe67e",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/29-mobiel.png": {
+    "mtime": 1792509168.5034714,
+    "seen": 1792569422.2499876,
+    "ast_hash": "01cd329cfde287a4205c79a7dbcee972",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/30-desktop.png": {
+    "mtime": 1792509168.8921864,
+    "seen": 1792569422.249989,
+    "ast_hash": "a47760473c7b74368b50ad1b590bccbf",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/30-mobiel.png": {
+    "mtime": 1792509169.0775597,
+    "seen": 1792569422.249991,
+    "ast_hash": "883ee66f00d7175b4b820d22ee66da91",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/31-desktop.png": {
+    "mtime": 1792509169.4300268,
+    "seen": 1792569422.2499926,
+    "ast_hash": "ba30bfb685165cabd7093747d5420c69",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/31-mobiel.png": {
+    "mtime": 1792509169.5972512,
+    "seen": 1792569422.249995,
+    "ast_hash": "43f2ee2f96c1fabd72d07bdad3ea5f63",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/32-desktop.png": {
+    "mtime": 1792509169.9665544,
+    "seen": 1792569422.2500064,
+    "ast_hash": "6b7011557a03321a8fa7ecb3e2b4335a",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/32-mobiel.png": {
+    "mtime": 1792509170.1329432,
+    "seen": 1792569422.2500083,
+    "ast_hash": "223ac0c903fd94cb0c68e184a50ae999",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/33-desktop.png": {
+    "mtime": 1792509170.5235486,
+    "seen": 1792569422.2500098,
+    "ast_hash": "bcd25c157869e4b6586858bc836c5d4f",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/33-mobiel.png": {
+    "mtime": 1792509170.690068,
+    "seen": 1792569422.2500117,
+    "ast_hash": "1232c97d90574b97a4c258e9bcdde17d",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/34-desktop.png": {
+    "mtime": 1792509171.0719593,
+    "seen": 1792569422.2500136,
+    "ast_hash": "c70a487b0c69b4809c765c433ecebfa4",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/34-mobiel.png": {
+    "mtime": 1792509171.2379317,
+    "seen": 1792569422.2500155,
+    "ast_hash": "c42847ee318f81c4b6e15dc026d33034",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/35-desktop.png": {
+    "mtime": 1792509171.6267908,
+    "seen": 1792569422.250017,
+    "ast_hash": "ad7fa67cbd5c49933ed6d51b2e1920d8",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/35-mobiel.png": {
+    "mtime": 1792509171.778577,
+    "seen": 1792569422.2500188,
+    "ast_hash": "2a66b89fc9d2f4062222881bb5400040",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/36-desktop.png": {
+    "mtime": 1792509172.1222122,
+    "seen": 1792569422.2500205,
+    "ast_hash": "97efffef9ee7a2c12a885b72a53d73e6",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/36-mobiel.png": {
+    "mtime": 1792509172.291014,
+    "seen": 1792569422.2500222,
+    "ast_hash": "ed054a3d1f3615cc03a2b0a7a8c42297",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/variant-32-creditnota-mobiel.png": {
+    "mtime": 1792509195.4782288,
+    "seen": 1792569422.2500238,
+    "ast_hash": "a4639e86818555f1c84290cf42ac4335",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/screenshots/variant-32-refund-mobiel.png": {
+    "mtime": 1792509195.621858,
+    "seen": 1792569422.2500255,
+    "ast_hash": "ef30711a584c9dfd47cc66f3083f4863",
+    "semantic_hash": ""
+  },
+  "Klantio-L-emailbibliotheek/qa/voorkeuren.png": {
+    "mtime": 1792509173.2348528,
+    "seen": 1792569422.250027,
+    "ast_hash": "45909346506f7403d7b1c7771e750549",
+    "semantic_hash": ""
+  }
+}

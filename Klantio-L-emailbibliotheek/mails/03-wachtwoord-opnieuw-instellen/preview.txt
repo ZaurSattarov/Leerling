@@ -2,17 +2,14 @@ Wachtwoord opnieuw instellen
 
 Hoi Amir Voorbeeld,
 
-Je hebt gevraagd om je wachtwoord opnieuw in te stellen. Kies een nieuw wachtwoord via de beveiligde link.
-
-Nieuw wachtwoord kiezen: ../../actie-demo.html?mail=3
+Je hebt gevraagd om je Klantio L-wachtwoord opnieuw in te stellen.
 
 Account: amir@example.invalid
 Geldig tot: vrijdag 23 oktober 2026, 18:00
 
 Niet aangevraagd? Negeer deze mail. Je wachtwoord verandert pas als je het zelf opnieuw instelt.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-Noodzakelijke melding over je account of toegang.
+Nieuw wachtwoord kiezen: open.html
+
+info@klantio.com
+https://klantio.com/

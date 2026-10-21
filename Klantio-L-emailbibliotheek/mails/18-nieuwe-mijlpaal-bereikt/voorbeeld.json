@@ -1,11 +1,11 @@
 {
-  "website_url": "../../actie-demo.html?type=website",
-  "logo_url": "../../assets/klantio-wordmark.png",
+  "website_url": "https://klantio.com/",
+  "logo_url": "../../assets/klantio-wordmark-white.png",
   "student_name": "Amir Voorbeeld",
-  "action_url": "../../actie-demo.html?mail=18",
   "illustration_url": "../../assets/voortgang.png",
   "milestone_name": "Vijf lessen afgerond",
   "milestone_date": "dinsdag 20 oktober 2026",
+  "action_url": "open.html",
   "support_url": "mailto:info@klantio.com",
-  "preferences_url": "../../voorkeuren.html"
+  "preferences_url": "preferences.html"
 }

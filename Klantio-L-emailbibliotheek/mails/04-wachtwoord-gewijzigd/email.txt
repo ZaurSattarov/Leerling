@@ -2,17 +2,14 @@ Wachtwoord gewijzigd
 
 Hoi {{student_name}},
 
-Het wachtwoord van je account is gewijzigd. Heb jij dit gedaan? Dan hoef je niets te doen.
-
-Hulp bij je account: {{action_url}}
+Je wachtwoord is gewijzigd. Heb jij dit gedaan? Dan hoef je niets te doen.
 
 Account: {{student_email}}
 Gewijzigd op: {{changed_at}}
 
 Was jij dit niet? Neem contact op via info@klantio.com en gebruik de bestaande wachtwoordherstelfunctie.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
-Noodzakelijke melding over je account of toegang.
+Hulp bij je account: {{action_url}}
+
+info@klantio.com
+{{website_url}}

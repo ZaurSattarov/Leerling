@@ -2,9 +2,7 @@ Rijles ingepland
 
 Hoi Amir Voorbeeld,
 
-Er staat een nieuwe rijles voor je klaar. Dit zijn de afspraakgegevens.
-
-Bekijk je rijles: ../../actie-demo.html?mail=7
+Er staat een nieuwe rijles in je planning.
 
 Datum: woensdag 21 oktober 2026
 Tijd: 10:00–11:00
@@ -13,8 +11,8 @@ Locatie: Voorbeeldplein 1
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-E-mailvoorkeuren: ../../voorkeuren.html
+Bekijk je rijles: open.html
+
+info@klantio.com
+https://klantio.com/
+E-mailvoorkeuren: preferences.html

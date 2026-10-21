@@ -2,9 +2,7 @@ Lespakket op
 
 Hoi Amir Voorbeeld,
 
-De lessen uit het onderstaande pakket zijn gebruikt. Neem contact op met je rijschool om te bespreken hoe je verdergaat.
-
-Bekijk je lespakket: ../../actie-demo.html?mail=20
+De lessen uit dit pakket zijn gebruikt. Bespreek het vervolg met je rijschool.
 
 Rijschool: Rijschool Voorbeeld
 Pakket: Voorbeeldpakket
@@ -12,8 +10,8 @@ Resterend: 0 lessen
 
 Deze melding koopt of verlengt geen pakket.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-E-mailvoorkeuren: ../../voorkeuren.html
+Bekijk je lespakket: open.html
+
+info@klantio.com
+https://klantio.com/
+E-mailvoorkeuren: preferences.html

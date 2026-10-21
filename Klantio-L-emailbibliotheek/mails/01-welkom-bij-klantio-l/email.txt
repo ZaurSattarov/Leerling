@@ -1,20 +1,16 @@
-Welkom bij Klantio L
+Welkom bij Klantio L.
 
 Hoi {{student_name}},
 
-Welkom! Je account is geactiveerd. Bekijk je lessen, geef je beschikbare tijden door en volg je voortgang. Ook je rijschoolfacturen vind je in Klantio L.
+Hier vind je de informatie die je rijschool met je deelt.
+
+1. Bekijk je rijlessen. Controleer wanneer je volgende les begint.
+2. Geef je beschikbaarheid door. Laat weten wanneer je kunt lessen.
+3. Volg je voortgang. Bekijk de informatie die je rijschool met je deelt.
+
+
 
 Open Klantio L: {{action_url}}
 
-Bekijk je lessen.
-Geef je beschikbare tijden door.
-Volg je voortgang.
-Bekijk je rijschoolfacturen.
-
-
-
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
-Noodzakelijke melding over je account of toegang.
+info@klantio.com
+{{website_url}}

@@ -2,9 +2,7 @@ E-mailadres gewijzigd
 
 Hoi {{student_name}},
 
-Het e-mailadres voor je Klantio L-account is bevestigd gewijzigd. Hieronder zie je de oude en nieuwe gegevens.
-
-Account controleren: {{action_url}}
+Je e-mailadres is gewijzigd. Hieronder staan het vorige en het nieuwe adres.
 
 Vorig adres: {{old_email}}
 Nieuw adres: {{new_email}}
@@ -12,8 +10,7 @@ Bevestigd op: {{changed_at}}
 
 Herken je deze wijziging niet? Neem direct contact op via info@klantio.com.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
-Noodzakelijke melding over je account of toegang.
+Account controleren: {{action_url}}
+
+info@klantio.com
+{{website_url}}

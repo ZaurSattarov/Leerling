@@ -4,9 +4,8 @@ export interface Email01Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
-  getting_started_url: string;
   illustration_url: string;
+  action_url: string;
   support_url: string;
 }
 export interface Email02Data extends CommonLinks {
@@ -14,47 +13,46 @@ export interface Email02Data extends CommonLinks {
   logo_url: string;
   student_name: string;
   student_email: string;
-  action_url: string;
   illustration_url: string;
   valid_until: string;
+  action_url: string;
   support_url: string;
 }
 export interface Email03Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   student_email: string;
   valid_until: string;
+  action_url: string;
   support_url: string;
 }
 export interface Email04Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   student_email: string;
   changed_at: string;
+  action_url: string;
   support_url: string;
 }
 export interface Email05Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   old_email: string;
   new_email: string;
   changed_at: string;
+  action_url: string;
   support_url: string;
 }
 export interface Email06Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   student_email: string;
   effective_date: string;
@@ -64,13 +62,13 @@ export interface Email07Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   lesson_date: string;
   lesson_start: string;
   lesson_end: string;
   instructor_name: string;
   lesson_location?: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -78,12 +76,12 @@ export interface Email08Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   old_lesson_moment: string;
   new_lesson_moment: string;
   instructor_name: string;
   lesson_location?: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -91,12 +89,12 @@ export interface Email09Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   lesson_moment: string;
   old_location?: string;
   new_location?: string;
   instructor_name: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -104,7 +102,6 @@ export interface Email10Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   lesson_date: string;
   lesson_start: string;
@@ -112,6 +109,7 @@ export interface Email10Data extends CommonLinks {
   instructor_name: string;
   lesson_location?: string;
   cancellation_note?: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -119,13 +117,13 @@ export interface Email11Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   lesson_date: string;
   lesson_start: string;
   lesson_end: string;
   instructor_name: string;
   lesson_location?: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -133,13 +131,13 @@ export interface Email12Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   lesson_date: string;
   lesson_start: string;
   lesson_end: string;
   instructor_name: string;
   lesson_location?: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -147,11 +145,11 @@ export interface Email13Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   lesson_moment: string;
   instructor_name: string;
   lesson_location?: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -159,10 +157,10 @@ export interface Email14Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   lesson_moment: string;
   instructor_name: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -170,10 +168,10 @@ export interface Email15Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   period: string;
   availability_summary: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -181,11 +179,11 @@ export interface Email16Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   lesson_moment: string;
   instructor_name: string;
   evaluation_summary?: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -193,10 +191,10 @@ export interface Email17Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   changed_at: string;
   progress_summary: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -204,10 +202,10 @@ export interface Email18Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   milestone_name: string;
   milestone_date: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -215,11 +213,11 @@ export interface Email19Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   school_name: string;
   package_name: string;
   remaining_lessons: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -227,10 +225,10 @@ export interface Email20Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   school_name: string;
   package_name: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -238,10 +236,10 @@ export interface Email21Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   month: string;
   progress_summary: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -249,11 +247,11 @@ export interface Email22Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   exam_type: string;
   exam_moment: string;
   exam_location?: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -261,12 +259,12 @@ export interface Email23Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   old_exam_moment: string;
   exam_moment: string;
   old_exam_location?: string;
   exam_location?: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -274,11 +272,11 @@ export interface Email24Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   exam_type: string;
   exam_moment: string;
   exam_location?: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -286,11 +284,11 @@ export interface Email25Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   exam_type: string;
   exam_date: string;
   exam_result: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -298,10 +296,10 @@ export interface Email26Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   exam_type: string;
   exam_date: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -310,12 +308,12 @@ export interface Email27Data extends CommonLinks {
   logo_url: string;
   student_name: string;
   school_name: string;
-  action_url: string;
   illustration_url: string;
   invoice_number: string;
   invoice_amount: string;
   invoice_due_date: string;
   payment_status: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -323,13 +321,13 @@ export interface Email28Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   school_name: string;
   invoice_number: string;
   invoice_amount: string;
   invoice_due_date: string;
   payment_status: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -338,12 +336,12 @@ export interface Email29Data extends CommonLinks {
   logo_url: string;
   student_name: string;
   school_name: string;
-  action_url: string;
   illustration_url: string;
   invoice_number: string;
   invoice_amount: string;
   invoice_due_date: string;
   payment_status: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -352,12 +350,12 @@ export interface Email30Data extends CommonLinks {
   logo_url: string;
   student_name: string;
   school_name: string;
-  action_url: string;
   illustration_url: string;
   invoice_number: string;
   invoice_amount: string;
   paid_at: string;
   payment_method?: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -365,12 +363,12 @@ export interface Email31Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   school_name: string;
   invoice_number: string;
   invoice_amount: string;
   changed_at: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -378,7 +376,6 @@ export interface Email32Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   school_name: string;
   invoice_number: string;
@@ -386,6 +383,7 @@ export interface Email32Data extends CommonLinks {
   adjustment_reference: string;
   invoice_amount: string;
   changed_at: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -394,7 +392,6 @@ export interface Email33Data extends CommonLinks {
   logo_url: string;
   student_name: string;
   school_name: string;
-  action_url: string;
   illustration_url: string;
   instructor_name: string;
   valid_until: string;
@@ -405,21 +402,21 @@ export interface Email34Data extends CommonLinks {
   logo_url: string;
   student_name: string;
   school_name: string;
-  action_url: string;
   illustration_url: string;
   instructor_name: string;
   changed_at: string;
+  action_url: string;
   support_url: string;
 }
 export interface Email35Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   period: string;
   lesson_count: string;
   lesson_summary: string;
+  action_url: string;
   support_url: string;
   preferences_url: string;
 }
@@ -427,7 +424,6 @@ export interface Email36Data extends CommonLinks {
   website_url: string;
   logo_url: string;
   student_name: string;
-  action_url: string;
   illustration_url: string;
   month: string;
   completed_lessons: string;

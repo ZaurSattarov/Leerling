@@ -12,9 +12,9 @@
   "id": 1,
   "category": "account",
   "name": "Welkom bij Klantio L",
-  "subject": "Welkom bij Klantio L!",
-  "preheader": "Jouw lessen, tijden, voortgang en facturen bij elkaar.",
-  "intro": "Hoi {{student_name}},<br><br>Welkom! Je account is geactiveerd. Bekijk je lessen, geef je beschikbare tijden door en volg je voortgang. Ook je rijschoolfacturen vind je in Klantio L.",
+  "subject": "Welkom bij Klantio L.",
+  "preheader": "Je rijlessen en voortgang bij elkaar.",
+  "intro": "Hoi {{student_name}},<br><br>Hier vind je de informatie die je rijschool met je deelt.",
   "theme": "welkom",
   "cta": "Open Klantio L",
   "rows": [],
@@ -37,17 +37,36 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
+  "activationGates": [
+    "email_verified",
+    "account_active",
+    "school_link_accepted"
+  ],
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
-    "action_url",
-    "getting_started_url",
     "illustration_url",
+    "action_url",
     "support_url"
   ],
-  "subjectExample": "Welkom bij Klantio L!",
-  "preheaderExample": "Jouw lessen, tijden, voortgang en facturen bij elkaar.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkRouting": {
+    "id": "L01",
+    "client": "leerling",
+    "desktop": "https://klantio.com/",
+    "mobile": "leerlingplanner://open?route=%2Fhome",
+    "personal": null,
+    "requiresNewMobileBuild": true,
+    "mobileScreen": "/home",
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
+  "subjectExample": "Welkom bij Klantio L.",
+  "preheaderExample": "Je rijlessen en voortgang bij elkaar.",
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

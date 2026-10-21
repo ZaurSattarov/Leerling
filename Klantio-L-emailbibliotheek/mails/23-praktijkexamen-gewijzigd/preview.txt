@@ -2,9 +2,7 @@ Praktijkexamen gewijzigd
 
 Hoi Amir Voorbeeld,
 
-Je geregistreerde examenafspraak is aangepast. Bekijk de nieuwe datum, tijd en locatie.
-
-Bekijk de wijziging: ../../actie-demo.html?mail=23
+Je examenafspraak is gewijzigd. De nieuwe gegevens staan hieronder.
 
 Vorige afspraak: vrijdag 23 oktober 2026, 11:00
 Nieuwe afspraak: maandag 26 oktober 2026, 09:30
@@ -13,8 +11,8 @@ Nieuwe locatie: Examenlocatie Voorbeeldstad
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-E-mailvoorkeuren: ../../voorkeuren.html
+Examens bekijken: open.html
+
+info@klantio.com
+https://klantio.com/
+E-mailvoorkeuren: preferences.html

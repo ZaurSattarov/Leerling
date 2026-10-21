@@ -2,17 +2,15 @@ Nieuwe mijlpaal bereikt
 
 Hoi {{student_name}},
 
-Je hebt een nieuwe mijlpaal bereikt. Bekijk deze stap in je voortgang en bespreek met je instructeur hoe je verdergaat.
-
-Bekijk je mijlpaal: {{action_url}}
+Je hebt een nieuwe mijlpaal bereikt. Bekijk je voortgang.
 
 Mijlpaal: {{milestone_name}}
 Bereikt op: {{milestone_date}}
 
 Een mijlpaal is geen officiële voorspelling van je examenuitslag.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
+Bekijk je mijlpaal: {{action_url}}
+
+info@klantio.com
+{{website_url}}
 E-mailvoorkeuren: {{preferences_url}}

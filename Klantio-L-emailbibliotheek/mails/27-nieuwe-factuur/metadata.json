@@ -14,7 +14,7 @@
   "name": "Nieuwe factuur",
   "subject": "Er staat een nieuwe factuur voor je klaar",
   "preheader": "Bekijk de factuur van je rijschool.",
-  "intro": "Hoi {{student_name}},<br><br>{{school_name}} heeft een factuur voor je klaargezet. Bekijk de gegevens en betaal via de mogelijkheid die je rijschool aanbiedt.",
+  "intro": "Hoi {{student_name}},<br><br>{{school_name}} heeft een factuur voor je klaargezet.",
   "theme": "betaling",
   "cta": "Bekijk je factuur",
   "rows": [
@@ -57,22 +57,37 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
     "school_name",
-    "action_url",
     "illustration_url",
     "invoice_number",
     "invoice_amount",
     "invoice_due_date",
     "payment_status",
+    "action_url",
     "support_url",
     "preferences_url"
   ],
+  "linkRouting": {
+    "id": "L27",
+    "client": "leerling",
+    "desktop": null,
+    "mobile": "leerlingplanner://open?route=%2Ffacturen",
+    "personal": "Eigen leerlingfactuur via canonieke UUID",
+    "requiresNewMobileBuild": true,
+    "mobileScreen": "/facturen",
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
   "subjectExample": "Er staat een nieuwe factuur voor je klaar",
   "preheaderExample": "Bekijk de factuur van je rijschool.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

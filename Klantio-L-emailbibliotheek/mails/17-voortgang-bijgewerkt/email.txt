@@ -2,17 +2,15 @@ Voortgang bijgewerkt
 
 Hoi {{student_name}},
 
-Je voortgang is bijgewerkt. Bekijk welke vaardigheden zijn vastgelegd en bespreek vragen met je instructeur.
-
-Bekijk mijn voortgang: {{action_url}}
+Je voortgang is bijgewerkt. Bekijk de vastgelegde vaardigheden.
 
 Bijgewerkt op: {{changed_at}}
 Samenvatting: {{progress_summary}}
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
+Bekijk mijn voortgang: {{action_url}}
+
+info@klantio.com
+{{website_url}}
 E-mailvoorkeuren: {{preferences_url}}

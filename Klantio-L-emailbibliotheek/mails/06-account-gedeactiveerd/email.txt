@@ -2,17 +2,14 @@ Account gedeactiveerd
 
 Hoi {{student_name}},
 
-Je toegang tot Klantio L is gedeactiveerd. Heb je vragen? Neem contact op met je rijschool of met Klantio.
-
-Contact opnemen: {{action_url}}
+Je toegang tot Klantio L is gedeactiveerd. Heb je vragen over je account? Neem contact op met je rijschool.
 
 Account: {{student_email}}
 Ingangsdatum: {{effective_date}}
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
-Noodzakelijke melding over je account of toegang.
+
+
+info@klantio.com
+{{website_url}}

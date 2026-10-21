@@ -2,17 +2,15 @@ Maandelijks voortgangsoverzicht
 
 Hoi Amir Voorbeeld,
 
-Dit is je voortgangsoverzicht van de afgelopen maand. Bekijk je actuele dossier voor de volledige feedback.
-
-Bekijk je voortgang: ../../actie-demo.html?mail=21
+Dit is je voortgangsoverzicht van de afgelopen maand.
 
 Maand: oktober 2026
 Samenvatting: Je hebt deze maand geoefend met vooruitkijken, invoegen en zelfstandig rijden.
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-E-mailvoorkeuren: ../../voorkeuren.html
+Bekijk je voortgang: open.html
+
+info@klantio.com
+https://klantio.com/
+E-mailvoorkeuren: preferences.html

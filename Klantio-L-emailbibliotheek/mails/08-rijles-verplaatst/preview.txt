@@ -2,9 +2,7 @@ Rijles verplaatst
 
 Hoi Amir Voorbeeld,
 
-Je rijles is verplaatst. Gebruik de nieuwe datum en tijd hieronder.
-
-Bekijk de gewijzigde rijles: ../../actie-demo.html?mail=8
+Je rijles is verplaatst. De nieuwe afspraak staat hieronder.
 
 Was gepland op: woensdag 21 oktober 2026, 10:00–11:00
 Nieuwe afspraak: donderdag 22 oktober 2026, 13:00–14:00
@@ -13,8 +11,8 @@ Nieuwe locatie: Voorbeeldplein 1
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-E-mailvoorkeuren: ../../voorkeuren.html
+Bekijk de gewijzigde rijles: open.html
+
+info@klantio.com
+https://klantio.com/
+E-mailvoorkeuren: preferences.html

@@ -2,9 +2,7 @@ Rijles geannuleerd
 
 Hoi Amir Voorbeeld,
 
-De onderstaande rijles is geannuleerd. Bekijk je planning of neem contact op met je rijschool om een volgende les af te spreken.
-
-Bekijk je planning: ../../actie-demo.html?mail=10
+Deze rijles is geannuleerd. Bespreek met je rijschool wanneer je weer kunt lessen.
 
 Datum: woensdag 21 oktober 2026
 Tijd: 10:00–11:00
@@ -14,8 +12,8 @@ Toelichting: Je rijschool neemt contact op om een nieuwe les af te spreken.
 
 Deze melding zegt niets over een eventuele terugbetaling. Vraag je rijschool naar de afspraken die voor jou gelden.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-E-mailvoorkeuren: ../../voorkeuren.html
+Bekijk je planning: open.html
+
+info@klantio.com
+https://klantio.com/
+E-mailvoorkeuren: preferences.html

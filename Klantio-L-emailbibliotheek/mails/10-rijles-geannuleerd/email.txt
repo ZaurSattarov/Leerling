@@ -2,9 +2,7 @@ Rijles geannuleerd
 
 Hoi {{student_name}},
 
-De onderstaande rijles is geannuleerd. Bekijk je planning of neem contact op met je rijschool om een volgende les af te spreken.
-
-Bekijk je planning: {{action_url}}
+Deze rijles is geannuleerd. Bespreek met je rijschool wanneer je weer kunt lessen.
 
 Datum: {{lesson_date}}
 Tijd: {{lesson_start}}–{{lesson_end}}
@@ -14,8 +12,8 @@ Toelichting: {{cancellation_note}}
 
 Deze melding zegt niets over een eventuele terugbetaling. Vraag je rijschool naar de afspraken die voor jou gelden.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
+Bekijk je planning: {{action_url}}
+
+info@klantio.com
+{{website_url}}
 E-mailvoorkeuren: {{preferences_url}}

@@ -2,9 +2,7 @@ Rijles afgerond
 
 Hoi Amir Voorbeeld,
 
-Je rijles is als afgerond geregistreerd. In Klantio L vind je het lesoverzicht. Een evaluatie zie je zodra je instructeur deze heeft vrijgegeven.
-
-Bekijk je afgeronde les: ../../actie-demo.html?mail=14
+Je rijles is als afgerond geregistreerd. Een evaluatie zie je zodra je instructeur die vrijgeeft.
 
 Rijles: woensdag 21 oktober 2026, 10:00–11:00
 Instructeur: Samira de Vries
@@ -12,8 +10,8 @@ Status: Afgerond
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-E-mailvoorkeuren: ../../voorkeuren.html
+Bekijk je afgeronde les: open.html
+
+info@klantio.com
+https://klantio.com/
+E-mailvoorkeuren: preferences.html

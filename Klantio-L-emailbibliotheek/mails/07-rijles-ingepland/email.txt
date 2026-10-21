@@ -2,9 +2,7 @@ Rijles ingepland
 
 Hoi {{student_name}},
 
-Er staat een nieuwe rijles voor je klaar. Dit zijn de afspraakgegevens.
-
-Bekijk je rijles: {{action_url}}
+Er staat een nieuwe rijles in je planning.
 
 Datum: {{lesson_date}}
 Tijd: {{lesson_start}}–{{lesson_end}}
@@ -13,8 +11,8 @@ Locatie: {{lesson_location}}
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
+Bekijk je rijles: {{action_url}}
+
+info@klantio.com
+{{website_url}}
 E-mailvoorkeuren: {{preferences_url}}

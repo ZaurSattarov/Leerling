@@ -2,9 +2,7 @@ Rijleslocatie gewijzigd
 
 Hoi {{student_name}},
 
-Je rijles begint op een andere locatie. Bekijk het nieuwe startpunt voordat je vertrekt.
-
-Bekijk je rijles: {{action_url}}
+Je rijles begint op een andere locatie. Controleer het nieuwe startpunt.
 
 Rijles: {{lesson_moment}}
 Vorige locatie: {{old_location}}
@@ -13,8 +11,8 @@ Instructeur: {{instructor_name}}
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
+Bekijk je rijles: {{action_url}}
+
+info@klantio.com
+{{website_url}}
 E-mailvoorkeuren: {{preferences_url}}

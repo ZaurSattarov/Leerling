@@ -2,9 +2,7 @@ E-mailadres gewijzigd
 
 Hoi Amir Voorbeeld,
 
-Het e-mailadres voor je Klantio L-account is bevestigd gewijzigd. Hieronder zie je de oude en nieuwe gegevens.
-
-Account controleren: ../../actie-demo.html?mail=5
+Je e-mailadres is gewijzigd. Hieronder staan het vorige en het nieuwe adres.
 
 Vorig adres: amir.oud@example.invalid
 Nieuw adres: amir.nieuw@example.invalid
@@ -12,8 +10,7 @@ Bevestigd op: dinsdag 20 oktober 2026, 10:15
 
 Herken je deze wijziging niet? Neem direct contact op via info@klantio.com.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-Noodzakelijke melding over je account of toegang.
+Account controleren: open.html
+
+info@klantio.com
+https://klantio.com/

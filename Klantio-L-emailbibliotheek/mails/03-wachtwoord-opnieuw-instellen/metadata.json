@@ -14,7 +14,7 @@
   "name": "Wachtwoord opnieuw instellen",
   "subject": "Stel je Klantio L-wachtwoord opnieuw in",
   "preheader": "Je veilige herstellink staat klaar.",
-  "intro": "Hoi {{student_name}},<br><br>Je hebt gevraagd om je wachtwoord opnieuw in te stellen. Kies een nieuw wachtwoord via de beveiligde link.",
+  "intro": "Hoi {{student_name}},<br><br>Je hebt gevraagd om je Klantio L-wachtwoord opnieuw in te stellen.",
   "theme": "beveiliging",
   "cta": "Nieuw wachtwoord kiezen",
   "rows": [
@@ -45,18 +45,33 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
-    "action_url",
     "illustration_url",
     "student_email",
     "valid_until",
+    "action_url",
     "support_url"
   ],
+  "linkRouting": {
+    "id": "L03",
+    "client": "leerling",
+    "desktop": null,
+    "mobile": null,
+    "personal": "Persoonlijke wachtwoordherstellink",
+    "requiresNewMobileBuild": false,
+    "mobileScreen": null,
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
   "subjectExample": "Stel je Klantio L-wachtwoord opnieuw in",
   "preheaderExample": "Je veilige herstellink staat klaar.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

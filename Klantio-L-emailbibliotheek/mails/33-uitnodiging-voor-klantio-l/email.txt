@@ -2,9 +2,13 @@ Uitnodiging voor Klantio L
 
 Hoi {{student_name}},
 
-{{school_name}} nodigt je uit om Klantio L te gebruiken. Bekijk de uitnodiging en koppel je account via de bestaande veilige koppelingsactie.
+{{school_name}} nodigt je uit voor Klantio L.
 
-Bekijk de uitnodiging: {{action_url}}
+Heb je nog geen account? Registreer je dan eerst in Klantio L.
+
+Open Klantio L en log in. Kies ‘Koppelcode invoeren’, vul de code van je rijschool in en tik op ‘Koppelen’.
+
+Heb je nog geen koppelcode? Vraag deze dan aan je rijschool of rijinstructeur.
 
 Rijschool: {{school_name}}
 Uitnodigende instructeur: {{instructor_name}}
@@ -12,8 +16,7 @@ Geldig tot: {{valid_until}}
 
 Verwacht je deze uitnodiging niet? Dan hoef je niets te doen.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
-Noodzakelijke melding over je account of toegang.
+
+
+info@klantio.com
+{{website_url}}

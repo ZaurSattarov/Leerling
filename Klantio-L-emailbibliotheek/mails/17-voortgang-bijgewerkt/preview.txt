@@ -2,17 +2,15 @@ Voortgang bijgewerkt
 
 Hoi Amir Voorbeeld,
 
-Je voortgang is bijgewerkt. Bekijk welke vaardigheden zijn vastgelegd en bespreek vragen met je instructeur.
-
-Bekijk mijn voortgang: ../../actie-demo.html?mail=17
+Je voortgang is bijgewerkt. Bekijk de vastgelegde vaardigheden.
 
 Bijgewerkt op: dinsdag 20 oktober 2026, 10:15
 Samenvatting: Je hebt deze maand geoefend met vooruitkijken, invoegen en zelfstandig rijden.
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-E-mailvoorkeuren: ../../voorkeuren.html
+Bekijk mijn voortgang: open.html
+
+info@klantio.com
+https://klantio.com/
+E-mailvoorkeuren: preferences.html

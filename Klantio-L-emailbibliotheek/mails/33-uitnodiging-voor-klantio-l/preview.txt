@@ -2,9 +2,13 @@ Uitnodiging voor Klantio L
 
 Hoi Amir Voorbeeld,
 
-Rijschool Voorbeeld nodigt je uit om Klantio L te gebruiken. Bekijk de uitnodiging en koppel je account via de bestaande veilige koppelingsactie.
+Rijschool Voorbeeld nodigt je uit voor Klantio L.
 
-Bekijk de uitnodiging: ../../actie-demo.html?mail=33
+Heb je nog geen account? Registreer je dan eerst in Klantio L.
+
+Open Klantio L en log in. Kies ‘Koppelcode invoeren’, vul de code van je rijschool in en tik op ‘Koppelen’.
+
+Heb je nog geen koppelcode? Vraag deze dan aan je rijschool of rijinstructeur.
 
 Rijschool: Rijschool Voorbeeld
 Uitnodigende instructeur: Samira de Vries
@@ -12,8 +16,7 @@ Geldig tot: vrijdag 23 oktober 2026, 18:00
 
 Verwacht je deze uitnodiging niet? Dan hoef je niets te doen.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-Noodzakelijke melding over je account of toegang.
+
+
+info@klantio.com
+https://klantio.com/

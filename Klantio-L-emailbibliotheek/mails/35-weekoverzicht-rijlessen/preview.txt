@@ -2,9 +2,7 @@ Weekoverzicht rijlessen
 
 Hoi Amir Voorbeeld,
 
-Dit zijn je geplande lessen voor de komende week. In Klantio L zie je altijd de meest actuele planning.
-
-Bekijk je weekplanning: ../../actie-demo.html?mail=35
+Dit zijn je geplande rijlessen voor de komende week.
 
 Periode: 26 oktober t/m 1 november 2026
 Aantal lessen: 2
@@ -13,8 +11,8 @@ Donderdag 29 oktober 13:00–14:00 · Samira de Vries
 
 
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: ../../actie-demo.html?type=website
-E-mailvoorkeuren: ../../voorkeuren.html
+Bekijk je lessen: open.html
+
+info@klantio.com
+https://klantio.com/
+E-mailvoorkeuren: preferences.html

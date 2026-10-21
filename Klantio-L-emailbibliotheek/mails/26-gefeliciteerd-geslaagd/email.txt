@@ -2,9 +2,7 @@ Gefeliciteerd, geslaagd!
 
 Hoi {{student_name}},
 
-Je bent geslaagd voor je praktijkexamen. Gefeliciteerd met deze mooie prestatie! Bespreek met je rijschool welke vervolgstappen voor jou gelden.
-
-Bekijk je examenresultaat: {{action_url}}
+Gefeliciteerd, je bent geslaagd voor je praktijkexamen! Bespreek de vervolgstappen met je rijschool.
 
 Examen: {{exam_type}}
 Datum: {{exam_date}}
@@ -12,8 +10,8 @@ Uitslag: Geslaagd
 
 Geslaagd zijn voor je praktijkexamen betekent niet dat je rijbewijs al is afgegeven.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
+Examens bekijken: {{action_url}}
+
+info@klantio.com
+{{website_url}}
 E-mailvoorkeuren: {{preferences_url}}

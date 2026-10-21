@@ -5,7 +5,7 @@
   "debounce": false,
   "variants": [],
   "legacy": "betalingsherinnering.html",
-  "customerNote": "Heb je vragen over deze factuur? Neem contact op met je rijschool.",
+  "customerNote": "Controleer de actuele factuurstatus. Neem bij vragen contact op met je rijschool.",
   "scope": "BEIDE",
   "permission": "Eigen leerlingrecord + actuele school-/objectkoppeling",
   "recipient": "Leerling aan wie dit account of object toebehoort",
@@ -14,7 +14,7 @@
   "name": "Factuur verlopen",
   "subject": "Je factuur staat nog open",
   "preheader": "De betaaltermijn is verstreken.",
-  "intro": "Hoi {{student_name}},<br><br>Deze factuur van {{school_name}} staat nog open. Bekijk de actuele status en de beschikbare betaalmogelijkheid in je factuur.",
+  "intro": "Hoi {{student_name}},<br><br>Deze factuur van {{school_name}} staat nog open na de vervaldatum.",
   "theme": "betaling",
   "cta": "Bekijk je openstaande factuur",
   "rows": [
@@ -57,22 +57,37 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
     "school_name",
-    "action_url",
     "illustration_url",
     "invoice_number",
     "invoice_amount",
     "invoice_due_date",
     "payment_status",
+    "action_url",
     "support_url",
     "preferences_url"
   ],
+  "linkRouting": {
+    "id": "L29",
+    "client": "leerling",
+    "desktop": null,
+    "mobile": "leerlingplanner://open?route=%2Ffacturen",
+    "personal": "Eigen leerlingfactuur via canonieke UUID",
+    "requiresNewMobileBuild": true,
+    "mobileScreen": "/facturen",
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Deze actie vereist een echte persoonsgebonden link. De PC-test opent uitleg en voert geen account- of betaalactie uit.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
   "subjectExample": "Je factuur staat nog open",
   "preheaderExample": "De betaaltermijn is verstreken.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

@@ -2,17 +2,14 @@ Wachtwoord opnieuw instellen
 
 Hoi {{student_name}},
 
-Je hebt gevraagd om je wachtwoord opnieuw in te stellen. Kies een nieuw wachtwoord via de beveiligde link.
-
-Nieuw wachtwoord kiezen: {{action_url}}
+Je hebt gevraagd om je Klantio L-wachtwoord opnieuw in te stellen.
 
 Account: {{student_email}}
 Geldig tot: {{valid_until}}
 
 Niet aangevraagd? Negeer deze mail. Je wachtwoord verandert pas als je het zelf opnieuw instelt.
 
-Klantio L
-Jouw rijlessen, voortgang en facturen op één plek.
-Contact: info@klantio.com
-Website: {{website_url}}
-Noodzakelijke melding over je account of toegang.
+Nieuw wachtwoord kiezen: {{action_url}}
+
+info@klantio.com
+{{website_url}}

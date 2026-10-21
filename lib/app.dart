@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'core/routing/email_link_route.dart';
 
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
@@ -97,6 +98,7 @@ class _AuthNotifier extends ChangeNotifier {
       // locatiedata van de vorige gebruiker laten staan voor een eventuele
       // volgende gebruiker op hetzelfde toestel.
       if (data.event == AuthChangeEvent.signedOut) {
+        _ref.read(pendingEmailLinkProvider).clear();
         scheduleAccountScopedProviderInvalidation(() {
           _ref.read(arrivalControllerProvider.notifier).onAuthLost();
         });
@@ -162,6 +164,8 @@ class _AuthNotifier extends ChangeNotifier {
   }
 }
 
+final pendingEmailLinkProvider = Provider((ref) => PendingEmailLink());
+
 final _routerProvider = Provider<GoRouter>((ref) {
   final authNotifier = _AuthNotifier(ref);
   ref.onDispose(authNotifier.dispose);
@@ -201,16 +205,23 @@ final _routerProvider = Provider<GoRouter>((ref) {
       final isPublicRoute = isAuthRoute ||
           loc == '/verificatie' ||
           loc == '/wachtwoord-reset-code' ||
-          loc == '/reset-password';
+          loc == '/reset-password' ||
+          loc == '/link-ongeldig';
 
       if (!isLoggedIn && !isPublicRoute) return '/login';
 
       if (isLoggedIn) {
         final user = Supabase.instance.client.auth.currentUser;
-        if (user?.emailConfirmedAt == null && loc != '/verificatie') {
+        if (user?.emailConfirmedAt == null &&
+            loc != '/verificatie' &&
+            loc != '/link-ongeldig') {
           return '/verificatie';
         }
         if (isAuthRoute) return '/splash';
+        if (loc == '/home') {
+          final target = ref.read(pendingEmailLinkProvider).take();
+          if (target != null && target != state.uri.toString()) return target;
+        }
       }
       return null;
     },
@@ -228,6 +239,20 @@ final _routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         builder: (_, __) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/link-ongeldig',
+        builder: (_, __) => const Scaffold(
+          body: Center(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: Text(
+                'Deze link is niet geldig. Er zijn geen gegevens geopend.',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
       ),
       GoRoute(
         path: '/registreer',
@@ -634,6 +659,18 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
     final uriString = uri.toString();
     if (_laatstVerwerkteLink == uriString) return;
     _laatstVerwerkteLink = uriString;
+
+    if (emailOpenLink(uri, client: 'leerling')) {
+      final emailTarget = emailLinkRoute(uri, client: 'leerling');
+      if (emailTarget == null) {
+        ref.read(_routerProvider).go('/link-ongeldig');
+        return;
+      }
+      ref.read(pendingEmailLinkProvider).remember(emailTarget);
+      // Splash behoudt de bestaande login-, account- en leerlingkoppelpoorten.
+      ref.read(_routerProvider).go('/splash');
+      return;
+    }
 
     if (uri.host == 'factuur') {
       _handleFactuurDeepLink(uri);

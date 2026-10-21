@@ -14,7 +14,7 @@
   "name": "Maandelijks voortgangsoverzicht",
   "subject": "Dit is jouw voortgang van deze maand",
   "preheader": "Je vrijgegeven voortgang in één overzicht.",
-  "intro": "Hoi {{student_name}},<br><br>Dit is je voortgangsoverzicht van de afgelopen maand. Bekijk je actuele dossier voor de volledige feedback.",
+  "intro": "Hoi {{student_name}},<br><br>Dit is je voortgangsoverzicht van de afgelopen maand.",
   "theme": "voortgang",
   "cta": "Bekijk je voortgang",
   "rows": [
@@ -45,19 +45,34 @@
     "HTML GEREED",
     "WACHT OP GO-LIVE"
   ],
+  "editorialReviewed": true,
+  "editorialReviewedAt": "2026-10-21",
   "variables": [
     "website_url",
     "logo_url",
     "student_name",
-    "action_url",
     "illustration_url",
     "month",
     "progress_summary",
+    "action_url",
     "support_url",
     "preferences_url"
   ],
+  "linkRouting": {
+    "id": "L21",
+    "client": "leerling",
+    "desktop": "https://klantio.com/",
+    "mobile": "leerlingplanner://open?route=%2Fvoortgang",
+    "personal": null,
+    "requiresNewMobileBuild": true,
+    "mobileScreen": "/voortgang",
+    "productionStatus": "Niet geactiveerd; server moet echte object-/Auth-link leveren",
+    "desktopTestNote": "Klantio L heeft geen leerlingportaal op desktop; Klantio.com is de websitefallback. Leerlinggegevens gaan niet naar Admin.",
+    "preferencesDesktop": null,
+    "preferencesMobile": "leerlingplanner://open?route=%2Fprofiel%2Fnotificatie-instellingen"
+  },
   "subjectExample": "Dit is jouw voortgang van deze maand",
   "preheaderExample": "Je vrijgegeven voortgang in één overzicht.",
-  "linkStatus": "Lokale demoactie; productie-objectlink niet gekoppeld",
-  "backendStatus": "Pure voorbereiding; geen operationele nieuwe trigger"
+  "linkStatus": "PC-test gekoppeld; persoonlijke links en apprelease apart",
+  "backendStatus": "Geen nieuwe trigger of verzending"
 }

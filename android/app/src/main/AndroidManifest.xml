@@ -77,6 +77,23 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="leerlingplanner" android:host="factuur"/>
             </intent-filter>
+            <!-- E-maillanding via https://app.klantio.com/open/leerling.
+                 Bestaande auth-links op klantio.com blijven ongewijzigd. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https"
+                      android:host="app.klantio.com"
+                      android:pathPrefix="/open/leerling"/>
+            </intent-filter>
+            <!-- E-maillanding: alleen een navigatiedoel; login en RLS blijven leidend. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="leerlingplanner" android:host="open"/>
+            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
