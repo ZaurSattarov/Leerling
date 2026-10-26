@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
@@ -131,14 +132,21 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
     await AccountDeletionFlow.start(context);
   }
 
-  void _toonOverDeApp() {
+  Future<void> _toonOverDeApp() async {
+    var versie = 'onbekend';
+    try {
+      final info = await PackageInfo.fromPlatform();
+      versie = '${info.version} (${info.buildNumber})';
+    } catch (_) {}
+    if (!mounted) return;
     metNativeNavAfgedekt<void>(
       context,
       () => showDialog<void>(
         context: context,
+        barrierLabel: 'Sluiten',
         builder: (ctx) => AlertDialog(
           title: const Text('Over de app'),
-          content: const Text('Leerling App · versie 1.0.7'),
+          content: Text('Leerling App · versie $versie'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
@@ -177,6 +185,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
           _ProfielIdentiteitskaart(
             profiel: p,
             instructeur: instructeurAsync.valueOrNull,
+            accountEmail: ref.watch(currentUserProvider)?.email,
           ),
           const SizedBox(height: _ProfileDesign.sectionGap),
 
@@ -333,7 +342,9 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
             ),
           ),
 
-          SizedBox(height: MainShellContentInset.bottomOf(context)),
+          // Extra ruimte zodat 'Account verwijderen' volledig boven de zwevende
+          // navigatiebalk te tikken is (LA-20).
+          SizedBox(height: MainShellContentInset.bottomOf(context) + 24),
         ],
       ),
     );
@@ -341,9 +352,7 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
 
   String _lespakketSubtitle(LeerlingProfiel? profiel) {
     if (profiel == null) return 'Pakket- en voortgangsdetails';
-    final pakketNaam = profiel.pakketNaam?.trim().isNotEmpty == true
-        ? profiel.pakketNaam!.trim()
-        : profiel.pakket.label;
+    final pakketNaam = profiel.pakketWeergaveNaam;
     final resterend =
         (profiel.lessenTotaal - profiel.lessenGevolgd).clamp(0, 999);
     return '$pakketNaam · $resterend lessen resterend';
@@ -363,10 +372,12 @@ class _ProfielHubState extends ConsumerState<_ProfielHub> {
 class _ProfielIdentiteitskaart extends StatelessWidget {
   final LeerlingProfiel? profiel;
   final Instructeur? instructeur;
+  final String? accountEmail;
 
   const _ProfielIdentiteitskaart({
     required this.profiel,
     required this.instructeur,
+    this.accountEmail,
   });
 
   @override
@@ -375,6 +386,7 @@ class _ProfielIdentiteitskaart extends StatelessWidget {
     final copy = buildLearnerProfileHeroCopy(
       profiel: p,
       instructeur: instructeur,
+      accountEmail: accountEmail,
     );
 
     final isDark = Theme.of(context).brightness == Brightness.dark;

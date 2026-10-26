@@ -133,6 +133,7 @@ class _AnimatedFramerTimelineState extends State<AnimatedFramerTimeline>
 
     return SingleChildScrollView(
       controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.fromLTRB(16, 20, 16, widget.bottomPadding),
       child: LayoutBuilder(
         builder: (context, constraints) {

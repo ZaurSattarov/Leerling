@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import '../../features/notificaties/notificatie_instellingen_provider.dart';
-import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/main_scaffold.dart';
 import '../../shared/widgets/settings_design.dart';
 import '../../shared/widgets/snackbar.dart';
 import 'widgets/profiel_menu_widgets.dart';
@@ -59,47 +59,44 @@ class _BeveiligingScreenState extends ConsumerState<BeveiligingScreen> {
     final email = _authEmail;
     if (email == null || !mounted) return;
 
-    await showModalBottomSheet<void>(
+    await showKlantioNavbarSafeSheet<void>(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => SafeArea(
+      builder: (context, onder) => SizedBox(
+        width: double.infinity,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: AppCard(
-            padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Ingelogd account',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
+          padding: EdgeInsets.fromLTRB(20, 18, 20, onder),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Ingelogd account',
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'E-mailadres',
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'E-mailadres',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
                 ),
-                const SizedBox(height: 3),
-                SelectableText(
-                  email,
-                  semanticsLabel: 'Ingelogd e-mailadres $email',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
+              ),
+              const SizedBox(height: 3),
+              SelectableText(
+                email,
+                semanticsLabel: 'Ingelogd e-mailadres $email',
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

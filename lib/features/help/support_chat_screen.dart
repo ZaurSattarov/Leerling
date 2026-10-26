@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/services/student_service.dart';
 import '../../core/services/support_service.dart';
 import '../../models/support_thread.dart';
@@ -90,7 +91,11 @@ class _SupportChatScreenState extends ConsumerState<SupportChatScreen> {
                   EmptyState(
                     icon: CoolIcons.cloudOff,
                     title: 'Support kon niet worden geladen',
-                    subtitle: e.toString(),
+                    subtitle: AppErrorFormatter.toFriendlyDutch(
+                      e,
+                      fallback: 'Support kan nu niet worden geladen.',
+                      contextMessage: 'Support laden',
+                    ),
                   ),
                   const SizedBox(height: 16),
                   SupportPrimaryButton(
@@ -430,7 +435,15 @@ class _ThreadViewState extends ConsumerState<_ThreadView> {
       ref.invalidate(supportThreadProvider(widget.threadId));
       ref.invalidate(supportThreadsProvider);
       if (!result.mailSent && result.mailError != null) {
-        showAppSnackBar(context, result.mailError!, isError: true);
+        showAppSnackBar(
+          context,
+          AppErrorFormatter.toFriendlyDutch(
+            result.mailError,
+            fallback: 'De e-mail kon niet worden verzonden.',
+            contextMessage: 'Supportmail',
+          ),
+          isError: true,
+        );
       }
     } catch (e) {
       if (!mounted) return;
@@ -635,8 +648,7 @@ Future<void> _showAttachmentSheet(
           children: [
             const SizedBox(height: 8),
             ListTile(
-              leading:
-                  Icon(CoolIcons.image02, color: AppColors.iconPrimary),
+              leading: Icon(CoolIcons.image02, color: AppColors.iconPrimary),
               title: const Text('Maak een foto'),
               onTap: () async {
                 Navigator.of(sheetContext).pop();
@@ -645,8 +657,7 @@ Future<void> _showAttachmentSheet(
               },
             ),
             ListTile(
-              leading:
-                  Icon(CoolIcons.image01, color: AppColors.iconPrimary),
+              leading: Icon(CoolIcons.image01, color: AppColors.iconPrimary),
               title: const Text('Kies uit galerij'),
               onTap: () async {
                 Navigator.of(sheetContext).pop();
@@ -705,16 +716,21 @@ class _Composer extends StatelessWidget {
                     Positioned(
                       top: -8,
                       right: -8,
-                      child: GestureDetector(
-                        onTap: () => onPickedChanged(null),
-                        child: Container(
-                          padding: const EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            color: AppColors.textPrimary,
-                            shape: BoxShape.circle,
+                      child: Semantics(
+                        button: true,
+                        label: 'Foto verwijderen',
+                        excludeSemantics: true,
+                        child: GestureDetector(
+                          onTap: () => onPickedChanged(null),
+                          child: Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: AppColors.textPrimary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(CoolIcons.closeMd,
+                                color: Colors.white, size: 14),
                           ),
-                          child: const Icon(CoolIcons.closeMd,
-                              color: Colors.white, size: 14),
                         ),
                       ),
                     ),
@@ -732,59 +748,66 @@ class _Composer extends StatelessWidget {
               SizedBox(
                 width: 48,
                 height: 48,
-                child: FilledButton(
-                  onPressed: bezig
-                      ? null
-                      : () => _showAttachmentSheet(
-                            context,
-                            (p) => onPickedChanged(p),
-                          ),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(999),
+                child: Tooltip(
+                  message: 'Foto toevoegen',
+                  child: FilledButton(
+                    onPressed: bezig
+                        ? null
+                        : () => _showAttachmentSheet(
+                              context,
+                              (p) => onPickedChanged(p),
+                            ),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999),
+                      ),
                     ),
+                    child: const Icon(CoolIcons.image02,
+                        color: Colors.white, size: 20),
                   ),
-                  child: const Icon(CoolIcons.image02,
-                      color: Colors.white, size: 20),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: TextField(
-                  controller: controller,
-                  minLines: 1,
-                  maxLines: 5,
-                  enabled: !bezig,
-                  textCapitalization: TextCapitalization.sentences,
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textPrimary),
-                  decoration: InputDecoration(
-                    hintStyle: TextStyle(
-                        fontSize: 15, color: AppColors.textHint),
-                    hintText: 'Typ een bericht',
-                    filled: true,
-                    fillColor: AppColors.panel,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 12,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide(color: AppColors.border),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide(color: AppColors.border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                          color: AppColors.primary, width: 1.15),
+                child: Semantics(
+                  label: 'Bericht',
+                  textField: true,
+                  child: TextField(
+                    controller: controller,
+                    minLines: 1,
+                    maxLines: 5,
+                    enabled: !bezig,
+                    textCapitalization: TextCapitalization.sentences,
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textPrimary),
+                    decoration: InputDecoration(
+                      hintStyle:
+                          TextStyle(fontSize: 15, color: AppColors.textHint),
+                      hintText: 'Typ een bericht',
+                      filled: true,
+                      fillColor: AppColors.panel,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide(color: AppColors.border),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide(color: AppColors.border),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(
+                            color: AppColors.primary, width: 1.15),
+                      ),
                     ),
                   ),
                 ),
@@ -793,26 +816,29 @@ class _Composer extends StatelessWidget {
               SizedBox(
                 width: 48,
                 height: 48,
-                child: ElevatedButton(
-                  onPressed: bezig ? null : onSend,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(999),
+                child: Tooltip(
+                  message: 'Verzenden',
+                  child: ElevatedButton(
+                    onPressed: bezig ? null : onSend,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999),
+                      ),
                     ),
+                    child: bezig
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Icon(CoolIcons.paperPlane, size: 18),
                   ),
-                  child: bezig
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Icon(CoolIcons.paperPlane, size: 18),
                 ),
               ),
             ],
@@ -957,8 +983,7 @@ class _AttachmentPreview extends StatelessWidget {
                 width: 180,
                 height: 180,
                 color: SupportUi.iconBg,
-                child:
-                    Icon(CoolIcons.image01, color: AppColors.iconPrimary),
+                child: Icon(CoolIcons.image01, color: AppColors.iconPrimary),
               ),
             ),
           ),

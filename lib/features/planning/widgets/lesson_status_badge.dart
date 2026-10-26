@@ -57,7 +57,7 @@ class _BadgeSpec {
           background: AppColors.warningSolid,
         ),
       LesStatus.geen_toon => const _BadgeSpec(
-          label: 'Geen toon',
+          label: 'Niet verschenen',
           background: Color(0xFF991B1B),
         ),
     };

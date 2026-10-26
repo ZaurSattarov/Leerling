@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/services/student_service.dart';
 import '../../shared/providers/auth_provider.dart';
+import '../../shared/widgets/bevestig_uitloggen.dart';
 import 'koppel_flow.dart';
 import '../../core/constants/cool_icons.dart';
 
@@ -57,13 +59,18 @@ class _KoppelcodeInvoerenScreenState
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString().replaceFirst('Exception: ', '');
+        _error = AppErrorFormatter.toFriendlyDutch(
+          e,
+          fallback: 'Koppelen mislukt. Probeer het opnieuw.',
+          contextMessage: 'Koppelen',
+        );
         _loading = false;
       });
     }
   }
 
   Future<void> _uitloggen() async {
+    if (!await bevestigUitloggen(context)) return;
     await StudentService.uitloggen();
     ref.invalidate(mijnProfielProvider);
     if (mounted) context.go('/login');
@@ -76,13 +83,17 @@ class _KoppelcodeInvoerenScreenState
       appBar: AppBar(
         backgroundColor: AppColors.pageBg,
         elevation: 0,
-        leading: Navigator.of(context).canPop()
-            ? IconButton(
-                icon: Icon(CoolIcons.chevronLeft,
-                    color: AppColors.iconPrimary),
-                onPressed: () => context.pop(),
-              )
-            : null,
+        leading: IconButton(
+          tooltip: 'Terug',
+          icon: Icon(CoolIcons.chevronLeft, color: AppColors.iconPrimary),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/koppelcode');
+            }
+          },
+        ),
         automaticallyImplyLeading: false,
         actions: [
           TextButton(
@@ -102,16 +113,6 @@ class _KoppelcodeInvoerenScreenState
             children: [
               const SizedBox(height: 16),
 
-              // Icoon
-              Center(
-                child: Container(
-                  width: 72,
-                  height: 72,
-                  child: Icon(CoolIcons.text,
-                      color: AppColors.iconPrimary, size: 36),
-                ),
-              ),
-              const SizedBox(height: 24),
 
               Text(
                 'Koppelcode invoeren',
@@ -147,9 +148,12 @@ class _KoppelcodeInvoerenScreenState
                           color: AppColors.dangerSolid, size: 18),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(_error!,
-                            style: TextStyle(
-                                color: AppColors.dangerText, fontSize: 13)),
+                        child: Semantics(
+                          liveRegion: true,
+                          child: Text(_error!,
+                              style: TextStyle(
+                                  color: AppColors.dangerText, fontSize: 13)),
+                        ),
                       ),
                     ],
                   ),
@@ -161,52 +165,59 @@ class _KoppelcodeInvoerenScreenState
                 key: _formKey,
                 child: Column(
                   children: [
-                    TextFormField(
-                      controller: _codeCtrl,
-                      textCapitalization: TextCapitalization.characters,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 6,
-                        color: AppColors.textPrimary,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'XXXXXXXX',
-                        hintStyle: TextStyle(
+                    Semantics(
+                      label: 'Koppelcode',
+                      textField: true,
+                      child: TextFormField(
+                        controller: _codeCtrl,
+                        textCapitalization: TextCapitalization.characters,
+                        textAlign: TextAlign.center,
+                        onChanged: (_) {
+                          if (_error != null) setState(() => _error = null);
+                        },
+                        style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 6,
-                          color: AppColors.textMuted,
+                          color: AppColors.textPrimary,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 20, horizontal: 16),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: AppColors.border),
+                        decoration: InputDecoration(
+                          hintText: 'XXXXXXXX',
+                          hintStyle: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 6,
+                            color: AppColors.textMuted,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 16),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: AppColors.border),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: AppColors.border),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(
+                                color: AppColors.primary, width: 1.5),
+                          ),
+                          filled: true,
+                          fillColor: AppColors.panel,
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: AppColors.border),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(
-                              color: AppColors.primary, width: 1.5),
-                        ),
-                        filled: true,
-                        fillColor: AppColors.panel,
+                        onFieldSubmitted: (_) => _koppel(),
+                        validator: (v) {
+                          if (v == null || v.trim().isEmpty) {
+                            return 'Vul de koppelcode in';
+                          }
+                          if (v.trim().length < 6) {
+                            return 'Code moet minimaal 6 tekens zijn';
+                          }
+                          return null;
+                        },
                       ),
-                      onFieldSubmitted: (_) => _koppel(),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) {
-                          return 'Vul de koppelcode in';
-                        }
-                        if (v.trim().length < 6) {
-                          return 'Code moet minimaal 6 tekens zijn';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(

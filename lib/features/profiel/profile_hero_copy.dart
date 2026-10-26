@@ -18,39 +18,47 @@ class LearnerProfileHeroCopy {
   });
 }
 
-bool _sameVisibleName(String? a, String? b) {
-  final left = a?.trim().toLowerCase() ?? '';
-  final right = b?.trim().toLowerCase() ?? '';
-  if (left.isEmpty || right.isEmpty) return false;
-  return left == right;
-}
-
 LearnerProfileHeroCopy buildLearnerProfileHeroCopy({
   required LeerlingProfiel? profiel,
   required Instructeur? instructeur,
+  String? accountEmail,
 }) {
   final name = profiel?.volledigeNaam.trim();
   final primary = (name != null && name.isNotEmpty) ? name : 'Mijn profiel';
-
-  final school = instructeur?.rijschoolNaam?.trim();
-  final instructorName = instructeur?.naam?.trim();
-  String? schoolLine;
-  if (school != null &&
-      school.isNotEmpty &&
-      !_sameVisibleName(school, primary)) {
-    schoolLine = school;
-  } else if (instructorName != null &&
-      instructorName.isNotEmpty &&
-      !_sameVisibleName(instructorName, primary)) {
-    schoolLine = instructorName;
-  }
+  final accountLine = leerlingHeaderEmail(
+    accountEmail: accountEmail,
+    profielEmail: profiel?.email,
+    instructeurEmail: instructeur?.email,
+  );
 
   return LearnerProfileHeroCopy(
     primaryTitle: primary,
-    schoolLine: schoolLine,
+    schoolLine: accountLine,
     statusLabel: profiel?.status.label ?? 'Actief',
     statusTone: learnerHeroBadgeTone(profiel?.status),
   );
+}
+
+/// Tweede regel van de profielkop: het e-mailadres van de ingelogde leerling.
+/// Het adres van de instructeur of rijschool hoort hier niet.
+String? leerlingHeaderEmail({
+  String? accountEmail,
+  String? profielEmail,
+  String? instructeurEmail,
+}) {
+  final vreemd = instructeurEmail?.trim().toLowerCase();
+  bool vanDeLeerling(String? raw) {
+    final value = raw?.trim();
+    if (value == null || value.isEmpty) return false;
+    if (vreemd != null && vreemd.isNotEmpty && value.toLowerCase() == vreemd) {
+      return false;
+    }
+    return true;
+  }
+
+  if (vanDeLeerling(accountEmail)) return accountEmail!.trim();
+  if (vanDeLeerling(profielEmail)) return profielEmail!.trim();
+  return null;
 }
 
 LearnerHeroBadgeTone learnerHeroBadgeTone(LeerlingStatus? status) {

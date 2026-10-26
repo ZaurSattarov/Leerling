@@ -7,6 +7,7 @@ import '../../shared/widgets/settings_design.dart';
 import '../../shared/widgets/status_badge.dart';
 import '../voortgang/lespakket_detail_provider.dart';
 import '../../core/constants/cool_icons.dart';
+import '../../core/utils/app_error_formatter.dart';
 
 /// Profiel -> Rijopleiding -> Lespakket (Fase 4). Bewust een NIEUW, apart
 /// scherm/route (i.p.v. het bestaande /voortgang/lespakket te hergebruiken):
@@ -47,7 +48,12 @@ class ProfielLespakketScreen extends ConsumerWidget {
                     EmptyState(
                       icon: CoolIcons.cloudOff,
                       title: 'Kon pakketgegevens niet laden',
-                      subtitle: e.toString(),
+                      subtitle: AppErrorFormatter.toFriendlyDutch(
+                        e,
+                        fallback: 'Pakketgegevens kunnen nu niet worden geladen.',
+                        contextMessage: 'Pakket laden',
+                      ),
+                      onAction: () => ref.invalidate(lespakketDetailProvider),
                     ),
                   ],
                 ),

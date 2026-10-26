@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/les.dart';
 import '../../models/les_evaluatie.dart';
@@ -59,7 +60,12 @@ class LesDetailScreen extends ConsumerWidget {
                 child: EmptyState(
                   icon: CoolIcons.cloudOff,
                   title: 'Kon les niet laden',
-                  subtitle: e.toString(),
+                  subtitle: AppErrorFormatter.toFriendlyDutch(
+                    e,
+                    fallback: 'Deze les kan nu niet worden geladen.',
+                    contextMessage: 'Les laden',
+                  ),
+                  onAction: () => ref.invalidate(lesDetailProvider(id)),
                 ),
               ),
             ),
@@ -86,8 +92,12 @@ class _LesDetailBody extends ConsumerWidget {
     // Rijschoolnaam komt uit de bestaande gekoppelde instructeur/
     // rijschoolbron (dezelfde provider als "Mijn rijschool") -- géén
     // hardcoded naam en géén fallback-tekst wanneer die ontbreekt.
-    final rijschoolNaam =
-        ref.watch(mijnInstructeurProvider).valueOrNull?.rijschoolNaam?.trim();
+    final gekoppeldeInstructeur =
+        ref.watch(mijnInstructeurProvider).valueOrNull;
+    final rijschoolNaam = gekoppeldeInstructeur?.rijschoolNaam?.trim();
+    // Valt de les zelf zonder instructeursnaam binnen, dan gebruiken we de
+    // naam van de gekoppelde instructeur (LA-21).
+    final instructeurFallback = gekoppeldeInstructeur?.naam?.trim();
     final bottomPadding = MediaQuery.paddingOf(context).bottom + 96;
 
     return CustomScrollView(
@@ -104,7 +114,22 @@ class _LesDetailBody extends ConsumerWidget {
               // lestype). Voertuig staat hier bewust NIET meer bij -- die
               // heeft nu precies één plek, de LesvoertuigCard hieronder
               // (was eerder dubbel: hier én als losse kaart).
-              _LesInformatieCard(les: les, rijschoolNaam: rijschoolNaam),
+              _LesInformatieCard(
+                les: les,
+                rijschoolNaam: rijschoolNaam,
+                instructeurFallback: instructeurFallback,
+              ),
+              if (les.status == LesStatus.gepland) ...[
+                const SizedBox(height: 12),
+                Text(
+                  'Neem contact op met je instructeur om te verzetten.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.4,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
               const SizedBox(height: 10),
               if (les.status == LesStatus.gepland)
                 _CanonicalVoorbereidingVoorKomendeLes(les: les),
@@ -346,11 +371,20 @@ class _DetailDateBlock extends StatelessWidget {
 class _LesInformatieCard extends StatelessWidget {
   final Les les;
   final String? rijschoolNaam;
-  const _LesInformatieCard({required this.les, this.rijschoolNaam});
+  final String? instructeurFallback;
+  const _LesInformatieCard({
+    required this.les,
+    this.rijschoolNaam,
+    this.instructeurFallback,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final instructeurNaam = les.instructeurNaam?.trim();
+    final lesInstructeur = les.instructeurNaam?.trim();
+    final instructeurNaam =
+        (lesInstructeur != null && lesInstructeur.isNotEmpty)
+            ? lesInstructeur
+            : instructeurFallback;
     final toonInstructeur = instructeurNaam != null &&
         instructeurNaam.isNotEmpty &&
         !instructeurNaam.contains('@');
@@ -1380,8 +1414,7 @@ class _KaartPin extends StatelessWidget {
         ],
       ),
       alignment: Alignment.center,
-      child:
-          Icon(CoolIcons.mapPin, color: AppColors.iconPrimary, size: 20),
+      child: Icon(CoolIcons.mapPin, color: AppColors.iconPrimary, size: 20),
     );
   }
 }

@@ -30,6 +30,29 @@ class Notificatie {
   }) : createdAt = createdAt ?? aangemaaktOp;
 
   bool get isMock => id.startsWith('mock-');
+
+  static final RegExp _uuid = RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$');
+
+  /// Les waar deze melding over gaat (uit `/planning/:id` of de metadata),
+  /// of null als de melding niet aan een les hangt.
+  String? get lesId {
+    if (isMock) return null;
+    final segmenten = Uri.tryParse(targetRoute)?.pathSegments ?? const [];
+    if (segmenten.length == 2 &&
+        segmenten.first == 'planning' &&
+        _uuid.hasMatch(segmenten.last)) {
+      return segmenten.last;
+    }
+    if (type.startsWith('lesson_') || type == 'les') {
+      for (final sleutel in const ['les_id', 'lesson_id', 'entity_id']) {
+        final waarde = metadata[sleutel]?.toString();
+        if (waarde != null && _uuid.hasMatch(waarde)) return waarde;
+      }
+    }
+    return null;
+  }
+
   String? get tekst => bericht ?? omschrijving;
 
   /// Valideert een ruwe push-route (canonical FCM `target_route` veld).

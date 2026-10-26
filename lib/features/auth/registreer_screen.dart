@@ -7,6 +7,7 @@ import '../../core/config/app_config.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import 'auth_design.dart';
+import 'externe_login_bevestiging.dart';
 import 'social_login_widgets.dart';
 import '../../core/constants/cool_icons.dart';
 
@@ -101,6 +102,8 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
   // de bestaande koppelcode-flow aan een leerlingprofiel gekoppeld.
   Future<void> _meldAanMetGoogle() async {
     if (_laden) return;
+    if (!await bevestigDoorsturen(context, 'Google')) return;
+    if (!mounted) return;
     FocusScope.of(context).unfocus();
     setState(() => _laden = true);
 
@@ -150,6 +153,8 @@ class _RegistreerScreenState extends State<RegistreerScreen> {
 
   Future<void> _meldAanMetFacebook() async {
     if (_laden) return;
+    if (!await bevestigDoorsturen(context, 'Facebook')) return;
+    if (!mounted) return;
     FocusScope.of(context).unfocus();
     setState(() => _laden = true);
 
@@ -402,14 +407,19 @@ class _Veld extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      autocorrect: false,
-      enableSuggestions: keyboardType != TextInputType.emailAddress,
-      style: GoogleFonts.inter(fontSize: 14, color: AppColors.dark),
-      decoration: AuthDesign.inputDecoration(hint: hint, iconData: suffixIcon),
-      validator: validator,
+    return Semantics(
+      label: hint,
+      textField: true,
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        autocorrect: false,
+        enableSuggestions: keyboardType != TextInputType.emailAddress,
+        style: GoogleFonts.inter(fontSize: 14, color: AppColors.dark),
+        decoration:
+            AuthDesign.inputDecoration(hint: hint, iconData: suffixIcon),
+        validator: validator,
+      ),
     );
   }
 }
@@ -431,25 +441,31 @@ class _WachtwoordVeld extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      obscureText: !zichtbaar,
-      autocorrect: false,
-      enableSuggestions: false,
-      style: GoogleFonts.inter(fontSize: 14, color: AppColors.dark),
-      decoration: AuthDesign.inputDecoration(
-        hint: hint,
-        iconData: CoolIcons.lock,
-        suffixIcon: IconButton(
-          icon: Icon(
-            zichtbaar ? CoolIcons.hide : CoolIcons.show,
-            color: AuthDesign.icon,
-            size: 20,
+    return Semantics(
+      label: hint,
+      textField: true,
+      obscured: !zichtbaar,
+      child: TextFormField(
+        controller: controller,
+        obscureText: !zichtbaar,
+        autocorrect: false,
+        enableSuggestions: false,
+        style: GoogleFonts.inter(fontSize: 14, color: AppColors.dark),
+        decoration: AuthDesign.inputDecoration(
+          hint: hint,
+          iconData: CoolIcons.lock,
+          suffixIcon: IconButton(
+            tooltip: zichtbaar ? 'Wachtwoord verbergen' : 'Wachtwoord tonen',
+            icon: Icon(
+              zichtbaar ? CoolIcons.hide : CoolIcons.show,
+              color: AuthDesign.icon,
+              size: 20,
+            ),
+            onPressed: onToggle,
           ),
-          onPressed: onToggle,
         ),
+        validator: validator,
       ),
-      validator: validator,
     );
   }
 }

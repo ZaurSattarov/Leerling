@@ -1,13 +1,61 @@
+import '../../shared/widgets/bevestig_uitloggen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/services/avatar_service.dart';
 import '../../core/services/student_service.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../core/constants/cool_icons.dart';
 import '../../shared/widgets/settings_design.dart';
+
+/// Vult alleen velden die de leerling nog leeg heeft gelaten.
+/// Een laat binnengekomen profiel mag getypte tekst niet wissen.
+@visibleForTesting
+ProfielAfrondenInvulling vulAlleenLegeProfielvelden({
+  required String getypteAchternaam,
+  required String getyptAdres,
+  required String? gekozenAvatar,
+  required String? gekozenGeslacht,
+  required DateTime? gekozenGeboortedatum,
+  required String profielAchternaam,
+  required String? profielAdres,
+  required String? profielAvatar,
+  required String? profielGeslacht,
+  required String? profielGeboortedatum,
+}) {
+  return ProfielAfrondenInvulling(
+    achternaam: getypteAchternaam.trim().isNotEmpty
+        ? getypteAchternaam
+        : profielAchternaam,
+    adres: getyptAdres.trim().isNotEmpty ? getyptAdres : (profielAdres ?? ''),
+    avatarId: gekozenAvatar ?? profielAvatar,
+    geslacht: gekozenGeslacht ?? profielGeslacht,
+    geboortedatum: gekozenGeboortedatum ??
+        (profielGeboortedatum == null
+            ? null
+            : DateTime.tryParse(profielGeboortedatum)),
+  );
+}
+
+@visibleForTesting
+class ProfielAfrondenInvulling {
+  final String achternaam;
+  final String adres;
+  final String? avatarId;
+  final String? geslacht;
+  final DateTime? geboortedatum;
+
+  const ProfielAfrondenInvulling({
+    required this.achternaam,
+    required this.adres,
+    required this.avatarId,
+    required this.geslacht,
+    required this.geboortedatum,
+  });
+}
 
 class ProfielAfrondenScreen extends ConsumerStatefulWidget {
   const ProfielAfrondenScreen({super.key});
@@ -87,7 +135,11 @@ class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
       if (mounted) {
         setState(() {
           _saving = false;
-          _error = error.toString().replaceFirst('Exception: ', '');
+          _error = AppErrorFormatter.toFriendlyDutch(
+            error,
+            fallback: 'Opslaan mislukt. Probeer het opnieuw.',
+            contextMessage: 'Profiel afronden',
+          );
         });
       }
     }
@@ -99,168 +151,221 @@ class _ProfielAfrondenScreenState extends ConsumerState<ProfielAfrondenScreen> {
     final profile = ref.watch(mijnProfielProvider).valueOrNull;
     if (!_prefilled && profile != null) {
       _prefilled = true;
-      _achternaam.text = profile.achternaam;
-      _avatarId = profile.avatarId;
-      _adres.text = profile.adres ?? '';
-      _geslacht = profile.geslacht;
-      final rawDate = profile.geboortedatum;
-      if (rawDate != null) _geboortedatum = DateTime.tryParse(rawDate);
+      final binnengekomen = profile;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final invulling = vulAlleenLegeProfielvelden(
+          getypteAchternaam: _achternaam.text,
+          getyptAdres: _adres.text,
+          gekozenAvatar: _avatarId,
+          gekozenGeslacht: _geslacht,
+          gekozenGeboortedatum: _geboortedatum,
+          profielAchternaam: binnengekomen.achternaam,
+          profielAdres: binnengekomen.adres,
+          profielAvatar: binnengekomen.avatarId,
+          profielGeslacht: binnengekomen.geslacht,
+          profielGeboortedatum: binnengekomen.geboortedatum,
+        );
+        final achternaamWijzigt = _achternaam.text != invulling.achternaam;
+        final adresWijzigt = _adres.text != invulling.adres;
+        final overigWijzigt = _avatarId != invulling.avatarId ||
+            _geslacht != invulling.geslacht ||
+            _geboortedatum != invulling.geboortedatum;
+        if (!achternaamWijzigt && !adresWijzigt && !overigWijzigt) return;
+        setState(() {
+          if (achternaamWijzigt) _achternaam.text = invulling.achternaam;
+          if (adresWijzigt) _adres.text = invulling.adres;
+          _avatarId = invulling.avatarId;
+          _geslacht = invulling.geslacht;
+          _geboortedatum = invulling.geboortedatum;
+        });
+      });
     }
     // Opbouw 1-op-1 als de bewerkschermen in de Instructeur-app: label boven
     // het veld, gecentreerde titel en het groene vinkje rechtsboven om op te
     // slaan (i.p.v. een losse knop onderaan).
-    return Scaffold(
-      backgroundColor: SettingsDesign.background,
-      appBar: AppBar(
-        backgroundColor: SettingsDesign.background,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: Text(
-          'Maak je profiel af',
-          style: TextStyle(
-              color: SettingsDesign.title,
-              fontSize: 20,
-              fontWeight: FontWeight.w600),
-        ),
-        leading: IconButton(
-          tooltip: 'Uitloggen',
-          icon: Icon(CoolIcons.logOut,
-              color: SettingsDesign.iconDark, size: 22),
-          onPressed: _saving
-              ? null
-              : () async {
-                  await StudentService.uitloggen();
-                  ref.invalidate(mijnProfielProvider);
-                  if (context.mounted) context.go('/login');
-                },
-        ),
-        actions: [
-          IconButton(
-            onPressed: _saving ? null : _save,
-            icon: _saving
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(CoolIcons.check,
-                    color: SettingsDesign.switchOn, size: 28),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: SettingsDesign.screenPadding,
-          children: [
-            Text(
-              'Je profiel is al gekoppeld. Vul de ontbrekende gegevens aan om Klantio te gebruiken.',
-              style: TextStyle(
-                fontSize: 14,
-                height: 1.4,
-                color: SettingsDesign.readOnlyText,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop || !context.mounted) return;
+        showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Rond eerst je profiel af'),
+            content: const Text(
+              'Vul je gegevens in en sla op. Uitloggen kan via de knop rechtsboven.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Oké'),
               ),
+            ],
+          ),
+        );
+      },
+      child: Scaffold(
+        backgroundColor: SettingsDesign.background,
+        appBar: AppBar(
+          backgroundColor: SettingsDesign.background,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          title: Text(
+            'Maak je profiel af',
+            style: TextStyle(
+                color: SettingsDesign.title,
+                fontSize: 20,
+                fontWeight: FontWeight.w600),
+          ),
+          actions: [
+            IconButton(
+              tooltip: 'Uitloggen',
+              icon: Icon(CoolIcons.logOut,
+                  color: SettingsDesign.iconDark, size: 22),
+              onPressed: _saving
+                  ? null
+                  : () async {
+                      if (!await bevestigUitloggen(context)) return;
+                      await StudentService.uitloggen();
+                      ref.invalidate(mijnProfielProvider);
+                      if (context.mounted) context.go('/login');
+                    },
             ),
-            const SizedBox(height: 24),
-            SettingsVeld(
-              controller: _achternaam,
-              label: 'Achternaam',
-              hint: 'Achternaam',
+            IconButton(
+              tooltip: 'Opslaan',
+              onPressed: _saving ? null : _save,
+              icon: _saving
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(CoolIcons.check,
+                      color: SettingsDesign.switchOn, size: 28),
             ),
-            const SizedBox(height: 14),
-            SettingsWaarde(label: 'E-mailadres', waarde: email),
-            const SizedBox(height: 14),
-            const SettingsSectieLabel('Geboortedatum'),
-            const SizedBox(height: 6),
-            GestureDetector(
-              onTap: _pickDate,
-              child: Container(
-                height: 48,
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: AppColors.panel,
-                  borderRadius: BorderRadius.circular(16),
+          ],
+        ),
+        body: SafeArea(
+          child: ListView(
+            padding: SettingsDesign.screenPadding,
+            children: [
+              Text(
+                'Je profiel is al gekoppeld. Vul de ontbrekende gegevens aan om Klantio te gebruiken.',
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.4,
+                  color: SettingsDesign.readOnlyText,
                 ),
-                child: Text(
-                  _geboortedatum == null
-                      ? 'Kies geboortedatum'
-                      : '${_geboortedatum!.day}-${_geboortedatum!.month}-${_geboortedatum!.year}',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: _geboortedatum == null
-                        ? SettingsDesign.fieldLabel
-                        : SettingsDesign.title,
+              ),
+              const SizedBox(height: 24),
+              SettingsVeld(
+                controller: _achternaam,
+                label: 'Achternaam',
+                hint: 'Achternaam',
+              ),
+              const SizedBox(height: 14),
+              SettingsWaarde(label: 'E-mailadres', waarde: email),
+              const SizedBox(height: 14),
+              const SettingsSectieLabel('Geboortedatum'),
+              const SizedBox(height: 6),
+              GestureDetector(
+                onTap: _pickDate,
+                child: Container(
+                  height: 48,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: AppColors.panel,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    _geboortedatum == null
+                        ? 'Kies geboortedatum'
+                        : '${_geboortedatum!.day}-${_geboortedatum!.month}-${_geboortedatum!.year}',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: _geboortedatum == null
+                          ? SettingsDesign.fieldLabel
+                          : SettingsDesign.title,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 14),
-            SettingsVeld(
-              controller: _adres,
-              label: 'Adres',
-              hint: 'Adres',
-            ),
-            const SizedBox(height: 14),
-            const SettingsSectieLabel('Geslacht'),
-            const SizedBox(height: 6),
-            Row(children: [
-              Expanded(
-                child: _GeslachtOptie(
-                  label: 'Man',
-                  selected: _geslacht == 'man',
-                  onTap: () => setState(() => _geslacht = 'man'),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _GeslachtOptie(
-                  label: 'Vrouw',
-                  selected: _geslacht == 'vrouw',
-                  onTap: () => setState(() => _geslacht = 'vrouw'),
-                ),
-              ),
-            ]),
-            const SizedBox(height: 24),
-            const SettingsSectieLabel('Kies een avatar'),
-            const SizedBox(height: 10),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5, mainAxisSpacing: 10, crossAxisSpacing: 10),
-              itemCount: AvatarService.avatars.length,
-              itemBuilder: (_, index) {
-                final avatar = AvatarService.avatars[index];
-                final selected = avatar.id == _avatarId;
-                return InkWell(
-                    onTap: () => setState(() => _avatarId = avatar.id),
-                    borderRadius: BorderRadius.circular(14),
-                    child: Container(
-                        padding: const EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                                color: selected
-                                    ? AppColors.primary
-                                    : Colors.transparent,
-                                width: 3)),
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.asset(avatar.assetPath,
-                                fit: BoxFit.cover))));
-              },
-            ),
-            if (_error != null) ...[
               const SizedBox(height: 14),
-              Text(_error!,
-                  style: TextStyle(
-                      fontSize: 14, color: AppColors.dangerText))
+              SettingsVeld(
+                controller: _adres,
+                label: 'Adres',
+                hint: 'Adres',
+              ),
+              const SizedBox(height: 14),
+              const SettingsSectieLabel('Geslacht'),
+              const SizedBox(height: 6),
+              Row(children: [
+                Expanded(
+                  child: _GeslachtOptie(
+                    label: 'Man',
+                    selected: _geslacht == 'man',
+                    onTap: () => setState(() => _geslacht = 'man'),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _GeslachtOptie(
+                    label: 'Vrouw',
+                    selected: _geslacht == 'vrouw',
+                    onTap: () => setState(() => _geslacht = 'vrouw'),
+                  ),
+                ),
+              ]),
+              const SizedBox(height: 24),
+              const SettingsSectieLabel('Kies een avatar'),
+              const SizedBox(height: 10),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 5,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10),
+                itemCount: AvatarService.avatars.length,
+                itemBuilder: (_, index) {
+                  final avatar = AvatarService.avatars[index];
+                  final selected = avatar.id == _avatarId;
+                  return Semantics(
+                      button: true,
+                      selected: selected,
+                      label: 'Avatar ${index + 1}',
+                      excludeSemantics: true,
+                      onTap: () => setState(() => _avatarId = avatar.id),
+                      child: InkWell(
+                          onTap: () => setState(() => _avatarId = avatar.id),
+                          borderRadius: BorderRadius.circular(14),
+                          child: Container(
+                              padding: const EdgeInsets.all(3),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                      color: selected
+                                          ? AppColors.primary
+                                          : Colors.transparent,
+                                      width: 3)),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.asset(avatar.assetPath,
+                                      fit: BoxFit.cover)))));
+                },
+              ),
+              if (_error != null) ...[
+                const SizedBox(height: 14),
+                Text(_error!,
+                    style: TextStyle(fontSize: 14, color: AppColors.dangerText))
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

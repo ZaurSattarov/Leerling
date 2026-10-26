@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
+import '../../core/utils/school_tijd.dart';
 import '../../core/services/leerling_notificatie_router.dart';
 import '../../core/services/student_service.dart';
 import '../../models/notificatie.dart';
@@ -20,6 +22,8 @@ class NotificatiesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notificatiesAsync = ref.watch(notificatiesProvider);
+    final verwijderd = ref.watch(verwijderdeLesMeldingenProvider).valueOrNull ??
+        const <String>{};
 
     return Scaffold(
       backgroundColor: AppColors.pageBg,
@@ -71,6 +75,7 @@ class NotificatiesScreen extends ConsumerWidget {
                                 label: groep.label,
                                 items: groep.items,
                                 ref: ref,
+                                verwijderd: verwijderd,
                               ),
                           ]),
                         ),
@@ -92,7 +97,12 @@ class NotificatiesScreen extends ConsumerWidget {
                       child: EmptyState(
                         icon: CoolIcons.cloudOff,
                         title: 'Kon meldingen niet laden',
-                        subtitle: e.toString(),
+                        subtitle: AppErrorFormatter.toFriendlyDutch(
+                          e,
+                          fallback: 'Meldingen kunnen nu niet worden geladen.',
+                          contextMessage: 'Meldingen laden',
+                        ),
+                        onAction: () => ref.invalidate(notificatiesProvider),
                       ),
                     ),
                   ),
@@ -131,17 +141,17 @@ List<_NotificatieGroep> _groepeerNotificaties(List<Notificatie> notificaties) {
   final vandaag = <Notificatie>[];
   final dezeWeek = <Notificatie>[];
   final eerder = <Notificatie>[];
-  final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
+  // Dagindeling in schooltijd (Europe/Amsterdam), niet in de tijdzone van het
+  // toestel (LA-30).
+  final nu = DateTime.now();
 
   for (final notificatie in notificaties) {
-    final created = DateTime.tryParse(notificatie.createdAt)?.toLocal();
+    final created = DateTime.tryParse(notificatie.createdAt);
     if (created == null) {
       eerder.add(notificatie);
       continue;
     }
-    final day = DateTime(created.year, created.month, created.day);
-    final diff = today.difference(day).inDays;
+    final diff = dagenGeledenSchool(created, nu: nu);
     if (diff == 0) {
       vandaag.add(notificatie);
     } else if (diff < 7) {
@@ -162,11 +172,13 @@ class _MeldingSectie extends StatelessWidget {
   final String label;
   final List<Notificatie> items;
   final WidgetRef ref;
+  final Set<String> verwijderd;
 
   const _MeldingSectie({
     required this.label,
     required this.items,
     required this.ref,
+    this.verwijderd = const <String>{},
   });
 
   @override
@@ -204,7 +216,11 @@ class _MeldingSectie extends StatelessWidget {
           for (final n in items)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: _NotificatieCard(notificatie: n, ref: ref),
+              child: _NotificatieCard(
+                notificatie: n,
+                ref: ref,
+                lesVerwijderd: verwijderd.contains(n.id),
+              ),
             ),
         ],
       ),
@@ -215,152 +231,186 @@ class _MeldingSectie extends StatelessWidget {
 class _NotificatieCard extends ConsumerWidget {
   final Notificatie notificatie;
   final WidgetRef ref;
+  final bool lesVerwijderd;
 
-  const _NotificatieCard({required this.notificatie, required this.ref});
+  const _NotificatieCard({
+    required this.notificatie,
+    required this.ref,
+    this.lesVerwijderd = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isOngelezen = !notificatie.gelezen;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () async {
-          if (!notificatie.gelezen && !notificatie.isMock) {
-            final profiel = await ref.read(mijnProfielProvider.future);
-            if (profiel != null) {
-              await StudentService.markeerGelezen(notificatie.id, profiel.id);
-              ref.invalidate(notificatiesProvider);
-            }
-          }
-          if (context.mounted) {
-            await openLeerlingNotificatie(notificatie, context: context);
-          }
-        },
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-          decoration: BoxDecoration(
-            color: AppColors.panel,
+    final tijdLabel = _tijdLabel(notificatie.aangemaaktOp);
+    return Semantics(
+      container: true,
+      label: [
+        if (lesVerwijderd) 'Les verwijderd',
+        notificatie.titel,
+        if (notificatie.tekst?.trim().isNotEmpty == true) notificatie.tekst!,
+        if (tijdLabel.isNotEmpty) tijdLabel,
+      ].join('. '),
+      child: Opacity(
+        opacity: lesVerwijderd ? 0.55 : 1,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border, width: 1),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x080F172A),
-                blurRadius: 6,
-                offset: Offset(0, 2),
+            onTap: () async {
+              if (!notificatie.gelezen && !notificatie.isMock) {
+                final profiel = await ref.read(mijnProfielProvider.future);
+                if (profiel != null) {
+                  await StudentService.markeerGelezen(
+                      notificatie.id, profiel.id);
+                  ref.invalidate(notificatiesProvider);
+                }
+              }
+              if (!context.mounted) return;
+              if (lesVerwijderd) {
+                // Geen navigatie naar een foutscherm: korte uitleg i.p.v.
+                // 'Les niet gevonden'.
+                showAppSnackBar(context, kLesVerwijderdUitleg);
+                return;
+              }
+              await openLeerlingNotificatie(notificatie, context: context);
+            },
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+              decoration: BoxDecoration(
+                color: AppColors.panel,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border, width: 1),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x080F172A),
+                    blurRadius: 6,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 3,
-                height: 40,
-                child: Center(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 160),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
                     width: 3,
-                    height: isOngelezen ? 22 : 0,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: Center(
-                  child: IsomorphicDockNotificationIcon(
-                    type: notificatie.type,
-                    title: notificatie.titel,
-                    detail: notificatie.tekst ?? '',
-                    size: 38,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            notificatie.titel,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 13.5,
-                              height: 1.25,
-                              fontWeight: isOngelezen
-                                  ? FontWeight.w700
-                                  : FontWeight.w600,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          _tijdGeleden(notificatie.aangemaaktOp),
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF64748B),
-                            height: 1.35,
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (notificatie.tekst?.trim().isNotEmpty == true) ...[
-                      const SizedBox(height: 3),
-                      Text(
-                        notificatie.tekst!,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          height: 1.38,
-                          color: Color(0xFF64748B),
+                    height: 40,
+                    child: Center(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 160),
+                        width: 3,
+                        height: isOngelezen ? 22 : 0,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(999),
                         ),
                       ),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(width: 6),
-              if (isOngelezen)
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF2563EB),
-                    shape: BoxShape.circle,
+                    ),
                   ),
-                ),
-            ],
+                  const SizedBox(width: 10),
+                  SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: Center(
+                      child: IsomorphicDockNotificationIcon(
+                        type: notificatie.type,
+                        title: notificatie.titel,
+                        detail: notificatie.tekst ?? '',
+                        size: 38,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                notificatie.titel,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 13.5,
+                                  height: 1.25,
+                                  fontWeight: isOngelezen
+                                      ? FontWeight.w700
+                                      : FontWeight.w600,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              tijdLabel,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF64748B),
+                                height: 1.35,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (notificatie.tekst?.trim().isNotEmpty == true) ...[
+                          const SizedBox(height: 3),
+                          Text(
+                            notificatie.tekst!,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              height: 1.38,
+                              color: Color(0xFF64748B),
+                            ),
+                          ),
+                        ],
+                        if (lesVerwijderd) ...[
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Les verwijderd',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF64748B),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  if (isOngelezen)
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF2563EB),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 
-  String _tijdGeleden(String ts) {
+  /// 'Nu' / '12m' in het eerste uur, daarna het tijdstip in schooltijd
+  /// ('vandaag 10:50', 'gisteren 21:05', 'ma 26 okt 10:50').
+  String _tijdLabel(String ts) {
     try {
-      final dt = DateTime.parse(ts).toLocal();
+      final dt = DateTime.parse(ts);
       final diff = DateTime.now().difference(dt);
       if (diff.inMinutes < 1) return 'Nu';
       if (diff.inMinutes < 60) return '${diff.inMinutes}m';
-      if (diff.inHours < 24) return '${diff.inHours}u';
-      if (diff.inDays == 1) return 'Gisteren';
-      if (diff.inDays < 7) return '${diff.inDays}d';
-      return '${dt.day}-${dt.month}-${dt.year}';
+      return schoolTijdstempelLabel(dt);
     } catch (_) {
       return '';
     }
@@ -376,17 +426,27 @@ class AllesGelezenKnop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final actief = onPressed != null;
-    return KlantioPressable(
+    return Semantics(
+      button: true,
+      enabled: actief,
+      label: 'Alles als gelezen markeren',
+      excludeSemantics: true,
       onTap: onPressed,
-      child: SizedBox(
-        width: 40,
-        height: 40,
-        child: Center(
-          child: Icon(
-            CoolIcons.checkAll,
-            size: 22,
-            color:
-                const Color(0xFFF8FAFC).withValues(alpha: actief ? 1.0 : 0.35),
+      child: Tooltip(
+        message: 'Alles als gelezen markeren',
+        child: KlantioPressable(
+          onTap: onPressed,
+          child: SizedBox(
+            width: 48,
+            height: 48,
+            child: Center(
+              child: Icon(
+                CoolIcons.checkAll,
+                size: 22,
+                color: const Color(0xFFF8FAFC)
+                    .withValues(alpha: actief ? 1.0 : 0.35),
+              ),
+            ),
           ),
         ),
       ),

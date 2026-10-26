@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/services/avatar_service.dart';
 import '../../core/services/student_service.dart';
 import '../../models/leerling_profiel.dart';
@@ -117,7 +118,11 @@ class _EditableProfielAvatarState extends ConsumerState<EditableProfielAvatar> {
       if (mounted) {
         showAppSnackBar(
           context,
-          e.toString().replaceFirst('Exception: ', ''),
+          AppErrorFormatter.toFriendlyDutch(
+            e,
+            fallback: 'De foto kon niet worden opgeslagen.',
+            contextMessage: 'Profielfoto',
+          ),
           isError: true,
         );
       }

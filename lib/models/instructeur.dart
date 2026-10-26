@@ -27,9 +27,19 @@ class Instructeur {
     this.kvkNummer,
   });
 
-  String get weergaveNaam => (rijschoolNaam?.isNotEmpty == true)
-      ? rijschoolNaam!
-      : (naam ?? 'Rijschool');
+  String get weergaveNaam {
+    final school = _naamZonderEmail(rijschoolNaam);
+    if (school != null) return school;
+    final persoon = _naamZonderEmail(naam);
+    if (persoon != null) return persoon;
+    return 'Je rijschool';
+  }
+
+  static String? _naamZonderEmail(String? waarde) {
+    final tekst = waarde?.trim() ?? '';
+    if (tekst.isEmpty || tekst.contains('@')) return null;
+    return tekst;
+  }
 
   String? get volledigAdres {
     if (adres == null && stad == null) return null;

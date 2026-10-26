@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../models/support_thread.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
@@ -65,7 +66,12 @@ class SupportInboxScreen extends ConsumerWidget {
                     EmptyState(
                       icon: CoolIcons.cloudOff,
                       title: 'Gesprekken konden niet worden geladen',
-                      subtitle: e.toString(),
+                      subtitle: AppErrorFormatter.toFriendlyDutch(
+                        e,
+                        fallback: 'Gesprekken kunnen nu niet worden geladen.',
+                        contextMessage: 'Support laden',
+                      ),
+                      onAction: () => ref.invalidate(supportThreadsProvider),
                     ),
                   ],
                 ),

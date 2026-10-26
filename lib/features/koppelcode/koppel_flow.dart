@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/services/student_service.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../shared/providers/auth_provider.dart';
 
 /// Gedeelde canonical koppelflow voor zowel de handmatige koppelcode-invoer
@@ -82,9 +83,12 @@ class KoppelFlow {
       // De canonical RPC gooit Exceptions met een Nederlandse `fout` uit
       // `res['fout']`. Toon die direct aan de leerling in plaats van een
       // technische Supabase-error.
-      final schoon = e.toString().replaceFirst('Exception: ', '').trim();
       throw KoppelException(
-        schoon.isEmpty ? 'Koppelen mislukt. Probeer het opnieuw.' : schoon,
+        AppErrorFormatter.toFriendlyDutch(
+          e,
+          fallback: 'Koppelen mislukt. Probeer het opnieuw.',
+          contextMessage: 'Koppelen',
+        ),
       );
     }
 

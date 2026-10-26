@@ -4,6 +4,7 @@ import 'core/routing/email_link_route.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,7 +29,10 @@ import 'features/koppelcode/koppelcode_screen.dart';
 import 'features/koppelcode/koppel_keuze_screen.dart';
 import 'features/koppelcode/qr_scan_screen.dart';
 import 'features/profiel/profiel_afronden_screen.dart';
+import 'features/home/home_provider.dart';
+import 'features/notificaties/notificaties_provider.dart';
 import 'features/home/home_screen.dart';
+import 'features/planning/planning_provider.dart';
 import 'features/planning/planning_screen.dart';
 import 'features/planning/les_detail_screen.dart';
 import 'features/les_logboek/les_logboek_screen.dart';
@@ -89,6 +93,19 @@ Future<void> _rondAuthCallbackAf(Uri uri) async {
 /// Centrale GoRouter-referentie voor push-deeplinks (zelfde patroon als
 /// factuur deep link via ref.read(_routerProvider).push in _LeerlingAppState).
 GoRouter? globalLeerlingGoRouter;
+
+/// Ververst na het hervatten van de app (LA-18) de lijsten die door de
+/// instructeur kunnen zijn gewijzigd terwijl de app op de achtergrond stond:
+/// komende/afgeronde lessen, home en meldingen. Losgetrokken van de
+/// lifecycle-callback zodat het testbaar is.
+void verversLeerlingDataBijHervatten(
+    void Function(ProviderOrFamily provider) invalidate) {
+  invalidate(komendeLessenProvider);
+  invalidate(vorigeLessenProvider);
+  invalidate(homeProvider);
+  invalidate(notificatiesProvider);
+  invalidate(ongelezenNotificatiesProvider);
+}
 
 class _AuthNotifier extends ChangeNotifier {
   _AuthNotifier(this._ref) {
@@ -520,35 +537,50 @@ final _routerProvider = Provider<GoRouter>((ref) {
             path: '/home',
             pageBuilder: (_, state) => NoTransitionPage(
               key: state.pageKey,
-              child: const HomeScreen(),
+              child: const HoofdtabTerugScope(
+              isHome: true,
+              child: HomeScreen(),
+            ),
             ),
           ),
           GoRoute(
             path: '/planning',
             pageBuilder: (_, state) => NoTransitionPage(
               key: state.pageKey,
-              child: const PlanningScreen(),
+              child: const HoofdtabTerugScope(
+              isHome: false,
+              child: PlanningScreen(),
+            ),
             ),
           ),
           GoRoute(
             path: '/voortgang',
             pageBuilder: (_, state) => NoTransitionPage(
               key: state.pageKey,
-              child: const VoortgangScreen(),
+              child: const HoofdtabTerugScope(
+              isHome: false,
+              child: VoortgangScreen(),
+            ),
             ),
           ),
           GoRoute(
             path: '/facturen',
             pageBuilder: (_, state) => NoTransitionPage(
               key: state.pageKey,
-              child: const FacturenScreen(),
+              child: const HoofdtabTerugScope(
+              isHome: false,
+              child: FacturenScreen(),
+            ),
             ),
           ),
           GoRoute(
             path: '/profiel',
             pageBuilder: (_, state) => NoTransitionPage(
               key: state.pageKey,
-              child: const ProfielScreen(),
+              child: const HoofdtabTerugScope(
+              isHome: false,
+              child: ProfielScreen(),
+            ),
             ),
           ),
         ],
@@ -636,6 +668,7 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
     if (state == AppLifecycleState.resumed) {
       PushService.onAppResumed();
       ref.read(arrivalControllerProvider.notifier).onAppResumed();
+      verversLeerlingDataBijHervatten(ref.invalidate);
     } else if (state == AppLifecycleState.paused) {
       ref.read(arrivalControllerProvider.notifier).onAppPaused();
     }
@@ -1204,6 +1237,13 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
     return MaterialApp.router(
       title: 'Mijn Rijschool',
       debugShowCheckedModeBanner: false,
+      locale: const Locale('nl', 'NL'),
+      supportedLocales: const [Locale('nl', 'NL'), Locale('en')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       routerConfig: router,
       themeMode: ref.watch(themeModeProvider),
       // Standaard donkere statusbalk-iconen op de lichte pagina's; de donkere

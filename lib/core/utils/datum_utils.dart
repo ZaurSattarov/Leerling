@@ -59,13 +59,13 @@ class DatumUtils {
   }
 
   static const List<String> _dagAfkortingen = [
-    'MAA',
-    'DIN',
-    'WOE',
-    'DON',
-    'VRI',
-    'ZAT',
-    'ZON',
+    'MA',
+    'DI',
+    'WO',
+    'DO',
+    'VR',
+    'ZA',
+    'ZO',
   ];
 
   static const List<String> _maandAfkortingen = [
@@ -83,9 +83,8 @@ class DatumUtils {
     'dec',
   ];
 
-  /// Drieletterige weekdagafkorting (MAA..ZON) voor het compacte datumblok
-  /// bij "Volgende les" (Home, Planning, Lesdetails) -- centraal zodat
-  /// deze drie schermen nooit uit elkaar kunnen lopen.
+  /// Tweeletterige weekdagafkorting (MA..ZO) voor het compacte datumblok
+  /// bij "Volgende les" (Home, Planning, Lesdetails).
   static String dagAfkorting(String dateStr) {
     try {
       return _dagAfkortingen[DateTime.parse(dateStr).weekday - 1];

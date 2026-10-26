@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/services/student_service.dart';
 import '../../core/utils/tijd_invoer_formatter.dart';
 import '../../models/leerling_beschikbaarheid.dart';
 import '../../models/leerling_profiel.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/main_scaffold.dart';
 import '../../shared/widgets/snackbar.dart';
 import '../../core/constants/cool_icons.dart';
 
@@ -64,7 +66,11 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
       if (mounted) {
         setState(() {
           _laden = false;
-          _fout = e.toString();
+          _fout = AppErrorFormatter.toFriendlyDutch(
+            e,
+            fallback: 'Je tijden kunnen nu niet worden geladen.',
+            contextMessage: 'Beschikbaarheid laden',
+          );
         });
       }
     }
@@ -89,14 +95,13 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
     if (profiel == null) return;
     _formulierOpen = true;
     try {
-      await showModalBottomSheet<void>(
+      await showKlantioNavbarSafeSheet<void>(
         context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (ctx) => _BeschikbaarheidFormulier(
+        builder: (ctx, bottom) => _BeschikbaarheidFormulier(
           bestaand: bestaand,
           leerlingId: profiel.id,
           instructeurId: profiel.instructeurId,
+          bottomInset: bottom,
           onOpgeslagen: _refresh,
         ),
       );
@@ -211,11 +216,26 @@ class _BeschikbaarheidScreenState extends ConsumerState<BeschikbaarheidScreen> {
                             ),
                           ),
                           IconButton(
+                            tooltip: 'Sluiten',
                             icon: Icon(CoolIcons.closeMd,
                                 size: 20, color: AppColors.iconPrimary),
                             onPressed: () => Navigator.of(context).maybePop(),
                           ),
                         ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Geef je tijden door. Je instructeur plant de les in.',
+                          style: TextStyle(
+                            fontSize: 13,
+                            height: 1.35,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
                       ),
                     ),
                     Flexible(child: _inhoud()),
@@ -377,8 +397,8 @@ class _BeschikbaarheidTegel extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   '${item.startTijdKort} – ${item.eindTijdKort}',
-                  style: TextStyle(
-                      fontSize: 13, color: AppColors.textSecondary),
+                  style:
+                      TextStyle(fontSize: 13, color: AppColors.textSecondary),
                 ),
               ],
             ),
@@ -403,12 +423,10 @@ class _BeschikbaarheidTegel extends StatelessWidget {
 
           // Verwijder knop
           IconButton(
+            tooltip: 'Tijdblok verwijderen',
             icon: Icon(CoolIcons.trashEmpty,
                 color: AppColors.iconPrimary, size: 20),
             onPressed: onVerwijder,
-            style: IconButton.styleFrom(
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
           ),
         ],
       ),
@@ -422,6 +440,7 @@ class _BeschikbaarheidFormulier extends ConsumerStatefulWidget {
   final LeerlingBeschikbaarheid? bestaand;
   final String leerlingId;
   final String instructeurId;
+  final double? bottomInset;
   final Future<void> Function() onOpgeslagen;
 
   const _BeschikbaarheidFormulier({
@@ -429,6 +448,7 @@ class _BeschikbaarheidFormulier extends ConsumerStatefulWidget {
     required this.leerlingId,
     required this.instructeurId,
     required this.onOpgeslagen,
+    this.bottomInset,
   });
 
   @override
@@ -570,169 +590,178 @@ class _BeschikbaarheidFormulierState
 
   @override
   Widget build(BuildContext context) {
-    final insets = MediaQuery.viewInsetsOf(context);
-    return SafeArea(
-      child: Container(
-        margin: const EdgeInsets.all(16),
-        padding: EdgeInsets.fromLTRB(24, 24, 24, 24 + insets.bottom),
-        decoration: BoxDecoration(
-          color: AppColors.panel,
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Titel
-              Text(
-                widget.bestaand != null
-                    ? 'Tijdblok bewerken'
-                    : 'Tijdblok toevoegen',
+    // Rand tot rand, alleen bovenhoeken afgerond (via showKlantioNavbarSafeSheet);
+    // safe-area/toetsenbord-inset zit BINNEN de gekleurde container.
+    final onder = widget.bottomInset ?? bottomSheetSafeInset(context);
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColors.panel,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(24, 12, 24, onder),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Titel
+            Text(
+              widget.bestaand != null
+                  ? 'Tijdblok bewerken'
+                  : 'Tijdblok toevoegen',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Geef aan wanneer je rijles kunt volgen.',
+              style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Dag
+            Text('Dag',
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary)),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<int>(
+              initialValue: _dag,
+              decoration: const InputDecoration(),
+              items: List.generate(
+                7,
+                (i) => DropdownMenuItem(
+                  value: i,
+                  child: Text(LeerlingBeschikbaarheid.dagNamen[i]),
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                'Geef aan wanneer je rijles kunt volgen.',
-                style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-              ),
+              onChanged: _opslaan ? null : (v) => setState(() => _dag = v!),
+            ),
 
-              const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
-              // Dag
-              Text('Dag',
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary)),
-              const SizedBox(height: 8),
-              DropdownButtonFormField<int>(
-                initialValue: _dag,
-                decoration: const InputDecoration(),
-                items: List.generate(
-                  7,
-                  (i) => DropdownMenuItem(
-                    value: i,
-                    child: Text(LeerlingBeschikbaarheid.dagNamen[i]),
+            // Begin en Einde -- rechtstreeks bewerkbaar, geen los sheet.
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _TijdVeldKaart(
+                    label: 'Begin',
+                    controller: _startCtrl,
+                    focusNode: _startFocus,
+                    heeftFout: _fout != null,
+                    enabled: !_opslaan,
+                    onChanged: (v) =>
+                        _onVeldGewijzigd(_ActiefTijdVeld.begin, v),
                   ),
                 ),
-                onChanged: _opslaan ? null : (v) => setState(() => _dag = v!),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Begin en Einde -- rechtstreeks bewerkbaar, geen los sheet.
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _TijdVeldKaart(
-                      label: 'Begin',
-                      controller: _startCtrl,
-                      focusNode: _startFocus,
-                      heeftFout: _fout != null,
-                      enabled: !_opslaan,
-                      onChanged: (v) =>
-                          _onVeldGewijzigd(_ActiefTijdVeld.begin, v),
-                    ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _TijdVeldKaart(
+                    label: 'Einde',
+                    controller: _eindCtrl,
+                    focusNode: _eindFocus,
+                    heeftFout: _fout != null,
+                    enabled: !_opslaan,
+                    onChanged: (v) => _onVeldGewijzigd(_ActiefTijdVeld.eind, v),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _TijdVeldKaart(
-                      label: 'Einde',
-                      controller: _eindCtrl,
-                      focusNode: _eindFocus,
-                      heeftFout: _fout != null,
-                      enabled: !_opslaan,
-                      onChanged: (v) =>
-                          _onVeldGewijzigd(_ActiefTijdVeld.eind, v),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              // Voorkeur score
-              Text('Voorkeur',
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary)),
-              const SizedBox(height: 4),
-              Text(
-                'Hoe goed past dit tijdstip?',
-                style: TextStyle(fontSize: 12, color: AppColors.textHint),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: List.generate(
-                  5,
-                  (i) => GestureDetector(
-                    onTap:
-                        _opslaan ? null : () => setState(() => _score = i + 1),
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Icon(
-                        (i + 1) <= _score
-                            ? Icons.star_rounded
-                            : Icons.star_outline_rounded,
-                        size: 34,
-                        color: (i + 1) <= _score
-                            ? AppColors.warningSolid
-                            : AppColors.textMuted,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                '$_score van 5 - voorkeur',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-
-              // Fout
-              if (_fout != null) ...[
-                const SizedBox(height: 14),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: AppColors.neutralBg,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: Text(_fout!,
-                      style: const TextStyle(
-                          fontSize: 13, color: AppColors.dangerSolid)),
                 ),
               ],
+            ),
 
-              const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
-              // Opslaan knop
-              ElevatedButton(
-                onPressed: _opslaan ? null : _opslaanFormulier,
-                child: _opslaan
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white),
-                      )
-                    : const Text('Opslaan'),
+            // Voorkeur score
+            Text('Voorkeur',
+                style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary)),
+            const SizedBox(height: 4),
+            Text(
+              'Hoe goed past dit tijdstip?',
+              style: TextStyle(fontSize: 12, color: AppColors.textHint),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: List.generate(
+                5,
+                (i) => GestureDetector(
+                  onTap: _opslaan ? null : () => setState(() => _score = i + 1),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Icon(
+                      (i + 1) <= _score
+                          ? Icons.star_rounded
+                          : Icons.star_outline_rounded,
+                      size: 34,
+                      color: (i + 1) <= _score
+                          ? AppColors.warningSolid
+                          : AppColors.textMuted,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              '$_score van 5 - voorkeur',
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+
+            // Fout
+            if (_fout != null) ...[
+              const SizedBox(height: 14),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.neutralBg,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: Text(_fout!,
+                    style: const TextStyle(
+                        fontSize: 13, color: AppColors.dangerSolid)),
               ),
             ],
-          ),
+
+            const SizedBox(height: 20),
+
+            // Opslaan knop
+            ElevatedButton(
+              onPressed: _opslaan ? null : _opslaanFormulier,
+              child: _opslaan
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white),
+                    )
+                  : const Text('Opslaan'),
+            ),
+          ],
         ),
       ),
     );
@@ -864,8 +893,7 @@ class _FoutWeergave extends StatelessWidget {
             const SizedBox(height: 6),
             Text(fout,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 13, color: AppColors.textSecondary)),
+                style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: onRetry,

@@ -90,7 +90,7 @@ class CommunicationService {
       debugPrint('[email] fout: HTTP ${response.statusCode}');
       return false;
     } catch (e) {
-      lastEmailError = e.toString();
+      lastEmailError = 'De e-mail kon niet worden verzonden.';
       debugPrint('[email] exception: ${e.runtimeType}');
       return false;
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import 'voortgang_trends_provider.dart';
@@ -47,7 +48,12 @@ class VoortgangTijdlijnScreen extends ConsumerWidget {
                 child: EmptyState(
                   icon: CoolIcons.cloudOff,
                   title: 'Kon tijdlijn niet laden',
-                  subtitle: e.toString(),
+                  subtitle: AppErrorFormatter.toFriendlyDutch(
+                    e,
+                    fallback: 'De tijdlijn kan nu niet worden geladen.',
+                    contextMessage: 'Tijdlijn laden',
+                  ),
+                  onAction: () => ref.invalidate(voortgangTrendsProvider),
                 ),
               ),
             ),

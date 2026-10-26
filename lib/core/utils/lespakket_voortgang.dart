@@ -28,7 +28,9 @@ class LespakketVoortgang {
   bool get heeftExtraLessen => heeftPakket && afgerondeLessen > totaalLessen;
   int get extraLessen => heeftExtraLessen ? afgerondeLessen - totaalLessen : 0;
   String get pakketLabel => heeftPakket
-      ? '$pakketnaam $totaalLessen lessen'
+      ? (RegExp('\\b$totaalLessen\\b').hasMatch(pakketnaam)
+          ? pakketnaam
+          : '$pakketnaam $totaalLessen lessen')
       : 'Geen pakket ingesteld';
 
   factory LespakketVoortgang.fromProfiel({
@@ -64,7 +66,7 @@ class LespakketVoortgang {
     final percentage = totaal <= 0 ? 0.0 : (afgerond / totaal).clamp(0.0, 1.0);
 
     return LespakketVoortgang(
-      pakketnaam: profiel.pakket.label,
+      pakketnaam: profiel.pakketWeergaveNaam,
       totaalLessen: totaal,
       afgerondeLessen: afgerond,
       geplandeLessen: gepland,

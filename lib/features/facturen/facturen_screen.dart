@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/factuur.dart';
 import '../../shared/widgets/app_card.dart';
@@ -165,7 +166,14 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
                       child: EmptyState(
                         icon: CoolIcons.cloudOff,
                         title: 'Kon facturen niet laden',
-                        subtitle: e.toString(),
+                        subtitle: AppErrorFormatter.toFriendlyDutch(
+                          e,
+                          fallback: AppErrorFormatter.isNetwerkFout(e)
+                              ? 'Geen verbinding. Facturen kunnen nu niet worden geladen.'
+                              : 'Facturen kunnen nu niet worden geladen. Probeer het opnieuw.',
+                          contextMessage: 'Facturen laden',
+                        ),
+                        onAction: () => ref.invalidate(facturenProvider),
                       ),
                     ),
                   ),

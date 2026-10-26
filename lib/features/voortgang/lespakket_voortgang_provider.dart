@@ -40,9 +40,7 @@ class LespakketVoortgangData {
     required this.gebruiktFallback,
   });
 
-  String get pakketLabel => totaalLessen > 0
-      ? '${profiel.pakket.label} $totaalLessen lessen'
-      : 'Geen pakket ingesteld';
+  String get pakketLabel => profiel.pakketLabelMetAantal(totaalLessen);
 
   bool get heeftPakket => totaalLessen > 0;
 

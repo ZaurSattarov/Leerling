@@ -182,6 +182,7 @@ class SettingsScaffold extends StatelessWidget {
         systemOverlayStyle:
             isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
         leading: IconButton(
+          tooltip: 'Terug',
           icon: Icon(CoolIcons.chevronLeft, color: fg, size: 28),
           onPressed: () => terugNavigeren(context),
         ),
@@ -194,6 +195,7 @@ class SettingsScaffold extends StatelessWidget {
             ? null
             : [
                 IconButton(
+                  tooltip: 'Opslaan',
                   onPressed: bezig ? null : onSave,
                   icon: bezig
                       ? const SizedBox(
@@ -245,6 +247,7 @@ class SettingsBodyScaffold extends StatelessWidget {
         systemOverlayStyle:
             isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
         leading: IconButton(
+          tooltip: 'Terug',
           icon: Icon(CoolIcons.chevronLeft, color: fg, size: 28),
           onPressed: () => terugNavigeren(context),
         ),
@@ -336,33 +339,37 @@ class SettingsEditVeld extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       alignment: Alignment.centerLeft,
-      child: TextField(
-        controller: controller,
-        enabled: enabled,
-        keyboardType: keyboard,
-        obscureText: obscure,
-        maxLines: obscure ? 1 : maxLines,
-        minLines: 1,
-        textAlignVertical: TextAlignVertical.center,
-        cursorColor: SettingsDesign.switchOn,
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          color: textColor,
-        ),
-        decoration: InputDecoration(
-          hintText: hint ?? label,
-          suffixIcon: suffix,
-          hintStyle: TextStyle(fontSize: 15, color: hintColor),
-          filled: false,
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          disabledBorder: InputBorder.none,
-          isDense: true,
-          contentPadding: maxLines > 1
-              ? const EdgeInsets.symmetric(vertical: 13)
-              : EdgeInsets.zero,
+      child: Semantics(
+        label: label,
+        textField: true,
+        child: TextField(
+          controller: controller,
+          enabled: enabled,
+          keyboardType: keyboard,
+          obscureText: obscure,
+          maxLines: obscure ? 1 : maxLines,
+          minLines: 1,
+          textAlignVertical: TextAlignVertical.center,
+          cursorColor: SettingsDesign.switchOn,
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            color: textColor,
+          ),
+          decoration: InputDecoration(
+            hintText: hint ?? label,
+            suffixIcon: suffix,
+            hintStyle: TextStyle(fontSize: 15, color: hintColor),
+            filled: false,
+            border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            isDense: true,
+            contentPadding: maxLines > 1
+                ? const EdgeInsets.symmetric(vertical: 13)
+                : EdgeInsets.zero,
+          ),
         ),
       ),
     );

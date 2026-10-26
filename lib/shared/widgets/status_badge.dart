@@ -41,7 +41,8 @@ class StatusBadge extends StatelessWidget {
             label: label ?? 'Geannuleerd',
           ),
         LesStatus.verzet => StatusBadge.gepland(label: label ?? 'Verzet'),
-        LesStatus.geen_toon => StatusBadge.noShow(label: label ?? 'No show'),
+        LesStatus.geen_toon =>
+          StatusBadge.noShow(label: label ?? 'Niet verschenen'),
       };
 
   /// Gepland - solid SaaS blue + white.
@@ -110,7 +111,7 @@ class StatusBadge extends StatelessWidget {
       );
 
   /// No show - dark red + white.
-  factory StatusBadge.noShow({String label = 'No show'}) => StatusBadge(
+  factory StatusBadge.noShow({String label = 'Niet verschenen'}) => StatusBadge(
         label: label,
         backgroundColor: const Color(0xFF991B1B),
       );

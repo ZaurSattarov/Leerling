@@ -157,12 +157,16 @@ class EmptyState extends StatelessWidget {
   final IconData icon;
   final String title;
   final String? subtitle;
+  final VoidCallback? onAction;
+  final String actionLabel;
 
   const EmptyState({
     super.key,
     required this.icon,
     required this.title,
     this.subtitle,
+    this.onAction,
+    this.actionLabel = 'Opnieuw proberen',
   });
 
   @override
@@ -193,8 +197,18 @@ class EmptyState extends StatelessWidget {
               Text(
                 subtitle!,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 14, color: AppColors.textSecondary),
+                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              ),
+            ],
+            if (onAction != null) ...[
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: onAction,
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.white,
+                ),
+                child: Text(actionLabel),
               ),
             ],
           ],

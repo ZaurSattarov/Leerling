@@ -31,6 +31,8 @@ class AuthDesign {
     }
 
     return InputDecoration(
+      labelText: hint,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
       hintText: hint,
       hintStyle: GoogleFonts.inter(fontSize: 14, color: placeholder),
       prefixIcon: iconData == null

@@ -31,14 +31,10 @@ final voortgangTrendsProvider =
 
   // Aanvullende lesstatistieken (GEEN examenadvies-inhoud).
   List<Les> lessen;
-  try {
-    lessen = await StudentService.getMijnVorigeLessen(
-      profielAsync.id,
-      alleenZichtbaarLogboek: true,
-    );
-  } catch (_) {
-    lessen = const [];
-  }
+  lessen = await StudentService.getMijnVorigeLessen(
+    profielAsync.id,
+    alleenZichtbaarLogboek: true,
+  );
 
   return VoortgangTrendsCalculator.fromCanonical(
     advies: advies,

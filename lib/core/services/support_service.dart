@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/support_thread.dart';
 import 'student_service.dart';
+import '../utils/app_error_formatter.dart';
 
 class SupportAttachment {
   final String path;
@@ -162,12 +163,15 @@ class SupportService {
     final ext = _extensionFor(mimeType);
     final path = '$uid/${DateTime.now().microsecondsSinceEpoch}_'
         '${Random.secure().nextInt(1 << 32)}$ext';
-    await StudentService.client.storage.from('support-attachments').uploadBinary(
+    await StudentService.client.storage
+        .from('support-attachments')
+        .uploadBinary(
           path,
           bytes,
           fileOptions: FileOptions(contentType: mimeType),
         );
-    return SupportAttachment(path: path, mime: mimeType, sizeBytes: bytes.length);
+    return SupportAttachment(
+        path: path, mime: mimeType, sizeBytes: bytes.length);
   }
 
   /// Signed URL (1 uur geldig) om een bijlage te tonen -- bucket is privé,
@@ -235,24 +239,9 @@ String newSupportRequestId() {
 }
 
 String supportFoutmelding(Object error) {
-  final raw = error.toString().replaceFirst('Exception: ', '');
-  const hints = [
-    'Onderwerp',
-    'Bericht',
-    'niet gevonden',
-    'afgerond',
-    'niet verzonden',
-    'Ongeldige',
-    'Niet geautoriseerd',
-    'niet gelukt',
-    'niet opgeslagen',
-    'verplicht',
-    'leerlingprofiel',
-  ];
-  for (final hint in hints) {
-    if (raw.toLowerCase().contains(hint.toLowerCase())) {
-      return raw;
-    }
-  }
-  return 'Versturen is niet gelukt. Probeer het later opnieuw.';
+  return AppErrorFormatter.toFriendlyDutch(
+    error,
+    fallback: 'Versturen is niet gelukt. Probeer het later opnieuw.',
+    contextMessage: 'Support',
+  );
 }

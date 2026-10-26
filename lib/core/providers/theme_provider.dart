@@ -32,9 +32,14 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
     _loadFromPrefs();
   }
 
+  /// Zodra de gebruiker zelf een keuze maakt mag het (trage) laden van de
+  /// opgeslagen voorkeur die keuze niet meer overschrijven.
+  bool _gebruikerHeeftGekozen = false;
+
   Future<void> _loadFromPrefs() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+      if (_gebruikerHeeftGekozen) return;
       final saved = prefs.getString(_kThemeStorageKey);
       if (saved == 'dark') {
         state = ThemeMode.dark;
@@ -56,6 +61,7 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
   }) async {
     final nextIsDark = state != ThemeMode.dark;
     final nextMode = nextIsDark ? ThemeMode.dark : ThemeMode.light;
+    _gebruikerHeeftGekozen = true;
 
     ui.Image? snapshot;
     if (boundaryKey?.currentContext != null && context != null) {
@@ -64,7 +70,10 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
             as RenderRepaintBoundary?;
         if (boundary != null) {
           final pixelRatio = MediaQuery.maybeDevicePixelRatioOf(context) ?? 2.0;
-          snapshot = await boundary.toImage(pixelRatio: pixelRatio);
+          // Een snapshot die blijft hangen mag het wisselen nooit blokkeren.
+          snapshot = await boundary
+              .toImage(pixelRatio: pixelRatio)
+              .timeout(const Duration(milliseconds: 500));
         }
       } catch (e) {
         debugPrint('Theme snapshot error: $e');
@@ -84,10 +93,14 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_kThemeStorageKey, nextIsDark ? 'dark' : 'light');
-    } catch (_) {}
+    } catch (e) {
+      // Thema is al gewisseld; alleen het bewaren mislukte.
+      debugPrint('Theme opslaan mislukt: $e');
+    }
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {
+    _gebruikerHeeftGekozen = true;
     state = mode;
     try {
       final prefs = await SharedPreferences.getInstance();

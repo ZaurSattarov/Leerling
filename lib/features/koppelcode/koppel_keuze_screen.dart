@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/student_service.dart';
 import '../../shared/providers/auth_provider.dart';
+import '../../shared/widgets/bevestig_uitloggen.dart';
 import '../../core/constants/cool_icons.dart';
 
 /// Landing-scherm na registratie/login voor leerlingen die nog niet gekoppeld
@@ -20,6 +21,7 @@ class KoppelKeuzeScreen extends ConsumerWidget {
   const KoppelKeuzeScreen({super.key});
 
   Future<void> _uitloggen(BuildContext context, WidgetRef ref) async {
+    if (!await bevestigUitloggen(context)) return;
     await StudentService.uitloggen();
     ref.invalidate(mijnProfielProvider);
     if (context.mounted) context.go('/login');

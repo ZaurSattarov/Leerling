@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/cool_icons.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/utils/contact_uri.dart';
 import '../../models/instructeur.dart';
 import '../../models/leerling_voertuig.dart';
@@ -51,7 +52,15 @@ class MijnRijschoolScreen extends ConsumerWidget {
           EmptyState(
             icon: CoolIcons.cloudOff,
             title: 'Kon rijschool niet laden',
-            subtitle: e.toString(),
+            subtitle: AppErrorFormatter.toFriendlyDutch(
+              e,
+              fallback: 'Je rijschool kan nu niet worden geladen.',
+              contextMessage: 'Rijschool laden',
+            ),
+            onAction: () {
+              ref.invalidate(mijnInstructeurProvider);
+              ref.invalidate(mijnVoertuigProvider);
+            },
           ),
         ],
       ),

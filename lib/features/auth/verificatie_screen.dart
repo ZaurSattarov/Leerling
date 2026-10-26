@@ -82,6 +82,7 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
       } else {
         _focusNodes[nextIndex].requestFocus();
       }
+      _verifieerAutomatisch();
       return;
     }
     if (digits.isNotEmpty && index < _codeLength - 1) {
@@ -89,6 +90,13 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
     } else if (digits.isEmpty && index > 0) {
       _focusNodes[index - 1].requestFocus();
     }
+    _verifieerAutomatisch();
+  }
+
+  /// Verstuurt de code zodra alle cijfers zijn ingevuld (typen of plakken).
+  void _verifieerAutomatisch() {
+    if (_laden || _otpCode.length < _codeLength) return;
+    _verifieer();
   }
 
   Future<void> _verifieer() async {
@@ -170,11 +178,15 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      // Alleen toetsenbord sluiten: geen schermbrede tikbare node voor
+      // schermlezers.
+      excludeFromSemantics: true,
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: AppColors.pageBg,
         appBar: AppBar(
           leading: IconButton(
+            tooltip: 'Terug',
             icon: const Icon(CoolIcons.chevronLeft),
             onPressed: () => context.go('/registreer'),
           ),
@@ -222,6 +234,7 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
                             right: i == _codeLength - 1 ? 0 : gap,
                           ),
                           child: _OtpVeld(
+                            index: i,
                             width: boxWidth,
                             controller: _controllers[i],
                             focusNode: _focusNodes[i],
@@ -304,12 +317,14 @@ class _VerificatieScreenState extends State<VerificatieScreen> {
 }
 
 class _OtpVeld extends StatefulWidget {
+  final int index;
   final double width;
   final TextEditingController controller;
   final FocusNode focusNode;
   final ValueChanged<String> onChanged;
 
   const _OtpVeld({
+    required this.index,
     required this.width,
     required this.controller,
     required this.focusNode,
@@ -350,59 +365,70 @@ class _OtpVeldState extends State<_OtpVeld> {
   Widget build(BuildContext context) {
     final heeftFocus = widget.focusNode.hasFocus;
 
-    return SizedBox(
-      width: widget.width,
-      height: 54,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        curve: Curves.easeOut,
-        decoration: BoxDecoration(
-          color: AppColors.panel,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: heeftFocus ? AuthDesign.focusBorder : AuthDesign.border,
-            width: heeftFocus ? 1.5 : 1,
-          ),
-        ),
-        child: Center(
-          child: TextField(
-            controller: widget.controller,
-            focusNode: widget.focusNode,
-            autocorrect: false,
-            enableSuggestions: false,
-            maxLength: _VerificatieScreenState._codeLength,
-            textAlign: TextAlign.center,
-            textAlignVertical: TextAlignVertical.center,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(
-                  _VerificatieScreenState._codeLength),
-            ],
-            cursorColor: AppColors.primary,
-            cursorHeight: 22,
-            cursorWidth: 2,
-            style: GoogleFonts.inter(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              height: 1.0,
-              color: AppColors.textPrimary,
-              letterSpacing: -0.5,
+    // Hoogte >= 48 dp; het hele vakje is tikbaar (focus) en heeft een label
+    // 'Cijfer n van 8' voor schermlezers.
+    return Semantics(
+      label:
+          'Cijfer ${widget.index + 1} van ${_VerificatieScreenState._codeLength}',
+      textField: true,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.focusNode.requestFocus,
+        child: SizedBox(
+          width: widget.width,
+          height: 56,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOut,
+            decoration: BoxDecoration(
+              color: AppColors.panel,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: heeftFocus ? AuthDesign.focusBorder : AuthDesign.border,
+                width: heeftFocus ? 1.5 : 1,
+              ),
             ),
-            strutStyle: const StrutStyle(
-              fontSize: 20,
-              height: 1,
-              forceStrutHeight: true,
+            child: Center(
+              child: TextField(
+                controller: widget.controller,
+                focusNode: widget.focusNode,
+                autocorrect: false,
+                enableSuggestions: false,
+                maxLength: _VerificatieScreenState._codeLength,
+                textAlign: TextAlign.center,
+                textAlignVertical: TextAlignVertical.center,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(
+                      _VerificatieScreenState._codeLength),
+                ],
+                cursorColor: AppColors.primary,
+                cursorHeight: 22,
+                cursorWidth: 2,
+                style: GoogleFonts.inter(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  height: 1.0,
+                  color: AppColors.textPrimary,
+                  letterSpacing: -0.5,
+                ),
+                strutStyle: const StrutStyle(
+                  fontSize: 20,
+                  height: 1,
+                  forceStrutHeight: true,
+                ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  counterText: '',
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                onChanged: widget.onChanged,
+              ),
             ),
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              counterText: '',
-              isDense: true,
-              contentPadding: EdgeInsets.zero,
-            ),
-            onChanged: widget.onChanged,
           ),
         ),
       ),

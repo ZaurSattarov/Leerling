@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/services/student_service.dart';
 import '../../shared/widgets/main_scaffold.dart'
     show showKlantioNavbarSafeSheet;
@@ -106,7 +107,11 @@ class _DeleteConfirmBodyState extends State<_DeleteConfirmBody> {
       if (!mounted) return;
       setState(() {
         _laden = false;
-        _fout = e.toString().replaceFirst('Exception: ', '');
+        _fout = AppErrorFormatter.toFriendlyDutch(
+          e,
+          fallback: 'Je account kon niet worden verwijderd. Probeer het opnieuw.',
+          contextMessage: 'Account verwijderen',
+        );
       });
       showAppSnackBar(context, _fout!, isError: true);
     }

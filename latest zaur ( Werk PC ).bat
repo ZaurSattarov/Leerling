@@ -6,6 +6,15 @@ set "ADB=%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe"
 set "EMULATOR=%LOCALAPPDATA%\Android\Sdk\emulator\emulator.exe"
 set "APP_ID=com.klantio.leerling"
 set "MAIN_ACTIVITY=com.klantio.leerling.MainActivity"
+rem Standaard geen runtime-rechten en geen wissen. Alleen met --grant of --wipe.
+set "GRANT=0"
+set "WIPE=0"
+for %%A in (%*) do (
+    if /I "%%A"=="--grant" set "GRANT=1"
+    if /I "%%A"=="--wipe" set "WIPE=1"
+)
+set "INSTALL_FLAGS=-r -d --no-streaming"
+if "%GRANT%"=="1" set "INSTALL_FLAGS=-r -d -g --no-streaming"
 rem Google-login (google_sign_in) heeft op Android een serverClientId nodig
 rem zodat het idToken de audience heeft die Supabase's Google-provider
 rem verwacht -- zonder deze dart-define blijft AppConfig.googleServerClientId
@@ -77,42 +86,32 @@ if errorlevel 1 (
 
 echo [3/4] Installeren...
 echo APK installeren zonder streamed install...
-"%ADB%" -s emulator-5554 install -r -d -g --no-streaming "build\app\outputs\flutter-apk\app-debug.apk"
+"%ADB%" -s emulator-5554 install %INSTALL_FLAGS% "build\app\outputs\flutter-apk\app-debug.apk"
 if errorlevel 1 (
     echo Eerste installatiepoging mislukt. Extra opruimen en opnieuw proberen...
     call :CleanEmulatorDeep
-    "%ADB%" -s emulator-5554 install -r -d -g --no-streaming "build\app\outputs\flutter-apk\app-debug.apk"
+    "%ADB%" -s emulator-5554 install %INSTALL_FLAGS% "build\app\outputs\flutter-apk\app-debug.apk"
     if errorlevel 1 (
         echo INSTALLATIE MISLUKT
-        echo.
-        echo Emulator heeft te weinig interne opslag voor deze APK.
-        echo Huidige AVD: %AVD_NAME%
-        choice /C JN /M "Emulator-data wissen en opnieuw installeren? LET OP: dit verwijdert data op deze emulator"
-        if errorlevel 2 (
-            echo Afgebroken. Oplossing: Android Studio Device Manager ^> emulator ^> Wipe Data
-            echo of maak een nieuwe emulator met grotere Internal Storage.
+        if not "%WIPE%"=="1" (
+            echo Wissen staat uit. Start het script opnieuw met --wipe als je de emulator-data bewust wilt wissen.
             pause
             exit /b 1
         )
-
         echo Emulator stoppen...
         "%ADB%" -s emulator-5554 emu kill >nul 2>&1
         timeout /t 5 >nul
-
         echo Emulator opnieuw starten met wipe-data...
         start "" "%EMULATOR%" -avd "%AVD_NAME%" -wipe-data -no-snapshot-load
-
         echo Wachten tot emulator klaar is...
         "%ADB%" -s emulator-5554 wait-for-device
         call :WaitForBoot
         timeout /t 5 >nul
-
         echo Opnieuw installeren na wipe...
         call :CleanEmulator
-        "%ADB%" -s emulator-5554 install -r -d -g --no-streaming "build\app\outputs\flutter-apk\app-debug.apk"
+        "%ADB%" -s emulator-5554 install %INSTALL_FLAGS% "build\app\outputs\flutter-apk\app-debug.apk"
         if errorlevel 1 (
             echo INSTALLATIE MISLUKT NA WIPE
-            echo Maak een nieuwe emulator met grotere Internal Storage.
             pause
             exit /b 1
         )
@@ -121,6 +120,11 @@ if errorlevel 1 (
 
 echo [4/4] Openen...
 "%ADB%" -s emulator-5554 shell am start -n "%APP_ID%/%MAIN_ACTIVITY%"
+if errorlevel 1 (
+    echo STARTEN MISLUKT
+    pause
+    exit /b 1
+)
 
 echo.
 echo Klaar!

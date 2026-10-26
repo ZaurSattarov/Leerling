@@ -14,7 +14,7 @@ extension LesStatusLabel on LesStatus {
       case LesStatus.verzet:
         return 'Verzet';
       case LesStatus.geen_toon:
-        return 'Geen toon';
+        return 'Niet verschenen';
     }
   }
 }

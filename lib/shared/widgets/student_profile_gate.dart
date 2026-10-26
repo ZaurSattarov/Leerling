@@ -87,7 +87,7 @@ class _ProfileGateError extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(
                   wasKnownCoupled
-                      ? 'Koppeling behouden'
+                      ? 'Geen verbinding'
                       : 'Profiel tijdelijk niet beschikbaar',
                   textAlign: TextAlign.center,
                   style: TextStyle(

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import 'koppel_flow.dart';
 import '../../core/constants/cool_icons.dart';
 
@@ -110,7 +111,11 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen>
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _fout = e.toString().replaceFirst('Exception: ', '');
+        _fout = AppErrorFormatter.toFriendlyDutch(
+          e,
+          fallback: 'Koppelen mislukt. Probeer het opnieuw.',
+          contextMessage: 'Koppelen',
+        );
         _bezig = false;
       });
     }
@@ -176,6 +181,7 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen>
                   children: [
                     _RondeIconKnop(
                       icoon: CoolIcons.chevronLeft,
+                      label: 'Sluiten',
                       onTap: () {
                         if (context.canPop()) {
                           context.pop();
@@ -186,7 +192,8 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen>
                     ),
                     const Spacer(),
                     _RondeIconKnop(
-                      icoon: _flashAan ? CoolIcons.bulb : CoolIcons.bulb,
+                      icoon: CoolIcons.bulb,
+                      label: _flashAan ? 'Flitser uit' : 'Flitser aan',
                       onTap: _toggleFlash,
                     ),
                   ],
@@ -442,21 +449,34 @@ class _CornerBracketsPainter extends CustomPainter {
 }
 
 class _RondeIconKnop extends StatelessWidget {
-  const _RondeIconKnop({required this.icoon, required this.onTap});
+  const _RondeIconKnop({
+    required this.icoon,
+    required this.onTap,
+    required this.label,
+  });
   final IconData icoon;
+  final String label;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.black.withValues(alpha: 0.45),
-      shape: const CircleBorder(),
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Icon(icoon, color: Colors.white, size: 22),
+    return Semantics(
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      child: Tooltip(
+        message: label,
+        child: Material(
+          color: Colors.black.withValues(alpha: 0.45),
+          shape: const CircleBorder(),
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.all(13),
+              child: Icon(icoon, color: Colors.white, size: 22),
+            ),
+          ),
         ),
       ),
     );

@@ -11,6 +11,7 @@ class StatusPill extends StatelessWidget {
   final Color backgroundColor;
   final Color textColor;
   final Color? borderColor;
+  final bool glow;
 
   const StatusPill({
     super.key,
@@ -18,68 +19,78 @@ class StatusPill extends StatelessWidget {
     required this.backgroundColor,
     required this.textColor,
     this.borderColor,
+    this.glow = false,
   });
 
   /// Zelfde solide statuskleuren als de Instructeur-app (StatusPill.les).
-  factory StatusPill.les(LesStatus status) {
+  factory StatusPill.les(LesStatus status, {bool glow = false}) {
     return switch (status) {
-      LesStatus.gepland => const StatusPill(
+      LesStatus.gepland => StatusPill(
           label: 'Gepland',
           backgroundColor: AppColors.infoSolid,
           textColor: Colors.white,
+          glow: glow,
         ),
-      LesStatus.afgerond => const StatusPill(
+      LesStatus.afgerond => StatusPill(
           label: 'Afgerond',
           backgroundColor: Color(0xFF4F46E5),
           textColor: Colors.white,
+          glow: glow,
         ),
-      LesStatus.geannuleerd => const StatusPill(
+      LesStatus.geannuleerd => StatusPill(
           label: 'Geannuleerd',
           backgroundColor: AppColors.dangerSolid,
           textColor: Colors.white,
+          glow: glow,
         ),
-      LesStatus.verzet => const StatusPill(
+      LesStatus.verzet => StatusPill(
           label: 'Verzet',
           backgroundColor: AppColors.infoSolid,
           textColor: Colors.white,
+          glow: glow,
         ),
-      LesStatus.geen_toon => const StatusPill(
-          label: 'No show',
+      LesStatus.geen_toon => StatusPill(
+          label: 'Niet verschenen',
           backgroundColor: Color(0xFF991B1B),
           textColor: Colors.white,
+          glow: glow,
         ),
     };
   }
 
   /// Zelfde examenstatus-kleuren als de Instructeur-app (StatusPill.examen):
   /// gepland neutraal grijs, geslaagd groen, gezakt rood.
-  factory StatusPill.examen(ExamenStatus status) {
+  factory StatusPill.examen(ExamenStatus status, {bool glow = false}) {
     return switch (status) {
       ExamenStatus.gepland => StatusPill(
           label: 'Gepland',
           backgroundColor: AppColors.neutralBg,
           textColor: AppColors.neutralText,
+          glow: glow,
         ),
-      ExamenStatus.geslaagd => const StatusPill(
+      ExamenStatus.geslaagd => StatusPill(
           label: 'Geslaagd',
           backgroundColor: AppColors.success,
           textColor: Colors.white,
+          glow: glow,
         ),
-      ExamenStatus.gezakt => const StatusPill(
+      ExamenStatus.gezakt => StatusPill(
           label: 'Gezakt',
           backgroundColor: Color(0xFFE11D48),
           textColor: Colors.white,
+          glow: glow,
         ),
     };
   }
 
-  factory StatusPill.factuur(FactuurStatus status) {
+  factory StatusPill.factuur(FactuurStatus status, {bool glow = false}) {
     final ui = status.ui;
     return StatusPill(
       label: ui.label,
       backgroundColor: ui.backgroundColor,
       textColor: ui.textColor,
       borderColor: ui.borderColor,
+      glow: glow,
     );
   }
 
@@ -91,6 +102,7 @@ class StatusPill extends StatelessWidget {
       label: label,
       backgroundColor: backgroundColor,
       textColor: textColor,
+      glow: glow,
     );
   }
 }

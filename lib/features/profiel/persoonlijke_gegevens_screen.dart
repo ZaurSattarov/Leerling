@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/cool_icons.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/services/student_service.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/leerling_profiel.dart';
@@ -51,7 +52,12 @@ class ProfielPersoonlijkeGegevensScreen extends ConsumerWidget {
           EmptyState(
             icon: CoolIcons.cloudOff,
             title: 'Kon gegevens niet laden',
-            subtitle: e.toString(),
+            subtitle: AppErrorFormatter.toFriendlyDutch(
+              e,
+              fallback: 'Je gegevens kunnen nu niet worden geladen.',
+              contextMessage: 'Gegevens laden',
+            ),
+            onAction: () => ref.invalidate(mijnProfielProvider),
           ),
         ],
       ),
@@ -161,9 +167,11 @@ class _InhoudState extends ConsumerState<_Inhoud> {
       if (mounted) {
         AppToast.fout(
           context,
-          e.toString().replaceFirst('Exception: ', '').trim().isEmpty
-              ? 'Opslaan mislukt'
-              : 'Opslaan mislukt. Probeer het later opnieuw.',
+          AppErrorFormatter.toFriendlyDutch(
+            e,
+            fallback: 'Opslaan mislukt. Probeer het later opnieuw.',
+            contextMessage: 'Gegevens opslaan',
+          ),
         );
       }
     } finally {

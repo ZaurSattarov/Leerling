@@ -134,6 +134,21 @@ class LeerlingProfiel {
 
   String get volledigeNaam => '$voornaam $achternaam'.trim();
 
+  /// Echte pakketnaam. Het type-label ('Standaard') is alleen de fallback.
+  String get pakketWeergaveNaam {
+    final naam = pakketNaam?.trim();
+    if (naam != null && naam.isNotEmpty) return naam;
+    return pakket.label;
+  }
+
+  /// Voegt het aantal lessen toe als de naam dat aantal nog niet noemt.
+  String pakketLabelMetAantal(int totaal) {
+    if (totaal <= 0) return 'Geen pakket ingesteld';
+    final naam = pakketWeergaveNaam;
+    if (RegExp('\\b$totaal\\b').hasMatch(naam)) return naam;
+    return '$naam $totaal lessen';
+  }
+
   bool get isProfielCompleet =>
       achternaam.trim().isNotEmpty &&
       geboortedatum?.trim().isNotEmpty == true &&

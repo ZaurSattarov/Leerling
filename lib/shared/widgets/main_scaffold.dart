@@ -24,6 +24,61 @@ void dismissRootNavigatorOverlays(BuildContext context) {
   rootNav.popUntil((route) => route.isFirst);
 }
 
+/// Android Back binnen de app-shell. Zelfde aanpak als de instructeur-app:
+/// Back op Planning, Voortgang, Facturen of Profiel gaat naar Home.
+/// Back op Home sluit de app.
+class HoofdtabTerugScope extends StatelessWidget {
+  final bool isHome;
+  final Widget child;
+
+  const HoofdtabTerugScope({
+    super.key,
+    required this.isHome,
+    required this.child,
+  });
+
+  static String? _huidigeLocatie(BuildContext context) {
+    try {
+      return GoRouter.of(context)
+          .routerDelegate
+          .currentConfiguration
+          .uri
+          .path;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: isHome || (ModalRoute.canPopOf(context) ?? false),
+      child: BackButtonListener(
+        onBackButtonPressed: () async {
+          final root = Navigator.of(context, rootNavigator: true);
+          if (root.canPop()) {
+            root.maybePop();
+            return true;
+          }
+          final tabNavigator = Navigator.of(context);
+          if (tabNavigator != root && tabNavigator.canPop()) {
+            await tabNavigator.maybePop();
+            return true;
+          }
+          final locatie = _huidigeLocatie(context);
+          final opHoofdtab =
+              MainScaffold._items.any((item) => item.route == locatie);
+          if (!opHoofdtab) return false;
+          if (locatie == '/home') return false;
+          if (context.mounted) context.go('/home');
+          return true;
+        },
+        child: child,
+      ),
+    );
+  }
+}
+
 /// App-shell met de vijf hoofdtabs. Navbar, tab-transitie, content-inset en
 /// sheet-afhandeling zijn 1-op-1 overgenomen uit de Instructeur-app
 /// (rijschool-planner-flutter/lib/shared/widgets/main_scaffold.dart):
@@ -376,7 +431,8 @@ class _TabSlideSwitcherState extends State<TabSlideSwitcher>
 // positie-element meer) voor alle tabs, actief én inactief, zodat er nooit
 // een sprongetje ontstaat bij het wisselen van tab.
 
-const double _kBarHeight = 56;
+const double kLeerlingNavigatiebalkHoogte = 56;
+const double _kBarHeight = kLeerlingNavigatiebalkHoogte;
 // Balk 6-8px dichter naar de home indicator (zie toelichting bij
 // `navBarOnderMarge` in MainScaffold.build()) -- gekozen als het midden
 // van de gevraagde 6-8px-bandbreedte.
@@ -655,7 +711,6 @@ Future<T?> showKlantioNavbarSafeSheet<T>({
 const double _kIconSize = 22;
 const double _kIconLabelGap = 3;
 const double _kLabelFontSize = 10;
-const double _kIndicatorRadius = 16;
 const double _kIndicatorHorizontalPadding = 10;
 const double _kIndicatorVerticalPadding = 4;
 const double _kIndicatorSafeMargin = 6;
@@ -807,7 +862,7 @@ class _NavBarTabState extends State<_NavBarTab> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isActive = widget.isActive;
     final color = isActive
-        ? Colors.white
+        ? AppColors.primary
         : (isDark ? AppColors.darkTextPrimary : AppColors.iconPrimary);
 
     return Semantics(
@@ -848,9 +903,8 @@ class _NavBarTabState extends State<_NavBarTab> {
                   // Actieve pil-achtergrond zonder gekleurde gloed-schaduw --
                   // 1-op-1 overgenomen uit de Leerling-app, die de actieve
                   // indicator puur als vlakke kleurcapsule toont.
-                  decoration: BoxDecoration(
-                    color: isActive ? AppColors.primary : Colors.transparent,
-                    borderRadius: BorderRadius.circular(_kIndicatorRadius),
+                  decoration: const BoxDecoration(
+                    color: Colors.transparent,
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,

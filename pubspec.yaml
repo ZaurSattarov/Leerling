@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   # Backend
   supabase_flutter: ^2.3.0
@@ -27,12 +29,10 @@ dependencies:
   # AppConfig.googleServerClientId).
   google_sign_in: ^6.3.0
 
-  # Facebook-login (native, Limited Login -> JWT-idToken) i.c.m. Supabase's
-  # signInWithIdToken -- zelfde architectuur/pattern als google_sign_in
-  # hierboven. Vereist een Meta for Developers-app (App ID + Client Token,
-  # zie AppConfig.facebookAppId/facebookClientToken) en de Facebook-provider
-  # ingeschakeld in het Supabase-dashboard (Authentication > Providers).
-  flutter_facebook_auth: ^7.1.1
+  # Facebook-login loopt via Supabase OAuth (browser/PKCE, zie
+  # StudentService.meldAanMetFacebook); de native flutter_facebook_auth-plugin
+  # is verwijderd (LA-19): hij werd niet gebruikt en gaf bij elke start een
+  # "SDK has not been initialized"-fout.
 
   # Sign in with Apple (App Store-richtlijn 4.8): native Apple-ID-credential ->
   # Supabase signInWithIdToken. crypto: SHA-256 van de nonce.
@@ -64,7 +64,7 @@ dependencies:
   app_links: ^6.3.2
 
   # Datum/tijd (Nederlands)
-  intl: ^0.19.0
+  intl: ^0.20.3
 
   # Externe links (WhatsApp, betaallink, navigatie)
   url_launcher: ^6.2.5
@@ -90,6 +90,7 @@ dependencies:
 
   # Local storage
   shared_preferences: ^2.2.2
+  package_info_plus: ^8.1.0
 
   cupertino_icons: ^1.0.8
 

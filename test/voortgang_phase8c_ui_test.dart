@@ -23,7 +23,8 @@ void main() {
       expect(source, contains('data.percentageLabel'));
       expect(source,
           isNot(contains('data.afgerondeLessen + data.geplandeLessen')));
-      expect(source, contains('data.nogInTePlannen'));
+      // LA-27: 'Resterend' = totaal - afgerond (nogTeGebruiken), overal gelijk.
+      expect(source, contains('data.nogTeGebruiken'));
     });
 
     test('examenadvieskaart heeft titel en toont geen lokale motivatiecopy',

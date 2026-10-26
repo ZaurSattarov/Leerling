@@ -43,7 +43,8 @@ void main() {
     expect(source, contains("title: 'Wachtwoord herstellen'"));
     expect(source, contains("title: 'Uitloggen op dit apparaat'"));
     expect(source, isNot(contains('Gebruik altijd je eigen account')));
-    expect(source, contains('showModalBottomSheet'));
+    // UI-BOTTOMSHEET: de gedeelde helper (rand tot rand) i.p.v. een eigen sheet.
+    expect(source, contains('showKlantioNavbarSafeSheet'));
     expect(source, contains('StudentService.uitloggen()'));
     expect(source, contains('showDialog<bool>'));
   });

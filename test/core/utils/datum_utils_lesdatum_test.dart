@@ -10,12 +10,13 @@ import 'package:leerling_app/core/utils/datum_utils.dart';
 void main() {
   group('DatumUtils datumblok-formatters', () {
     test('dagAfkorting geeft de juiste Nederlandse weekdagafkorting', () {
-      // 2026-08-20 is een donderdag.
-      expect(DatumUtils.dagAfkorting('2026-08-20'), 'DON');
-      // 2026-08-17 is een maandag.
-      expect(DatumUtils.dagAfkorting('2026-08-17'), 'MAA');
-      // 2026-08-23 is een zondag.
-      expect(DatumUtils.dagAfkorting('2026-08-23'), 'ZON');
+      expect(DatumUtils.dagAfkorting('2026-08-17'), 'MA');
+      expect(DatumUtils.dagAfkorting('2026-08-18'), 'DI');
+      expect(DatumUtils.dagAfkorting('2026-08-19'), 'WO');
+      expect(DatumUtils.dagAfkorting('2026-08-20'), 'DO');
+      expect(DatumUtils.dagAfkorting('2026-08-21'), 'VR');
+      expect(DatumUtils.dagAfkorting('2026-08-22'), 'ZA');
+      expect(DatumUtils.dagAfkorting('2026-08-23'), 'ZO');
     });
 
     test('dagNummer geeft het dagnummer als string', () {

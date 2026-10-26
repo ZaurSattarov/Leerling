@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../core/utils/factuur_pdf_utils.dart';
 import '../../models/factuur.dart';
@@ -63,7 +64,12 @@ class FactuurDetailScreen extends ConsumerWidget {
                 child: EmptyState(
                   icon: CoolIcons.cloudOff,
                   title: 'Kon factuur niet laden',
-                  subtitle: e.toString(),
+                  subtitle: AppErrorFormatter.toFriendlyDutch(
+                    e,
+                    fallback: 'Deze factuur kan nu niet worden geladen.',
+                    contextMessage: 'Factuur laden',
+                  ),
+                  onAction: () => ref.invalidate(factuurDetailProvider(id)),
                 ),
               ),
             ),
@@ -250,8 +256,8 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
                   factuur.beschrijving.isNotEmpty
                       ? factuur.beschrijving
                       : 'Geen omschrijving toegevoegd',
-                  style: TextStyle(
-                      color: AppColors.textSecondary, fontSize: 14),
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 14),
                 ),
               ],
             ),

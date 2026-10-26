@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/les.dart';
 import '../../shared/widgets/app_card.dart';
@@ -42,7 +43,12 @@ class LespakketDetailScreen extends ConsumerWidget {
               error: (e, _) => EmptyState(
                 icon: CoolIcons.cloudOff,
                 title: 'Kon lespakket niet laden',
-                subtitle: e.toString(),
+                subtitle: AppErrorFormatter.toFriendlyDutch(
+                  e,
+                  fallback: 'Het lespakket kan nu niet worden geladen.',
+                  contextMessage: 'Lespakket laden',
+                ),
+                onAction: () => ref.invalidate(lespakketVoortgangProvider),
               ),
             ),
           ),
@@ -192,8 +198,9 @@ class _LespakketDetailBody extends ConsumerWidget {
                   // de servergegevens (lessen_gevolgd), nooit meer uit een
                   // client-side telling -- geen fallback-uitleg meer nodig.
                   'Afgerond komt uit de servergegevens van je instructeur. '
-                  'Alleen geplande pakketlessen tellen apart als "Gepland". '
-                  'Geannuleerd, verzet en geen toon tellen niet als verbruikt.',
+                  'Resterend is je pakket min wat al afgerond is. Daarvan staan er '
+                  'al lessen gepland; wat dan nog overblijft is "Nog in te plannen". '
+                  'Geannuleerd, verzet en niet verschenen tellen niet als verbruikt.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.45,

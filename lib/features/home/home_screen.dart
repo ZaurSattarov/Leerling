@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/services/push_service.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/leerling_profiel.dart';
@@ -103,41 +104,48 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               onTap: () => context.go('/planning'),
                             )
                           : _GeenLesCard(),
-                      const SizedBox(height: 24),
 
-                      // Voorbereiding volgende les (zelfde workflow als
-                      // hierboven -- daarom direct eronder)
                       lesvoorbereidingAsync.when(
                         data: (data) => _LesvoorbereidingCard(
                           data: data,
                           onTap: () => context.push('/lesvoorbereiding'),
                         ),
-                        loading: () => const SkeletonCard(),
+                        loading: () => const Padding(
+                          padding: EdgeInsets.only(top: 24),
+                          child: SkeletonCard(),
+                        ),
                         error: (_, __) => const SizedBox.shrink(),
                       ),
-                      const SizedBox(height: 24),
 
-                      // Mijn voortgang (lespakket/lesvoortgang)
                       profielAsync.when(
                         data: (profiel) => profiel != null
-                            ? _VoortgangCard(
-                                profiel: profiel,
-                                onTap: () => context.go('/voortgang'),
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: 24),
+                                child: _VoortgangCard(
+                                  profiel: profiel,
+                                  onTap: () => context.go('/voortgang'),
+                                ),
                               )
                             : const SizedBox.shrink(),
-                        loading: () => const SkeletonCard(),
+                        loading: () => const Padding(
+                          padding: EdgeInsets.only(top: 24),
+                          child: SkeletonCard(),
+                        ),
                         error: (_, __) => const SizedBox.shrink(),
                       ),
-                      const SizedBox(height: 24),
 
-                      // Examenadvies (semantisch iets anders dan
-                      // lesvoortgang -- eigen kaart, eigen scherm)
                       homeCoachAsync.when(
-                        data: (coach) => _ExamenadviesHero(
-                          data: coach,
-                          onTap: () => context.push('/examenadvies'),
+                        data: (coach) => Padding(
+                          padding: const EdgeInsets.only(top: 24),
+                          child: _ExamenadviesHero(
+                            data: coach,
+                            onTap: () => context.push('/examenadvies'),
+                          ),
                         ),
-                        loading: () => const _SkeletonHero(),
+                        loading: () => const Padding(
+                          padding: EdgeInsets.only(top: 24),
+                          child: _SkeletonHero(),
+                        ),
                         error: (_, __) => const SizedBox.shrink(),
                       ),
 
@@ -169,7 +177,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: EmptyState(
                   icon: CoolIcons.cloudOff,
                   title: 'Kon dashboard niet laden',
-                  subtitle: e.toString(),
+                  subtitle: AppErrorFormatter.toFriendlyDutch(
+                    e,
+                    fallback: 'Home kan nu niet worden geladen.',
+                    contextMessage: 'Home laden',
+                  ),
+                  onAction: () => ref.invalidate(homeProvider),
                 ),
               ),
             ),
@@ -387,6 +400,17 @@ class _GeenLesCard extends StatelessWidget {
                   style:
                       TextStyle(fontSize: 12, color: AppColors.textSecondary),
                 ),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: () => context.push('/beschikbaarheid'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                    padding: EdgeInsets.zero,
+                    minimumSize: const Size(48, 48),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: const Text('Beschikbaarheid doorgeven'),
+                ),
               ],
             ),
           ),
@@ -424,6 +448,7 @@ class _LesvoorbereidingCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(top: 24),
         decoration: BoxDecoration(
           color: AppColors.panel,
           borderRadius: BorderRadius.circular(12),
@@ -530,7 +555,7 @@ class _VoortgangCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '${profiel.lessenGevolgd} van ${profiel.lessenTotaal} lessen · ${profiel.pakket.label}',
+                        '${profiel.lessenGevolgd} van ${profiel.lessenTotaal} lessen · ${profiel.pakketWeergaveNaam}',
                         style: TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,

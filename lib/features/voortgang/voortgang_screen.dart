@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_tab_header.dart';
 import '../examenadvies/examenadvies_data.dart';
@@ -69,6 +70,23 @@ class VoortgangScreen extends ConsumerWidget {
                         );
                       }
 
+                      final geenData = (lespakketAsync.hasError &&
+                              !lespakketAsync.hasValue) ||
+                          (trendsAsync.hasError && !trendsAsync.hasValue);
+                      if (geenData) {
+                        return SliverFillRemaining(
+                          child: EmptyState(
+                            icon: CoolIcons.cloudOff,
+                            title: 'Geen verbinding',
+                            subtitle: 'Voortgang kan nu niet worden geladen.',
+                            onAction: () {
+                              ref.invalidate(lespakketVoortgangProvider);
+                              ref.invalidate(voortgangTrendsProvider);
+                            },
+                          ),
+                        );
+                      }
+
                       return SliverPadding(
                         padding: EdgeInsets.fromLTRB(
                           _screenPadding,
@@ -91,11 +109,17 @@ class VoortgangScreen extends ConsumerWidget {
                                     ),
                               loading: () =>
                                   const SkeletonBox(height: 200, radius: 18),
-                              error: (_, __) => _TotaleVoortgangCard(
-                                data:
-                                    LespakketVoortgangData.fromProfielEnLessen(
-                                  profiel: profiel,
-                                  lessen: const [],
+                              error: (e, _) => Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: EmptyState(
+                                  icon: CoolIcons.cloudOff,
+                                  title: 'Geen verbinding',
+                                  subtitle:
+                                      'Voortgang kan nu niet worden geladen.',
+                                  onAction: () {
+                                    ref.invalidate(lespakketVoortgangProvider);
+                                    ref.invalidate(voortgangTrendsProvider);
+                                  },
                                 ),
                               ),
                             ),
@@ -126,9 +150,7 @@ class VoortgangScreen extends ConsumerWidget {
                               ),
                               loading: () =>
                                   const SkeletonBox(height: 280, radius: 18),
-                              error: (_, __) => const _CbrRadarCard(
-                                categorieen: [],
-                              ),
+                              error: (_, __) => const SizedBox.shrink(),
                             ),
                             const SizedBox(height: _sectionTitleGap),
 
@@ -183,7 +205,7 @@ class VoortgangScreen extends ConsumerWidget {
                                     : [trends.tijdlijn.first],
                               ),
                               loading: () => const SkeletonCard(),
-                              error: (_, __) => const TijdlijnCard(items: []),
+                              error: (_, __) => const SizedBox.shrink(),
                             ),
                           ]),
                         ),
@@ -212,7 +234,16 @@ class VoortgangScreen extends ConsumerWidget {
                       child: EmptyState(
                         icon: CoolIcons.cloudOff,
                         title: 'Kon voortgang niet laden',
-                        subtitle: e.toString(),
+                        subtitle: AppErrorFormatter.toFriendlyDutch(
+                          e,
+                          fallback: 'Voortgang kan nu niet worden geladen.',
+                          contextMessage: 'Voortgang laden',
+                        ),
+                        onAction: () {
+                          ref.invalidate(mijnProfielProvider);
+                          ref.invalidate(lespakketVoortgangProvider);
+                          ref.invalidate(voortgangTrendsProvider);
+                        },
                       ),
                     ),
                   ),
@@ -243,7 +274,7 @@ class _TotaleVoortgangCard extends StatelessWidget {
     return Semantics(
       button: true,
       label:
-          '$voortgangZin. ${data.afgerondeLessen} afgerond, ${data.geplandeLessen} gepland, ${data.nogInTePlannen} resterend.',
+          '$voortgangZin. ${data.afgerondeLessen} afgerond, ${data.geplandeLessen} gepland, ${data.nogTeGebruiken} resterend.',
       child: AppCard(
         onTap: () => context.push('/voortgang/lespakket'),
         padding: const EdgeInsets.all(_cardPadding),
@@ -346,7 +377,7 @@ class _TotaleVoortgangCard extends StatelessWidget {
                     Expanded(
                       child: _StatPill(
                         label: 'Resterend',
-                        value: '${data.nogInTePlannen}',
+                        value: '${data.nogTeGebruiken}',
                         valueColor: AppColors.textPrimary,
                       ),
                     ),

@@ -6,7 +6,6 @@ import 'package:crypto/crypto.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -227,10 +226,8 @@ class StudentService {
   // door de instructeur aangemaakt en pas via koppelLeerlingMetCode()
   // gekoppeld, ongeacht de inlogmethode) -- app.dart blijft dus ongewijzigd.
   //
-  // flutter_facebook_auth blijft (bewust, tijdelijk) nog als dependency
-  // staan -- wordt pas in een aparte, latere cleanup-stap verwijderd nadat
-  // deze OAuth-flow aantoonbaar werkt. Deze functie gebruikt de package
-  // niet meer.
+  // De native flutter_facebook_auth-plugin is verwijderd (LA-19): de login
+  // loopt volledig via deze OAuth-flow.
   static Future<bool> meldAanMetFacebook() {
     return client.auth.signInWithOAuth(
       OAuthProvider.facebook,
@@ -286,13 +283,6 @@ class StudentService {
     } catch (e) {
       debugPrint('[auth][google] signOut mislukte (genegeerd): $e');
     }
-    // Facebook-sessie lokaal loskoppelen -- zelfde reden/best-effort als
-    // hierboven bij Google.
-    try {
-      await FacebookAuth.instance.logOut();
-    } catch (e) {
-      debugPrint('[auth][facebook] signOut mislukte (genegeerd): $e');
-    }
     if (client.auth.currentSession == null) return;
     // Push (Fase 5): dit apparaat deactiveren VOORDAT de sessie sluit --
     // deactivate_push_token heeft auth.uid() nodig.
@@ -342,12 +332,6 @@ class StudentService {
       await _google.signOut();
     } catch (e) {
       debugPrint('[auth][google] signOut na accountverwijdering mislukte: $e');
-    }
-    try {
-      await FacebookAuth.instance.logOut();
-    } catch (e) {
-      debugPrint(
-          '[auth][facebook] signOut na accountverwijdering mislukte: $e');
     }
   }
 
@@ -638,6 +622,18 @@ class StudentService {
         .order('starttijd', ascending: false)
         .limit(100);
     return (res as List).map((e) => Les.fromJson(e)).toList();
+  }
+
+  /// Welke van deze les-id's bestaan nog (en zijn zichtbaar voor de leerling)?
+  /// Gooit bij een netwerk-/serverfout: de aanroeper mag dan NIET concluderen
+  /// dat een les verwijderd is.
+  static Future<Set<String>> bestaandeLesIds(Set<String> ids) async {
+    if (ids.isEmpty) return <String>{};
+    final res = await client
+        .from(_studentLessenView)
+        .select('id')
+        .inFilter('id', ids.toList());
+    return (res as List).map((e) => e['id'].toString()).toSet();
   }
 
   static Future<Les?> getLes(String lesId) async {
@@ -1072,6 +1068,16 @@ class StudentService {
             column: 'leerling_id',
             value: leerlingId,
           ),
+          callback: (_) => onChange(),
+        )
+        // DELETE komt vaak zonder leerling_id binnen (standaard replica
+        // identity). Die gebeurtenis valt dan buiten het filter hierboven
+        // en de les blijft staan tot een koude start. Een tweede luisteraar
+        // zonder filter ververst alleen; de payload wordt niet gelogd.
+        .onPostgresChanges(
+          event: PostgresChangeEvent.delete,
+          schema: 'public',
+          table: 'lessen',
           callback: (_) => onChange(),
         )
         .subscribe();

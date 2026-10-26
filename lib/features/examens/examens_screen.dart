@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/examen.dart';
 import '../../shared/widgets/app_card.dart';
@@ -127,7 +128,12 @@ class _ExamensScreenState extends ConsumerState<ExamensScreen> {
                       child: EmptyState(
                         icon: CoolIcons.cloudOff,
                         title: 'Kon examens niet laden',
-                        subtitle: e.toString(),
+                        subtitle: AppErrorFormatter.toFriendlyDutch(
+                          e,
+                          fallback: 'Examens kunnen nu niet worden geladen.',
+                          contextMessage: 'Examens laden',
+                        ),
+                        onAction: () => ref.invalidate(examensProvider),
                       ),
                     ),
                   ),

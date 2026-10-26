@@ -1,9 +1,11 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/app_error_formatter.dart';
 import '../../core/utils/datum_utils.dart';
 import '../../models/les.dart';
 import '../../shared/widgets/app_card.dart';
@@ -42,6 +44,7 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
+        clipBehavior: Clip.none,
         children: [
           Column(
             children: [
@@ -139,7 +142,7 @@ class _PillTabBar extends StatelessWidget {
                 height: height - (padding * 2),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.white : AppColors.primary,
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(999),
                     boxShadow: [
                       BoxShadow(
@@ -157,32 +160,38 @@ class _PillTabBar extends StatelessWidget {
                 children: List.generate(labels.length, (i) {
                   final isSelected = i == activeIndex;
                   return Expanded(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: Semantics(
+                      button: true,
+                      selected: isSelected,
+                      label: labels[i],
+                      excludeSemantics: true,
                       onTap: () => onTap(i),
-                      child: Container(
-                        height: height,
-                        alignment: Alignment.center,
-                        child: AnimatedDefaultTextStyle(
-                          duration: const Duration(milliseconds: 180),
-                          curve: Curves.easeOut,
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight:
-                                isSelected ? FontWeight.w600 : FontWeight.w500,
-                            color: isSelected
-                                ? (isDark
-                                    ? const Color(0xFF111111)
-                                    : Colors.white)
-                                : (isDark
-                                    ? AppColors.darkTextSecondary
-                                    : const Color(0xFF8A8A8E)),
-                            letterSpacing: -0.2,
-                          ),
-                          child: Text(
-                            labels[i],
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => onTap(i),
+                        child: Container(
+                          height: height,
+                          alignment: Alignment.center,
+                          child: AnimatedDefaultTextStyle(
+                            duration: const Duration(milliseconds: 180),
+                            curve: Curves.easeOut,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w500,
+                              color: isSelected
+                                  ? Colors.white
+                                  : (isDark
+                                      ? AppColors.darkTextSecondary
+                                      : const Color(0xFF8A8A8E)),
+                              letterSpacing: -0.2,
+                            ),
+                            child: Text(
+                              labels[i],
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ),
                       ),
@@ -214,8 +223,10 @@ class _LessenTab extends ConsumerWidget {
       color: AppColors.primary,
       onRefresh: () async {
         HapticFeedback.selectionClick();
-        ref.invalidate(komendeLessenProvider);
-        ref.invalidate(vorigeLessenProvider);
+        await Future.wait([
+          ref.refresh(komendeLessenProvider.future),
+          ref.refresh(vorigeLessenProvider.future),
+        ]);
       },
       child: lessenAsync.when(
         data: (lessen) {
@@ -246,7 +257,15 @@ class _LessenTab extends ConsumerWidget {
             EmptyState(
               icon: CoolIcons.cloudOff,
               title: 'Kon lessen niet laden',
-              subtitle: e.toString(),
+              subtitle: AppErrorFormatter.toFriendlyDutch(
+                e,
+                fallback: 'Lessen kunnen nu niet worden geladen.',
+                contextMessage: 'Lessen laden',
+              ),
+              onAction: () {
+                ref.invalidate(komendeLessenProvider);
+                ref.invalidate(vorigeLessenProvider);
+              },
             ),
           ],
         ),
@@ -315,9 +334,9 @@ class _NieuweLesFab extends StatefulWidget {
 }
 
 class _NieuweLesFabState extends State<_NieuweLesFab> {
-  static const _prefsKey = 'planning_nieuwe_les_fab_top';
-  static const _breedte = 40.0;
-  static const _hoogte = 40.0;
+  static const _prefsKey = 'planning_nieuwe_les_fab_top_v3';
+  static const _breedte = 52.0;
+  static const _hoogte = 52.0;
   double? _top;
 
   @override
@@ -343,8 +362,14 @@ class _NieuweLesFabState extends State<_NieuweLesFab> {
 
   double _clampTop(BuildContext context, double value) {
     final media = MediaQuery.of(context);
-    final minTop = media.padding.top + 156;
-    final maxTop = media.size.height - media.padding.bottom - 118 - _hoogte;
+    final safeTop = media.padding.top + 12;
+    final safeBottom = media.padding.bottom + 92;
+    final beschikbareHoogte = media.size.height - safeTop - safeBottom;
+    final minTop = safeTop;
+    final maxTop = math.max(
+      minTop,
+      safeTop + beschikbareHoogte - _hoogte,
+    );
     if (maxTop <= minTop) return minTop;
     return value.clamp(minTop, maxTop).toDouble();
   }
@@ -352,16 +377,18 @@ class _NieuweLesFabState extends State<_NieuweLesFab> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    final standaardTop =
-        (media.size.height - media.padding.top - media.padding.bottom) / 2;
-    final top = _clampTop(context, _top ?? standaardTop);
+    final safeTop = media.padding.top + 12;
+    final safeBottom = media.padding.bottom + 92;
+    final beschikbareHoogte = media.size.height - safeTop - safeBottom;
+    final defaultTop = safeTop + (beschikbareHoogte - _hoogte) / 2;
+    final top = _clampTop(context, _top ?? defaultTop);
 
     return Positioned(
-      right: 10,
       top: top,
+      right: -6,
       child: Semantics(
         button: true,
-        label: 'Nieuwe les aanvragen',
+        label: 'Beschikbaarheid doorgeven',
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
@@ -382,19 +409,21 @@ class _NieuweLesFabState extends State<_NieuweLesFab> {
             height: _hoogte,
             decoration: BoxDecoration(
               color: AppColors.primary,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.10),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
+                  color: AppColors.primary.withValues(alpha: 0.24),
+                  blurRadius: 14,
+                  offset: const Offset(0, 7),
                 ),
               ],
             ),
-            child: const Icon(
-              CoolIcons.calendarAdd,
-              size: 22,
-              color: Colors.white,
+            child: const Center(
+              child: Icon(
+                CoolIcons.calendarAdd,
+                size: 24,
+                color: Colors.white,
+              ),
             ),
           ),
         ),

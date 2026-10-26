@@ -7,6 +7,7 @@ import 'package:leerling_app/models/leerling_profiel.dart';
 LeerlingProfiel _leerling({
   String voornaam = 'Teo',
   String achternaam = 'Seee',
+  String? email,
   LeerlingStatus status = LeerlingStatus.actief,
 }) {
   return LeerlingProfiel(
@@ -14,6 +15,7 @@ LeerlingProfiel _leerling({
     instructeurId: 'i1',
     voornaam: voornaam,
     achternaam: achternaam,
+    email: email,
     pakket: PakketType.standaard,
     status: status,
     lessenTotaal: 20,
@@ -24,27 +26,41 @@ LeerlingProfiel _leerling({
 }
 
 void main() {
-  test('naam primair, rijschool secundair, geen e-mail', () {
+  test('kop toont het e-mailadres van de leerling, niet van de rijschool', () {
     final copy = buildLearnerProfileHeroCopy(
-      profiel: _leerling(),
+      profiel: _leerling(email: 'leerling@example.com'),
       instructeur: const Instructeur(
         id: 'i1',
-        rijschoolNaam: 'RIJ PRO',
+        rijschoolNaam: 'school@example.com',
         naam: 'Joost',
+        email: 'school@example.com',
       ),
+      accountEmail: 'leerling@example.com',
     );
     expect(copy.primaryTitle, 'Teo Seee');
-    expect(copy.schoolLine, 'RIJ PRO');
-    expect(copy.statusLabel, 'Actief');
-    expect(copy.statusTone, LearnerHeroBadgeTone.success);
+    expect(copy.schoolLine, 'leerling@example.com');
+    expect(copy.schoolLine, isNot('school@example.com'));
+    expect(copy.schoolLine, isNot('Joost'));
   });
 
-  test('valt terug op instructeurnaam als rijschool ontbreekt', () {
+  test('instructeur-adres wordt niet als leerlingadres getoond', () {
     final copy = buildLearnerProfileHeroCopy(
-      profiel: _leerling(),
+      profiel: _leerling(email: 'school@example.com'),
+      instructeur: const Instructeur(
+        id: 'i1',
+        email: 'school@example.com',
+      ),
+      accountEmail: 'school@example.com',
+    );
+    expect(copy.schoolLine, isNull);
+  });
+
+  test('profiel-e-mail als het accountadres ontbreekt', () {
+    final copy = buildLearnerProfileHeroCopy(
+      profiel: _leerling(email: 'leerling@example.com'),
       instructeur: const Instructeur(id: 'i1', naam: 'Joost'),
     );
-    expect(copy.schoolLine, 'Joost');
+    expect(copy.schoolLine, 'leerling@example.com');
   });
 
   test('lege profiel crasht niet', () {
