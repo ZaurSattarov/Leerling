@@ -1,0 +1,60 @@
+{
+  "release": "klantio-leerling-email-preferences-v2",
+  "date": "2026-10-25",
+  "base_commit": "1dbd058bd1c6aafa99222a5e8adceabb0fd81625",
+  "app_id": "com.klantio.leerling",
+  "account_modes": [
+    "Solo",
+    "Team"
+  ],
+  "build_variants": [
+    "Android standard release",
+    "iOS Runner Release"
+  ],
+  "separate_solo_team_binary": false,
+  "pubspec_version": "1.0.1+19",
+  "existing_generated_ios_version": "1.0.2+19",
+  "candidate_build_name": "1.0.2",
+  "candidate_build_number": 20,
+  "candidate_store_number_availability_verified": false,
+  "source_changed_for_release_preparation": false,
+  "source_evidence": "../../qa/email-instellingen/SOURCE-HASHES.json",
+  "tests_reused": 54,
+  "backend_contract": "../Instrecteur/Klantio-emailbibliotheek/qa/master76-2026-10-25/AGENT2-VOORKEURENCONTRACT.md",
+  "backend_contract_sha256": "1efe0f3f7b2845a9ad102dfba5d2db46a18e33434bf28c24704a89cdaca28fad",
+  "rpc": "klantio_email_set_learner_preferences",
+  "email_topic_keys": [
+    "L07",
+    "L08",
+    "L09",
+    "L10",
+    "L13",
+    "L14",
+    "L16",
+    "L19",
+    "L20",
+    "L22",
+    "L23",
+    "L25",
+    "L26"
+  ],
+  "optional_email_defaults": false,
+  "optional_chains_must_remain_disabled": true,
+  "existing_active_email_chains_must_remain": 15,
+  "next_required_GO": "app_publication_only_after_joint_integration_and_normal_build_signing_checks",
+  "subsequent_gates": [
+    "joint_own_account_integration",
+    "app_publication_GO",
+    "separate_13_chains_activation_GO"
+  ],
+  "uploads_deployments_commits_pushes_authorized": false,
+  "release_documents_sha256": {
+    "RELEASEPLAN.md": "504dc0170caa66bde30f054634d1a10ce38096d7c1741a161200cf258b3f74cf",
+    "RELEASENOTES.nl.md": "283533f1c7e2afa7e33cab817d9f77829552866171fcba560884f7d4066c2bce",
+    "RELEASE-CHECK.json": "075cae72122eac8690a4392566cf61725260bfeb0d30f11ffa60901a6fe719eb",
+    "STATUS.md": "bc53aad09322ec37019567768b7160b493c8efde5e95295cfa44826ca44f4d98"
+  },
+  "backend_installation_status": "INSTALLED_ACCORDING_TO_VERIFIED_MAIL_EVIDENCE",
+  "next_action": "joint_own_account_integration_pending_real_login_and_MFA",
+  "backend_installation_evidence_sha256": "4b043d928821070cfdf8f51a14c968bde87259ed3423dd4d36ca7b5cde7f36c1"
+}

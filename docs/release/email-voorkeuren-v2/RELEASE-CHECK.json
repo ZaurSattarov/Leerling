@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-25",
+  "status": "LOCAL_RELEASE_PREPARATION_READY_NOT_PUBLISHED",
+  "existing_54_tests_reused": true,
+  "tests_rerun": false,
+  "tested_source_hashes_equal": {
+    "lib/models/leerling_notificatie_voorkeuren.dart": true,
+    "lib/core/services/student_service.dart": true,
+    "lib/features/notificaties/notificatie_instellingen_provider.dart": true,
+    "lib/features/notificaties/notificatie_instellingen_screen.dart": true,
+    "lib/features/notificaties/leerling_email_preference_registry.dart": true,
+    "test/email_instellingen_test.dart": true,
+    "test/email_voorkeuren_service_test.dart": true,
+    "test/notificatie_instellingen_test.dart": true,
+    "docs/qa/email-instellingen/IMPLEMENTATIE.md": true,
+    "docs/qa/email-instellingen/email-rijlessen.png": true,
+    "docs/qa/email-instellingen/email-overige-groepen.png": true
+  },
+  "protected_files_equal_to_HEAD": {
+    "lib/core/services/push_service.dart": true,
+    "lib/features/notificaties/leerling_notification_preference_registry.dart": true,
+    "ios/Runner/AppDelegate.swift": true,
+    "pubspec.yaml": true,
+    "pubspec.lock": true,
+    "android/app/build.gradle.kts": true,
+    "ios/Runner.xcodeproj/project.pbxproj": true
+  },
+  "android_release_configuration_present": true,
+  "android_firebase_package_matches": true,
+  "android_release_certificate_validity_checked": false,
+  "release_build_executed": false,
+  "ios_firebase_bundle_matches": true,
+  "ios_signing_verification_on_Mac_pending": true,
+  "backend_v2_installed_verified": true,
+  "joint_target_environment_integration_executed": false,
+  "production_actions": 0,
+  "backend_verification_scope": "Existing MAIL VERIFIED.json read and checked; no new remote query or account operation by Agent 2",
+  "backend_evidence_sha256": "4b043d928821070cfdf8f51a14c968bde87259ed3423dd4d36ca7b5cde7f36c1"
+}

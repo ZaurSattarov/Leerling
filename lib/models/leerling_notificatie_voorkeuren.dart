@@ -1,5 +1,11 @@
 class LeerlingNotificatieVoorkeuren {
   final String userId;
+  final bool emailNotificaties;
+  final Map<String, bool> _emailTopics;
+
+  /// Ontbrekende onderwerpen zijn nooit impliciete toestemming.
+  Map<String, bool> get emailTopics => Map.unmodifiable(_emailTopics);
+  bool emailTopicEnabled(String topic) => _emailTopics[topic] ?? false;
   final bool nieuweLes;
   final bool lesVerplaatst;
   final bool lesHerinnering;
@@ -17,6 +23,8 @@ class LeerlingNotificatieVoorkeuren {
 
   const LeerlingNotificatieVoorkeuren({
     required this.userId,
+    this.emailNotificaties = false,
+    Map<String, bool> emailTopics = const {},
     this.nieuweLes = true,
     this.lesVerplaatst = true,
     this.lesHerinnering = true,
@@ -31,11 +39,19 @@ class LeerlingNotificatieVoorkeuren {
     this.examenadvies = true,
     this.createdAt,
     this.updatedAt,
-  });
+  }) : _emailTopics = emailTopics;
 
   factory LeerlingNotificatieVoorkeuren.fromJson(Map<String, dynamic> json) {
     return LeerlingNotificatieVoorkeuren(
       userId: json['user_id'] as String,
+      emailNotificaties: json['email_notificaties'] == true,
+      emailTopics: json['email_topics'] is Map
+          ? Map.unmodifiable({
+              for (final entry in (json['email_topics'] as Map).entries)
+                if (entry.key is String)
+                  entry.key as String: entry.value == true,
+            })
+          : const {},
       nieuweLes: json['nieuwe_les'] as bool? ?? true,
       lesVerplaatst: json['les_verplaatst'] as bool? ?? true,
       lesHerinnering: json['les_herinnering'] as bool? ?? true,
@@ -53,6 +69,8 @@ class LeerlingNotificatieVoorkeuren {
     );
   }
 
+  /// Alleen pushvelden. E-mailtoestemming mag uitsluitend via de eigen RPC.
+  /// Ook de eerste INSERT mag geen serverbeheerde e-mailvelden bevatten.
   Map<String, dynamic> toJson() {
     return {
       'user_id': userId,
@@ -72,6 +90,8 @@ class LeerlingNotificatieVoorkeuren {
   }
 
   LeerlingNotificatieVoorkeuren copyWith({
+    bool? emailNotificaties,
+    Map<String, bool>? emailTopics,
     bool? nieuweLes,
     bool? lesVerplaatst,
     bool? lesHerinnering,
@@ -88,6 +108,8 @@ class LeerlingNotificatieVoorkeuren {
   }) {
     return LeerlingNotificatieVoorkeuren(
       userId: userId,
+      emailNotificaties: emailNotificaties ?? this.emailNotificaties,
+      emailTopics: Map.unmodifiable(emailTopics ?? _emailTopics),
       nieuweLes: nieuweLes ?? this.nieuweLes,
       lesVerplaatst: lesVerplaatst ?? this.lesVerplaatst,
       lesHerinnering: lesHerinnering ?? this.lesHerinnering,

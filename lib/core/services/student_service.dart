@@ -799,6 +799,37 @@ class StudentService {
     return LeerlingNotificatieVoorkeuren.fromJson(opgeslagen);
   }
 
+  static Future<LeerlingNotificatieVoorkeuren> slaMijnEmailVoorkeurenOp(
+    LeerlingNotificatieVoorkeuren voorkeuren, {
+    bool? enabled,
+    Map<String, bool>? topics,
+  }) async {
+    final user = currentUser;
+    if (user == null || voorkeuren.userId != user.id) {
+      throw StateError('Voorkeuren horen niet bij de ingelogde leerling');
+    }
+
+    if (enabled == null && (topics == null || topics.isEmpty)) {
+      throw ArgumentError('Geen e-mailvoorkeur gewijzigd');
+    }
+
+    // Geen directe upsert of fallback: alleen de server kan toestemming stempelen.
+    final result = await client.rpc(
+      'klantio_email_set_learner_preferences',
+      params: {
+        if (enabled != null) 'p_enabled': enabled,
+        if (topics != null && topics.isNotEmpty) 'p_topics': topics,
+      },
+    );
+    final opgeslagen = LeerlingNotificatieVoorkeuren.fromJson(
+      Map<String, dynamic>.from(result as Map),
+    );
+    if (currentUser?.id != user.id || opgeslagen.userId != user.id) {
+      throw StateError('Het ingelogde account is gewijzigd');
+    }
+    return opgeslagen;
+  }
+
   static Future<void> markeerGelezen(
     String notificatieId,
     String leerlingId,

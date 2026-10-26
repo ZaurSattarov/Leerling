@@ -8,6 +8,7 @@ import '../../shared/widgets/framer_toggle.dart';
 import '../../shared/widgets/settings_design.dart';
 import '../../shared/widgets/snackbar.dart';
 import 'notificatie_instellingen_provider.dart';
+import 'leerling_email_preference_registry.dart';
 import '../../core/constants/cool_icons.dart';
 
 class NotificatieInstellingenScreen extends ConsumerWidget {
@@ -16,6 +17,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(notificatieInstellingenProvider);
+    final saving = state.isLoading;
     final bottomPadding = MediaQuery.paddingOf(context).bottom + 112;
 
     // Opbouw 1-op-1 als de Instructeur-app (SettingsBodyScaffold). Schakelaars
@@ -33,15 +35,27 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                 subtitle: 'Probeer het later opnieuw.',
               ),
               data: (voorkeuren) => RefreshIndicator(
-                onRefresh: () => ref.refresh(
-                  notificatieInstellingenProvider.future,
-                ),
+                onRefresh: () async {
+                  if (saving) return;
+                  return ref
+                      .refresh(notificatieInstellingenProvider.future)
+                      .then<void>((_) {});
+                },
                 child: SwitchTheme(
                   data: _notificationSwitchTheme(context),
                   child: ListView(
                     key: const Key('notificatie_instellingen_lijst'),
                     padding: EdgeInsets.fromLTRB(20, 20, 20, bottomPadding),
                     children: [
+                      Text(
+                        'Pushmeldingen',
+                        style: TextStyle(
+                          color: AppTheme.textPrimary(context),
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       const SectionHeader(title: 'Lessen'),
                       const SizedBox(height: 10),
                       AppCard(
@@ -49,6 +63,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             _SwitchRow(
+                              enabled: !saving,
                               key: const Key('toggle_nieuwe_les'),
                               icon: CoolIcons.calendarCheck,
                               title: 'Nieuwe les',
@@ -63,6 +78,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             ),
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
+                              enabled: !saving,
                               key: const Key('toggle_les_verplaatst'),
                               icon: CoolIcons.arrowLeftRight,
                               title: 'Les verplaatst',
@@ -76,6 +92,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             ),
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
+                              enabled: !saving,
                               key: const Key('toggle_les_herinnering'),
                               icon: CoolIcons.alarm,
                               title: 'Lesherinneringen',
@@ -99,6 +116,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             _SwitchRow(
+                              enabled: !saving,
                               key: const Key('toggle_nieuwe_factuur'),
                               icon: CoolIcons.fileDocument,
                               title: 'Nieuwe factuur',
@@ -112,6 +130,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             ),
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
+                              enabled: !saving,
                               key: const Key('toggle_betaling_ontvangen'),
                               icon: CoolIcons.creditCard01,
                               title: 'Betaling verwerkt',
@@ -126,6 +145,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             ),
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
+                              enabled: !saving,
                               key: const Key('toggle_factuurherinnering'),
                               icon: CoolIcons.clock,
                               title: 'Factuurherinneringen',
@@ -149,6 +169,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             _SwitchRow(
+                              enabled: !saving,
                               key: const Key('toggle_examen_gepland'),
                               icon: CoolIcons.calendar,
                               title: 'Examen ingepland',
@@ -163,6 +184,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             ),
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
+                              enabled: !saving,
                               key: const Key('toggle_examen_herinnering'),
                               icon: CoolIcons.alarm,
                               title: 'Examenherinneringen',
@@ -177,6 +199,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             ),
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
+                              enabled: !saving,
                               key: const Key('toggle_examen_resultaat'),
                               icon: CoolIcons.star,
                               title: 'Examenresultaat',
@@ -191,6 +214,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             ),
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
+                              enabled: !saving,
                               key: const Key('toggle_examenadvies'),
                               icon: CoolIcons.bookOpen,
                               title: 'Examenadvies',
@@ -213,6 +237,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             _SwitchRow(
+                              enabled: !saving,
                               key: const Key('toggle_nieuwe_evaluatie'),
                               icon: CoolIcons.chatDots,
                               title: 'Nieuwe evaluatie',
@@ -227,6 +252,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                             ),
                             const Divider(height: 1, indent: 72),
                             _SwitchRow(
+                              enabled: !saving,
                               key: const Key('toggle_lespakket_bijna_op'),
                               icon: CoolIcons.layers,
                               title: 'Lespakket bijna op',
@@ -271,6 +297,79 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                           ],
                         ),
                       ),
+                      const SizedBox(height: 32),
+                      const SectionHeader(
+                        key: Key('email_meldingen'),
+                        title: 'E-mailmeldingen',
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Kies welke e-mails je wilt ontvangen. Deze keuzes staan los van je pushmeldingen.',
+                        style: TextStyle(
+                          color: AppTheme.textPrimary(context)
+                              .withValues(alpha: 0.72),
+                          fontSize: 13,
+                          height: 1.4,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      AppCard(
+                        padding: EdgeInsets.zero,
+                        child: _SwitchRow(
+                          key: const Key('toggle_email_notificaties'),
+                          enabled: !saving,
+                          icon: CoolIcons.mail,
+                          title: 'E-mailmeldingen ontvangen',
+                          subtitle: 'Zet aan en kies hieronder je onderwerpen. '
+                              'Account- en beveiligingsmails ontvang je altijd.',
+                          value: voorkeuren.emailNotificaties,
+                          onChanged: (value) => _saveEmail(
+                            context,
+                            ref,
+                            voorkeuren.copyWith(emailNotificaties: value),
+                          ),
+                        ),
+                      ),
+                      for (final group in const [
+                        'Rijlessen',
+                        'Lespakketten',
+                        'Voortgang',
+                        'Examens',
+                      ]) ...[
+                        const SizedBox(height: 22),
+                        SectionHeader(title: group),
+                        const SizedBox(height: 10),
+                        AppCard(
+                          padding: EdgeInsets.zero,
+                          child: Column(children: [
+                            for (final topic in leerlingEmailPreferenceToggles
+                                .where((topic) => topic.group == group)) ...[
+                              if (topic !=
+                                  leerlingEmailPreferenceToggles.firstWhere(
+                                      (topic) => topic.group == group))
+                                const Divider(height: 1, indent: 72),
+                              _SwitchRow(
+                                key: Key('email_topic_${topic.topicKey}'),
+                                enabled:
+                                    !saving && voorkeuren.emailNotificaties,
+                                icon: CoolIcons.mail,
+                                title: topic.title,
+                                subtitle: topic.subtitle,
+                                value: voorkeuren
+                                    .emailTopicEnabled(topic.topicKey),
+                                onChanged: (value) => _saveEmail(
+                                  context,
+                                  ref,
+                                  voorkeuren.copyWith(emailTopics: {
+                                    ...voorkeuren.emailTopics,
+                                    topic.topicKey: value,
+                                  }),
+                                ),
+                              ),
+                            ],
+                          ]),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -294,6 +393,25 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
     } catch (_) {
       if (!context.mounted) return;
       showAppSnackBar(context, 'Opslaan mislukt', isError: true);
+    }
+  }
+
+  Future<void> _saveEmail(
+    BuildContext context,
+    WidgetRef ref,
+    LeerlingNotificatieVoorkeuren voorkeuren,
+  ) async {
+    try {
+      await ref
+          .read(notificatieInstellingenProvider.notifier)
+          .opslaanEmail(voorkeuren);
+    } catch (_) {
+      if (!context.mounted) return;
+      showAppSnackBar(
+        context,
+        'E-mailvoorkeuren opslaan mislukt. Probeer het opnieuw.',
+        isError: true,
+      );
     }
   }
 }
@@ -326,6 +444,7 @@ SwitchThemeData _notificationSwitchTheme(BuildContext context) {
 }
 
 class _SwitchRow extends StatelessWidget {
+  final bool enabled;
   final IconData icon;
   final String title;
   final String subtitle;
@@ -334,6 +453,7 @@ class _SwitchRow extends StatelessWidget {
 
   const _SwitchRow({
     super.key,
+    this.enabled = true,
     required this.icon,
     required this.title,
     required this.subtitle,
@@ -343,43 +463,55 @@ class _SwitchRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
-      child: Row(
-        children: [
-          Icon(icon, size: 20),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: AppTheme.textPrimary(context),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                  ),
+    return Semantics(
+      label: '$title. $subtitle',
+      toggled: value,
+      enabled: enabled,
+      onTap: enabled ? () => onChanged(!value) : null,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: enabled ? () => onChanged(!value) : null,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
+          child: Row(
+            children: [
+              Icon(icon, size: 20),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: AppTheme.textPrimary(context),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: AppTheme.textPrimary(context)
+                            .withValues(alpha: 0.72),
+                        fontSize: 13,
+                        height: 1.25,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 3),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 13,
-                    height: 1.25,
-                  ),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 10),
+              // Zelfde schakelaar als de Instructeur-app (FramerToggle).
+              FramerToggle(
+                value: value,
+                onChanged: enabled ? onChanged : null,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+              ),
+            ],
           ),
-          const SizedBox(width: 10),
-          // Zelfde schakelaar als de Instructeur-app (FramerToggle).
-          FramerToggle(
-            value: value,
-            onChanged: onChanged,
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -425,24 +557,25 @@ class _LockedRow extends StatelessWidget {
                     height: 1.25,
                   ),
                 ),
+                const SizedBox(height: 8),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: AppColors.borderLight,
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Text(
+                    'Altijd actief',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
               ],
-            ),
-          ),
-          const SizedBox(width: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-            decoration: BoxDecoration(
-              color: AppColors.borderLight,
-              borderRadius: BorderRadius.circular(999),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: Text(
-              'Altijd actief',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-              ),
             ),
           ),
         ],

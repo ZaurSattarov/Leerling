@@ -173,8 +173,7 @@ void main() {
       expect(find.text('Les start binnenkort'), findsOneWidget);
       expect(find.text('Bericht van je instructeur'), findsOneWidget);
       expect(find.text('Altijd actief'), findsNWidgets(3));
-      expect(
-          find.text('Account- en beveiligingsmeldingen'), findsNothing);
+      expect(find.text('Account- en beveiligingsmeldingen'), findsNothing);
       expect(find.text('Serviceberichten van Klantio'), findsNothing);
       expect(
           find.textContaining('marketing', findRichText: true), findsNothing);
@@ -241,7 +240,7 @@ void main() {
 
       expect(source, contains('SwitchTheme('));
       expect(source, contains('_notificationSwitchTheme'));
-      expect(RegExp("Key\\('toggle_").allMatches(source), hasLength(12));
+      expect(RegExp("Key\\('toggle_").allMatches(source), hasLength(13));
       expect(source, contains('class _LockedRow'));
       expect(source, contains('return AppColors.primary;'));
       expect(source, contains('return AppColors.white;'));
@@ -288,6 +287,14 @@ class _FakeVoorkeurenRepository implements NotificatieVoorkeurenRepository {
   Completer<LeerlingNotificatieVoorkeuren>? loadCompleter;
 
   _FakeVoorkeurenRepository({required this.userId});
+
+  @override
+  Future<LeerlingNotificatieVoorkeuren> slaEmailOp(
+    LeerlingNotificatieVoorkeuren voorkeuren, {
+    bool? enabled,
+    Map<String, bool>? topics,
+  }) =>
+      slaOp(voorkeuren);
 
   @override
   Future<LeerlingNotificatieVoorkeuren> laad() async {

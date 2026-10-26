@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-25",
+  "scope": "Leerling only; no backend changes",
+  "base_commit": "1dbd058bd1c6aafa99222a5e8adceabb0fd81625",
+  "sha256": {
+    "lib/models/leerling_notificatie_voorkeuren.dart": "2ab002dc2dfca3f8c63bf36f25c73f0713e1b1e10fe47ee8ea760ac8812095bb",
+    "lib/core/services/student_service.dart": "b46fab38eec5f14b816c95e2f80cae8c259414708e5828cea7f808763739b445",
+    "lib/features/notificaties/notificatie_instellingen_provider.dart": "ae1e41d3e3f3d58a8d464e96dbcd70af357124309bf431903b7e149e9da58839",
+    "lib/features/notificaties/notificatie_instellingen_screen.dart": "a5831b296ab0ebf8eeda9bdfb5b3354b3dd472d2fe29e4e21dbb0025887f56c5",
+    "lib/features/notificaties/leerling_email_preference_registry.dart": "b7fec1cc94df10d4043feb21762535fb368e8a99624a0770292d8875fda8ac78",
+    "test/email_instellingen_test.dart": "adcbfffb0f154b64c1e7a3c613681efef8acdf6d95a078cf9a66ea0c61babba8",
+    "test/email_voorkeuren_service_test.dart": "1157b3b1e7166596b04fbea9d2e36ab80a05d668853280a78f4a8c3f21c9f7af",
+    "test/notificatie_instellingen_test.dart": "44738d46a2630737c9e74fa05b1de2ec7823ea955421c05cf5654ad99a6694e4",
+    "docs/qa/email-instellingen/IMPLEMENTATIE.md": "77df1f88ad863dec3b213523d15c183db77387959d5e9c93fda4916b41acb8f2",
+    "docs/qa/email-instellingen/email-rijlessen.png": "c089baa0880f50e3de039c7f7faa30be754ac86e3662d5c7d7785ded935bba59",
+    "docs/qa/email-instellingen/email-overige-groepen.png": "511118f5758526246f60f8d2b1fcbdeeab2afe47200c82db03aeaff4ca0e05ba"
+  }
+}
