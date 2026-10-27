@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-27",
+  "session": "user personally logged in; account identity not yet verified",
+  "original_ui_snapshot": "BEGINSTAND-EMULATOR.json",
+  "actions": [
+    {
+      "field": "email_notificaties",
+      "attempted_value": true,
+      "ui_initial_response": "on after save completed"
+    },
+    {
+      "field": "L11",
+      "attempted_value": true,
+      "ui_after_save": true
+    },
+    {
+      "field": "L12",
+      "attempted_value": true,
+      "ui_after_save": "pending observation"
+    }
+  ],
+  "restoration_required": true,
+  "restoration_complete": false,
+  "ui_saved_on_observed": [
+    "email_notificaties",
+    "L11",
+    "L12",
+    "L35",
+    "L21"
+  ],
+  "last_attempted_topic": "L24",
+  "last_attempted_value": true,
+  "L24_final_state_not_observed_due_user_Escape": true,
+  "backend_test_status": "MAIL FINAL-REPAIR-AND-MAIL-VERIFIED.json read: migration20261027082000 verified; exactly1 synthetic L07 provider attempt accepted and human inbox confirmed; budget exhausted. Original24 active; learner20 and I31/I36/AD01 off. Real lesson-link E2E not proven.",
+  "remaining_topics_not_written": [
+    "L30",
+    "L31"
+  ],
+  "test_mail_budget_remaining": 0,
+  "latest_restore_attempt": "Emulator reopened. User logged in, but actual screen is Instructor app (Agenda/Leerlingen). No Instructor preferences touched. Waiting for actual Klantio L Notificaties.",
+  "emulator_checks_stopped_at_user_request": true,
+  "new_dedup_tests_passed": 3
+}

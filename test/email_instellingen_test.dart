@@ -64,6 +64,13 @@ void main() {
       'L23',
       'L25',
       'L26',
+      'L11',
+      'L12',
+      'L21',
+      'L24',
+      'L35',
+      'L30',
+      'L31',
     });
   });
 
@@ -94,7 +101,7 @@ void main() {
     expect(() => value.emailTopics['L10'] = true, throwsUnsupportedError);
   });
 
-  test('alle 13 onderwerpen bewaren afzonderlijk aan en uit na herladen',
+  test('alle 20 onderwerpen bewaren afzonderlijk aan en uit na herladen',
       () async {
     final repo = MemoryPreferences();
     final container = ProviderContainer(overrides: [
@@ -146,7 +153,17 @@ void main() {
       ..value = const LeerlingNotificatieVoorkeuren(
         userId: 'leerling-a',
         emailNotificaties: true,
-        emailTopics: {'L07': true, 'L26': true},
+        emailTopics: {
+          'L07': true,
+          'L26': true,
+          'L11': true,
+          'L12': true,
+          'L21': true,
+          'L24': true,
+          'L35': true,
+          'L30': true,
+          'L31': true,
+        },
         nieuweLes: false,
       );
     final container = ProviderContainer(overrides: [
@@ -158,11 +175,21 @@ void main() {
         .read(notificatieInstellingenProvider.notifier)
         .opslaanEmail(value.copyWith(emailNotificaties: false));
     expect(repo.value.emailNotificaties, isFalse);
-    expect(repo.value.emailTopics, {'L07': true, 'L26': true});
+    expect(repo.value.emailTopics, {
+      'L07': true,
+      'L26': true,
+      'L11': true,
+      'L12': true,
+      'L21': true,
+      'L24': true,
+      'L35': true,
+      'L30': true,
+      'L31': true,
+    });
     expect(repo.value.nieuweLes, isFalse);
   });
 
-  testWidgets('alle groepen, Nederlandse labels en 13 zelfstandige schakelaars',
+  testWidgets('alle groepen, Nederlandse labels en 20 zelfstandige schakelaars',
       (tester) async {
     final repo = MemoryPreferences();
     await tester.pumpWidget(screen(repo));

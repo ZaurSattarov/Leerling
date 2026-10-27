@@ -1,0 +1,179 @@
+{
+  "date": "2026-10-27",
+  "scope": "LOCAL_LEARNER_SOURCE_HANDOFF_PREFERENCES20_AND_EMAIL_REOPEN_FIX",
+  "head": "4aef74e01d0b48b8153128f2ce26b86c9f0705fb",
+  "sources": {
+    "lib/app.dart": {
+      "present": true,
+      "sha256": "c230eb6ce493e4efcc7ed21e7e350fd741ff9713f7d17285066e12103b8e6a5c"
+    },
+    "lib/core/routing/email_link_route.dart": {
+      "present": true,
+      "sha256": "432cbec8777ff9a612fdc171a6d7522128400f93a88d2f08f2103300f253df9c"
+    },
+    "lib/core/services/student_service.dart": {
+      "present": true,
+      "sha256": "5f525aa17820d682968c9314746f2cbf5ecaf0a4f7edbf8884ad51c0b3dae3a3"
+    },
+    "lib/features/planning/planning_provider.dart": {
+      "present": true,
+      "sha256": "b39cca435395e009f68cfe854bb9f843fc59ec7b7fac0b2a8a426a2d42222e95"
+    },
+    "lib/features/planning/les_detail_screen.dart": {
+      "present": true,
+      "sha256": "39ab067085e6804f82dbe6a536f8269cf88ce3789188b0d8a32c9d4148100baa"
+    },
+    "lib/features/splash/splash_screen.dart": {
+      "present": true,
+      "sha256": "981c9873ebeb0413ac05aad44d0908f88a5c3a2936ee13c1a23b77558246e0f3"
+    },
+    "lib/shared/widgets/student_profile_gate.dart": {
+      "present": true,
+      "sha256": "58ddabc9ecf34dcc4d2fdec11f3858e95598e30d9f0854c1ccc10a90fad171cd"
+    },
+    "lib/shared/providers/auth_provider.dart": {
+      "present": true,
+      "sha256": "aeff36718749dd2edc9df317ad0e16a7f773f1a5f955a96f66503adeb108cb9a"
+    },
+    "test/core/routing/email_link_route_test.dart": {
+      "present": true,
+      "sha256": "0a38aa6c9dda9253bf876a36e7ac8db0c8d9782acb736e4624d3693c9234fde6"
+    },
+    "android/app/src/main/AndroidManifest.xml": {
+      "present": true,
+      "sha256": "9ca211e7057fc463408e126fa9b56d8de56d131013d4138a4dd9ae4e53e26780"
+    },
+    "android/app/build.gradle.kts": {
+      "present": true,
+      "sha256": "08f71099562db6afaf8e625530afc3d302ee024a4c60d84494682c114eef9994"
+    },
+    "android/settings.gradle.kts": {
+      "present": true,
+      "sha256": "2bdd5459e00fcc5f13208679032b1716d9e0c28e693401778dffbe91030099ac"
+    },
+    "android/gradle/wrapper/gradle-wrapper.properties": {
+      "present": true,
+      "sha256": "c27752a3eff4f290ad094749b50b0bea46359ab37b26fd9a88c74b9d3db5558e"
+    },
+    "ios/Runner/Info.plist": {
+      "present": true,
+      "sha256": "be97b02ad4ac7bfa5947428b919a163730d09f178654cc0062ed1ed17d72e50c"
+    },
+    "ios/Runner/Runner.entitlements": {
+      "present": true,
+      "sha256": "85bbc1c884f33c12eaf1c6ab727e8df1cfe43884947c24c4f0a08527db909143"
+    },
+    "ios/Runner/AppDelegate.swift": {
+      "present": true,
+      "sha256": "c52264a85c283462a823c53e46ade2cd7bf72edd876eec6a4a06c4f6a654a90c"
+    },
+    "ios/Runner.xcodeproj/project.pbxproj": {
+      "present": true,
+      "sha256": "b5ced5ac2d6dfb1bca15815d8a63f089e5136ebb0cb7daade0459b9bdf1a9cca"
+    },
+    "tooling/ios_release_preflight.sh": {
+      "present": true,
+      "sha256": "1c73b2ffa64eff483b81f4421af5c519f62a61f90436866ac46d00f86d454670"
+    },
+    "pubspec.yaml": {
+      "present": true,
+      "sha256": "36bfc77a2327b2eb2c5f24889f502ac5b7187224bdd7a8ca578daa4d56b688a8"
+    },
+    "pubspec.lock": {
+      "present": true,
+      "sha256": "3b6982152a6d9bd0287bc795617ba50cf9779aea9d0ad41a12fc1358d29eb253"
+    },
+    "test/email_voorkeuren_service_test.dart": {
+      "present": true,
+      "sha256": "dd8f243532770f883c92a32f7292032ff6430f123c91fd328014c70d95cfc622"
+    },
+    "test/email_instellingen_test.dart": {
+      "present": true,
+      "sha256": "561ab9884bdc34f84a9dc16b1ff444b5fe777a8fc17921ed2930eff4a44853c9"
+    },
+    "lib/features/notificaties/leerling_email_preference_registry.dart": {
+      "present": true,
+      "sha256": "2aea51ef3e58a29329fbf64670bcdb687fe821fcdfe6f36f1df71b63dc80df88"
+    },
+    "lib/features/notificaties/notificatie_instellingen_screen.dart": {
+      "present": true,
+      "sha256": "18a05c39eca4b764a5d48b2045e1dd242f5dcec6899207ed35f2ad182a32d549"
+    }
+  },
+  "code_changes_this_route_review": true,
+  "tests_rerun": false,
+  "test_evidence": "Existing route-test source reviewed and historical Obsidian evidence reused; no fresh execution claimed",
+  "https_route_supported_in_Dart": true,
+  "custom_scheme_open_supported_in_Dart": true,
+  "planning_uuid_target_supported": true,
+  "pending_route_storage": "in-memory; consumed at /home; signedOut clears pending target and recent URI",
+  "login_resume": "source path verified through splash/login/home; no live cold/warm/login E2E",
+  "detail_profile_gate": true,
+  "lesson_read_source": "student_lessen_view, authenticated SDK, .eq(id).maybeSingle()",
+  "null_lesson_ui": "Les niet gevonden; Deze les bestaat niet of je hebt geen toegang.",
+  "live_RLS_wrong_account_verified": false,
+  "live_B_relogin_isolation_verified": false,
+  "temporary_preference_restoration_confirmed": false,
+  "android_manifest_custom_and_https_open_registered": true,
+  "ios_custom_scheme_and_applinks_entitlement_present": true,
+  "native_OS_domain_association_verified": false,
+  "native_installed_binary_hash_bound_to_sources": false,
+  "android_key_properties_present": false,
+  "release_build_ready": false,
+  "mail_provider_and_inbox_evidence": "MAIL FINAL-REPAIR-AND-MAIL-VERIFIED.json read; exactly1 provider attempt/accepted and human inbox confirmed",
+  "mail_test_budget_remaining": 0,
+  "normal_learner20_activated": false,
+  "remaining": [
+    "Confirm temporary own preference restoration",
+    "Real own B login/MFA and A/B isolation with existing permitted lesson",
+    "Native cold/warm HTTPS and custom-scheme open to real accessible lesson",
+    "Wrong-account lesson denied by live backend; no lesson details or stale cached data",
+    "Android Maps/release signing and AAB; Mac distribution signing and IPA; release/publication GO"
+  ],
+  "live_B_user_report": "User reported not restored or second account unavailable; later logged into emulator, observed Instructor app Agenda/Leerlingen; requested actual Klantio L Notificaties",
+  "tests_rerun_scope": "Unchanged old suites not rerun; only3 added dedup tests run",
+  "new_dedup_tests": {
+    "command": "flutter test --no-pub test/core/routing/email_link_route_test.dart --name 'email open window'",
+    "passed": 3,
+    "cases": [
+      "duplicate cold delivery suppressed before2seconds; same URI accepted at2seconds after pending take",
+      "distinct lesson URI available immediately",
+      "logout clear removes target and recent URI window"
+    ]
+  },
+  "new_dedup_targeted_analysis": {
+    "files": [
+      "lib/app.dart",
+      "lib/core/routing/email_link_route.dart",
+      "test/core/routing/email_link_route_test.dart"
+    ],
+    "result": "No issues found"
+  },
+  "preference_tests_passed_earlier": 12,
+  "local_targeted_tests_total": 15,
+  "dedup_behavior": "Valid email open links only:2second URI window; cleared on signedOut through existing PendingEmailLink.clear(); legacy callbacks keep existing dedup",
+  "source_freeze_status": "LOCAL_REVIEW_READY_NOT_PUBLISHED",
+  "source_files_changed": [
+    "lib/app.dart",
+    "lib/core/routing/email_link_route.dart",
+    "lib/features/notificaties/leerling_email_preference_registry.dart",
+    "lib/features/notificaties/notificatie_instellingen_screen.dart",
+    "test/core/routing/email_link_route_test.dart",
+    "test/email_instellingen_test.dart",
+    "test/email_voorkeuren_service_test.dart"
+  ],
+  "emulator_checks_stopped_at_user_request": true,
+  "native_runtime_reopen_proven": false,
+  "new_dedup_change_installed_binary_verified": false,
+  "native_release_binaries_ready": false,
+  "graphify_update": "Official incremental Python update; valid5754nodes/8050edges; acceptOpenLink visible via correct MCP",
+  "graphify_sql_parser_limitation": "14unchanged SQL files skipped by missing tree_sitter_sql; no SQL changed",
+  "backend_or_mail_mutations_by_this_handoff": 0,
+  "test_mail_budget_remaining": 0,
+  "source_patch": {
+    "path": "LEERLING-LOCAL-REVIEW.patch",
+    "sha256": "95861198b41fe6841d46542f5f894b38359f8ceb343bf370221c96b568d106ba",
+    "base_head": "4aef74e01d0b48b8153128f2ce26b86c9f0705fb",
+    "release_or_deployment": false
+  }
+}

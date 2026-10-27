@@ -121,6 +121,24 @@ String? safeEmailRoute(String? value, {required String client}) {
 /// beslissen over toegang; deze klasse bewaart geen sessie of identiteit.
 class PendingEmailLink {
   String? _route;
+  String? _lastOpenUri;
+  DateTime? _lastOpenAt;
+
+  /// AppLinks kan dezelfde opening via initial link en stream afleveren.
+  /// Een bewuste nieuwe opening later mag niet de hele sessie geblokkeerd zijn.
+  bool acceptOpenLink(Uri uri, {DateTime? receivedAt}) {
+    final now = receivedAt ?? DateTime.now();
+    final last = _lastOpenAt;
+    if (_lastOpenUri == uri.toString() &&
+        last != null &&
+        now.difference(last) < const Duration(seconds: 2)) {
+      return false;
+    }
+    _lastOpenUri = uri.toString();
+    _lastOpenAt = now;
+    return true;
+  }
+
   void remember(String route) => _route = route;
   String? take() {
     final route = _route;
@@ -128,5 +146,9 @@ class PendingEmailLink {
     return route;
   }
 
-  void clear() => _route = null;
+  void clear() {
+    _route = null;
+    _lastOpenUri = null;
+    _lastOpenAt = null;
+  }
 }

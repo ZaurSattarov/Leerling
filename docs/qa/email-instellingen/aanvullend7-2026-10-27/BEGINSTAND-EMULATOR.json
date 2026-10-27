@@ -1,0 +1,30 @@
+{
+  "observed_via": "existing native app UI, user personally logged in",
+  "account_identity_verified": false,
+  "email_notificaties": false,
+  "email_topics_displayed": {
+    "L07": false,
+    "L08": false,
+    "L09": false,
+    "L10": false,
+    "L13": false,
+    "L14": false,
+    "L16": false,
+    "L19": false,
+    "L20": false,
+    "L22": false,
+    "L23": false,
+    "L25": false,
+    "L26": false,
+    "L11": false,
+    "L12": false,
+    "L21": false,
+    "L24": false,
+    "L35": false,
+    "L30": false,
+    "L31": false
+  },
+  "raw_missing_versus_explicit_false_not_distinguished_by_UI": true,
+  "push_visible_rows_all_on": true,
+  "preference_mutations_before_snapshot": 0
+}

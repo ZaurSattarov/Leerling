@@ -1,6 +1,6 @@
 {
   "release": "klantio-leerling-email-preferences-v2",
-  "date": "2026-10-25",
+  "date": "2026-10-27",
   "base_commit": "1dbd058bd1c6aafa99222a5e8adceabb0fd81625",
   "app_id": "com.klantio.leerling",
   "account_modes": [
@@ -17,11 +17,9 @@
   "candidate_build_name": "1.0.2",
   "candidate_build_number": 20,
   "candidate_store_number_availability_verified": false,
-  "source_changed_for_release_preparation": false,
-  "source_evidence": "../../qa/email-instellingen/SOURCE-HASHES.json",
-  "tests_reused": 54,
-  "backend_contract": "../Instrecteur/Klantio-emailbibliotheek/qa/master76-2026-10-25/AGENT2-VOORKEURENCONTRACT.md",
-  "backend_contract_sha256": "1efe0f3f7b2845a9ad102dfba5d2db46a18e33434bf28c24704a89cdaca28fad",
+  "source_changed_for_release_preparation": true,
+  "source_evidence": "../../qa/email-instellingen/aanvullend7-2026-10-27/LINK-RELEASE-HANDOFF.json",
+  "backend_contract": "C:/PROJECTS/Instrecteur/Klantio-emailbibliotheek/qa/joint91-internal-2026-10-26/next23/PREFERENCES23-CONTRACT.json",
   "rpc": "klantio_email_set_learner_preferences",
   "email_topic_keys": [
     "L07",
@@ -36,25 +34,40 @@
     "L22",
     "L23",
     "L25",
-    "L26"
+    "L26",
+    "L11",
+    "L12",
+    "L21",
+    "L24",
+    "L35",
+    "L30",
+    "L31"
   ],
   "optional_email_defaults": false,
   "optional_chains_must_remain_disabled": true,
-  "existing_active_email_chains_must_remain": 15,
-  "next_required_GO": "app_publication_only_after_joint_integration_and_normal_build_signing_checks",
+  "existing_active_email_chains_must_remain": 24,
+  "next_required_GO": "app_upload_and_publication_after_required_checks",
   "subsequent_gates": [
-    "joint_own_account_integration",
-    "app_publication_GO",
-    "separate_13_chains_activation_GO"
+    "live_B_relogin_isolation",
+    "native_build_signing",
+    "app_publication_GO"
   ],
   "uploads_deployments_commits_pushes_authorized": false,
-  "release_documents_sha256": {
-    "RELEASEPLAN.md": "504dc0170caa66bde30f054634d1a10ce38096d7c1741a161200cf258b3f74cf",
-    "RELEASENOTES.nl.md": "283533f1c7e2afa7e33cab817d9f77829552866171fcba560884f7d4066c2bce",
-    "RELEASE-CHECK.json": "075cae72122eac8690a4392566cf61725260bfeb0d30f11ffa60901a6fe719eb",
-    "STATUS.md": "bc53aad09322ec37019567768b7160b493c8efde5e95295cfa44826ca44f4d98"
-  },
   "backend_installation_status": "INSTALLED_ACCORDING_TO_VERIFIED_MAIL_EVIDENCE",
-  "next_action": "joint_own_account_integration_pending_real_login_and_MFA",
-  "backend_installation_evidence_sha256": "4b043d928821070cfdf8f51a14c968bde87259ed3423dd4d36ca7b5cde7f36c1"
+  "next_action": "Confirm temporary preference restoration; own B/relogin/isolation; native lesson navigation; Android/iOS release signing and publication GO",
+  "backend_installation_evidence_sha256": "4b043d928821070cfdf8f51a14c968bde87259ed3423dd4d36ca7b5cde7f36c1",
+  "targeted_tests_passed": 15,
+  "backend_activation_authorized": true,
+  "backend_activation_result": "MAIL FINAL-REPAIR-AND-MAIL-VERIFIED.json read: migration20261027082000 verified; exactly1 synthetic L07 provider attempt accepted and human inbox confirmed; budget exhausted. Original24 active; learner20 and I31/I36/AD01 off. Real lesson-link E2E not proven.",
+  "release_documents_sha256": {
+    "RELEASEPLAN.md": "049f4619113882e0428a0354d32a60fde95295dc19a488636cc0e5ba12e523ad",
+    "RELEASENOTES.nl.md": "5a73f359d29cf5ec13f98c0c649f98f5ba2b993645201e95392add91670dd8e6",
+    "RELEASE-CHECK.json": "6d2d33b3d7bd01c0cbb8f1b3f6f4e26744009281e1ce8a6f1e09d8a2739273fd",
+    "STATUS.md": "60c505c18932f6cfa2dfbdc684059807604aae5c86630a3d99ab9d5f4df7dcc3"
+  },
+  "live_preference_restoration_pending": true,
+  "test_mail_budget_remaining": 0,
+  "link_native_source_manifest": "../../qa/email-instellingen/aanvullend7-2026-10-27/LINK-RELEASE-HANDOFF.json",
+  "source_patch_sha256": "95861198b41fe6841d46542f5f894b38359f8ceb343bf370221c96b568d106ba",
+  "source_review_bundle_sha256": "836e60c4331724e1011f8b7c37152cf8e72988b9d0c413bdf6c3753921cefbae"
 }

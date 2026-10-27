@@ -1,0 +1,331 @@
+diff --git a/lib/app.dart b/lib/app.dart
+index ac7572b..1058f4e 100644
+--- a/lib/app.dart
++++ b/lib/app.dart
+@@ -690,21 +690,24 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
+ 
+   void _handleDeepLink(Uri uri) {
+     final uriString = uri.toString();
+-    if (_laatstVerwerkteLink == uriString) return;
+-    _laatstVerwerkteLink = uriString;
+-
+     if (emailOpenLink(uri, client: 'leerling')) {
+       final emailTarget = emailLinkRoute(uri, client: 'leerling');
+       if (emailTarget == null) {
+         ref.read(_routerProvider).go('/link-ongeldig');
+         return;
+       }
+-      ref.read(pendingEmailLinkProvider).remember(emailTarget);
++      final pending = ref.read(pendingEmailLinkProvider);
++      if (!pending.acceptOpenLink(uri)) return;
++      pending.remember(emailTarget);
+       // Splash behoudt de bestaande login-, account- en leerlingkoppelpoorten.
+       ref.read(_routerProvider).go('/splash');
+       return;
+     }
+ 
++    // Behoud de bestaande deduplicatie van legacy auth-/betaalcallbacks.
++    if (_laatstVerwerkteLink == uriString) return;
++    _laatstVerwerkteLink = uriString;
++
+     if (uri.host == 'factuur') {
+       _handleFactuurDeepLink(uri);
+     }
+diff --git a/lib/core/routing/email_link_route.dart b/lib/core/routing/email_link_route.dart
+index 1fe858f..1cfdda9 100644
+--- a/lib/core/routing/email_link_route.dart
++++ b/lib/core/routing/email_link_route.dart
+@@ -121,6 +121,24 @@ String? safeEmailRoute(String? value, {required String client}) {
+ /// beslissen over toegang; deze klasse bewaart geen sessie of identiteit.
+ class PendingEmailLink {
+   String? _route;
++  String? _lastOpenUri;
++  DateTime? _lastOpenAt;
++
++  /// AppLinks kan dezelfde opening via initial link en stream afleveren.
++  /// Een bewuste nieuwe opening later mag niet de hele sessie geblokkeerd zijn.
++  bool acceptOpenLink(Uri uri, {DateTime? receivedAt}) {
++    final now = receivedAt ?? DateTime.now();
++    final last = _lastOpenAt;
++    if (_lastOpenUri == uri.toString() &&
++        last != null &&
++        now.difference(last) < const Duration(seconds: 2)) {
++      return false;
++    }
++    _lastOpenUri = uri.toString();
++    _lastOpenAt = now;
++    return true;
++  }
++
+   void remember(String route) => _route = route;
+   String? take() {
+     final route = _route;
+@@ -128,5 +146,9 @@ class PendingEmailLink {
+     return route;
+   }
+ 
+-  void clear() => _route = null;
++  void clear() {
++    _route = null;
++    _lastOpenUri = null;
++    _lastOpenAt = null;
++  }
+ }
+diff --git a/lib/features/notificaties/leerling_email_preference_registry.dart b/lib/features/notificaties/leerling_email_preference_registry.dart
+index 7f6cd22..4d32a7c 100644
+--- a/lib/features/notificaties/leerling_email_preference_registry.dart
++++ b/lib/features/notificaties/leerling_email_preference_registry.dart
+@@ -23,6 +23,10 @@ const leerlingEmailPreferenceToggles = <LeerlingEmailPreferenceToggle>[
+       'Als de ophaallocatie van je rijles verandert.'),
+   LeerlingEmailPreferenceToggle('L10', 'Rijlessen', 'Rijles geannuleerd',
+       'Als een geplande rijles niet doorgaat.'),
++  LeerlingEmailPreferenceToggle('L11', 'Rijlessen', 'Morgen rijles',
++      'Een herinnering op de dag voor je rijles.'),
++  LeerlingEmailPreferenceToggle('L12', 'Rijlessen', 'Rijles begint binnenkort',
++      'Een herinnering kort voor je rijles begint.'),
+   LeerlingEmailPreferenceToggle(
+       'L13',
+       'Rijlessen',
+@@ -30,6 +34,8 @@ const leerlingEmailPreferenceToggles = <LeerlingEmailPreferenceToggle>[
+       'Als je rijles door een andere instructeur wordt gegeven.'),
+   LeerlingEmailPreferenceToggle('L14', 'Rijlessen', 'Rijles afgerond',
+       'Als je instructeur je rijles als afgerond registreert.'),
++  LeerlingEmailPreferenceToggle('L35', 'Rijlessen', 'Weekoverzicht rijlessen',
++      'Een overzicht van je geplande rijlessen voor de komende week.'),
+   LeerlingEmailPreferenceToggle('L19', 'Lespakketten', 'Lespakket bijna op',
+       'Als je lespakket bijna is verbruikt.'),
+   LeerlingEmailPreferenceToggle('L20', 'Lespakketten', 'Lespakket op',
+@@ -39,10 +45,17 @@ const leerlingEmailPreferenceToggles = <LeerlingEmailPreferenceToggle>[
+       'Voortgang',
+       'Nieuwe lesevaluatie beschikbaar',
+       'Als je instructeur een nieuwe evaluatie met je deelt.'),
++  LeerlingEmailPreferenceToggle(
++      'L21',
++      'Voortgang',
++      'Maandelijks voortgangsoverzicht',
++      'Een overzicht van je vrijgegeven voortgang van de afgelopen maand.'),
+   LeerlingEmailPreferenceToggle('L22', 'Examens', 'Praktijkexamen ingepland',
+       'Als je instructeur je praktijkexamen inplant.'),
+   LeerlingEmailPreferenceToggle('L23', 'Examens', 'Praktijkexamen gewijzigd',
+       'Als de planning of locatie van je praktijkexamen verandert.'),
++  LeerlingEmailPreferenceToggle('L24', 'Examens', 'Examenherinnering',
++      'Een herinnering als je praktijkexamen nadert.'),
+   LeerlingEmailPreferenceToggle('L25', 'Examens', 'Examenresultaat beschikbaar',
+       'Als je instructeur je examenresultaat publiceert.'),
+   LeerlingEmailPreferenceToggle(
+@@ -50,4 +63,8 @@ const leerlingEmailPreferenceToggles = <LeerlingEmailPreferenceToggle>[
+       'Examens',
+       'Geslaagd voor praktijkexamen',
+       'Een felicitatie als je geslaagd bent voor je praktijkexamen.'),
++  LeerlingEmailPreferenceToggle('L30', 'Betalingen', 'Betaling ontvangen',
++      'Als je betaling aan je rijschool is bevestigd.'),
++  LeerlingEmailPreferenceToggle('L31', 'Betalingen', 'Betaling niet gelukt',
++      'Als een betaling aan je rijschool als mislukt is bevestigd.'),
+ ];
+diff --git a/lib/features/notificaties/notificatie_instellingen_screen.dart b/lib/features/notificaties/notificatie_instellingen_screen.dart
+index c02019e..6999fce 100644
+--- a/lib/features/notificaties/notificatie_instellingen_screen.dart
++++ b/lib/features/notificaties/notificatie_instellingen_screen.dart
+@@ -335,6 +335,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
+                         'Lespakketten',
+                         'Voortgang',
+                         'Examens',
++                        'Betalingen',
+                       ]) ...[
+                         const SizedBox(height: 22),
+                         SectionHeader(title: group),
+diff --git a/test/core/routing/email_link_route_test.dart b/test/core/routing/email_link_route_test.dart
+index 44aea2c..3d2ccfa 100644
+--- a/test/core/routing/email_link_route_test.dart
++++ b/test/core/routing/email_link_route_test.dart
+@@ -3,6 +3,44 @@ import 'package:leerling_app/core/routing/email_link_route.dart';
+ 
+ void main() {
+   const id = '11111111-1111-4111-8111-111111111111';
++  test(
++      'email open window suppresses duplicate cold delivery but permits reopen',
++      () {
++    final memory = PendingEmailLink();
++    final uri = Uri.parse('leerlingplanner://open?route=/planning/$id');
++    final start = DateTime.utc(2026, 10, 27);
++    expect(memory.acceptOpenLink(uri, receivedAt: start), isTrue);
++    memory.remember('/planning/$id');
++    expect(memory.take(), '/planning/$id');
++    expect(
++        memory.acceptOpenLink(uri,
++            receivedAt: start.add(const Duration(milliseconds: 1999))),
++        isFalse);
++    expect(
++        memory.acceptOpenLink(uri,
++            receivedAt: start.add(const Duration(seconds: 2))),
++        isTrue);
++  });
++  test('email open window keeps distinct lesson links immediately available',
++      () {
++    final memory = PendingEmailLink();
++    final start = DateTime.utc(2026, 10, 27);
++    final first = Uri.parse('leerlingplanner://open?route=/planning/$id');
++    final second = Uri.parse(
++        'leerlingplanner://open?route=/planning/22222222-2222-4222-8222-222222222222');
++    expect(memory.acceptOpenLink(first, receivedAt: start), isTrue);
++    expect(memory.acceptOpenLink(second, receivedAt: start), isTrue);
++  });
++  test('email open window resets together with pending target on logout', () {
++    final memory = PendingEmailLink();
++    final uri = Uri.parse('leerlingplanner://open?route=/planning/$id');
++    final start = DateTime.utc(2026, 10, 27);
++    expect(memory.acceptOpenLink(uri, receivedAt: start), isTrue);
++    memory.remember('/planning/$id');
++    memory.clear();
++    expect(memory.take(), isNull);
++    expect(memory.acceptOpenLink(uri, receivedAt: start), isTrue);
++  });
+   for (final client in ['instructeur', 'leerling']) {
+     final route =
+         client == 'instructeur' ? '/agenda/lessen/$id' : '/planning/$id';
+@@ -73,7 +111,8 @@ void main() {
+     expect(
+         safeEmailRoute('/facturen/DEMO-2026-42', client: 'leerling'), isNull);
+   });
+-  test('platform billing, payment return and auth links stay out of mail routing',
++  test(
++      'platform billing, payment return and auth links stay out of mail routing',
+       () {
+     const blocked = [
+       '/facturen/mijn-facturen',
+diff --git a/test/email_instellingen_test.dart b/test/email_instellingen_test.dart
+index e9491c8..a39829c 100644
+--- a/test/email_instellingen_test.dart
++++ b/test/email_instellingen_test.dart
+@@ -64,6 +64,13 @@ void main() {
+       'L23',
+       'L25',
+       'L26',
++      'L11',
++      'L12',
++      'L21',
++      'L24',
++      'L35',
++      'L30',
++      'L31',
+     });
+   });
+ 
+@@ -94,7 +101,7 @@ void main() {
+     expect(() => value.emailTopics['L10'] = true, throwsUnsupportedError);
+   });
+ 
+-  test('alle 13 onderwerpen bewaren afzonderlijk aan en uit na herladen',
++  test('alle 20 onderwerpen bewaren afzonderlijk aan en uit na herladen',
+       () async {
+     final repo = MemoryPreferences();
+     final container = ProviderContainer(overrides: [
+@@ -146,7 +153,17 @@ void main() {
+       ..value = const LeerlingNotificatieVoorkeuren(
+         userId: 'leerling-a',
+         emailNotificaties: true,
+-        emailTopics: {'L07': true, 'L26': true},
++        emailTopics: {
++          'L07': true,
++          'L26': true,
++          'L11': true,
++          'L12': true,
++          'L21': true,
++          'L24': true,
++          'L35': true,
++          'L30': true,
++          'L31': true,
++        },
+         nieuweLes: false,
+       );
+     final container = ProviderContainer(overrides: [
+@@ -158,11 +175,21 @@ void main() {
+         .read(notificatieInstellingenProvider.notifier)
+         .opslaanEmail(value.copyWith(emailNotificaties: false));
+     expect(repo.value.emailNotificaties, isFalse);
+-    expect(repo.value.emailTopics, {'L07': true, 'L26': true});
++    expect(repo.value.emailTopics, {
++      'L07': true,
++      'L26': true,
++      'L11': true,
++      'L12': true,
++      'L21': true,
++      'L24': true,
++      'L35': true,
++      'L30': true,
++      'L31': true,
++    });
+     expect(repo.value.nieuweLes, isFalse);
+   });
+ 
+-  testWidgets('alle groepen, Nederlandse labels en 13 zelfstandige schakelaars',
++  testWidgets('alle groepen, Nederlandse labels en 20 zelfstandige schakelaars',
+       (tester) async {
+     final repo = MemoryPreferences();
+     await tester.pumpWidget(screen(repo));
+diff --git a/test/email_voorkeuren_service_test.dart b/test/email_voorkeuren_service_test.dart
+index 53a6ce0..3461880 100644
+--- a/test/email_voorkeuren_service_test.dart
++++ b/test/email_voorkeuren_service_test.dart
+@@ -64,7 +64,15 @@ void main() {
+   test('alle 13 losse RPC-patches aan/uit behouden overige onderwerpen en push',
+       () async {
+     backend.rows['leerling-a']!['email_topics'] = {'L11': true};
+-    for (final topic in leerlingEmailPreferenceToggles) {
++    for (final topic in leerlingEmailPreferenceToggles.where((topic) => ![
++          'L11',
++          'L12',
++          'L21',
++          'L24',
++          'L35',
++          'L30',
++          'L31'
++        ].contains(topic.topicKey))) {
+       for (final enabled in [true, false]) {
+         final previous = await StudentService.getMijnNotificatieVoorkeuren();
+         final saved = await StudentService.slaMijnEmailVoorkeurenOp(
+@@ -83,6 +91,44 @@ void main() {
+     }
+   });
+ 
++  for (final key in ['L11', 'L12', 'L21', 'L24', 'L35', 'L30', 'L31']) {
++    test('aanvullend $key eigen partiele RPC en afzonderlijk teruglezen',
++        () async {
++      backend.rows['leerling-a']!.addAll({
++        'email_notificaties': true,
++        'email_topics': {'L07': true, 'L26': true},
++      });
++      final container = ProviderContainer();
++      final sub = container.listen(notificatieInstellingenProvider, (_, __) {});
++      addTearDown(sub.close);
++      addTearDown(container.dispose);
++      for (final enabled in [true, false]) {
++        final previous =
++            await container.read(notificatieInstellingenProvider.future);
++        await container
++            .read(notificatieInstellingenProvider.notifier)
++            .opslaanEmail(
++              previous.copyWith(
++                  emailTopics: {...previous.emailTopics, key: enabled}),
++            );
++        expect(backend.lastPath,
++            '/rest/v1/rpc/klantio_email_set_learner_preferences');
++        expect(backend.lastBody, {
++          'p_topics': {key: enabled}
++        });
++        container.invalidate(notificatieInstellingenProvider);
++        final loaded =
++            await container.read(notificatieInstellingenProvider.future);
++        expect(loaded.userId, 'leerling-a');
++        expect(loaded.emailTopicEnabled(key), enabled);
++        expect(loaded.emailTopicEnabled('L07'), isTrue);
++        expect(loaded.emailTopicEnabled('L26'), isTrue);
++        expect(loaded.emailNotificaties, isTrue);
++        expect(loaded.nieuweLes, isTrue);
++      }
++    });
++  }
++
+   test('push-upsert schrijft geen e-mailvelden en bewaart servertoestemming',
+       () async {
+     backend.rows['leerling-a']!.addAll({

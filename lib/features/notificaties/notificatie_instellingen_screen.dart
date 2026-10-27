@@ -335,6 +335,7 @@ class NotificatieInstellingenScreen extends ConsumerWidget {
                         'Lespakketten',
                         'Voortgang',
                         'Examens',
+                        'Betalingen',
                       ]) ...[
                         const SizedBox(height: 22),
                         SectionHeader(title: group),

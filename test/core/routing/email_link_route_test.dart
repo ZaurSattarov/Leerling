@@ -3,6 +3,44 @@ import 'package:leerling_app/core/routing/email_link_route.dart';
 
 void main() {
   const id = '11111111-1111-4111-8111-111111111111';
+  test(
+      'email open window suppresses duplicate cold delivery but permits reopen',
+      () {
+    final memory = PendingEmailLink();
+    final uri = Uri.parse('leerlingplanner://open?route=/planning/$id');
+    final start = DateTime.utc(2026, 10, 27);
+    expect(memory.acceptOpenLink(uri, receivedAt: start), isTrue);
+    memory.remember('/planning/$id');
+    expect(memory.take(), '/planning/$id');
+    expect(
+        memory.acceptOpenLink(uri,
+            receivedAt: start.add(const Duration(milliseconds: 1999))),
+        isFalse);
+    expect(
+        memory.acceptOpenLink(uri,
+            receivedAt: start.add(const Duration(seconds: 2))),
+        isTrue);
+  });
+  test('email open window keeps distinct lesson links immediately available',
+      () {
+    final memory = PendingEmailLink();
+    final start = DateTime.utc(2026, 10, 27);
+    final first = Uri.parse('leerlingplanner://open?route=/planning/$id');
+    final second = Uri.parse(
+        'leerlingplanner://open?route=/planning/22222222-2222-4222-8222-222222222222');
+    expect(memory.acceptOpenLink(first, receivedAt: start), isTrue);
+    expect(memory.acceptOpenLink(second, receivedAt: start), isTrue);
+  });
+  test('email open window resets together with pending target on logout', () {
+    final memory = PendingEmailLink();
+    final uri = Uri.parse('leerlingplanner://open?route=/planning/$id');
+    final start = DateTime.utc(2026, 10, 27);
+    expect(memory.acceptOpenLink(uri, receivedAt: start), isTrue);
+    memory.remember('/planning/$id');
+    memory.clear();
+    expect(memory.take(), isNull);
+    expect(memory.acceptOpenLink(uri, receivedAt: start), isTrue);
+  });
   for (final client in ['instructeur', 'leerling']) {
     final route =
         client == 'instructeur' ? '/agenda/lessen/$id' : '/planning/$id';
@@ -73,7 +111,8 @@ void main() {
     expect(
         safeEmailRoute('/facturen/DEMO-2026-42', client: 'leerling'), isNull);
   });
-  test('platform billing, payment return and auth links stay out of mail routing',
+  test(
+      'platform billing, payment return and auth links stay out of mail routing',
       () {
     const blocked = [
       '/facturen/mijn-facturen',

@@ -64,7 +64,15 @@ void main() {
   test('alle 13 losse RPC-patches aan/uit behouden overige onderwerpen en push',
       () async {
     backend.rows['leerling-a']!['email_topics'] = {'L11': true};
-    for (final topic in leerlingEmailPreferenceToggles) {
+    for (final topic in leerlingEmailPreferenceToggles.where((topic) => ![
+          'L11',
+          'L12',
+          'L21',
+          'L24',
+          'L35',
+          'L30',
+          'L31'
+        ].contains(topic.topicKey))) {
       for (final enabled in [true, false]) {
         final previous = await StudentService.getMijnNotificatieVoorkeuren();
         final saved = await StudentService.slaMijnEmailVoorkeurenOp(
@@ -82,6 +90,44 @@ void main() {
       }
     }
   });
+
+  for (final key in ['L11', 'L12', 'L21', 'L24', 'L35', 'L30', 'L31']) {
+    test('aanvullend $key eigen partiele RPC en afzonderlijk teruglezen',
+        () async {
+      backend.rows['leerling-a']!.addAll({
+        'email_notificaties': true,
+        'email_topics': {'L07': true, 'L26': true},
+      });
+      final container = ProviderContainer();
+      final sub = container.listen(notificatieInstellingenProvider, (_, __) {});
+      addTearDown(sub.close);
+      addTearDown(container.dispose);
+      for (final enabled in [true, false]) {
+        final previous =
+            await container.read(notificatieInstellingenProvider.future);
+        await container
+            .read(notificatieInstellingenProvider.notifier)
+            .opslaanEmail(
+              previous.copyWith(
+                  emailTopics: {...previous.emailTopics, key: enabled}),
+            );
+        expect(backend.lastPath,
+            '/rest/v1/rpc/klantio_email_set_learner_preferences');
+        expect(backend.lastBody, {
+          'p_topics': {key: enabled}
+        });
+        container.invalidate(notificatieInstellingenProvider);
+        final loaded =
+            await container.read(notificatieInstellingenProvider.future);
+        expect(loaded.userId, 'leerling-a');
+        expect(loaded.emailTopicEnabled(key), enabled);
+        expect(loaded.emailTopicEnabled('L07'), isTrue);
+        expect(loaded.emailTopicEnabled('L26'), isTrue);
+        expect(loaded.emailNotificaties, isTrue);
+        expect(loaded.nieuweLes, isTrue);
+      }
+    });
+  }
 
   test('push-upsert schrijft geen e-mailvelden en bewaart servertoestemming',
       () async {

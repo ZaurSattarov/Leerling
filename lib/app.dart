@@ -690,20 +690,23 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
 
   void _handleDeepLink(Uri uri) {
     final uriString = uri.toString();
-    if (_laatstVerwerkteLink == uriString) return;
-    _laatstVerwerkteLink = uriString;
-
     if (emailOpenLink(uri, client: 'leerling')) {
       final emailTarget = emailLinkRoute(uri, client: 'leerling');
       if (emailTarget == null) {
         ref.read(_routerProvider).go('/link-ongeldig');
         return;
       }
-      ref.read(pendingEmailLinkProvider).remember(emailTarget);
+      final pending = ref.read(pendingEmailLinkProvider);
+      if (!pending.acceptOpenLink(uri)) return;
+      pending.remember(emailTarget);
       // Splash behoudt de bestaande login-, account- en leerlingkoppelpoorten.
       ref.read(_routerProvider).go('/splash');
       return;
     }
+
+    // Behoud de bestaande deduplicatie van legacy auth-/betaalcallbacks.
+    if (_laatstVerwerkteLink == uriString) return;
+    _laatstVerwerkteLink = uriString;
 
     if (uri.host == 'factuur') {
       _handleFactuurDeepLink(uri);
