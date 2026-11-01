@@ -308,7 +308,7 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
                   value: factuur.status == FactuurStatus.betaald
                       ? 'Betaald'
                       : betaalUrl == null
-                          ? 'Betaallink ontbreekt'
+                          ? 'Nog niet aangemaakt'
                           : 'Wacht op betaling',
                   valueColor: factuur.status == FactuurStatus.betaald
                       ? AppColors.successText
@@ -490,11 +490,10 @@ class _FactuurDetailBodyState extends ConsumerState<_FactuurDetailBody>
           isError: true,
         );
       } else {
-        final errMsg = result['error']?.toString() ?? 'Onbekende fout';
-        final mollieErr = result['mollie_error']?.toString() ?? '';
         showAppSnackBar(
           context,
-          'Fout: $errMsg ${mollieErr.isNotEmpty ? "| $mollieErr" : ""}',
+          result['error']?.toString() ??
+              'Het aanmaken van de betaling is niet gelukt. Probeer het later opnieuw.',
           isError: true,
         );
       }

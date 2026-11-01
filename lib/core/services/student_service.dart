@@ -12,6 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../features/profiel/account_deletion_exception.dart';
 import '../config/app_config.dart';
+import '../utils/app_error_formatter.dart';
+import '../utils/betaal_fout_melding.dart';
 import '../utils/komende_les_filter.dart';
 import '../../models/leerling_profiel.dart';
 import '../../models/leerling_beschikbaarheid.dart';
@@ -694,10 +696,16 @@ class StudentService {
       }
       final url = data['checkout_url'] as String?;
       if (url != null) return {'checkout_url': url};
-      return {'error': data['error'] ?? 'Onbekende fout'};
+      return {'error': betaalFoutMelding(details: data)};
+    } on FunctionException catch (e) {
+      debugPrint('[requestMollieFactuurPayment] status=${e.status}');
+      return {'error': betaalFoutMelding(status: e.status, details: e.details)};
     } catch (e, st) {
-      debugPrint('[requestMollieFactuurPayment] fout: $e\n$st');
-      return {'error': 'DEBUG: $e'};
+      debugPrint('[requestMollieFactuurPayment] fout: ${e.runtimeType}\n$st');
+      if (AppErrorFormatter.isNetwerkFout(e)) {
+        return {'error': AppErrorFormatter.netwerkFoutMelding};
+      }
+      return {'error': betaalFoutMelding()};
     }
   }
 
