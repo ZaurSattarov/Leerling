@@ -564,15 +564,15 @@
     "semantic_hash": ""
   },
   "docs/release/email-voorkeuren-v2/RELEASE-CHECK.json": {
-    "mtime": 1793105697.7726724,
-    "seen": 1793106316.5087636,
-    "ast_hash": "f6308b8596538aa7008e693ddcccb5c4",
+    "mtime": 1793106551.033905,
+    "seen": 1793718533.7831132,
+    "ast_hash": "aca13f141658fb2efb5b842c1c4a83e0",
     "semantic_hash": ""
   },
   "docs/release/email-voorkeuren-v2/RELEASE-MANIFEST.json": {
-    "mtime": 1793105712.1883454,
-    "seen": 1793106316.508769,
-    "ast_hash": "1b66fb35ed402ee8257b41fbd05ca23b",
+    "mtime": 1793106551.0361276,
+    "seen": 1793718533.783116,
+    "ast_hash": "2665f010e5312186a75fe810abd5bd92",
     "semantic_hash": ""
   },
   "docs/well-known/assetlinks.json": {
@@ -702,9 +702,9 @@
     "semantic_hash": ""
   },
   "lib/core/services/student_service.dart": {
-    "mtime": 1793084381.845056,
-    "seen": 1793086438.5060608,
-    "ast_hash": "80271149a4edb74935a28897d0075d3c",
+    "mtime": 1793613140.7015314,
+    "seen": 1793718533.7866998,
+    "ast_hash": "13ce47c456e4774fe57b482764cb2ab7",
     "semantic_hash": ""
   },
   "lib/core/services/support_service.dart": {
@@ -936,9 +936,9 @@
     "semantic_hash": ""
   },
   "lib/features/facturen/factuur_detail_screen.dart": {
-    "mtime": 1793084381.8537717,
-    "seen": 1793086438.50609,
-    "ast_hash": "11e74a0958bcb536a3bd383d9abcbcd3",
+    "mtime": 1793613140.7015314,
+    "seen": 1793718533.7931345,
+    "ast_hash": "fef244d84949a69fd919188ec5d3e298",
     "semantic_hash": ""
   },
   "lib/features/help/support_chat_screen.dart": {
@@ -1398,9 +1398,9 @@
     "semantic_hash": ""
   },
   "lib/models/leerling_profiel.dart": {
-    "mtime": 1793084381.8737533,
-    "seen": 1793086438.5061574,
-    "ast_hash": "b77ca2113c42fd344ce0f23a0d17a7b0",
+    "mtime": 1793717716.6265988,
+    "seen": 1793718533.806739,
+    "ast_hash": "d566351758b1e1cdffdf167c5202786f",
     "semantic_hash": ""
   },
   "lib/models/leerling_voertuig.dart": {
@@ -3786,9 +3786,9 @@
     "semantic_hash": ""
   },
   "docs/release/email-voorkeuren-v2/STATUS.md": {
-    "mtime": 1793105712.1823435,
-    "seen": 1793106316.8020773,
-    "ast_hash": "3257bfa87aaa0f64c78591d6a7433135",
+    "mtime": 1793106551.0328467,
+    "seen": 1793718533.9008384,
+    "ast_hash": "d7a4cfdcf316d6b4e5b10d37f667efed",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-06-08-leerling-app-redesign.md": {
@@ -3798,9 +3798,9 @@
     "semantic_hash": ""
   },
   "pubspec.yaml": {
-    "mtime": 1793084381.8822422,
-    "seen": 1793086438.5066216,
-    "ast_hash": "547c1ea8ebdb18f7d02214dd47b924a3",
+    "mtime": 1793278267.5838356,
+    "seen": 1793718533.9011135,
+    "ast_hash": "4e05c8029d0cd951e45194531379dca8",
     "semantic_hash": ""
   },
   "Klantio-L-emailbibliotheek/assets/betaling.png": {
@@ -4476,27 +4476,51 @@
     "semantic_hash": ""
   },
   "docs/qa/email-instellingen/aanvullend7-2026-10-27/LINK-RELEASE-HANDOFF.json": {
-    "mtime": 1793105873.1857111,
-    "seen": 1793106316.5081415,
-    "ast_hash": "bcfae4f45aa32a87995b64803b2b0dfb",
+    "mtime": 1793106551.0172904,
+    "seen": 1793718533.7827783,
+    "ast_hash": "62f3827309f3b33e59ccab5a212539c0",
     "semantic_hash": ""
   },
   "docs/qa/email-instellingen/aanvullend7-2026-10-27/LIVE-EMULATOR.json": {
-    "mtime": 1793105873.1901042,
-    "seen": 1793106316.5081456,
-    "ast_hash": "de59c5768588a8700abc8fcde8534ac6",
+    "mtime": 1793106551.032276,
+    "seen": 1793718533.782784,
+    "ast_hash": "5c8c8957ad3abceda37ae978bf5f4d9e",
     "semantic_hash": ""
   },
   "docs/qa/email-instellingen/aanvullend7-2026-10-27/RESULTAAT.json": {
-    "mtime": 1793105697.7684312,
-    "seen": 1793106316.5081487,
-    "ast_hash": "f6308b8596538aa7008e693ddcccb5c4",
+    "mtime": 1793106551.0307064,
+    "seen": 1793718533.7827883,
+    "ast_hash": "aca13f141658fb2efb5b842c1c4a83e0",
     "semantic_hash": ""
   },
   "docs/qa/email-instellingen/aanvullend7-2026-10-27/LINK-RELEASE-HANDOFF.md": {
-    "mtime": 1793105873.1911,
-    "seen": 1793106316.8020663,
-    "ast_hash": "72805781c479829c588c3fd96d11c512",
+    "mtime": 1793106551.0192976,
+    "seen": 1793718533.9002967,
+    "ast_hash": "d7a4cfdcf316d6b4e5b10d37f667efed",
+    "semantic_hash": ""
+  },
+  "docs/qa/email-instellingen/aanvullend7-2026-10-27/REVIEW-BUNDLE-SHA256.json": {
+    "mtime": 1793106551.029124,
+    "seen": 1793718533.7827923,
+    "ast_hash": "1b0045215847b86cba6ac42622343d99",
+    "semantic_hash": ""
+  },
+  "lib/core/utils/betaal_fout_melding.dart": {
+    "mtime": 1793613140.7015314,
+    "seen": 1793718533.7870286,
+    "ast_hash": "98548d2546b3a3f1a13b7692f87032de",
+    "semantic_hash": ""
+  },
+  "test/betaal_fout_melding_test.dart": {
+    "mtime": 1793613140.7046313,
+    "seen": 1793718533.8136148,
+    "ast_hash": "dd8c98e54235167e10e114a83f9bca29",
+    "semantic_hash": ""
+  },
+  "test/startsaldo_overstap_test.dart": {
+    "mtime": 1793717734.0193994,
+    "seen": 1793718533.8296747,
+    "ast_hash": "b32586ca595d6827a1175b0b747da70a",
     "semantic_hash": ""
   }
 }

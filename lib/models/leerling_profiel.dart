@@ -195,7 +195,11 @@ class LeerlingProfiel {
         orElse: () => LeerlingStatus.actief,
       ),
       lessenTotaal: (json['lessen_totaal'] as num?)?.toInt() ?? 0,
-      lessenGevolgd: (json['lessen_gevolgd'] as num?)?.toInt() ?? 0,
+      // Gevolgde pakketlessen = in Klantio afgerond (lessen_gevolgd) + wat al
+      // gevolgd was vóór de overstap (startsaldo_lessen_gevolgd, overstap-
+      // import). Alleen-lezen: de Leerling-app schrijft dit nooit terug.
+      lessenGevolgd: ((json['lessen_gevolgd'] as num?)?.toInt() ?? 0) +
+          ((json['startsaldo_lessen_gevolgd'] as num?)?.toInt() ?? 0),
       notities: json['notities'] as String?,
       vaardigheden: json['vaardigheden'] as Map<String, dynamic>?,
       userId: json['user_id'] as String?,
