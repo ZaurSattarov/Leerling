@@ -152,7 +152,7 @@ void main() {
       // `_OphaallocatieSectie(les: les)` -- die beslist zelf tussen de
       // normale `_LocatieCard` en de live-variant, zie
       // ophaallocatie_kaart_test.dart voor die dekking.
-      final locatieIndex = bron.indexOf('_OphaallocatieSectie(les: les)');
+      final locatieIndex = bron.indexOf('LesLocatieKaart(');
       expect(voertuigIndex, greaterThan(-1));
       expect(locatieIndex, greaterThan(-1));
       expect(voertuigIndex, lessThan(locatieIndex));

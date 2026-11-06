@@ -183,6 +183,18 @@ class CompetentieDelta {
 
 // ── Canonical adapter ─────────────────────────────────────────────────────────
 
+/// Waarom de leerling nog niet klaar is. Uit het advies zelf, geen eigen regel.
+String? examenadviesRedenTekst({
+  required bool toonScore,
+  required String statusLabel,
+  required List<String> aandachtspunten,
+}) {
+  if (!toonScore || statusLabel == 'Klaar voor examen') return null;
+  if (aandachtspunten.isEmpty) return null;
+  final punten = aandachtspunten.take(2).join(', ');
+  return 'Aandachtspunten: $punten';
+}
+
 class VoortgangTrendsCalculator {
   const VoortgangTrendsCalculator._();
 
@@ -446,7 +458,8 @@ class VoortgangTrendsCalculator {
     final dagen = laatste.difference(eerste).inDays.abs().clamp(1, 365);
     final weken = (dagen / 7).clamp(1, 99);
     final perWeek = lessen.length / weken;
-    return '${_formatAantal(perWeek)} lessen per week';
+    final aantal = _formatAantal(perWeek);
+    return '$aantal ${aantal == '1' ? 'les per week' : 'lessen per week'}';
   }
 
   static String _langeDatum(String datum) {

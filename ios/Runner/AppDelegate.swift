@@ -3,6 +3,7 @@ import UIKit
 import UserNotifications
 import FirebaseCore
 import FirebaseMessaging
+import GoogleMaps
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
@@ -13,12 +14,15 @@ import FirebaseMessaging
   // raakt Messaging.apnsToken zoek → geen FCM-token → geen push. Zie
   // .cursor/rules/ios-push-guard.mdc.
   private var pendingApnsDeviceToken: Data?
+  /// Zonder Maps-sleutel crasht een Google-kaart; Flutter vraagt dit eerst op.
+  private var mapsGeconfigureerd = false
 
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     storedLaunchOptions = launchOptions
+    configureGoogleMaps()
     // UIScene + deferred plugins: FLTFirebaseMessagingPlugin hangt pas tijdens
     // registerWithRegistrar een observer op UIApplicationDidFinishLaunchingNotification.
     // Op scene-lifecycle is die notificatie dan al gepost → geen tap-bridge,
@@ -33,6 +37,7 @@ import FirebaseMessaging
     // Native iOS 26+ Liquid Glass-navbar (ios/Runner/NativeNavigation/) --
     // zonder deze registratie viel de app altijd terug op de Flutter-pil.
     NativeNavigationBridge.shared.register(with: engineBridge)
+    registreerKaartKanaal(engineBridge)
     replayDidFinishLaunchingForFirebaseMessaging()
     applyPendingApnsToken()
     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
@@ -41,6 +46,35 @@ import FirebaseMessaging
     }
     DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
       self?.applyPendingApnsToken()
+    }
+  }
+
+  private func configureGoogleMaps() {
+    guard
+      let apiKey = Bundle.main.object(forInfoDictionaryKey: "GMSApiKey") as? String,
+      !apiKey.isEmpty
+    else {
+      NSLog("[AppDelegate] GOOGLE_MAPS_API_KEY ontbreekt in ios/Flutter/Secrets.xcconfig.")
+      return
+    }
+    GMSServices.provideAPIKey(apiKey)
+    mapsGeconfigureerd = true
+  }
+
+  private func registreerKaartKanaal(_ engineBridge: FlutterImplicitEngineBridge) {
+    guard let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "KlantioKaart") else {
+      return
+    }
+    let channel = FlutterMethodChannel(
+      name: "klantio/kaart",
+      binaryMessenger: registrar.messenger()
+    )
+    channel.setMethodCallHandler { [weak self] call, result in
+      if call.method == "isGeconfigureerd" {
+        result(self?.mapsGeconfigureerd ?? false)
+      } else {
+        result(FlutterMethodNotImplemented)
+      }
     }
   }
 

@@ -173,15 +173,24 @@ void main() {
   });
 
   group('LespakketDetail.resolve — canonical lessen_gevolgd', () {
-    test('gevolgdeLessen komt uit lessen_gevolgd, niet uit de lessenlijst',
-        () {
+    test('gevolgdeLessen komt uit lessen_gevolgd, niet uit de lessenlijst', () {
       final detail = LespakketDetail.resolve(
         profiel: maakLisaProfiel().copyWithSnapshot(),
         lessen: maakLisaLessenLijst(),
       );
       expect(detail.gevolgdeLessen, 58);
       expect(detail.totaalLessen, 76);
-      expect(detail.resterendeLessen, 18); // 76 - 58 (zonder gepland-aftrek)
+      expect(detail.resterendeLessen, 18); // 76 - 58: nog niet gereden
+      final voortgang = LespakketVoortgang.fromProfiel(
+        profiel: maakLisaProfiel().copyWithSnapshot(),
+        lessen: maakLisaLessenLijst(),
+      );
+      // Getoond als "Resterend": gelijk aan de Instructeur-app.
+      expect(detail.nogInTePlannenLessen, voortgang.nogInTePlannen);
+      expect(
+        detail.resterendLabel,
+        startsWith('${voortgang.nogInTePlannen} '),
+      );
     });
   });
 }

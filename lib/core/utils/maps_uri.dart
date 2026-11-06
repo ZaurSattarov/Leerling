@@ -57,6 +57,34 @@ class MapsUri {
     return [browserFallback];
   }
 
+  /// Navigatie in Google Maps met [locatie] als bestemming. Maps URLs vragen
+  /// geen API-sleutel.
+  static Uri navigatieUri(String locatie) => Uri.https(
+        'www.google.com',
+        '/maps/dir/',
+        {
+          'api': '1',
+          'destination': locatie.trim(),
+          'travelmode': 'driving',
+        },
+      );
+
+  /// Opent de navigatie, of anders de gewone kaartkandidaten.
+  static Future<bool> openNavigatie(BuildContext context, String locatie) async {
+    try {
+      if (await launchUrl(
+        navigatieUri(locatie),
+        mode: LaunchMode.externalApplication,
+      )) {
+        return true;
+      }
+    } catch (_) {
+      // Val terug op de gewone kandidaten.
+    }
+    if (!context.mounted) return false;
+    return open(context, locatie);
+  }
+
   /// Probeert elke kandidaat-URI voor [locatie] op volgorde te openen.
   /// Retourneert `true` zodra er één lukt. Toont een nette Nederlandse
   /// foutmelding (geen technische tekst) wanneer geen enkele optie geopend

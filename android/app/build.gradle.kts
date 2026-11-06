@@ -11,6 +11,14 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+// Maps SDK: MAPS_API_KEY uit het gitignorede local.properties of de omgeving.
+val localMapsProperties = Properties().apply {
+    val bestand = rootProject.file("local.properties")
+    if (bestand.exists()) load(FileInputStream(bestand))
+}
+val mapsApiKey: String =
+    (localMapsProperties.getProperty("MAPS_API_KEY") ?: System.getenv("MAPS_API_KEY")) ?: ""
+
 val keyPropertiesFile = rootProject.file("key.properties")
 val keyProperties = Properties()
 if (keyPropertiesFile.exists()) {
@@ -46,10 +54,15 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["mapsApiKey"] = mapsApiKey
     }
 
     buildTypes {
         release {
+            if (mapsApiKey.isBlank()) throw GradleException(
+                "MAPS_API_KEY is verplicht voor release builds. " +
+                "Voeg toe aan android/local.properties of stel de omgevingsvariabele in."
+            )
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             isShrinkResources = false

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/utils/komende_les_filter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/app_error_formatter.dart';
 import '../../core/services/push_service.dart';
@@ -296,7 +297,9 @@ class _VolgendeLesHero extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: StatusBadge(
-                      label: 'Volgende les',
+                      label: isLesBezig(les, DateTime.now())
+                          ? 'Bezig'
+                          : 'Volgende les',
                       backgroundColor: AppColors.primary,
                       glow: false,
                     ),

@@ -1,7 +1,7 @@
 name: leerling_app
 description: Rijschool Leerling App – student app voor rijschool leerlingen
 publish_to: 'none'
-version: 1.0.2+21
+version: 1.0.2+22
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -61,6 +61,8 @@ dependencies:
 
   # Externe links (WhatsApp, betaallink, navigatie)
   url_launcher: ^6.2.5
+  google_maps_flutter: ^2.18.0
+  geocoding: ^3.0.0
 
   # Cached images
   cached_network_image: ^3.3.1

@@ -30,6 +30,10 @@ class Les {
   final LesStatus status;
   final String? notities;
   final String? locatie;
+  // Plek van het ophaaladres; zie core/utils/les_kaart.dart.
+  final double? ophaalLat;
+  final double? ophaalLng;
+  final String? ophaalCoordAdres;
   final List<String> geoefendeOnderwerpen;
   final String? instructeurFeedback;
   final String? leerlingNotitie;
@@ -77,6 +81,9 @@ class Les {
     required this.status,
     this.notities,
     this.locatie,
+    this.ophaalLat,
+    this.ophaalLng,
+    this.ophaalCoordAdres,
     this.geoefendeOnderwerpen = const [],
     this.instructeurFeedback,
     this.leerlingNotitie,
@@ -122,8 +129,12 @@ class Les {
 
   factory Les.fromJson(Map<String, dynamic> json) {
     final instrData = json['instructeur_profielen'] as Map<String, dynamic>?;
-    final instructeurNaam =
+    final ruweInstructeurNaam =
         (instrData?['naam'] as String?) ?? json['instructeur_naam'] as String?;
+    // Sommige accounts hebben hun e-mailadres als naam: dat is geen naam en
+    // hoort niet op een leskaart.
+    final instructeurNaam =
+        ruweInstructeurNaam?.contains('@') == true ? null : ruweInstructeurNaam;
     final instructeurTelefoon = (instrData?['telefoon'] as String?) ??
         json['instructeur_telefoon'] as String?;
     final instructeurEmail = (instrData?['email'] as String?) ??
@@ -160,6 +171,9 @@ class Les {
       ),
       notities: json['notities'] as String?,
       locatie: json['locatie'] as String?,
+      ophaalLat: (json['ophaal_lat'] as num?)?.toDouble(),
+      ophaalLng: (json['ophaal_lng'] as num?)?.toDouble(),
+      ophaalCoordAdres: json['ophaal_coord_adres'] as String?,
       geoefendeOnderwerpen: _stringList(json['geoefende_onderwerpen']),
       instructeurFeedback: json['instructeur_feedback'] as String?,
       leerlingNotitie: json['leerling_notitie'] as String?,

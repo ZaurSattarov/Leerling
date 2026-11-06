@@ -164,20 +164,10 @@ class _LespakketDetailBody extends ConsumerWidget {
             ),
             rechts: _MetricTile(
               label: 'Resterend',
-              value: '${data.nogTeGebruiken}',
+              value: '${data.nogInTePlannen}',
               color: AppColors.primary,
             ),
           ),
-          // Alleen tonen als het afwijkt van "Resterend" -- anders dubbel.
-          if (data.nogInTePlannen != data.nogTeGebruiken) ...[
-            const SizedBox(height: 10),
-            _MetricTile(
-              label: 'Nog in te plannen',
-              value: '${data.nogInTePlannen}',
-              color: AppColors.primary,
-              breed: true,
-            ),
-          ],
           const SizedBox(height: 10),
           AppCard(
             backgroundColor: AppColors.neutralBg,
@@ -198,8 +188,7 @@ class _LespakketDetailBody extends ConsumerWidget {
                   // de servergegevens (lessen_gevolgd), nooit meer uit een
                   // client-side telling -- geen fallback-uitleg meer nodig.
                   'Afgerond komt uit de servergegevens van je instructeur. '
-                  'Resterend is je pakket min wat al afgerond is. Daarvan staan er '
-                  'al lessen gepland; wat dan nog overblijft is "Nog in te plannen". '
+                  'Resterend is je pakket min wat afgerond en gepland is. '
                   'Geannuleerd, verzet en niet verschenen tellen niet als verbruikt.',
                   style: TextStyle(
                     fontSize: 13,
@@ -261,13 +250,11 @@ class _MetricTile extends StatelessWidget {
   final String label;
   final String value;
   final Color? color;
-  final bool breed;
 
   const _MetricTile({
     required this.label,
     required this.value,
     this.color,
-    this.breed = false,
   });
 
   @override

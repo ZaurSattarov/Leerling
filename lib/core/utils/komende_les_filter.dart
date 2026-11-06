@@ -57,6 +57,15 @@ bool isKomendeLes({
   return einde.isAfter(nu);
 }
 
+/// True zolang een geplande les op dit moment loopt.
+bool isLesBezig(Les les, DateTime nu) {
+  if (les.status != LesStatus.gepland) return false;
+  final start = lesStartDateTime(les);
+  final einde = lesEindDateTime(les);
+  if (start == null || einde == null) return false;
+  return !start.isAfter(nu) && einde.isAfter(nu);
+}
+
 bool isAfgelopenLes(Les les, DateTime nu) {
   final einde = lesEindDateTime(les);
   if (einde == null) return false;

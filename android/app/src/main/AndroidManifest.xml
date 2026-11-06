@@ -21,6 +21,10 @@
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:dataExtractionRules="@xml/data_extraction_rules">
+        <!-- Maps SDK: sleutel uit android/local.properties, nooit hardcoded. -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${mapsApiKey}" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

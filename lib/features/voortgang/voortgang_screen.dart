@@ -8,6 +8,7 @@ import '../../core/utils/app_error_formatter.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_tab_header.dart';
 import '../examenadvies/examenadvies_data.dart';
+import '../examenadvies/examenadvies_status_style.dart';
 import 'lespakket_voortgang_provider.dart';
 import 'voortgang_provider.dart';
 import 'voortgang_trends_provider.dart';
@@ -178,7 +179,7 @@ class VoortgangScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: _sectionTitleGap),
 
-                            // 6. Examenadviestrend — canonical sparkline
+                            // 6. Vaardigheidstrend — canonical sparkline
                             //    (`bouwOntwikkelingSparkline`), zelfde
                             //    helper die Home ook gebruikt.
                             trendsAsync.when(
@@ -274,7 +275,7 @@ class _TotaleVoortgangCard extends StatelessWidget {
     return Semantics(
       button: true,
       label:
-          '$voortgangZin. ${data.afgerondeLessen} afgerond, ${data.geplandeLessen} gepland, ${data.nogTeGebruiken} resterend.',
+          '$voortgangZin. ${data.afgerondeLessen} afgerond, ${data.geplandeLessen} gepland, ${data.nogInTePlannen} resterend.',
       child: AppCard(
         onTap: () => context.push('/voortgang/lespakket'),
         padding: const EdgeInsets.all(_cardPadding),
@@ -377,7 +378,7 @@ class _TotaleVoortgangCard extends StatelessWidget {
                     Expanded(
                       child: _StatPill(
                         label: 'Resterend',
-                        value: '${data.nogTeGebruiken}',
+                        value: '${data.nogInTePlannen}',
                         valueColor: AppColors.textPrimary,
                       ),
                     ),
@@ -404,9 +405,9 @@ class _ExamenReadinessCard extends StatelessWidget {
 
   Color get _scoreColor {
     if (!trends.heeftBetrouwbareScore) return AppColors.textSecondary;
-    if (trends.huidigeScore >= 80) return _groen;
-    if (trends.huidigeScore >= 50) return _oranje;
-    return _rood;
+    // De status uit het advies bepaalt de kleur, niet het percentage: 87% met
+    // een dalende vaardigheid is nog geen groen licht.
+    return examenadviesStatusAccentVanLabel(trends.statusLabel);
   }
 
   @override
@@ -416,6 +417,11 @@ class _ExamenReadinessCard extends StatelessWidget {
     final infoLabel = trends.ontwikkelingTekst.isNotEmpty
         ? trends.ontwikkelingTekst
         : (toonScore ? 'Geen vorige meting' : 'Nog onvoldoende beoordelingen');
+    final redenTekst = examenadviesRedenTekst(
+      toonScore: toonScore,
+      statusLabel: trends.statusLabel,
+      aandachtspunten: trends.aandachtspunten,
+    );
 
     return Semantics(
       label:
@@ -469,6 +475,17 @@ class _ExamenReadinessCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   _NeutralBadge(label: infoLabel),
+                  if (redenTekst != null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      redenTekst,
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.35,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -1019,7 +1036,7 @@ class _InzichtRij extends StatelessWidget {
   }
 }
 
-// ── Examenadviestrend card ───────────────────────────────────────────────────
+// ── Vaardigheidstrend card ───────────────────────────────────────────────────
 //
 // Canonical sparkline uit `bouwOntwikkelingSparkline(advies)` — zelfde
 // helper die de Home-Ontwikkelingkaart al gebruikt. Geen tweede historie-
@@ -1079,7 +1096,7 @@ class _ScoreChartCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Examenadviestrend',
+                      'Vaardigheidstrend',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,

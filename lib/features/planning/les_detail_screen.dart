@@ -12,6 +12,7 @@ import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/main_detail_header.dart';
 import '../../shared/widgets/snackbar.dart';
 import '../../core/utils/maps_uri.dart';
+import 'widgets/les_locatie_kaart.dart';
 import '../profiel/rijschool_provider.dart';
 import '../lesvoorbereiding/lesvoorbereiding_provider.dart';
 import 'planning_provider.dart';
@@ -148,7 +149,10 @@ class _LesDetailBody extends ConsumerWidget {
               // 5. Ophaallocatie (tekst + externe Maps-navigatie).
               // Live Aankomst is productmatig verwijderd (2026-11-06).
               if ((les.locatie ?? '').trim().isNotEmpty) ...[
-                _LocatieCard(les: les),
+                LesLocatieKaart(
+                  les: les,
+                  terugval: _LocatieCard(les: les),
+                ),
                 const SizedBox(height: 12),
               ],
 

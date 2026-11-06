@@ -23,7 +23,6 @@ class LespakketVoortgangData {
   final int totaalLessen;
   final int afgerondeLessen;
   final int geplandeLessen;
-  final int nogTeGebruiken;
   final int nogInTePlannen;
   final double percentageAfgerond;
   final bool gebruiktFallback;
@@ -34,7 +33,6 @@ class LespakketVoortgangData {
     required this.totaalLessen,
     required this.afgerondeLessen,
     required this.geplandeLessen,
-    required this.nogTeGebruiken,
     required this.nogInTePlannen,
     required this.percentageAfgerond,
     required this.gebruiktFallback,
@@ -85,7 +83,6 @@ class LespakketVoortgangData {
       totaalLessen: berekening.totaalLessen,
       afgerondeLessen: berekening.afgerondeLessen,
       geplandeLessen: berekening.geplandeLessen,
-      nogTeGebruiken: berekening.resterendeLessen,
       nogInTePlannen: berekening.nogInTePlannen,
       percentageAfgerond: berekening.percentageAfgerond,
       gebruiktFallback: berekening.gebruiktFallback,

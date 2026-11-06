@@ -1,3 +1,4 @@
+import 'lespakket_voortgang.dart';
 import '../../models/instructor_lesson_package.dart';
 import '../../models/leerling_profiel.dart';
 import '../../models/les.dart';
@@ -41,6 +42,10 @@ class LespakketDetail {
   final int gevolgdeLessen;
   final int resterendeLessen;
 
+  /// Wat de leerling als "Resterend" ziet: pakket min afgerond en gepland,
+  /// gelijk aan de Instructeur-app.
+  final int nogInTePlannenLessen;
+
   // Minuten-modus.
   final int totaalMinuten;
   final int verbruikteMinuten;
@@ -64,6 +69,7 @@ class LespakketDetail {
     required this.totaalLessen,
     required this.gevolgdeLessen,
     required this.resterendeLessen,
+    this.nogInTePlannenLessen = 0,
     required this.totaalMinuten,
     required this.verbruikteMinuten,
     required this.resterendeMinuten,
@@ -73,7 +79,8 @@ class LespakketDetail {
 
   String get resterendLabel => gebruiktMinuten
       ? formatMinutenSaldo(resterendeMinuten)
-      : '$resterendeLessen ${resterendeLessen == 1 ? 'les' : 'lessen'}';
+      : '$nogInTePlannenLessen '
+          '${nogInTePlannenLessen == 1 ? 'les' : 'lessen'}';
 
   String get totaalLabel => gebruiktMinuten
       ? formatMinutenSaldo(totaalMinuten)
@@ -100,7 +107,7 @@ class LespakketDetail {
     final resterend = gebruiktMinuten ? resterendeMinuten : resterendeLessen;
     if (resterend <= 0) return 'Volledig gebruikt';
     final bijnaOp =
-        gebruiktMinuten ? resterendeMinuten <= 120 : resterendeLessen <= 2;
+        gebruiktMinuten ? resterendeMinuten <= 120 : nogInTePlannenLessen <= 2;
     return bijnaOp ? 'Bijna op' : 'Actief';
   }
 
@@ -211,13 +218,16 @@ class LespakketDetail {
     // content/feedback, maar geen geldig criterium voor pakketcredit-
     // verbruik; bewezen root cause van een discrepantie tussen apps). Geen
     // tweede recount meer: lessen_gevolgd is hier onvoorwaardelijk de bron.
-    // "Resterend" telt hier bewust niet ook nog geplande lessen af (zelfde,
-    // eenvoudigere definitie als Leerling.pakketLesAantal-gebaseerde
-    // weergave in de Instructeur-app).
+    // "Resterend" trekt ook geplande lessen af, gelijk aan de Instructeur-app
+    // en de database-trigger. `resterendeLessen` is wat nog niet gereden is en
+    // bepaalt alleen of het pakket volledig gebruikt is.
     final gevolgdeLessen =
         profiel.lessenGevolgd < 0 ? 0 : profiel.lessenGevolgd;
     final totaalLessen = profiel.lessenTotaal < 0 ? 0 : profiel.lessenTotaal;
     final resterendeLessen = (totaalLessen - gevolgdeLessen).clamp(0, 9999);
+    final nogInTePlannenLessen =
+        LespakketVoortgang.fromProfiel(profiel: profiel, lessen: lessen)
+            .nogInTePlannen;
 
     // ── Minuten-modus: pakket_minuten_verbruikt wordt server-side exact
     // bijgehouden (dezelfde trigger) -- geen client-recompute nodig of
@@ -249,6 +259,7 @@ class LespakketDetail {
       totaalLessen: gebruiktMinuten ? 0 : totaalLessen,
       gevolgdeLessen: gebruiktMinuten ? 0 : gevolgdeLessen,
       resterendeLessen: gebruiktMinuten ? 0 : resterendeLessen,
+      nogInTePlannenLessen: gebruiktMinuten ? 0 : nogInTePlannenLessen,
       totaalMinuten: gebruiktMinuten ? totaalMinuten : 0,
       verbruikteMinuten: gebruiktMinuten ? verbruikteMinuten : 0,
       resterendeMinuten: gebruiktMinuten ? resterendeMinuten : 0,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/utils/komende_les_filter.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/cool_icons.dart';
 import '../../../core/utils/datum_utils.dart';
@@ -78,7 +79,8 @@ class _AnimatedFramerTimelineState extends State<AnimatedFramerTimeline>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.lessen != widget.lessen) {
       _syncItemKeys();
-      WidgetsBinding.instance.addPostFrameCallback((_) => _recalculateProgress());
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _recalculateProgress());
     }
   }
 
@@ -112,13 +114,18 @@ class _AnimatedFramerTimelineState extends State<AnimatedFramerTimeline>
     // De lijn begint bij het eerste knooppunt (top: 24) en groeit mee naar beneden.
     // Wanneer index 0 de actieve les is, reikt de fill exact tot het centrum van het actieve knooppunt.
     // Als de gebruiker scrollt, reikt de fill mee naar het huidige item in het midden van de viewport.
-    final scrollOffset = _scrollController.hasClients ? _scrollController.offset : 0.0;
-    final maxScroll = _scrollController.hasClients && _scrollController.position.hasContentDimensions
+    final scrollOffset =
+        _scrollController.hasClients ? _scrollController.offset : 0.0;
+    final maxScroll = _scrollController.hasClients &&
+            _scrollController.position.hasContentDimensions
         ? _scrollController.position.maxScrollExtent
         : 1.0;
 
-    final ratio = maxScroll > 0 ? (scrollOffset / maxScroll).clamp(0.0, 1.0) : 0.0;
-    final targetIndex = (ratio * widget.lessen.length).floor().clamp(0, widget.lessen.length - 1);
+    final ratio =
+        maxScroll > 0 ? (scrollOffset / maxScroll).clamp(0.0, 1.0) : 0.0;
+    final targetIndex = (ratio * widget.lessen.length)
+        .floor()
+        .clamp(0, widget.lessen.length - 1);
 
     setState(() {
       _activeItemIndex = targetIndex;
@@ -129,7 +136,8 @@ class _AnimatedFramerTimelineState extends State<AnimatedFramerTimeline>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = AppColors.primary;
-    final lineBgColor = isDark ? const Color(0xFF272F3E) : const Color(0xFFE2E8F0);
+    final lineBgColor =
+        isDark ? const Color(0xFF272F3E) : const Color(0xFFE2E8F0);
 
     return SingleChildScrollView(
       controller: _scrollController,
@@ -174,7 +182,8 @@ class _AnimatedFramerTimelineState extends State<AnimatedFramerTimeline>
                         builder: (context, lineConstraints) {
                           final totalLineHeight = lineConstraints.maxHeight;
                           final activeFraction = widget.lessen.length > 1
-                              ? (_activeItemIndex / (widget.lessen.length - 1)).clamp(0.0, 1.0)
+                              ? (_activeItemIndex / (widget.lessen.length - 1))
+                                  .clamp(0.0, 1.0)
                               : 1.0;
                           final activeHeight = widget.isKomend
                               ? math.max(
@@ -220,7 +229,9 @@ class _AnimatedFramerTimelineState extends State<AnimatedFramerTimeline>
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  for (int index = 0; index < widget.lessen.length; index++) ...[
+                  for (int index = 0;
+                      index < widget.lessen.length;
+                      index++) ...[
                     _buildTimelineRow(
                       index: index,
                       les: widget.lessen[index],
@@ -496,7 +507,8 @@ class _FramerTimelineCardState extends State<_FramerTimelineCard> {
     if (widget.isPast) {
       badgeLabel = 'AFGEROND';
     } else if (widget.isActive) {
-      badgeLabel = 'VOLGENDE';
+      badgeLabel =
+          isLesBezig(widget.les, DateTime.now()) ? 'BEZIG' : 'VOLGENDE';
     } else {
       badgeLabel = 'GEPLAND';
     }
@@ -652,8 +664,7 @@ class _FramerTimelineCardState extends State<_FramerTimelineCard> {
                       const SizedBox(height: 14),
 
                       // Les details (locatie, instructeur, onderwerpen of notities)
-                      if (widget.les.locatie?.isNotEmpty == true ||
-                          widget.les.instructeurNaam?.isNotEmpty == true) ...[
+                      ...[
                         Wrap(
                           spacing: 12,
                           runSpacing: 6,
