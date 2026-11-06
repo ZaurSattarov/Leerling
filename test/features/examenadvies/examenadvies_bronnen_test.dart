@@ -39,8 +39,8 @@ void main() {
 
     expect(advies.score, 27);
     expect(advies.status, ExamenadviesStatus.nogNietKlaar);
-    expect(advies.categorieen[0].scoreLabel, '1.0');
-    expect(advies.categorieen[1].scoreLabel, '1.0');
+    expect(advies.categorieen[0].scoreLabel, '1,0');
+    expect(advies.categorieen[1].scoreLabel, '1,0');
   });
 
   test('fromRpc toont actuele dossierwaarde 5.0 zonder clientformule', () {
@@ -72,8 +72,8 @@ void main() {
       'gebaseerdOp': <String>['Actuele vaardigheden van je instructeur'],
     });
 
-    expect(advies.categorieen[0].scoreLabel, '5.0');
-    expect(advies.categorieen[1].scoreLabel, '5.0');
+    expect(advies.categorieen[0].scoreLabel, '5,0');
+    expect(advies.categorieen[1].scoreLabel, '5,0');
     expect(advies.score, 63);
   });
 

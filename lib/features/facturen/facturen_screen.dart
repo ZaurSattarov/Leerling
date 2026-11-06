@@ -40,7 +40,7 @@ class _FacturenScreenState extends ConsumerState<FacturenScreen>
   late final Animation<double> _chartAnim;
   late final TabController _tabCtrl;
 
-  static const _tabs = ['Alle', 'Open', 'Betaald', 'Verlopen'];
+  static const _tabs = ['Alle', 'Open', 'Betaald', 'Te laat'];
 
   @override
   void initState() {
@@ -302,7 +302,7 @@ class _StatusEnFinanceKaart extends StatelessWidget {
           waarde:
               totaalRelevant == 0 ? 0 : stats.verlopenAantal / totaalRelevant,
           kleur: _roodWaarschuwing,
-          label: 'Verlopen',
+          label: 'Te laat',
           aantal: stats.verlopenAantal,
           statusKleur: _roodWaarschuwing,
         ),

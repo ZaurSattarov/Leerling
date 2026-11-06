@@ -169,7 +169,9 @@ class CategorieScore {
 
   /// Canonical weergave: 1 decimaal uit Postgres, geen herberekening.
   String? get scoreLabel =>
-      huidigOpVijf == null ? null : huidigOpVijf!.toStringAsFixed(1);
+      huidigOpVijf == null
+          ? null
+          : huidigOpVijf!.toStringAsFixed(1).replaceAll('.', ',');
 
   bool get heeftData => huidigOpVijf != null;
 }

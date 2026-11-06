@@ -61,8 +61,8 @@ void main() {
       'gebaseerdOp': <String>[],
     });
 
-    expect(advies.categorieen[0].scoreLabel, '2.0');
-    expect(advies.categorieen[1].scoreLabel, '1.7');
+    expect(advies.categorieen[0].scoreLabel, '2,0');
+    expect(advies.categorieen[1].scoreLabel, '1,7');
     expect(advies.categorieen[0].scoreAfgerond, isNot(3));
   });
 

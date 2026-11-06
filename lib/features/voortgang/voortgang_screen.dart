@@ -1151,7 +1151,7 @@ class _ScoreChartCard extends StatelessWidget {
                   label: 'Huidig',
                   value: huidigPunt == null
                       ? '—'
-                      : '${huidigPunt.toStringAsFixed(1)}/5',
+                      : '${huidigPunt.toStringAsFixed(1).replaceAll('.', ',')}/5',
                 ),
               ),
               SizedBox(width: 8),
