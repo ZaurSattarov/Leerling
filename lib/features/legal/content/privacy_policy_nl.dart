@@ -25,7 +25,7 @@ const privacyPolicyNl = LegalDocumentContent(
           '• Lesplanning en beschikbaarheid: data en tijdstippen van geplande en afgeronde rijlessen, ophaal- en afzetlocaties, lesstatus en jouw opgegeven beschikbaarheid en tijdvoorkeuren.\n\n'
           '• Voortgang en evaluaties: voortgang binnen je lespakket, competenties en vorderingenkaart, indicatief examenadvies, en evaluaties of lesnotities die je instructeur met jou deelt.\n\n'
           '• Facturen en betalingen: factuurnummers, openstaande en voldane bedragen, vervaldatums en betalingsreferenties (wanneer je facturen via iDEAL/Mollie betaalt).\n\n'
-          '• Live aankomst & navigatie: wanneer je instructeur onderweg is naar jouw ophaallocatie, kan de app een geschatte aankomsttijd (ETA) en afstand tonen om je tijdig te informeren.\n\n'
+          '• Ophaallocatie: het ophaaladres van je les als tekst, met optionele navigatie via een externe kaarten-app op jouw toestel.\n\n'
           '• Communicatie en pushmeldingen: apparaattokens (FCM/APNs) om herinneringen voor je lessen en belangrijke wijzigingen als pushbericht op je telefoon te bezorgen, en berichten aan onze helpdesk.\n\n'
           '• Technische gegevens: IP-adres, apparaattype, besturingssysteem, app-versie en diagnostische storingslogs om de app veilig en stabiel te houden.',
     ),

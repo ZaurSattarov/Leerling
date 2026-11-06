@@ -16,7 +16,6 @@ import 'core/providers/main_shell_nav_bar_visibility.dart';
 import 'core/services/native_navigation_bridge.dart';
 import 'core/services/access_gate_service.dart';
 import 'core/services/push_service.dart';
-import 'features/arrival/arrival_provider.dart';
 import 'features/splash/splash_screen.dart';
 import 'features/auth/account_geblokkeerd_screen.dart';
 import 'features/auth/login_screen.dart';
@@ -111,13 +110,9 @@ class _AuthNotifier extends ChangeNotifier {
   _AuthNotifier(this._ref) {
     _sub = Supabase.instance.client.auth.onAuthStateChange.listen((data) {
       _event = data.event;
-      // Live Aankomst (Fase 2C): bij logout/auth-verlies geen sessie- of
-      // locatiedata van de vorige gebruiker laten staan voor een eventuele
-      // volgende gebruiker op hetzelfde toestel.
       if (data.event == AuthChangeEvent.signedOut) {
         _ref.read(pendingEmailLinkProvider).clear();
         scheduleAccountScopedProviderInvalidation(() {
-          _ref.read(arrivalControllerProvider.notifier).onAuthLost();
         });
         blockedAccessStatus = null;
         _ref.read(mainShellMountedProvider.notifier).state = false;
@@ -667,10 +662,8 @@ class _LeerlingAppState extends ConsumerState<LeerlingApp>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       PushService.onAppResumed();
-      ref.read(arrivalControllerProvider.notifier).onAppResumed();
       verversLeerlingDataBijHervatten(ref.invalidate);
     } else if (state == AppLifecycleState.paused) {
-      ref.read(arrivalControllerProvider.notifier).onAppPaused();
     }
   }
 

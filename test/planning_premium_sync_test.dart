@@ -91,21 +91,15 @@ void main() {
     test('locatie en contact blijven leerlingvriendelijk en brongetrouw', () {
       final detail = read('lib/features/planning/les_detail_screen.dart');
 
-      // Ophaallocatie: sinds het herontwerp één tikbare kaart met
-      // kaartpreview en badge. Sinds "Fix Ophaallocatie Navigatie" opent een
-      // tik intern (LiveAankomstFullscreenScreen) i.p.v. rechtstreeks
-      // MapsUri.open aan te roepen -- externe Maps is daar nu alleen nog een
-      // secundaire "Route"-knop binnen dat interne scherm, geen directe
-      // aanroep meer vanuit _LocatieCard zelf (MapsUri.open blijft elders in
-      // dit bestand toegestaan in toelichtende commentaartekst).
+      // Ophaallocatie: tikbare kaart opent externe Maps (Live Aankomst weg).
       expect(detail, contains("'OPHAALLOCATIE'"));
-      expect(detail, contains('LiveAankomstFullscreenScreen'));
+      expect(detail, isNot(contains('LiveAankomstFullscreenScreen')));
       final locatieCardStart = detail.indexOf('class _LocatieCard');
       final locatieCardEind = detail.indexOf('class _OphaallocatieBadge');
       expect(locatieCardStart, greaterThan(-1));
       expect(locatieCardEind, greaterThan(locatieCardStart));
       expect(detail.substring(locatieCardStart, locatieCardEind),
-          isNot(contains('MapsUri.open')));
+          contains('MapsUri.open'));
       expect(detail, contains('_weergaveRegels'));
       expect(detail, isNot(contains('Exact ophaaladres')));
       expect(detail, isNot(contains("label: 'Navigeer naar locatie'")));
@@ -150,7 +144,8 @@ void main() {
       expect(detail, contains("context.push('/beschikbaarheid')"));
       expect(detail, contains('Nieuwe les aanvragen'));
       expect(detail, contains('Evaluatie nog niet beschikbaar'));
-      expect(detail, isNot(contains('les.status == LesStatus.gepland) ...[')));
+      // Geen aparte "Volgende les"-CTA meer; gepland-status mag elders
+      // (voorbereiding e.d.) wel voorkomen.
       expect(detail, isNot(contains('Volgende les aanvragen')));
     });
   });
